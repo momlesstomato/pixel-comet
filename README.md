@@ -10,7 +10,7 @@ pixel-comet accepts connections over both raw TCP and WebSocket, making it compa
 
 - **Protocol fidelity.** Every incoming and outgoing message must match the Pixel Protocol specification byte-for-byte.
 - **Production stability.** The server is designed for long-running, high-concurrency deployments. Correctness and resilience are prioritised over feature volume.
-- **Extensibility.** The plugin and SDK surface (`Comet-API`, `Comet-Networking-API`) is a first-class concern. Third-party modules must be able to add commands, composers, and game mechanics without touching core internals.
+- **Extensibility.** The plugin and SDK surface (`api/`) is a first-class concern. Third-party modules must be able to add commands, composers, and game mechanics without touching core internals.
 - **Maintainability.** All code follows the standards defined in [AGENTS.md](AGENTS.md): SOLID design, complete Javadoc, zero compiler warnings.
 
 ---
@@ -19,24 +19,18 @@ pixel-comet accepts connections over both raw TCP and WebSocket, making it compa
 
 ```
 pixel-comet
-├── Comet-Launcher              Entry point and process lifecycle
-├── Comet-Server                Core game server (rooms, players, commands, permissions, catalog, navigator)
-├── Comet-Server-Protocol       Netty codec pipeline: framing, encryption (RSA/DH/RC4), message routing
-├── Comet-Networking-API        Networking abstractions (IMessageEvent, IMessageComposer)
-├── Comet-Networking-Composers  600+ outgoing message composers
-├── Comet-API                   Public SDK surface: BaseModule, events, command interfaces
-├── Comet-API-Example           Reference implementation of a third-party module
-├── Comet-Common                Shared utilities (no game or network dependencies)
-├── Comet-Storage-API           Repository interfaces (no SQL dependency)
-├── Comet-Storage-MySQL         MySQL + HikariCP implementation of storage interfaces
-│
-├── Comet-Game-Groups           Pluggable guild/group module
-├── Comet-Game-Items            Pluggable item definition module
-├── Comet-Game-Rooms            Pluggable extended room logic module
-├── Comet-Game-Catalog          Pluggable catalog module
-├── Comet-Game-Achievements     Pluggable achievement module
-├── Comet-GameCenter-FastFood   FastFood mini-game module
-└── Comet-GameCenter-SnowStorm  SnowStorm mini-game module
+├── api/                        Public SDK surface and storage/network contracts
+├── protocol/                   Netty codec pipeline, encryption, opcode headers, composers
+├── server/                     Core emulator runtime
+├── plugins/
+│   ├── example/                Reference plugin
+│   ├── groups/                 Guild/group module
+│   ├── items/                  Inventory item types used by the emulator
+│   └── rooms/                  Room data/model services module
+├── gamecenter/
+│   └── fastfood/               FastFood mini-game module
+├── modules/                    Built plugin jars loaded at runtime
+└── tools/                      Standalone utilities moved out of the main build graph
 ```
 
 **Networking stack:**
@@ -46,7 +40,7 @@ pixel-comet
 
 **Storage:**
 - MySQL via HikariCP connection pool.
-- All persistence goes through the repository interfaces in `Comet-Storage-API`; the MySQL implementation is swappable.
+- All persistence goes through the repository interfaces in `api/`; the current MySQL implementation lives in `server/`.
 - Redis (Jedis) is available for distributed caching when `comet.cache.enabled=true`.
 
 ---
@@ -54,8 +48,8 @@ pixel-comet
 ## Protocol Compliance
 
 All packet opcodes are defined in:
-- `Comet-Server-Protocol/.../protocol/headers/Events.java` — incoming client messages (305+ opcodes)
-- `Comet-Server-Protocol/.../protocol/headers/Composers.java` — outgoing server messages (300+ opcodes)
+- `protocol/.../protocol/headers/Events.java` — incoming client messages (305+ opcodes)
+- `protocol/.../protocol/headers/Composers.java` — outgoing server messages (300+ opcodes)
 
 The target specification is: **https://momlesstomato.github.io/pixel-protocol/**
 
@@ -67,8 +61,8 @@ Any deviation from the spec must be documented with an `@implNote` in the releva
 
 | Dependency | Version |
 |------------|---------|
-| Java       | 8+      |
-| Maven      | 3.6+    |
+| Java       | 17+     |
+| Gradle     | 9+      |
 | MySQL      | 5.7+ / 8.x |
 | Redis      | 6+ (optional, for distributed cache) |
 
@@ -77,10 +71,10 @@ Any deviation from the spec must be documented with an `@implNote` in the releva
 ## Building
 
 ```bash
-mvn clean package -DskipTests
+./gradlew build
 ```
 
-The shaded executable JAR is produced at `Comet-Launcher/target/Comet-Launcher-*.jar`.
+The emulator distribution is produced under `server/build/`, and runtime-loaded module jars are written to `modules/`.
 
 ---
 
@@ -113,7 +107,7 @@ Pluggable modules are declared in `config/modules.json`:
 {
   "modules": [
     {
-      "path": "modules/Comet-Game-Groups.jar",
+      "path": "modules/groups.jar",
       "alias": "Comet.Game.Groups",
       "config": {}
     }
@@ -126,7 +120,7 @@ Pluggable modules are declared in `config/modules.json`:
 ## Running
 
 ```bash
-java -jar Comet-Launcher/target/Comet-Launcher-*.jar
+./gradlew :server:run
 ```
 
 The server binds on the configured TCP and WebSocket ports. The REST API starts only when `comet.api.enabled=true`.
@@ -145,7 +139,7 @@ mysql -u root -p pixel_comet < SQL.sql
 
 ## Writing a Plugin Module
 
-1. Add `Comet-API` as a `provided` Maven dependency.
+1. Add `api/` as a `compileOnly` Gradle dependency.
 2. Extend `com.cometproject.api.modules.BaseModule`.
 3. Register commands by implementing `com.cometproject.api.commands.ModuleChatCommand`.
 4. Subscribe to game events via the event system in `com.cometproject.api.events`.
@@ -179,7 +173,7 @@ See [AGENTS.md](AGENTS.md) for the full contribution standards. The short versio
 
 - Follow SOLID design principles.
 - Write complete Javadoc on every public type and member.
-- Compile with zero warnings (`mvn clean package -Werror`).
+- Compile with zero warnings.
 - Match packet definitions to the Pixel Protocol spec.
 - Expose new functionality through `Comet-API` interfaces, not core internals.
 

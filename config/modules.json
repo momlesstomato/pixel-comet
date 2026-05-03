@@ -1,18 +1,28 @@
 {
   "modules": [
     {
-      "path": "modules/Comet-Game-Groups-2.1.2-TEST2.jar",
+      "path": "modules/groups.jar",
       "alias": "Comet.Game.Groups",
       "config": {
       }
+    },
+    {
+      "path": "modules/rooms.jar",
+      "alias": "Comet.Game.Rooms",
+      "config": {
+      }
+    },
+    {
+      "path": "modules/fastfood.jar",
+      "alias": "Comet.GameCenter.FastFood",
+      "config": {
+      }
+    },
+    {
+      "path": "modules/example.jar",
+      "alias": "Comet.API.Example",
+      "config": {
+      }
     }
-////    },
-////    {
-////      "path": "modules/Comet-GameCenter-FastFood-2.1.2-TEST2.jar",
-////      "alias": "Comet.GameCenter.FastFood",
-////      "config": {
-////
-////      }
-////    }
   ]
 }
