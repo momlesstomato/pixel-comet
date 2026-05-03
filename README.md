@@ -1,62 +1,192 @@
-# Comet Server >> KeyServers Edition # [![image](https://i.imgur.com/zE3mMpT.png)](https://discord.gg/)
+# pixel-comet
 
-KeyServers is as a fork of Comet by Dank074 (also compatible with nitro it comes with websockets). Comet is a high performance game server written in Java:
+A high-performance, production-grade Habbo retro game server written in Java, targeting **1:1 compliance with the [Pixel Protocol](https://momlesstomato.github.io/pixel-protocol/)**.
 
+pixel-comet accepts connections over both raw TCP and WebSocket, making it compatible with modern browser-based clients (Nitro) and native clients that speak the Pixel binary protocol.
 
+---
 
-[![image](https://img.shields.io/discord/557240155040251905?style=for-the-badge&logo=discord&color=7289DA&label=KREWS&logoColor=fff)](https://cometproject.net/)
+## Goals
 
-## Download ##
-[![image](https://img.shields.io/badge/STABLE%20RELEASES-0.0.1-success.svg?style=for-the-badge&logo=appveyor)](https://github.com/retrokey/Emulador/releases)
+- **Protocol fidelity.** Every incoming and outgoing message must match the Pixel Protocol specification byte-for-byte.
+- **Production stability.** The server is designed for long-running, high-concurrency deployments. Correctness and resilience are prioritised over feature volume.
+- **Extensibility.** The plugin and SDK surface (`Comet-API`, `Comet-Networking-API`) is a first-class concern. Third-party modules must be able to add commands, composers, and game mechanics without touching core internals.
+- **Maintainability.** All code follows the standards defined in [AGENTS.md](AGENTS.md): SOLID design, complete Javadoc, zero compiler warnings.
 
-###### * Note to use these builds you will need to run any database updates from [here] (https://github.com/retrokey/Emulador/blob/main/SQL.sql) #######
+---
 
-## Installation ##
+## Architecture Overview
 
-This emulator comes with a Nitro interface (UI) and an Internal folder follow this little tutorial for getting all working:
+```
+pixel-comet
+├── Comet-Launcher              Entry point and process lifecycle
+├── Comet-Server                Core game server (rooms, players, commands, permissions, catalog, navigator)
+├── Comet-Server-Protocol       Netty codec pipeline: framing, encryption (RSA/DH/RC4), message routing
+├── Comet-Networking-API        Networking abstractions (IMessageEvent, IMessageComposer)
+├── Comet-Networking-Composers  600+ outgoing message composers
+├── Comet-API                   Public SDK surface: BaseModule, events, command interfaces
+├── Comet-API-Example           Reference implementation of a third-party module
+├── Comet-Common                Shared utilities (no game or network dependencies)
+├── Comet-Storage-API           Repository interfaces (no SQL dependency)
+├── Comet-Storage-MySQL         MySQL + HikariCP implementation of storage interfaces
+│
+├── Comet-Game-Groups           Pluggable guild/group module
+├── Comet-Game-Items            Pluggable item definition module
+├── Comet-Game-Rooms            Pluggable extended room logic module
+├── Comet-Game-Catalog          Pluggable catalog module
+├── Comet-Game-Achievements     Pluggable achievement module
+├── Comet-GameCenter-FastFood   FastFood mini-game module
+└── Comet-GameCenter-SnowStorm  SnowStorm mini-game module
+```
 
-* ### Internal Installation <a href="https://github.com/retrokey/KeyServers-Internal">(Click here to download the Intenal)</a> ###
+**Networking stack:**
+- Netty 4.1 handles all I/O (TCP + WebSocket).
+- The codec pipeline applies XML-policy decoding (legacy compatibility), length-prefix framing, RC4 encryption, and short-header message dispatch.
+- The REST management API runs on Spark/Jetty (port `30003` by default, disabled by default).
 
-To install the internal you must register in your DNS the subdomain "int.domain.com" it is mandatory that it is the prefix "int", after this you must configure a page in your IIS with the subdomain INT and the directory must be the folder "Internal". You must configure the Rcon.php file with your database account details.
+**Storage:**
+- MySQL via HikariCP connection pool.
+- All persistence goes through the repository interfaces in `Comet-Storage-API`; the MySQL implementation is swappable.
+- Redis (Jedis) is available for distributed caching when `comet.cache.enabled=true`.
 
-* ### UI Installation <a href="https://github.com/retrokey/KeyServers-Nitro">(Click here to download the UI)</a> ###
+---
 
-You will have to open the entire UI folder in a code editor like VS Code and change ALL the "int.lavvos.eu" links to "int.yourdomain.com", the rest is to configure nitro as usual, UI-Config, Renderer-Config, Etc....
+## Protocol Compliance
 
-## Why this release ##
+All packet opcodes are defined in:
+- `Comet-Server-Protocol/.../protocol/headers/Events.java` — incoming client messages (305+ opcodes)
+- `Comet-Server-Protocol/.../protocol/headers/Composers.java` — outgoing server messages (300+ opcodes)
 
-Since Compass (blop) and Outser decided to rip me off +100€ I've had a grudge against them, that's why I'm publishing this, this emulator comes with battle pass, missions for the battle pass, audios, gifs, emojis and a nitro UI (the same UI as Kubbo) AND a banner system implemented. During today I will be working on launching all the unusable Comet that was sold to me, it has several bugs, but it works correctly, one of the biggest bugs is the groups, but apart from that it has nothing more serious (regarding what I have seen and know). Use it as you want, if you want updates, nowadays I have no Java knowledge to continue this emulator, anyone who wants to work on it and exploit it to make money, is free to do it. I hope with this to give them a lesson to these two people that throughout their lives have been dedicated to sell dedicated servers and swindle this type of things, not having nobody that makes them face they have continued profiting of this type of things and for that reason I take these actions. I hope you enjoy the emulator and the few advantages it has.
+The target specification is: **https://momlesstomato.github.io/pixel-protocol/**
 
-## Screenshots ##
+Any deviation from the spec must be documented with an `@implNote` in the relevant Javadoc and tracked as an open issue.
 
-<a href="https://imgur.com/a/Z29zE7D">Videos</a><br>
-<a href="https://imgur.com/a/fnh4TAC">Images</a>
+---
 
-## Can I Help!? ##
-Yeah just try to fix what you know and make a pull request if u can proof that the problem really is solved i will merge the pull request with no problem. <3
+## Requirements
 
-## Features ##
+| Dependency | Version |
+|------------|---------|
+| Java       | 8+      |
+| Maven      | 3.6+    |
+| MySQL      | 5.7+ / 8.x |
+| Redis      | 6+ (optional, for distributed cache) |
 
-- Banner system
-- Battle Pass
-- Missions with Battle Pass
-- Etc...
+---
 
-## Making money ##
-I have no problem with developers making money through the sale of custom features, plugins or maintenance work.
+## Building
 
-Make what u want with it.
+```bash
+mvn clean package -DskipTests
+```
 
+The shaded executable JAR is produced at `Comet-Launcher/target/Comet-Launcher-*.jar`.
 
+---
 
+## Configuration
 
+Copy `config/comet.properties` and adjust:
 
+```properties
+# Database
+comet.db.host=127.0.0.1
+comet.db.name=pixel_comet
+comet.db.username=root
+comet.db.password=changeme
 
-### Credits ###
-    
-       - All Comet Developers
-       - Key
-       - Custom
-       - D0cks
-       - Dann
+# Network
+comet.network.host=0.0.0.0
+comet.network.port=2096          # TCP game port
+comet.websockets.enable=true
+comet.websockets.port=87         # WebSocket game port
 
+# REST API (disabled by default)
+comet.api.enabled=false
+comet.api.port=30003
+comet.api.token=changeme
+```
+
+Pluggable modules are declared in `config/modules.json`:
+
+```json
+{
+  "modules": [
+    {
+      "path": "modules/Comet-Game-Groups.jar",
+      "alias": "Comet.Game.Groups",
+      "config": {}
+    }
+  ]
+}
+```
+
+---
+
+## Running
+
+```bash
+java -jar Comet-Launcher/target/Comet-Launcher-*.jar
+```
+
+The server binds on the configured TCP and WebSocket ports. The REST API starts only when `comet.api.enabled=true`.
+
+---
+
+## Database Setup
+
+Import the base schema before first run:
+
+```bash
+mysql -u root -p pixel_comet < SQL.sql
+```
+
+---
+
+## Writing a Plugin Module
+
+1. Add `Comet-API` as a `provided` Maven dependency.
+2. Extend `com.cometproject.api.modules.BaseModule`.
+3. Register commands by implementing `com.cometproject.api.commands.ModuleChatCommand`.
+4. Subscribe to game events via the event system in `com.cometproject.api.events`.
+5. Package as a JAR and declare it in `config/modules.json`.
+
+All module code must follow the standards in [AGENTS.md](AGENTS.md).
+
+---
+
+## REST Management API
+
+When enabled, the API listens on `comet.api.port` and requires the `authToken` header set to `comet.api.token`.
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET`  | `/system/status` | Server metrics and online count |
+| `GET`  | `/system/reload/:type` | Reload rooms, items, permissions, etc. |
+| `GET`  | `/system/shutdown` | Graceful shutdown |
+| `GET`  | `/player/:id/reload` | Reload player data from DB |
+| `GET`  | `/player/:id/disconnect` | Force-disconnect a player |
+| `POST` | `/player/:id/alert` | Send an alert to a player |
+| `GET`  | `/player/:id/badge/:badge` | Award a badge to a player |
+| `GET`  | `/rooms/active/all` | List all active room instances |
+| `GET`  | `/room/:id/:action` | Room control (kick, empty, …) |
+
+---
+
+## Contributing
+
+See [AGENTS.md](AGENTS.md) for the full contribution standards. The short version:
+
+- Follow SOLID design principles.
+- Write complete Javadoc on every public type and member.
+- Compile with zero warnings (`mvn clean package -Werror`).
+- Match packet definitions to the Pixel Protocol spec.
+- Expose new functionality through `Comet-API` interfaces, not core internals.
+
+Open a pull request against `main`. Include a description of what changed and which protocol messages are affected.
+
+---
+
+## License
+
+See [LICENSE.txt](LICENSE.txt).

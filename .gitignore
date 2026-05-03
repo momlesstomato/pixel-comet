@@ -1,4 +1,6 @@
 *.zip
+.idea/
+.vscode/
 
 # Windows image file caches
 Thumbs.db
@@ -98,3 +100,5 @@ run.bat
 *.versionsBackup
 *.iml
 
+# AI Tools
+plan/
