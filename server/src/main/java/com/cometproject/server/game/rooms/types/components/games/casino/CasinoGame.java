@@ -14,8 +14,8 @@ import com.cometproject.server.network.messages.outgoing.notification.Notificati
 import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 import com.cometproject.server.network.messages.outgoing.user.purse.UpdateActivityPointsMessageComposer;
 import com.cometproject.server.storage.queries.catalog.BetDao;
-import com.cometproject.server.utilities.RandomUtil;
 import com.google.common.collect.Lists;
+
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;

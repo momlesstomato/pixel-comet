@@ -3,7 +3,6 @@ package com.cometproject.server.network.messages.incoming.crafting;
 import com.cometproject.api.game.furniture.types.FurnitureDefinition;
 import com.cometproject.api.game.players.IPlayer;
 import com.cometproject.api.game.players.data.components.inventory.PlayerItem;
-import com.cometproject.api.game.rooms.entities.PlayerRoomEntity;
 import com.cometproject.server.composers.catalog.UnseenItemsMessageComposer;
 import com.cometproject.server.game.items.ItemManager;
 import com.cometproject.server.game.items.crafting.CraftingMachine;

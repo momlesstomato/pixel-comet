@@ -10,8 +10,6 @@ import com.cometproject.server.game.navigator.NavigatorManager;
 import com.cometproject.server.game.navigator.types.publics.PublicRoom;
 import com.cometproject.server.game.rooms.RoomManager;
 
-import java.util.Arrays;
-
 
 public class RoomWriter {
     public static void write(IRoomData room, IComposer msg) {

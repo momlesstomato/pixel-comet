@@ -1,9 +1,14 @@
 /*    */ package com.cometproject.games.snowwar.gameevents;
 /*    */ 
-/*    */ import com.cometproject.games.snowwar.gameobjects.GameItemObject;
-/*    */ import com.cometproject.games.snowwar.gameobjects.HumanGameObject;
-/*    */ import com.cometproject.games.snowwar.gameobjects.SnowBallGameObject;
-/*    */ 
+/*    */
+
+import com.cometproject.games.snowwar.gameobjects.HumanGameObject;
+import com.cometproject.games.snowwar.gameobjects.SnowBallGameObject;
+
+/*    */
+/*    */
+
+/*    */
 /*    */ public class CreateSnowBall
 /*    */   extends Event {
 /*    */   public SnowBallGameObject ball;

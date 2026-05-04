@@ -5,7 +5,6 @@ import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.moderation.ModerationManager;
 import com.cometproject.server.game.rooms.types.misc.ChatEmotion;
 import com.cometproject.server.network.messages.outgoing.messenger.InstantChatMessageComposer;
-import com.cometproject.server.network.messages.outgoing.messenger.InviteFriendMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 

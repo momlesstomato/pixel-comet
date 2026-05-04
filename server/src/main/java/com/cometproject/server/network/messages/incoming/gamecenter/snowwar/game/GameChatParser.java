@@ -4,7 +4,6 @@ import com.cometproject.games.snowwar.SnowWarRoom;
 import com.cometproject.games.snowwar.data.SnowWarPlayerData;
 import com.cometproject.server.game.rooms.types.misc.ChatEmotion;
 import com.cometproject.server.network.messages.incoming.Event;
-import com.cometproject.server.network.messages.outgoing.gamecenter.snowwar.GameChatFromPlayerComposer;
 import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;

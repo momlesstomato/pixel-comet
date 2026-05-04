@@ -11,7 +11,6 @@ import com.cometproject.server.game.navigator.types.publics.PublicRoom;
 import com.cometproject.server.game.players.types.Player;
 import com.cometproject.server.game.rooms.RoomManager;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
-import com.cometproject.server.game.rooms.types.RoomPromotion;
 import com.cometproject.server.network.messages.outgoing.navigator.updated.NavigatorSearchResultSetMessageComposer;
 import com.cometproject.server.tasks.CometTask;
 import com.google.common.collect.Lists;

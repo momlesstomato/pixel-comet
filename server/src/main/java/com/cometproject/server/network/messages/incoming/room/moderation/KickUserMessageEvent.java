@@ -1,19 +1,15 @@
 package com.cometproject.server.network.messages.incoming.room.moderation;
 
-import com.cometproject.api.game.achievements.types.AchievementType;
 import com.cometproject.api.game.quests.QuestType;
 import com.cometproject.api.game.rooms.settings.RoomKickState;
 import com.cometproject.api.game.utilities.Position;
 import com.cometproject.server.config.Locale;
-import com.cometproject.server.game.rooms.RoomManager;
 import com.cometproject.server.game.rooms.objects.entities.effects.PlayerEffect;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.game.rooms.types.misc.ChatEmotion;
 import com.cometproject.server.network.messages.incoming.Event;
 import com.cometproject.server.network.messages.outgoing.notification.NotificationMessageComposer;
-import com.cometproject.server.network.messages.outgoing.room.avatar.ActionMessageComposer;
-import com.cometproject.server.network.messages.outgoing.room.avatar.ApplyEffectMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;

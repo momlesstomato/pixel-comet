@@ -1,9 +1,5 @@
 package com.cometproject.server.network.ws;
 
-import com.cometproject.api.utilities.JsonUtil;
-import com.cometproject.server.game.players.PlayerManager;
-import com.cometproject.server.network.NetworkManager;
-import com.cometproject.server.network.sessions.Session;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;

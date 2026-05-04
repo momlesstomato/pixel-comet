@@ -1,17 +1,12 @@
 package com.cometproject.server.game.commands.gimmicks;
 
-import com.cometproject.api.game.quests.QuestType;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.commands.ChatCommand;
 import com.cometproject.server.game.rooms.objects.entities.effects.PlayerEffect;
-import com.cometproject.server.game.rooms.objects.items.RoomItem;
-import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.utilities.RandomUtil;
 import com.cometproject.storage.api.data.rooms.RoomData;
-
-import java.util.ArrayList;
 
 public class SingCommand extends ChatCommand {
     @Override

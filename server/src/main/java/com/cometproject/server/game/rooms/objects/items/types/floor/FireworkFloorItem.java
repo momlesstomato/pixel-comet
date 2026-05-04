@@ -1,6 +1,5 @@
 package com.cometproject.server.game.rooms.objects.items.types.floor;
 
-import com.cometproject.api.game.achievements.types.AchievementType;
 import com.cometproject.api.game.rooms.objects.data.RoomItemData;
 import com.cometproject.server.game.rooms.objects.entities.RoomEntity;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;

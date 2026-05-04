@@ -3,7 +3,6 @@ package com.cometproject.server.storage.queries.config;
 import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.config.SurvivalSettings;
 import com.cometproject.api.game.rooms.filter.FilterMode;
-import com.cometproject.server.game.gamecenter.GameCenterInfo;
 import com.cometproject.server.storage.SqlHelper;
 
 import java.sql.Connection;
@@ -11,8 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.DayOfWeek;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class ConfigDao {

@@ -1,8 +1,10 @@
 package com.cometproject.server.storage.queries.achievements;
 
-import com.cometproject.api.game.achievements.types.*;
+import com.cometproject.api.game.achievements.types.AchievementCategory;
+import com.cometproject.api.game.achievements.types.AchievementType;
+import com.cometproject.api.game.achievements.types.IAchievementGroup;
+import com.cometproject.api.game.achievements.types.ITalentTrackLevel;
 import com.cometproject.server.game.achievements.AchievementGroup;
-import com.cometproject.server.game.achievements.AchievementManager;
 import com.cometproject.server.game.achievements.types.Achievement;
 import com.cometproject.server.game.achievements.types.TalentTrackLevel;
 import com.cometproject.server.storage.SqlHelper;

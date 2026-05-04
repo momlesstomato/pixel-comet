@@ -1,6 +1,5 @@
 package com.cometproject.server.network.messages.incoming.room.item.lovelock;
 
-import com.cometproject.api.game.quests.QuestType;
 import com.cometproject.server.game.items.ItemManager;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;

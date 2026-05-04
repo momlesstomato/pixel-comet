@@ -5,7 +5,6 @@ import com.cometproject.server.game.moderation.ModerationManager;
 import com.cometproject.server.network.messages.incoming.Event;
 import com.cometproject.server.network.messages.outgoing.messenger.InstantChatMessageComposer;
 import com.cometproject.server.network.messages.outgoing.moderation.ModToolMessageComposer;
-import com.cometproject.server.network.messages.outgoing.notification.NotificationMessageComposer;
 import com.cometproject.server.network.messages.outgoing.nuxs.EmailVerificationWindowMessageComposer;
 import com.cometproject.server.network.messages.outgoing.nuxs.SMSVerificationCompleteMessageComposer;
 import com.cometproject.server.network.sessions.Session;

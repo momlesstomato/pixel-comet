@@ -1,9 +1,7 @@
 package com.cometproject.server.game.players.components;
 
 import com.cometproject.api.game.players.data.components.PlayerPermissions;
-import com.cometproject.server.boot.Comet;
 import com.cometproject.server.game.permissions.PermissionsManager;
-import com.cometproject.server.game.permissions.types.CommandPermission;
 import com.cometproject.server.game.permissions.types.OverrideCommandPermission;
 import com.cometproject.server.game.permissions.types.Rank;
 import com.cometproject.server.game.players.types.Player;

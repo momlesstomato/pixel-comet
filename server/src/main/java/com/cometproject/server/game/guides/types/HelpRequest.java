@@ -2,7 +2,6 @@ package com.cometproject.server.game.guides.types;
 
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.sessions.Session;
-import com.cometproject.server.network.sessions.SessionManager;
 import com.google.common.collect.Sets;
 
 import java.util.Set;

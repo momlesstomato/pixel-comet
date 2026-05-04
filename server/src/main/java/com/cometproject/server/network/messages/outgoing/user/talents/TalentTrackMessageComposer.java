@@ -6,7 +6,6 @@ import com.cometproject.api.game.achievements.types.ITalentTrackLevel;
 import com.cometproject.api.game.players.data.components.achievements.IAchievementProgress;
 import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.server.game.achievements.AchievementManager;
-import com.cometproject.server.game.achievements.types.TalentTrackLevel;
 import com.cometproject.server.game.players.components.AchievementComponent;
 import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;

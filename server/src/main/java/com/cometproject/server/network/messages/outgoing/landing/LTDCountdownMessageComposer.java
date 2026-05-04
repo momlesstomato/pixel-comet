@@ -1,7 +1,6 @@
 package com.cometproject.server.network.messages.outgoing.landing;
 
 import com.cometproject.api.networking.messages.IComposer;
-import com.cometproject.api.networking.sessions.ISession;
 import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 

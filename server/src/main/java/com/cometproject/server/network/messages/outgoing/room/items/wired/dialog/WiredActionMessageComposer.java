@@ -2,7 +2,6 @@ package com.cometproject.server.network.messages.outgoing.room.items.wired.dialo
 
 import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.server.game.items.ItemManager;
-import com.cometproject.server.game.rooms.objects.items.types.floor.wired.WiredUtil;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.actions.WiredActionChase;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.actions.WiredActionHandleOres;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.base.WiredActionItem;

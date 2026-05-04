@@ -3,7 +3,6 @@ package com.cometproject.server.network.messages.incoming.catalog;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.catalog.CatalogManager;
 import com.cometproject.server.network.messages.incoming.Event;
-import com.cometproject.server.network.messages.outgoing.notification.NotificationMessageComposer;
 import com.cometproject.server.network.messages.outgoing.notification.PurchaseErrorMessageComposer;
 import com.cometproject.server.network.messages.outgoing.nuxs.EmailVerificationWindowMessageComposer;
 import com.cometproject.server.network.sessions.Session;

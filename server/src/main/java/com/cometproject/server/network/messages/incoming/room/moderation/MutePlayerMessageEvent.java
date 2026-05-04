@@ -13,8 +13,6 @@ import com.cometproject.server.network.messages.outgoing.notification.Notificati
 import com.cometproject.server.network.messages.outgoing.room.alerts.ConfirmableAlertMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessageComposer;
 import com.cometproject.server.network.sessions.Session;
-import com.cometproject.server.network.websockets.WebSocketSessionManager;
-import com.cometproject.server.network.websockets.packets.outgoing.alerts.InteractivNotificationWebPacket;
 import com.cometproject.server.protocol.messages.MessageEvent;
 
 public class MutePlayerMessageEvent implements Event {

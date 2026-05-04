@@ -1,6 +1,5 @@
 package com.cometproject.api.game.players;
 
-import com.cometproject.api.game.groups.types.IGroup;
 import com.cometproject.api.game.players.data.IPlayerData;
 import com.cometproject.api.game.players.data.IPlayerSettings;
 import com.cometproject.api.game.players.data.IPlayerStatistics;

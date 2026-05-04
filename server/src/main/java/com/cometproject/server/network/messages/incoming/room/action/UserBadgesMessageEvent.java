@@ -1,14 +1,7 @@
 package com.cometproject.server.network.messages.incoming.room.action;
 
-import com.cometproject.server.config.Locale;
-import com.cometproject.server.game.navigator.NavigatorManager;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
-import com.cometproject.server.game.rooms.types.components.games.RoomGame;
-import com.cometproject.server.game.rooms.types.components.games.survival.SurvivalGame;
-import com.cometproject.server.game.rooms.types.components.games.survival.types.SurvivalPlayer;
-import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.incoming.Event;
-import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 import com.cometproject.server.network.messages.outgoing.user.profile.UserBadgesMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;

@@ -1,8 +1,6 @@
 package com.cometproject.server.network.messages.incoming.room.action;
 
 import com.cometproject.api.game.rooms.entities.RoomEntityStatus;
-import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
-import com.cometproject.server.game.rooms.objects.items.types.floor.VoteCounterFloorItem;
 import com.cometproject.server.network.messages.incoming.Event;
 import com.cometproject.server.network.messages.outgoing.room.permissions.FloodFilterMessageComposer;
 import com.cometproject.server.network.sessions.Session;

@@ -2,7 +2,6 @@ package com.cometproject.server.network.messages.incoming.user.profile;
 
 import com.cometproject.api.game.players.data.components.messenger.IMessengerFriend;
 import com.cometproject.api.game.players.data.components.messenger.RelationshipLevel;
-import com.cometproject.api.game.quests.QuestType;
 import com.cometproject.server.game.players.components.RelationshipComponent;
 import com.cometproject.server.network.messages.incoming.Event;
 import com.cometproject.server.network.messages.outgoing.messenger.UpdateFriendStateMessageComposer;

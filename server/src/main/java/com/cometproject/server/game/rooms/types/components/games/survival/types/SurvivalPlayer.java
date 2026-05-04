@@ -1,11 +1,12 @@
 package com.cometproject.server.game.rooms.types.components.games.survival.types;
+
 import com.cometproject.api.config.SurvivalSettings;
 import com.cometproject.api.game.achievements.types.AchievementType;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.rooms.objects.entities.effects.PlayerEffect;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.network.messages.outgoing.notification.MassEventMessageComposer;
-import com.cometproject.server.network.messages.outgoing.room.avatar.*;
+import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.freeze.UpdateFreezeLivesMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.google.common.collect.Lists;

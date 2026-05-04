@@ -3,11 +3,8 @@ package com.cometproject.server.game.rooms.objects.items.types.floor.wired.condi
 import com.cometproject.api.game.rooms.objects.data.RoomItemData;
 import com.cometproject.server.boot.Comet;
 import com.cometproject.server.game.rooms.objects.entities.RoomEntity;
-import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.base.WiredConditionItem;
 import com.cometproject.server.game.rooms.types.Room;
-
-import java.util.Date;
 
 public class WiredConditionDateRange extends WiredConditionItem {
     public WiredConditionDateRange(RoomItemData itemData, Room room) {

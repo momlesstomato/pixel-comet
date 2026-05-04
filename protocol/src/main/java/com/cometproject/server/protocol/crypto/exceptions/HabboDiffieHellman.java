@@ -1,11 +1,11 @@
 package com.cometproject.server.protocol.crypto.exceptions;
 
+import com.cometproject.server.protocol.crypto.exceptions.utils.BigIntegerUtils;
+import com.cometproject.server.protocol.crypto.exceptions.utils.HexUtils;
+
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ThreadLocalRandom;
-
-import com.cometproject.server.protocol.crypto.exceptions.utils.BigIntegerUtils;
-import com.cometproject.server.protocol.crypto.exceptions.utils.HexUtils;
 
 public class HabboDiffieHellman {
 

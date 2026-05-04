@@ -5,8 +5,6 @@ import com.cometproject.server.game.commands.ChatCommand;
 import com.cometproject.server.network.messages.outgoing.notification.MotdNotificationMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 
-import java.util.Arrays;
-
 public class SuperWiredCommand extends ChatCommand {
     @Override
     public void execute(Session client, String[] params) {

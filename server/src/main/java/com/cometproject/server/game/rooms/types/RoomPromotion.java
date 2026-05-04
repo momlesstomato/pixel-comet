@@ -1,7 +1,6 @@
 package com.cometproject.server.game.rooms.types;
 
 import com.cometproject.server.boot.Comet;
-import com.cometproject.server.game.players.components.SubscriptionComponent;
 
 
 public class RoomPromotion {

@@ -2,11 +2,13 @@ package com.cometproject.server.network.messages.incoming.navigator.updated;
 
 import com.cometproject.server.network.messages.incoming.Event;
 import com.cometproject.server.network.messages.incoming.sockets.minigames.MinigameHandler;
-import com.cometproject.server.network.messages.incoming.sockets.player.*;
+import com.cometproject.server.network.messages.incoming.sockets.player.BuildHandler;
+import com.cometproject.server.network.messages.incoming.sockets.player.MovementHandler;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;
 import com.google.gson.JsonObject;
 import org.apache.commons.codec.binary.Base64;
+
 import java.util.regex.Pattern;
 
 public class HabbletMessageEvent implements Event {

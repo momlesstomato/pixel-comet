@@ -6,10 +6,10 @@ import com.cometproject.server.game.items.ItemManager;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
 import com.cometproject.server.game.rooms.types.misc.ChatEmotion;
-import org.apache.commons.lang.StringUtils;
 import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.queries.rooms.FurniFixDao;
+import org.apache.commons.lang.StringUtils;
 
 public class FurniFixCommand extends ChatCommand {
 

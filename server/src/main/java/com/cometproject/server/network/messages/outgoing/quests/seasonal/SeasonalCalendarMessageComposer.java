@@ -1,11 +1,6 @@
 package com.cometproject.server.network.messages.outgoing.quests.seasonal;
 
-import com.cometproject.api.game.players.IPlayer;
-import com.cometproject.api.game.quests.IQuest;
-import com.cometproject.api.game.quests.QuestReward;
 import com.cometproject.api.networking.messages.IComposer;
-import com.cometproject.server.boot.Comet;
-import com.cometproject.server.game.quests.QuestManager;
 import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 

@@ -2,7 +2,6 @@ package com.cometproject.server.storage.queries.pets;
 
 import com.cometproject.api.game.pets.IPetData;
 import com.cometproject.api.game.pets.IPetStats;
-import com.cometproject.api.game.utilities.Position;
 import com.cometproject.server.boot.Comet;
 import com.cometproject.server.game.pets.data.*;
 import com.cometproject.server.game.pets.races.PetBreedLevel;

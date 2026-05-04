@@ -2,7 +2,6 @@ package com.cometproject.server.network.messages.incoming.room.trading;
 
 import com.cometproject.api.game.rooms.entities.RoomEntityStatus;
 import com.cometproject.api.game.rooms.settings.RoomTradeState;
-import com.cometproject.server.boot.Comet;
 import com.cometproject.server.game.moderation.BanManager;
 import com.cometproject.server.game.moderation.types.BanType;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
@@ -11,7 +10,6 @@ import com.cometproject.server.network.messages.incoming.Event;
 import com.cometproject.server.network.messages.outgoing.room.trading.TradeErrorMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;
-import com.cometproject.server.storage.queries.player.PlayerDao;
 
 
 public class BeginTradeMessageEvent implements Event {

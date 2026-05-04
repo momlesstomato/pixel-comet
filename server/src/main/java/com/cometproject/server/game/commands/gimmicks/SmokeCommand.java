@@ -3,17 +3,12 @@ package com.cometproject.server.game.commands.gimmicks;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.commands.ChatCommand;
 import com.cometproject.server.game.rooms.objects.entities.effects.PlayerEffect;
-import com.cometproject.server.game.rooms.types.misc.ChatEmotion;
-import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 import com.cometproject.server.network.sessions.Session;
-import com.cometproject.server.tasks.CometThreadManager;
-import com.cometproject.server.utilities.RandomUtil;
 import com.cometproject.storage.api.data.rooms.RoomData;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 public class SmokeCommand extends ChatCommand {
     @Override

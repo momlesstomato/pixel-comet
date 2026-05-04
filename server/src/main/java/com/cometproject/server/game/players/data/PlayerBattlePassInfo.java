@@ -1,11 +1,9 @@
 package com.cometproject.server.game.players.data;
 
-import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.game.players.data.components.inventory.PlayerItem;
 import com.cometproject.server.composers.catalog.UnseenItemsMessageComposer;
 import com.cometproject.server.game.achievements.BattlePassGlobals;
 import com.cometproject.server.game.achievements.types.BattlePassMission;
-import com.cometproject.server.game.achievements.types.BattlePassMissionEnums;
 import com.cometproject.server.game.achievements.types.BattlePassRewardEnum;
 import com.cometproject.server.game.items.ItemManager;
 import com.cometproject.server.game.players.components.types.inventory.InventoryItem;
@@ -13,7 +11,6 @@ import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.notification.NotificationMessageComposer;
 import com.cometproject.server.network.messages.outgoing.user.inventory.UpdateInventoryMessageComposer;
 import com.cometproject.server.network.sessions.Session;
-import com.cometproject.server.network.websockets.WebSocketSessionManager;
 import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;

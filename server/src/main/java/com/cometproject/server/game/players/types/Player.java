@@ -1,20 +1,11 @@
 package com.cometproject.server.game.players.types;
 
 import com.cometproject.api.config.CometSettings;
-import com.cometproject.api.game.GameContext;
-import com.cometproject.api.game.bots.IBotData;
-import com.cometproject.api.game.groups.types.IGroup;
-import com.cometproject.api.game.pets.IPetData;
 import com.cometproject.api.game.players.IPlayer;
-import com.cometproject.api.game.players.data.PlayerAvatar;
 import com.cometproject.api.game.players.data.components.PlayerInventory;
-import com.cometproject.api.game.players.data.components.inventory.PlayerItem;
-import com.cometproject.api.game.players.data.components.messenger.IMessengerFriend;
-import com.cometproject.api.game.players.data.components.messenger.RelationshipLevel;
 import com.cometproject.api.game.quests.IQuest;
 import com.cometproject.api.game.quests.QuestType;
 import com.cometproject.api.networking.sessions.ISession;
-import com.cometproject.api.utilities.JsonUtil;
 import com.cometproject.server.boot.Comet;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.guides.GuideManager;
@@ -22,7 +13,6 @@ import com.cometproject.server.game.guides.types.HelpRequest;
 import com.cometproject.server.game.guides.types.HelperSession;
 import com.cometproject.server.game.items.crafting.CraftingMachine;
 import com.cometproject.server.game.landing.LandingManager;
-import com.cometproject.server.game.observers.PlayerObserver;
 import com.cometproject.server.game.players.PlayerManager;
 import com.cometproject.server.game.players.components.*;
 import com.cometproject.server.game.players.data.PlayerData;
@@ -46,8 +36,6 @@ import com.cometproject.server.network.messages.outgoing.user.purse.CurrenciesMe
 import com.cometproject.server.network.messages.outgoing.user.purse.SendCreditsMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageComposer;
-import com.cometproject.server.storage.cache.CacheManager;
-import com.cometproject.server.storage.cache.objects.items.PlayerItemDataObject;
 import com.cometproject.server.storage.queries.catalog.CatalogDao;
 import com.cometproject.server.storage.queries.landing.LandingDao;
 import com.cometproject.server.storage.queries.permissions.PermissionsDao;
@@ -55,8 +43,6 @@ import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.cometproject.server.utilities.collections.ConcurrentHashSet;
 import com.cometproject.storage.api.StorageContext;
 import com.google.common.collect.Sets;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -1,13 +1,6 @@
 package com.cometproject.games.snowwar.gameobjects;
 
-import com.cometproject.games.snowwar.Direction360;
-import com.cometproject.games.snowwar.Direction8;
-import com.cometproject.games.snowwar.MathUtil;
-import com.cometproject.games.snowwar.PlayerTile;
-import com.cometproject.games.snowwar.SnowWarRoom;
-import com.cometproject.games.snowwar.SquareRoot;
-import com.cometproject.games.snowwar.SynchronizedGameStage;
-import com.cometproject.games.snowwar.Tile;
+import com.cometproject.games.snowwar.*;
 
 public class SnowBallGameObject extends GameItemObject {
     private static int _4s = 0;

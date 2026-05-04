@@ -5,7 +5,6 @@ import com.cometproject.api.game.catalog.types.ICatalogItem;
 import com.cometproject.api.game.catalog.types.ICatalogPage;
 import com.cometproject.api.game.rooms.IRoomData;
 import com.cometproject.api.game.rooms.settings.RoomAccessType;
-import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.server.boot.Comet;
 import com.cometproject.server.composers.catalog.BoughtItemMessageComposer;
 import com.cometproject.server.config.Locale;

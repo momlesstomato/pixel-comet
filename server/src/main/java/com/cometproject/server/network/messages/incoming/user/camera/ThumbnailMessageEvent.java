@@ -11,13 +11,14 @@ import com.cometproject.server.protocol.messages.MessageEvent;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.Unpooled;
+
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
-import javax.imageio.ImageIO;
 
 public class ThumbnailMessageEvent implements Event {
     @Override

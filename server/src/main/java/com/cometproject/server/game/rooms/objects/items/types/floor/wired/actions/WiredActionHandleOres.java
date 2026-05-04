@@ -4,7 +4,6 @@ import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.game.furniture.types.FurnitureDefinition;
 import com.cometproject.api.game.players.data.components.inventory.PlayerItem;
 import com.cometproject.api.game.rooms.objects.data.RoomItemData;
-import com.cometproject.server.composers.catalog.UnseenItemsMessageComposer;
 import com.cometproject.server.game.items.ItemManager;
 import com.cometproject.server.game.players.components.types.inventory.InventoryItem;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
@@ -12,10 +11,8 @@ import com.cometproject.server.game.rooms.objects.items.types.floor.wired.WiredU
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.base.WiredActionItem;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.events.WiredItemEvent;
 import com.cometproject.server.game.rooms.types.Room;
-import com.cometproject.server.network.messages.outgoing.user.inventory.UpdateInventoryMessageComposer;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
-import com.google.common.collect.Sets;
 
 
 public class WiredActionHandleOres extends WiredActionItem {

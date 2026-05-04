@@ -6,7 +6,6 @@ import com.cometproject.games.snowwar.SnowWarRoom;
 import com.cometproject.server.network.messages.outgoing.gamecenter.snowwar.parse.SerializeGame2GameResult;
 import com.cometproject.server.network.messages.outgoing.gamecenter.snowwar.parse.SerializeGame2SnowWarGameStats;
 import com.cometproject.server.network.messages.outgoing.gamecenter.snowwar.parse.SerializeGame2TeamScoreData;
-import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
 public class GameEndingComposer extends MessageComposer {

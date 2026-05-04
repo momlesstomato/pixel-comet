@@ -5,7 +5,6 @@ import com.cometproject.api.game.groups.types.IGroup;
 import com.cometproject.server.composers.catalog.groups.GroupElementsMessageComposer;
 import com.cometproject.server.composers.group.ManageGroupMessageComposer;
 import com.cometproject.server.network.messages.incoming.Event;
-import com.cometproject.server.network.messages.outgoing.user.club.ClubStatusMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;
 

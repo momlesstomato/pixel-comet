@@ -1,7 +1,5 @@
 package com.cometproject.server.game.commands.gimmicks;
 
-import com.cometproject.api.game.quests.QuestType;
-import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.commands.ChatCommand;
 import com.cometproject.server.game.rooms.objects.entities.effects.PlayerEffect;

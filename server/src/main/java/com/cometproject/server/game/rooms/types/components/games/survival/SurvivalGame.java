@@ -18,11 +18,13 @@ import com.cometproject.server.game.rooms.types.components.games.survival.types.
 import com.cometproject.server.game.rooms.types.misc.ChatEmotion;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.notification.MassEventMessageComposer;
-import com.cometproject.server.network.messages.outgoing.room.avatar.*;
+import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessageComposer;
+import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.freeze.UpdateFreezeLivesMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.permissions.YouArePlayingGameMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.google.common.collect.Maps;
+
 import java.util.Map;
 
 public class SurvivalGame extends RoomGame {

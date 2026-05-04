@@ -2,14 +2,17 @@ package com.cometproject.server.network.websockets;
 
 import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.utilities.JsonUtil;
-import com.cometproject.server.network.websockets.packets.incoming.*;
+import com.cometproject.server.network.websockets.packets.incoming.IWebSocketHandler;
 import com.cometproject.server.network.websockets.packets.incoming.battleroyale.AsyncMovementHandler;
 import com.cometproject.server.network.websockets.packets.incoming.battleroyale.BattleRoyaleLeaveQueueHandler;
 import com.cometproject.server.network.websockets.packets.incoming.battleroyale.BattleRoyaleWeaponSwapHandler;
 import com.cometproject.server.network.websockets.packets.incoming.minigames.AcceptDuelSuggestionHandler;
 import com.cometproject.server.network.websockets.packets.incoming.minigames.AcceptMinigameSuggestionHandler;
 import com.cometproject.server.network.websockets.packets.incoming.minigames.VisitEventHandler;
-import com.cometproject.server.network.websockets.packets.incoming.player.*;
+import com.cometproject.server.network.websockets.packets.incoming.player.AuthenticationHandler;
+import com.cometproject.server.network.websockets.packets.incoming.player.BuilderSyncHandler;
+import com.cometproject.server.network.websockets.packets.incoming.player.CallForHelpHandler;
+import com.cometproject.server.network.websockets.packets.incoming.player.MacroHandler;
 import com.cometproject.server.network.websockets.packets.incoming.system.SubscriptionRevisionHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -17,7 +20,6 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.websocketx.*;
-
 
 import java.util.HashMap;
 import java.util.Map;

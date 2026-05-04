@@ -1,17 +1,11 @@
 package com.cometproject.server.game.rooms.objects.items.types.floor;
 
 import com.cometproject.api.game.rooms.objects.data.RoomItemData;
-import com.cometproject.server.game.items.ItemManager;
-import com.cometproject.server.game.items.crafting.CraftingMachine;
 import com.cometproject.server.game.players.types.Player;
 import com.cometproject.server.game.rooms.objects.entities.RoomEntity;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
 import com.cometproject.server.game.rooms.types.Room;
-import com.cometproject.server.network.NetworkManager;
-import com.cometproject.server.network.messages.outgoing.crafting.CraftableProductsMessageComposer;
-import com.cometproject.server.network.messages.outgoing.notification.AlertMessageComposer;
-import com.cometproject.server.network.messages.outgoing.notification.MassEventMessageComposer;
 import com.cometproject.server.network.messages.outgoing.rentables.RentableDataMessageComposer;
 import com.cometproject.server.storage.queries.items.ItemDao;
 import com.cometproject.server.storage.queries.player.PlayerDao;

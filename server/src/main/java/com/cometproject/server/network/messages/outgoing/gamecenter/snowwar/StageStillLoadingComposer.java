@@ -1,11 +1,17 @@
 /*    */ package com.cometproject.server.network.messages.outgoing.gamecenter.snowwar;
 /*    */ 
-/*    */ import com.cometproject.api.networking.messages.IComposer;
-/*    */ import com.cometproject.games.snowwar.gameobjects.HumanGameObject;
-import com.cometproject.server.protocol.headers.Composers;
+/*    */
+
+import com.cometproject.api.networking.messages.IComposer;
+import com.cometproject.games.snowwar.gameobjects.HumanGameObject;
 import com.cometproject.server.protocol.messages.MessageComposer;
-/*    */ import java.util.Collection;
-/*    */ 
+
+import java.util.Collection;
+
+/*    */
+/*    */
+
+/*    */
 /*    */ 
 /*    */ 
 /*    */ 

@@ -1,7 +1,6 @@
 package com.cometproject.server.network.messages.incoming.catalog;
 
 import com.cometproject.api.game.achievements.types.AchievementType;
-import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.network.messages.incoming.Event;
 import com.cometproject.server.network.messages.outgoing.notification.AlertMessageComposer;

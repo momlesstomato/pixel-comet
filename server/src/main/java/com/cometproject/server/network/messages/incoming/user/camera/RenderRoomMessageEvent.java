@@ -9,13 +9,14 @@ import com.cometproject.server.protocol.messages.MessageEvent;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.Unpooled;
+
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import javax.imageio.ImageIO;
 
 public class RenderRoomMessageEvent implements Event {
     private static final byte[] signature = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10};

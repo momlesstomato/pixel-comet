@@ -1,17 +1,9 @@
 package com.cometproject.server.game.commands.user;
 
-import com.cometproject.api.config.CometSettings;
-import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.api.networking.sessions.ISession;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.commands.ChatCommand;
-import com.cometproject.server.game.moderation.ModerationManager;
-import com.cometproject.server.game.rooms.types.misc.ChatEmotion;
 import com.cometproject.server.network.NetworkManager;
-import com.cometproject.server.network.messages.outgoing.landing.TargettedOfferMessageComposer;
-import com.cometproject.server.network.messages.outgoing.messenger.InstantChatMessageComposer;
-import com.cometproject.server.network.messages.outgoing.notification.AdvancedAlertMessageComposer;
-import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 
 public class StaffOnCommand extends ChatCommand {

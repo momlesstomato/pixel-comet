@@ -1,10 +1,11 @@
 package com.cometproject.games.snowwar;
-import com.cometproject.api.config.CometSettings;
+
 import com.cometproject.games.snowwar.gameobjects.GameItemObject;
 import com.cometproject.games.snowwar.gameobjects.PileGameObject;
 import com.cometproject.games.snowwar.gameobjects.TreeGameObject;
 import com.cometproject.games.snowwar.items.BaseItem;
 import com.cometproject.games.snowwar.items.MapStuffData;
+
 import java.util.Map;
 
 public class SnowWarArena11 extends SnowWarArenaBase {

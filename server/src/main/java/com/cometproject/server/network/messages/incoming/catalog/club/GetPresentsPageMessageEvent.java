@@ -1,6 +1,5 @@
 package com.cometproject.server.network.messages.incoming.catalog.club;
 
-import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.server.game.catalog.CatalogManager;
 import com.cometproject.server.network.messages.incoming.Event;
 import com.cometproject.server.network.messages.outgoing.user.club.CatalogGiftsPageMessageComposer;

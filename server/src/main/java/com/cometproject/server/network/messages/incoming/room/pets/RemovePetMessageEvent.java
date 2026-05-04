@@ -2,7 +2,6 @@ package com.cometproject.server.network.messages.incoming.room.pets;
 
 import com.cometproject.api.game.pets.IPetData;
 import com.cometproject.api.game.rooms.settings.RoomKickState;
-import com.cometproject.api.networking.sessions.ISession;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.pets.data.PetMonsterPlantData;
 import com.cometproject.server.game.rooms.objects.entities.types.MonsterPlantEntity;
@@ -11,7 +10,6 @@ import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.incoming.Event;
-import com.cometproject.server.network.messages.outgoing.notification.AlertMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 import com.cometproject.server.network.messages.outgoing.user.inventory.PetInventoryMessageComposer;
 import com.cometproject.server.network.sessions.Session;

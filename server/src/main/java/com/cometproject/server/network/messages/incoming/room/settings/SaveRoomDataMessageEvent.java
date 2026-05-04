@@ -22,8 +22,6 @@ import com.cometproject.server.network.messages.outgoing.room.settings.SettingsU
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;
 
-import java.util.Arrays;
-
 
 public class SaveRoomDataMessageEvent implements Event {
     public void handle(Session client, MessageEvent msg) {

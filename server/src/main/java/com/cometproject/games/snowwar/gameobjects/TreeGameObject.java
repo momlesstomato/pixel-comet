@@ -1,12 +1,16 @@
 /*     */ package com.cometproject.games.snowwar.gameobjects;
 /*     */ 
-/*     */ import com.cometproject.games.snowwar.Direction360;
-/*     */ import com.cometproject.games.snowwar.Direction8;
-/*     */ import com.cometproject.games.snowwar.PlayerTile;
-/*     */ import com.cometproject.games.snowwar.SnowWarGameStage;
-/*     */ import com.cometproject.games.snowwar.SnowWarRoom;
-/*     */ import com.cometproject.games.snowwar.Tile;
-/*     */ 
+/*     */
+
+import com.cometproject.games.snowwar.*;
+
+/*     */
+/*     */
+/*     */
+/*     */
+/*     */
+
+/*     */
 /*     */ 
 /*     */ public class TreeGameObject
 /*     */   extends GameItemObject

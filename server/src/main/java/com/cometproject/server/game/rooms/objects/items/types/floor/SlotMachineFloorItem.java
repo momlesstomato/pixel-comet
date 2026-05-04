@@ -16,8 +16,6 @@ import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMess
 import com.cometproject.server.storage.queries.catalog.BetDao;
 import com.cometproject.server.utilities.RandomUtil;
 
-import java.util.Random;
-
 
 public class SlotMachineFloorItem extends RoomItemFloor {
     private boolean isInUse = false;

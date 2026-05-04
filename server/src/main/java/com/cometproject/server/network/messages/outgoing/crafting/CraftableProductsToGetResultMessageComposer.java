@@ -4,9 +4,12 @@ import com.cometproject.api.game.furniture.types.FurnitureDefinition;
 import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.server.game.items.ItemManager;
 import com.cometproject.server.game.items.crafting.CraftingRecipe;
-import com.cometproject.server.protocol.messages.MessageComposer;
 import com.cometproject.server.protocol.headers.Composers;
-import java.util.*;
+import com.cometproject.server.protocol.messages.MessageComposer;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CraftableProductsToGetResultMessageComposer extends MessageComposer {
     private final CraftingRecipe recipe;

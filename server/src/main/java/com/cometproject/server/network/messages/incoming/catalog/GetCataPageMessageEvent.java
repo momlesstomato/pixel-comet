@@ -1,8 +1,5 @@
 package com.cometproject.server.network.messages.incoming.catalog;
 
-import com.cometproject.api.game.catalog.ICatalogService;
-import com.cometproject.api.game.players.IPlayer;
-import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.server.composers.catalog.CatalogPageMessageComposer;
 import com.cometproject.server.game.catalog.CatalogManager;
 import com.cometproject.server.network.messages.incoming.Event;

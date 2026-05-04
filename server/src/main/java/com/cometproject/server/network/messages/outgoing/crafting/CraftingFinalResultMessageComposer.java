@@ -2,8 +2,8 @@ package com.cometproject.server.network.messages.outgoing.crafting;
 
 import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.server.game.items.crafting.CraftingRecipe;
-import com.cometproject.server.protocol.messages.MessageComposer;
 import com.cometproject.server.protocol.headers.Composers;
+import com.cometproject.server.protocol.messages.MessageComposer;
 
 public class CraftingFinalResultMessageComposer extends MessageComposer {
     private final boolean achieved;

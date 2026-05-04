@@ -8,7 +8,6 @@ import com.cometproject.server.game.pets.commands.PetCommandManager;
 import com.cometproject.server.game.pets.data.PetMessageType;
 import com.cometproject.server.game.pets.data.PetSpeech;
 import com.cometproject.server.game.pets.races.PetType;
-import com.cometproject.server.game.pets.races.plants.PetMonsterPlant;
 import com.cometproject.server.game.players.PlayerManager;
 import com.cometproject.server.game.rooms.objects.entities.RoomEntity;
 import com.cometproject.server.game.rooms.objects.entities.types.MonsterPlantEntity;
@@ -23,7 +22,6 @@ import com.cometproject.server.game.rooms.objects.items.types.floor.pet.breeding
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.WiredUtil;
 import com.cometproject.server.game.rooms.types.mapping.RoomTile;
 import com.cometproject.server.game.rooms.types.misc.ChatEmotion;
-import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.pets.AddExperiencePointsMessageComposer;
 import com.cometproject.server.utilities.RandomUtil;
 

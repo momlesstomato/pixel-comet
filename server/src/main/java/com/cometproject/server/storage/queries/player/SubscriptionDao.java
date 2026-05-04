@@ -1,22 +1,12 @@
 package com.cometproject.server.storage.queries.player;
 
 import com.cometproject.server.boot.Comet;
-import com.cometproject.server.game.players.components.SubscriptionComponent;
-import com.cometproject.server.game.players.components.types.messenger.MessengerFriend;
-import com.cometproject.server.game.players.types.Player;
-import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.storage.SqlHelper;
-import com.google.common.collect.Lists;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 public class SubscriptionDao {

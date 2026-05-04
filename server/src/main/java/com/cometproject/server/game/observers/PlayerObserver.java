@@ -1,7 +1,5 @@
 package com.cometproject.server.game.observers;
 
-import com.cometproject.server.game.players.types.Player;
-
 import java.util.Observable;
 import java.util.Observer;
 

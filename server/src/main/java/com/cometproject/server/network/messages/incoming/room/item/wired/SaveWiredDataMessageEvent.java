@@ -13,7 +13,6 @@ import com.cometproject.server.game.rooms.objects.items.types.floor.wired.action
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.actions.WiredActionHandleOres;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.actions.WiredActionMatchToSnapshot;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.base.WiredActionItem;
-import com.cometproject.server.game.rooms.objects.items.types.floor.wired.conditions.negative.WiredNegativeConditionTriggererOnFurniStaff;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.conditions.positive.WiredConditionMatchSnapshot;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.conditions.positive.WiredConditionTriggererOnFurniStaff;
 import com.cometproject.server.game.rooms.types.Room;

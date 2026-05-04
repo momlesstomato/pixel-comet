@@ -5,8 +5,6 @@ import com.cometproject.server.game.players.types.MisteryComponent;
 import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
-import java.util.List;
-
 public class MisteryBoxDataMessageComposer extends MessageComposer {
 
     private final MisteryComponent mistery;

@@ -2,7 +2,6 @@ package com.cometproject.server.game.rooms.objects.items.types.floor.survival;
 
 import com.cometproject.api.game.achievements.types.AchievementType;
 import com.cometproject.api.game.rooms.objects.data.RoomItemData;
-import com.cometproject.server.game.players.types.Player;
 import com.cometproject.server.game.rooms.objects.entities.RoomEntity;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFactory;
@@ -11,10 +10,8 @@ import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.game.rooms.types.components.games.RoomGame;
 import com.cometproject.server.game.rooms.types.components.games.survival.SurvivalGame;
 import com.cometproject.server.game.rooms.types.components.games.survival.types.SurvivalPlayer;
-import com.cometproject.server.game.rooms.types.components.games.survival.types.SurvivalPowerUp;
 import com.cometproject.server.network.websockets.WebSocketSessionManager;
 import com.cometproject.server.network.websockets.packets.outgoing.SurvivalSoundEffectWebPacket;
-import com.cometproject.server.utilities.RandomUtil;
 
 public class MunitionBoxFloorItem extends RoomItemFloor {
 

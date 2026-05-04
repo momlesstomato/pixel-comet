@@ -1,12 +1,17 @@
 /*    */ package com.cometproject.games.snowwar.gameobjects;
 /*    */ 
-/*    */ import com.cometproject.games.snowwar.Direction8;
-/*    */ import com.cometproject.games.snowwar.SnowWarGameStage;
-/*    */ import com.cometproject.games.snowwar.SnowWarRoom;
-/*    */ import com.cometproject.games.snowwar.SynchronizedGameStage;
-/*    */ import com.cometproject.games.snowwar.Tile;
-/*    */ import com.cometproject.games.snowwar.gameevents.AddBallToMachine;
-/*    */ 
+/*    */
+
+import com.cometproject.games.snowwar.*;
+import com.cometproject.games.snowwar.gameevents.AddBallToMachine;
+
+/*    */
+/*    */
+/*    */
+/*    */
+/*    */
+
+/*    */
 /*    */ 
 /*    */ public class MachineGameObject
 /*    */   extends PickBallsGameItemObject

@@ -5,7 +5,6 @@ import com.cometproject.api.game.catalog.types.vouchers.VoucherStatus;
 import com.cometproject.api.game.furniture.IFurnitureService;
 import com.cometproject.api.game.furniture.types.FurnitureDefinition;
 import com.cometproject.api.game.players.data.components.inventory.PlayerItem;
-import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.api.networking.sessions.ISession;
 import com.cometproject.server.composers.catalog.UnseenItemsMessageComposer;
 import com.cometproject.server.config.Locale;
@@ -26,9 +25,10 @@ import com.cometproject.server.storage.queries.items.ItemDao;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
 import com.google.common.collect.Sets;
+import org.apache.commons.lang.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Set;
-import org.apache.commons.lang.StringUtils;
 
 public class RedeemVoucherMessageEvent
 implements Event {

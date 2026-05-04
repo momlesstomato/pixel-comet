@@ -1,16 +1,10 @@
 package com.cometproject.server.game.commands.user;
 
-import com.cometproject.api.game.quests.QuestType;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.commands.ChatCommand;
-import com.cometproject.server.game.players.data.PlayerData;
-import com.cometproject.server.game.rooms.objects.entities.effects.PlayerEffect;
-import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.queries.items.ItemDao;
-import com.cometproject.server.storage.queries.player.PlayerDao;
-import com.cometproject.storage.api.data.rooms.RoomData;
 
 public class SearchCommand extends ChatCommand {
     @Override

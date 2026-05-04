@@ -1,7 +1,6 @@
 package com.cometproject.server.network.messages.incoming.catalog.data;
 
 import com.cometproject.api.game.catalog.ICatalogService;
-import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.server.composers.catalog.data.CatalogOfferConfigMessageComposer;
 import com.cometproject.server.composers.catalog.data.GiftWrappingConfigurationMessageComposer;
 import com.cometproject.server.game.catalog.CatalogManager;

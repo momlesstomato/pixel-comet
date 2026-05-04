@@ -104,7 +104,8 @@ import com.cometproject.server.network.messages.incoming.user.citizenship.OpenTa
 import com.cometproject.server.network.messages.incoming.user.club.ClubStatusMessageEvent;
 import com.cometproject.server.network.messages.incoming.user.club.GetHCCenterInformationEvent;
 import com.cometproject.server.network.messages.incoming.user.details.*;
-import com.cometproject.server.network.messages.incoming.user.interactions.*;
+import com.cometproject.server.network.messages.incoming.user.interactions.AddEntityToGroupWhisperMessageEvent;
+import com.cometproject.server.network.messages.incoming.user.interactions.SendAmbassadorAlertMessageEvent;
 import com.cometproject.server.network.messages.incoming.user.inventory.*;
 import com.cometproject.server.network.messages.incoming.user.newyear.ResolutionSelectMessageEvent;
 import com.cometproject.server.network.messages.incoming.user.profile.*;

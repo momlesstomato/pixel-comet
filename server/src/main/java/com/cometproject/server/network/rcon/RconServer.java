@@ -18,7 +18,6 @@ import com.cometproject.server.game.achievements.types.BattlePassMission;
 import com.cometproject.server.game.achievements.types.BattlePassMissionEnums;
 import com.cometproject.server.game.catalog.CatalogManager;
 import com.cometproject.server.game.commands.CommandManager;
-import com.cometproject.server.game.commands.user.room.BuyRoomCommand;
 import com.cometproject.server.game.items.ItemManager;
 import com.cometproject.server.game.landing.LandingManager;
 import com.cometproject.server.game.moderation.BanManager;

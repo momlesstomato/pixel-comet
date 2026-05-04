@@ -3,7 +3,6 @@ package com.cometproject.server.network.messages.incoming.catalog.club;
 import com.cometproject.api.game.furniture.IFurnitureService;
 import com.cometproject.api.game.furniture.types.FurnitureDefinition;
 import com.cometproject.api.game.players.data.components.inventory.PlayerItem;
-import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.server.composers.catalog.UnseenItemsMessageComposer;
 import com.cometproject.server.game.items.ItemManager;
 import com.cometproject.server.game.players.components.types.inventory.InventoryItem;
@@ -16,6 +15,7 @@ import com.cometproject.server.storage.queries.items.ItemDao;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
 import com.google.common.collect.Sets;
+
 import java.util.Set;
 
 public class GetClubPresentMessageEvent

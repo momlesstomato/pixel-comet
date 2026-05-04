@@ -9,11 +9,8 @@ import com.cometproject.server.game.players.types.Player;
 import com.cometproject.server.game.rooms.objects.items.RoomItem;
 import com.cometproject.server.game.utilities.validator.PlayerFigureValidator;
 import com.cometproject.server.network.messages.outgoing.notification.MassEventMessageComposer;
-import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 import com.cometproject.server.network.messages.outgoing.user.achievements.AchievementPointsMessageComposer;
 import com.cometproject.server.network.rcon.packets.OpenBattlePass;
-import com.cometproject.server.network.rcon.packets.UpdateBattlePass;
-import com.cometproject.server.network.websockets.WebSocketSessionManager;
 import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.google.gson.Gson;
 

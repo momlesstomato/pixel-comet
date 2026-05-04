@@ -2,7 +2,6 @@ package com.cometproject.server.game.commands.user.room;
 
 import com.cometproject.api.game.GameContext;
 import com.cometproject.api.game.rooms.models.CustomFloorMapData;
-import com.cometproject.api.game.rooms.models.RoomTileState;
 import com.cometproject.api.utilities.JsonUtil;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.commands.ChatCommand;

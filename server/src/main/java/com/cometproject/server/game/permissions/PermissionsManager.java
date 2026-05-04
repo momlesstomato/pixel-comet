@@ -1,7 +1,10 @@
 package com.cometproject.server.game.permissions;
 
 import com.cometproject.api.utilities.Initialisable;
-import com.cometproject.server.game.permissions.types.*;
+import com.cometproject.server.game.permissions.types.EffectPermission;
+import com.cometproject.server.game.permissions.types.OverrideCommandPermission;
+import com.cometproject.server.game.permissions.types.Perk;
+import com.cometproject.server.game.permissions.types.Rank;
 import com.cometproject.server.game.players.types.Player;
 import com.cometproject.server.storage.queries.permissions.PermissionsDao;
 import org.slf4j.Logger;

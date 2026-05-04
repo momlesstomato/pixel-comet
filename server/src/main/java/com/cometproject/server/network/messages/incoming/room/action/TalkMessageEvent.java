@@ -1,7 +1,6 @@
 package com.cometproject.server.network.messages.incoming.room.action;
 
 import com.cometproject.server.config.Locale;
-import com.cometproject.server.game.moderation.ModerationManager;
 import com.cometproject.server.game.permissions.PermissionsManager;
 import com.cometproject.server.game.players.types.PlayerMention;
 import com.cometproject.server.game.rooms.RoomManager;
@@ -15,7 +14,6 @@ import com.cometproject.server.logging.LogManager;
 import com.cometproject.server.logging.entries.RoomChatLogEntry;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.incoming.Event;
-import com.cometproject.server.network.messages.outgoing.messenger.InstantChatMessageComposer;
 import com.cometproject.server.network.messages.outgoing.moderation.ModToolMessageComposer;
 import com.cometproject.server.network.messages.outgoing.notification.AdvancedAlertMessageComposer;
 import com.cometproject.server.network.messages.outgoing.notification.MassEventMessageComposer;

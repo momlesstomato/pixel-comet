@@ -1,6 +1,5 @@
 package com.cometproject.server.network.messages.incoming.catalog.pets;
 
-import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.server.composers.catalog.pets.ValidatePetNameMessageComposer;
 import com.cometproject.server.game.pets.PetManager;
 import com.cometproject.server.network.messages.incoming.Event;

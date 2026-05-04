@@ -5,14 +5,9 @@ import com.cometproject.server.game.achievements.BattlePassGlobals;
 import com.cometproject.server.game.achievements.types.BattlePassMission;
 import com.cometproject.server.game.achievements.types.BattlePassMissionEnums;
 import com.cometproject.server.game.commands.ChatCommand;
-import com.cometproject.server.game.commands.staff.alerts.NotificationCommand;
-import com.cometproject.server.game.players.PlayerManager;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.notification.NotificationMessageComposer;
 import com.cometproject.server.network.sessions.Session;
-import com.cometproject.server.storage.queries.player.PlayerDao;
-import com.cometproject.storage.api.StorageContext;
-import com.cometproject.storage.api.data.Data;
 
 public class EventRewardCommand extends ChatCommand {
 

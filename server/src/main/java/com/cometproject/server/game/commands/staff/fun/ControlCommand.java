@@ -7,7 +7,6 @@ import com.cometproject.server.game.rooms.types.components.games.survival.types.
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.notification.NotificationMessageComposer;
 import com.cometproject.server.network.sessions.Session;
-import org.apache.commons.lang.StringUtils;
 
 public class ControlCommand extends ChatCommand {
 

@@ -1,13 +1,15 @@
 package com.cometproject.server.storage.queries.permissions;
 
-import com.cometproject.server.game.permissions.types.*;
+import com.cometproject.server.game.permissions.types.EffectPermission;
+import com.cometproject.server.game.permissions.types.OverrideCommandPermission;
+import com.cometproject.server.game.permissions.types.Perk;
+import com.cometproject.server.game.permissions.types.Rank;
 import com.cometproject.server.storage.SqlHelper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

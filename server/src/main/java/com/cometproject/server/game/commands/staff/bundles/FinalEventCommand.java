@@ -2,21 +2,14 @@ package com.cometproject.server.game.commands.staff.bundles;
 
 import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.game.quests.QuestType;
-import com.cometproject.server.composers.catalog.CatalogPublishMessageComposer;
 import com.cometproject.server.config.Locale;
-import com.cometproject.server.game.catalog.CatalogManager;
 import com.cometproject.server.game.commands.ChatCommand;
-import com.cometproject.server.game.rooms.bundles.RoomBundleManager;
-import com.cometproject.server.game.rooms.bundles.types.RoomBundle;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.types.Room;
-import com.cometproject.server.network.NetworkManager;
-import com.cometproject.server.network.messages.outgoing.notification.AlertMessageComposer;
 import com.cometproject.server.network.messages.outgoing.notification.NotificationMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.engine.RoomActionMessageComposer;
 import com.cometproject.server.network.messages.outgoing.user.mistery.MisteryBoxDataMessageComposer;
 import com.cometproject.server.network.sessions.Session;
-import com.cometproject.server.storage.queries.rooms.BundleDao;
 import com.cometproject.server.utilities.RandomUtil;
 
 public class FinalEventCommand extends ChatCommand {

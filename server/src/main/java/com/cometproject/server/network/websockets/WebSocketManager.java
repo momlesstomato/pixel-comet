@@ -1,14 +1,6 @@
 package com.cometproject.server.network.websockets;
 
 import com.cometproject.api.utilities.Initialisable;
-import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http.HttpServerCodec;
 
 public class WebSocketManager implements Initialisable {
 

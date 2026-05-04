@@ -1,10 +1,6 @@
 package com.cometproject.server.game.commands.staff.rewards;
 
-import com.cometproject.api.game.catalog.types.vouchers.VoucherStatus;
-import com.cometproject.api.game.catalog.types.vouchers.VoucherType;
-import com.cometproject.server.boot.Comet;
 import com.cometproject.server.config.Locale;
-import com.cometproject.server.game.catalog.types.Voucher;
 import com.cometproject.server.game.commands.ChatCommand;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.notification.NotificationMessageComposer;

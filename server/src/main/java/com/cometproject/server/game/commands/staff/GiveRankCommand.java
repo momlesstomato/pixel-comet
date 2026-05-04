@@ -1,18 +1,10 @@
 package com.cometproject.server.game.commands.staff;
 
-import com.cometproject.server.api.DiscordClient;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.commands.ChatCommand;
-import com.cometproject.server.game.players.PlayerManager;
 import com.cometproject.server.network.NetworkManager;
-import com.cometproject.server.network.messages.outgoing.notification.AlertMessageComposer;
-import com.cometproject.server.network.messages.outgoing.notification.MotdNotificationMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.queries.player.PlayerDao;
-import org.apache.commons.lang.StringUtils;
-
-import java.io.IOException;
-import java.util.List;
 
 public class GiveRankCommand extends ChatCommand {
     private String logDesc = "";

@@ -1,12 +1,9 @@
 package com.cometproject.gamecenter.fastfood.objects;
 
-import com.cometproject.api.game.achievements.types.AchievementType;
 import com.cometproject.gamecenter.fastfood.FastFoodGame;
 import com.cometproject.gamecenter.fastfood.net.FastFoodGameSession;
 import com.cometproject.gamecenter.fastfood.net.composers.ApplyShieldMessageComposer;
-import com.cometproject.gamecenter.fastfood.net.composers.DropFoodMessageComposer;
 import com.cometproject.gamecenter.fastfood.net.composers.FoodUpdateMessageComposer;
-import com.cometproject.gamecenter.fastfood.net.composers.UseBigParachuteMessageComposer;
 
 public class FoodPlate {
     private final int objectId;

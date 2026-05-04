@@ -21,7 +21,7 @@ import com.cometproject.server.game.rooms.objects.items.types.floor.pet.eggs.Pte
 import com.cometproject.server.game.rooms.objects.items.types.floor.pet.eggs.VelociraptorEggFloorItem;
 import com.cometproject.server.game.rooms.objects.items.types.floor.pet.horse.HorseJumpFloorItem;
 import com.cometproject.server.game.rooms.objects.items.types.floor.pet.plants.MonsterPlantSeedFloorItem;
-import com.cometproject.server.game.rooms.objects.items.types.floor.roleplay.*;
+import com.cometproject.server.game.rooms.objects.items.types.floor.roleplay.FishingPoolFloorItem;
 import com.cometproject.server.game.rooms.objects.items.types.floor.snowboarding.SnowboardJumpFloorItem;
 import com.cometproject.server.game.rooms.objects.items.types.floor.snowboarding.SnowboardSlopeFloorItem;
 import com.cometproject.server.game.rooms.objects.items.types.floor.summer.SummerShowerFloorItem;

@@ -3,7 +3,6 @@ package com.cometproject.server.network.messages.incoming.landing;
 import com.cometproject.server.boot.Comet;
 import com.cometproject.server.network.messages.incoming.Event;
 import com.cometproject.server.network.messages.outgoing.landing.LTDCountdownMessageComposer;
-import com.cometproject.server.network.messages.outgoing.notification.AlertMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;
 

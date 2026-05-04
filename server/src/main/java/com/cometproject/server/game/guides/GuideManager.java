@@ -141,23 +141,19 @@ public class GuideManager implements Initialisable {
 
         package com.cometproject.server.game.guides;
 
-        import com.cometproject.server.game.guides.types.HelpRequest;
-        import com.cometproject.server.game.guides.types.HelperSession;
-        import com.cometproject.server.network.messages.outgoing.help.guides.GuideSessionAttachedMessageComposer;
-        import com.cometproject.server.network.messages.outgoing.help.guides.GuideSessionDetachedMessageComposer;
-        import com.cometproject.server.network.messages.outgoing.help.guides.GuideSessionEndedMessageComposer;
-        import com.cometproject.server.network.messages.outgoing.help.guides.GuideSessionErrorMessageComposer;
-        import com.cometproject.server.tasks.CometThreadManager;
-        import com.cometproject.api.utilities.Initialisable;
-        import com.cometproject.server.utilities.collections.ConcurrentHashSet;
-        import java.util.ArrayList;
-        import java.util.Collections;
-        import java.util.List;
+import com.cometproject.api.utilities.Initialisable;
+import com.cometproject.server.game.guides.types.HelpRequest;
+import com.cometproject.server.game.guides.types.HelperSession;
+import com.cometproject.server.network.messages.outgoing.help.guides.GuideSessionAttachedMessageComposer;
+import com.cometproject.server.network.messages.outgoing.help.guides.GuideSessionDetachedMessageComposer;
+import com.cometproject.server.network.messages.outgoing.help.guides.GuideSessionEndedMessageComposer;
+import com.cometproject.server.network.messages.outgoing.help.guides.GuideSessionErrorMessageComposer;
+import com.cometproject.server.tasks.CometThreadManager;
+import com.cometproject.server.utilities.collections.ConcurrentHashSet;
 
-        import java.util.Map;
-        import java.util.Set;
-        import java.util.concurrent.ConcurrentHashMap;
-        import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class GuideManager implements Initialisable {
     private static GuideManager guideManagerInstance;

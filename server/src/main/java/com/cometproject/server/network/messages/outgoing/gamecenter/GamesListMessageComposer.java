@@ -3,8 +3,8 @@ package com.cometproject.server.network.messages.outgoing.gamecenter;
 import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.server.game.gamecenter.GameCenterInfo;
 import com.cometproject.server.game.gamecenter.GameCenterManager;
-import com.cometproject.server.protocol.messages.MessageComposer;
 import com.cometproject.server.protocol.headers.Composers;
+import com.cometproject.server.protocol.messages.MessageComposer;
 
 
 public class GamesListMessageComposer extends MessageComposer {

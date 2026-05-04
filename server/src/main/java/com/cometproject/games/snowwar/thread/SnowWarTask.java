@@ -1,11 +1,8 @@
 package com.cometproject.games.snowwar.thread;
+
 import com.cometproject.games.snowwar.SnowPlayerQueue;
 import com.cometproject.games.snowwar.SnowWarRoom;
-import com.cometproject.games.snowwar.tasks.SnowArenaEnd;
-import com.cometproject.games.snowwar.tasks.SnowArenaRun;
-import com.cometproject.games.snowwar.tasks.SnowStageLoading;
-import com.cometproject.games.snowwar.tasks.SnowStageRun;
-import com.cometproject.games.snowwar.tasks.SnowStageStarting;
+import com.cometproject.games.snowwar.tasks.*;
 
 public class SnowWarTask extends GameTask {
     public SnowWarRoom room;

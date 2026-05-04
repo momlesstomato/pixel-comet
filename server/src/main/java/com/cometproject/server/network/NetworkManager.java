@@ -1,13 +1,11 @@
 package com.cometproject.server.network;
 
-import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.config.Configuration;
 import com.cometproject.networking.api.INetworkingServer;
 import com.cometproject.networking.api.INetworkingServerFactory;
 import com.cometproject.networking.api.NetworkingContext;
 import com.cometproject.networking.api.config.NetworkingServerConfig;
 import com.cometproject.networking.api.sessions.INetSessionFactory;
-import com.cometproject.server.boot.Comet;
 import com.cometproject.server.network.messages.GameMessageHandler;
 import com.cometproject.server.network.messages.MessageHandler;
 import com.cometproject.server.network.monitor.MonitorClient;

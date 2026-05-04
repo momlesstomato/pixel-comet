@@ -1,18 +1,11 @@
 package com.cometproject.games.snowwar.gameobjects;
 
-import com.cometproject.games.snowwar.Direction360;
-import com.cometproject.games.snowwar.Direction8;
-import com.cometproject.games.snowwar.GamefuseObject;
-import com.cometproject.games.snowwar.MathUtil;
-import com.cometproject.games.snowwar.PlayerTile;
-import com.cometproject.games.snowwar.SnowWarRoom;
-import com.cometproject.games.snowwar.SpawnPoint;
-import com.cometproject.games.snowwar.SynchronizedGameStage;
-import com.cometproject.games.snowwar.Tile;
+import com.cometproject.games.snowwar.*;
 import com.cometproject.games.snowwar.data.SnowWarPlayerData;
 import com.cometproject.games.snowwar.gameevents.PickBallFromGameItem;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.utilities.RandomUtil;
+
 import java.util.List;
 
 public class HumanGameObject extends GameItemObject {
