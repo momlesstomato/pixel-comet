@@ -18,6 +18,7 @@ public final class DatabaseConfiguration {
     public static final String POOL_ACQUIRE_RETRY_ATTEMPTS = "comet.db.pool.acquireRetryAttempts";
     public static final String POOL_AUTO_RECONNECT = "comet.db.pool.autoReconnect";
     public static final String POOL_TCP_KEEP_ALIVE = "comet.db.pool.tcpKeepAlive";
+    public static final String SEED_ENABLED = "comet.db.seed.enabled";
 
     private DatabaseConfiguration() {
     }
@@ -40,7 +41,8 @@ public final class DatabaseConfiguration {
                 Map.entry(POOL_MAX_CONNECTION_AGE_SECONDS, "60"),
                 Map.entry(POOL_ACQUIRE_RETRY_ATTEMPTS, "50"),
                 Map.entry(POOL_AUTO_RECONNECT, "false"),
-                Map.entry(POOL_TCP_KEEP_ALIVE, "true")
+                Map.entry(POOL_TCP_KEEP_ALIVE, "true"),
+                Map.entry(SEED_ENABLED, "false")
         );
     }
 }

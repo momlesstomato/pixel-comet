@@ -7,6 +7,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -91,5 +92,14 @@ public class HikariConnectionProvider extends MySQLConnectionProvider {
 
     public void shutdown() {
         this.hikariDataSource.close();
+    }
+
+    /**
+     * Returns the pooled data source backing this connection provider.
+     *
+     * @return the active Hikari data source.
+     */
+    public DataSource getDataSource() {
+        return this.hikariDataSource;
     }
 }

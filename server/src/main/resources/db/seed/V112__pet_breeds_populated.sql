@@ -1,0 +1,4 @@
+-- populated.sql pet_breeds is intentionally not imported.
+-- Source columns: race, color_one, color_two, has_color_one, has_color_two.
+-- Target columns: pet_type, pallet_id, level.
+-- A deterministic mapping does not exist in this codebase yet.

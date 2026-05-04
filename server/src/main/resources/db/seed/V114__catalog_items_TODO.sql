@@ -1,0 +1,3 @@
+-- catalog_items from populated.sql is intentionally deferred.
+-- The Arcturus furniture definition IDs do not match the Comet items_base/item catalog IDs.
+-- Do not import this data until furniture definition reconciliation is implemented.

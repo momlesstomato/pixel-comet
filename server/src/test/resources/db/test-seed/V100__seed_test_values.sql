@@ -1,0 +1,1 @@
+INSERT INTO test_seed_values (id, seed_value) VALUES (1, 'seeded');

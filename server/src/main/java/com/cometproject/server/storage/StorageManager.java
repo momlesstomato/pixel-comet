@@ -1,8 +1,12 @@
 package com.cometproject.server.storage;
 
+import com.cometproject.api.config.Configuration;
+import com.cometproject.api.config.database.DatabaseConfiguration;
 import com.cometproject.api.utilities.Startable;
 import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.storage.cache.CacheManager;
+import com.cometproject.server.storage.migration.FlywayMigrationService;
+import com.cometproject.storage.api.migration.IMigrationService;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.mysql.MySQLStorageInitializer;
 import com.cometproject.storage.mysql.connections.HikariConnectionProvider;
@@ -22,6 +26,15 @@ public class StorageManager implements Startable {
     public void start() {
         final MySQLStorageInitializer initializer = new MySQLStorageInitializer(hikariConnectionProvider);
         final StorageContext storageContext = new StorageContext();
+        final boolean seedEnabled = Boolean.parseBoolean(
+            Configuration.currentConfig().getOrDefault(
+                DatabaseConfiguration.SEED_ENABLED,
+                DatabaseConfiguration.defaults().get(DatabaseConfiguration.SEED_ENABLED)));
+        final IMigrationService migrationService = new FlywayMigrationService(
+            this.hikariConnectionProvider.getDataSource(),
+            seedEnabled);
+
+        migrationService.migrate();
 
         initializer.setup(storageContext);
 

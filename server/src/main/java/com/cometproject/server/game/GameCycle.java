@@ -44,7 +44,7 @@ public class GameCycle implements CometTask, Startable {
 
     private boolean active = false;
 
-    private int currentOnlineRecord = StatisticsDao.getPlayerRecord();
+    private int currentOnlineRecord = 0;
     private int onlineRecord = 0;
 
     public GameCycle() {
@@ -57,10 +57,11 @@ public class GameCycle implements CometTask, Startable {
 
     @Override
     public void start() {
+        this.currentOnlineRecord = StatisticsDao.getPlayerRecord();
+        this.onlineRecord = this.currentOnlineRecord;
+
         this.gameFuture = CometThreadManager.getInstance().executePeriodic(this, interval, interval, TimeUnit.MINUTES);
         this.active = true;
-
-        this.onlineRecord = StatisticsDao.getPlayerRecord();
     }
 
     @Override
