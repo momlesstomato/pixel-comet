@@ -1,13 +1,10 @@
 package com.cometproject.server.storage.cache;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cometproject.api.config.Configuration;
+import com.cometproject.api.config.cache.RedisConfiguration;
 import com.cometproject.api.utilities.JsonUtil;
 import com.cometproject.api.utilities.Startable;
 import com.cometproject.server.boot.CometBootstrap;
@@ -30,10 +27,10 @@ public class CacheManager extends CachableObject implements Startable {
     private JedisPool jedis;
 
     public CacheManager() {
-        this.enabled = Boolean.parseBoolean((String) Configuration.currentConfig().getOrDefault("comet.cache.enabled", "false"));
-        this.keyPrefix = (String) Configuration.currentConfig().getOrDefault("comet.cache.prefix", "comet");
-        this.host = (String) Configuration.currentConfig().getOrDefault("comet.cache.connection.host", "");
-        this.port = Integer.parseInt((String) Configuration.currentConfig().getOrDefault("comet.cache.connection.port", ""));
+        this.enabled = Boolean.parseBoolean(Configuration.currentConfig().getOrDefault(RedisConfiguration.ENABLED, RedisConfiguration.defaults().get(RedisConfiguration.ENABLED)));
+        this.keyPrefix = Configuration.currentConfig().getOrDefault(RedisConfiguration.PREFIX, RedisConfiguration.defaults().get(RedisConfiguration.PREFIX));
+        this.host = Configuration.currentConfig().getOrDefault(RedisConfiguration.CONNECTION_HOST, RedisConfiguration.defaults().get(RedisConfiguration.CONNECTION_HOST));
+        this.port = Integer.parseInt(Configuration.currentConfig().getOrDefault(RedisConfiguration.CONNECTION_PORT, RedisConfiguration.defaults().get(RedisConfiguration.CONNECTION_PORT)));
     }
 
     public static CacheManager getInstance() {
@@ -49,14 +46,6 @@ public class CacheManager extends CachableObject implements Startable {
 
         if (this.host.isEmpty()) {
             LOGGER.error("Invalid redis connection string");
-
-            this.enabled = false;
-            return;
-        }
-
-        // Initializes the com.cometproject.networking.api.config for the cache
-        if (!this.initializeConfig()) {
-            LOGGER.error("Failed to load Redis cache configuration, disabling caching");
 
             this.enabled = false;
             return;
@@ -82,25 +71,6 @@ public class CacheManager extends CachableObject implements Startable {
     public void stop() {
         if (this.jedis != null) {
             this.jedis.close();
-        }
-    }
-
-    private boolean initializeConfig() {
-        BufferedReader reader = null;
-
-        try {
-            reader = new BufferedReader(new FileReader("./config/cache.json"));
-            return true;
-        } catch (Exception e) {
-            return false;
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    LOGGER.warn("Failed to close BufferedReader", e);
-                }
-            }
         }
     }
 

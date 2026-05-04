@@ -26,7 +26,7 @@ public class RoomLinkProviderFloorItem extends RoomItemFloor {
         if(!(entity instanceof PlayerEntity)) return;
 
         PlayerEntity playerEntity = ((PlayerEntity) entity);
-        playerEntity.getPlayer().getSession().send(new GetGuestRoomResultMessageComposer(new Integer(this.getExtradataInfo().get(1))));
+        playerEntity.getPlayer().getSession().send(new GetGuestRoomResultMessageComposer(Integer.parseInt(this.getExtradataInfo().get(1))));
 
     }
 
@@ -45,7 +45,7 @@ public class RoomLinkProviderFloorItem extends RoomItemFloor {
             return false;
 
         PlayerEntity playerEntity = ((PlayerEntity) entity);
-        playerEntity.getPlayer().getSession().send(new GetGuestRoomResultMessageComposer(new Integer(this.getExtradataInfo().get(1))));
+        playerEntity.getPlayer().getSession().send(new GetGuestRoomResultMessageComposer(Integer.parseInt(this.getExtradataInfo().get(1))));
 
         return false;
     }

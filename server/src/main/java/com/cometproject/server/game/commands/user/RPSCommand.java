@@ -8,7 +8,7 @@ import com.cometproject.server.network.messages.outgoing.nuxs.NuxGiftSelectionVi
 import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 import com.cometproject.server.network.sessions.Session;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class RPSCommand extends ChatCommand {
     @Override

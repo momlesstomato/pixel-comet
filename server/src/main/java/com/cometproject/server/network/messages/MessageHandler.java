@@ -152,7 +152,7 @@ public final class MessageHandler {
 
                 case "forkjoin":
                     LOGGER.info("Using fork-join event executor");
-                    this.eventExecutor = new ForkJoinPool(Integer.parseInt((String) Configuration.currentConfig().getOrDefault("comet.network.alternativePacketHandling.coreSize", 16)), ForkJoinPool.defaultForkJoinWorkerThreadFactory, null, true);
+                    this.eventExecutor = new ForkJoinPool(Integer.parseInt((String) Configuration.currentConfig().getOrDefault("comet.network.alternativePacketHandling.coreSize", "16")), ForkJoinPool.defaultForkJoinWorkerThreadFactory, null, true);
                     break;
 
             }

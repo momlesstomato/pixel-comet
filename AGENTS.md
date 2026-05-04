@@ -82,7 +82,9 @@ The codebase is designed for future extraction as a public SDK and plugin platfo
 - **Program to interfaces.** Every service, repository, manager, and handler must be backed by an interface. Concrete classes are injected, not looked up.
 - **Events over direct calls.** Cross-module communication must go through the event bus. Do not call into another module's internals.
 - **Stateless handlers.** Message event handlers must be stateless. Session-bound state lives on the `Player` or `Session` object, never on the handler.
-- **Configurable, not hardcoded.** Thresholds, limits, and feature flags must come from the configuration system (`comet.properties` or a module-specific config block). Do not hardcode magic numbers.
+- **Configurable, not hardcoded.** Thresholds, limits, feature flags, and configuration key names must come from the configuration system. Do not hardcode magic numbers or magic config strings.
+- **Every new config key must be documented.** Any new configuration key must be added to `.env.example` in the same change.
+- **No config god classes.** Do not create catch-all registries such as `EnvVariables`. Group configuration keys by bounded context in the relevant API package (`database`, `cache`, `modules`, `network`, etc.).
 - **No singleton abuse.** New singletons require explicit justification. Prefer dependency injection via constructor parameters.
 - **Package visibility.** Use the most restrictive access modifier possible. Package-private is preferred over public for implementation classes.
 
@@ -97,5 +99,6 @@ Before every pull request, verify:
 - [ ] All new packet opcodes match the Pixel Protocol spec.
 - [ ] No direct dependency from a `Comet-Game-*` module onto `Comet-Server` internals.
 - [ ] New functionality is exposed via an interface in `Comet-API` or `Comet-Networking-API`.
-- [ ] No magic numbers — constants are named and documented.
+- [ ] No magic numbers or magic config strings — constants are named, grouped, and documented.
+- [ ] Every new config key is present in `.env.example`.
 - [ ] SOLID principles are followed (if in doubt, ask in the PR description and explain your design).

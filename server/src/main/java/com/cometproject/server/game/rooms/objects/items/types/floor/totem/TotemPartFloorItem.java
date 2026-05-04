@@ -5,7 +5,7 @@ import com.cometproject.api.game.utilities.Position;
 import com.cometproject.server.game.rooms.objects.entities.RoomEntity;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
 import com.cometproject.server.game.rooms.types.Room;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public abstract class TotemPartFloorItem extends RoomItemFloor {
     public TotemPartFloorItem(RoomItemData roomItemData, Room room) {

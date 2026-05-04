@@ -5,7 +5,9 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 
 import com.cometproject.api.commands.CommandInfo;
+import com.cometproject.api.config.Configuration;
 import com.cometproject.api.config.ModuleConfig;
+import com.cometproject.api.config.modules.ModuleConfiguration;
 import com.cometproject.api.events.Event;
 import com.cometproject.api.events.EventListenerContainer;
 import com.cometproject.api.game.GameContext;
@@ -70,6 +72,35 @@ public abstract class BaseModule implements EventListenerContainer {
      */
     public void initialiseServices(GameContext gameContext) {
 
+    }
+
+    /**
+     * Resolves a module-scoped configuration value from the active configuration source.
+     *
+     * @param key The module-local configuration key.
+     * @return The configured value, or {@code null} when undefined.
+     */
+    protected String getModuleConfig(final String key) {
+        final String fullModuleKey = ModuleConfiguration.toModuleEnvironmentKey(this.getConfig().getName(), key);
+        final String value = Configuration.currentConfig().get(fullModuleKey);
+
+        if (value != null) {
+            return value;
+        }
+
+        return Configuration.currentConfig().get(ModuleConfiguration.toShortModuleEnvironmentKey(this.getConfig().getName(), key));
+    }
+
+    /**
+     * Resolves a module-scoped configuration value from the active configuration source using a fallback.
+     *
+     * @param key The module-local configuration key.
+     * @param defaultValue The fallback value when the module key is undefined.
+     * @return The configured or fallback value.
+     */
+    protected String getModuleConfig(final String key, final String defaultValue) {
+        final String value = this.getModuleConfig(key);
+        return value != null ? value : defaultValue;
     }
 
     /**

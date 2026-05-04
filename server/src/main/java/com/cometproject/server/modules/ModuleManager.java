@@ -1,9 +1,9 @@
 package com.cometproject.server.modules;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -13,7 +13,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cometproject.api.config.Configuration;
 import com.cometproject.api.config.ModuleConfig;
+import com.cometproject.api.config.modules.ModuleConfiguration;
 import com.cometproject.api.events.EventHandler;
 import com.cometproject.api.game.GameContext;
 import com.cometproject.api.modules.BaseModule;
@@ -85,55 +87,54 @@ public class ModuleManager implements Startable {
     }
 
     private List<CometModule> loadModules() {
-        final ModulesConfig modulesConfig;
-
-        try {
-            final String json = Files.readString(Path.of("./config/modules.json"), StandardCharsets.UTF_8);
-            modulesConfig = JsonUtil.getInstance().fromJson(json, ModulesConfig.class);
-        } catch (Exception e) {
-            LOGGER.error("Failed to load modules configuration", e);
-            return Lists.newArrayList();
-        }
-
         final List<CometModule> cometModules = Lists.newArrayList();
 
-        for (CometModule module : modulesConfig.getModules()) {
+        for (Path moduleJar : this.discoverJars()) {
             try {
-                loadModule(module);
-                cometModules.add(module);
+                final CometModule module = this.loadModule(moduleJar);
+                if (module != null) {
+                    cometModules.add(module);
+                }
             } catch (Exception e) {
-                LOGGER.error("Failed to load module: " + module.getAlias(), e);
+                LOGGER.error("Failed to load module jar: {}", moduleJar, e);
             }
         }
 
         return cometModules;
     }
-//
-//    private List<String> findModules() {
-//       List<String> results = new ArrayList<>();
-//
-//        File[] files = new File("./modules").listFiles();
-//
-//        if (files == null) return results;
-//
-//        for (File file : files) {
-//            if (file.isFile() && file.getName().endsWith(".jar")) {
-//                results.add(file.getName());
-//            }
-//        }
-//
-//        return results;
-//    }
 
-    private void loadModule(CometModule module) throws Exception {
+    private List<Path> discoverJars() {
+        final Path modulesDir = Path.of(Configuration.currentConfig().getOrDefault(ModuleConfiguration.MODULES_DIR, ModuleConfiguration.defaults().get(ModuleConfiguration.MODULES_DIR)));
+
+        if (!Files.isDirectory(modulesDir)) {
+            LOGGER.info("No modules directory found at {}, skipping plugin loading", modulesDir);
+            return List.of();
+        }
+
+        try (var stream = Files.list(modulesDir)) {
+            return stream
+                    .filter(Files::isRegularFile)
+                    .filter(path -> path.toString().endsWith(".jar"))
+                    .sorted()
+                    .toList();
+        } catch (IOException e) {
+            LOGGER.error("Failed to scan modules directory {}", modulesDir, e);
+            return List.of();
+        }
+    }
+
+    private CometModule loadModule(final Path moduleJar) throws Exception {
         URLClassLoader loader = URLClassLoader.newInstance(
-                new URL[]{new URL("jar:file:" + module.getPath() + "!/")},
+                new URL[]{new URL("jar:file:" + moduleJar.toAbsolutePath() + "!/")},
                 getClass().getClassLoader()
         );
 
         URL configJsonLocation = loader.getResource("module.json");
 
-        if (configJsonLocation == null) throw new Exception("module.json does not exist");
+        if (configJsonLocation == null) {
+            LOGGER.warn("Skipping module jar without module.json: {}", moduleJar.getFileName());
+            return null;
+        }
 
         final ModuleConfig moduleConfig = JsonUtil.getInstance().fromJson(Resources.toString(configJsonLocation, Charsets.UTF_8), ModuleConfig.class);
 
@@ -142,10 +143,10 @@ public class ModuleManager implements Startable {
                 LOGGER.warn("Modules with same name but different version was detected: " + moduleConfig.getName());
             }
 
-            return;
+            return null;
         }
 
-        LOGGER.info("Loaded module: " + moduleConfig.getName() + ", alias: " + module.getAlias());
+        LOGGER.info("Loaded module: {} from {}", moduleConfig.getName(), moduleJar.getFileName());
 
         Class<?> clazz = Class.forName(moduleConfig.getEntryPoint(), true, loader);
         Class<? extends BaseModule> runClass = clazz.asSubclass(BaseModule.class);
@@ -155,10 +156,12 @@ public class ModuleManager implements Startable {
 
         cometModule.loadModule();
 
-        module.setClassLoader(loader);
+        final CometModule loadedModule = new CometModule(moduleJar, moduleConfig);
+        loadedModule.setClassLoader(loader);
         this.modules.put(moduleConfig.getName(), cometModule);
 
         //loader.close();
+        return loadedModule;
     }
 
     public EventHandler getEventHandler() {
@@ -167,17 +170,5 @@ public class ModuleManager implements Startable {
 
     Injector getPluginInjector(final String moduleName) {
         return this.pluginInjectors.get(moduleName);
-    }
-
-    private class ModulesConfig {
-        private final List<CometModule> modules;
-
-        public ModulesConfig(final List<CometModule> modules) {
-            this.modules = modules;
-        }
-
-        public List<CometModule> getModules() {
-            return modules;
-        }
     }
 }

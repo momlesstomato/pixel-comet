@@ -1,37 +1,32 @@
 package com.cometproject.server.modules;
 
-import com.google.gson.JsonObject;
+import java.nio.file.Path;
 
-public class CometModule {
+import com.cometproject.api.config.ModuleConfig;
 
-    private final String path;
-    private final String alias;
-    private final JsonObject config;
+final class CometModule {
+    private final Path jarPath;
+    private final ModuleConfig moduleConfig;
     private ClassLoader classLoader;
 
-    public CometModule(String path, String alias, JsonObject config) {
-        this.path = path;
-        this.alias = alias;
-        this.config = config;
+    CometModule(final Path jarPath, final ModuleConfig moduleConfig) {
+        this.jarPath = jarPath;
+        this.moduleConfig = moduleConfig;
     }
 
-    public String getPath() {
-        return path;
+    public Path getJarPath() {
+        return this.jarPath;
     }
 
-    public String getAlias() {
-        return alias;
-    }
-
-    public JsonObject getConfig() {
-        return config;
+    public ModuleConfig getModuleConfig() {
+        return this.moduleConfig;
     }
 
     public ClassLoader getClassLoader() {
-        return classLoader;
+        return this.classLoader;
     }
 
-    public void setClassLoader(ClassLoader classLoader) {
+    public void setClassLoader(final ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 }

@@ -1,6 +1,7 @@
 *.zip
 .idea/
 .vscode/
+.env
 
 # Windows image file caches
 Thumbs.db
@@ -102,3 +103,4 @@ run.bat
 
 # AI Tools
 plan/
+testserver/

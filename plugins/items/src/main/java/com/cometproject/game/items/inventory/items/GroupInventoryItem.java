@@ -6,7 +6,7 @@ import com.cometproject.api.game.groups.types.IGroupData;
 import com.cometproject.api.game.players.data.components.inventory.InventoryItemData;
 import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.game.items.inventory.InventoryItem;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class GroupInventoryItem extends InventoryItem {
     public GroupInventoryItem(InventoryItemData inventoryItemData, FurnitureDefinition furnitureDefinition) {

@@ -15,7 +15,7 @@ import com.cometproject.server.network.messages.outgoing.room.avatar.UpdateInfoM
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;
 import com.cometproject.server.utilities.RandomUtil;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;

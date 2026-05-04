@@ -1,5 +1,8 @@
 package com.cometproject.server.game.catalog.purchase.handlers;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import com.cometproject.api.game.catalog.types.ICatalogItem;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.catalog.purchase.PurchaseHandler;
@@ -8,9 +11,10 @@ import com.cometproject.server.game.rooms.RoomManager;
 import com.cometproject.server.game.rooms.filter.FilterResult;
 import com.cometproject.server.network.messages.outgoing.notification.AdvancedAlertMessageComposer;
 import com.cometproject.server.network.sessions.Session;
-import org.joda.time.DateTime;
 
 public class TrophyPurchaseHandler implements PurchaseHandler {
+    private static final DateTimeFormatter TROPHY_DATE_FORMAT = DateTimeFormatter.ofPattern("d-M-yyyy");
+
     @Override
     public PurchaseResult handlePurchaseData(Session session, String purchaseData, ICatalogItem catalogItem, int amount) {
 
@@ -28,7 +32,7 @@ public class TrophyPurchaseHandler implements PurchaseHandler {
 
         return new PurchaseResult(1, session.getPlayer().getData().getUsername()
                 + Character.toChars(9)[0]
-                + DateTime.now().getDayOfMonth() + "-" + DateTime.now().getMonthOfYear() + "-" + DateTime.now().getYear() +
+            + LocalDate.now().format(TROPHY_DATE_FORMAT) +
                 Character.toChars(9)[0] + purchaseData);
     }
 }

@@ -1,14 +1,11 @@
 package com.cometproject.catalogtool;
 
-import com.cometproject.server.boot.Comet;
-import com.cometproject.api.config.Configuration;
 import com.cometproject.server.game.catalog.CatalogManager;
 import com.cometproject.server.game.items.ItemManager;
+import com.cometproject.server.config.ConfigurationBootstrap;
 import com.cometproject.server.storage.StorageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.FileInputStream;
 
 public class CatalogTool {
     private static Logger LOGGER = LoggerFactory.getLogger(CatalogTool.class.getName());
@@ -21,7 +18,7 @@ public class CatalogTool {
         final int pageId = Integer.parseInt(args[0]);
         final String furniline = args[1];
 
-        Configuration.setConfiguration(new Configuration("./config/comet.properties"));
+        ConfigurationBootstrap.initialize(null);
 
         StorageManager.getInstance().initialize();
         ItemManager.getInstance().initialize();

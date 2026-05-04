@@ -8,7 +8,7 @@ import com.cometproject.api.game.rooms.objects.data.LimitedEditionItemData;
 import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.api.utilities.JsonUtil;
 import com.cometproject.server.game.items.ItemManager;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

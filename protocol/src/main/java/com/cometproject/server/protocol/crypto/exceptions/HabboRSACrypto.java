@@ -1,7 +1,7 @@
 package com.cometproject.server.protocol.crypto.exceptions;
 
 import com.cometproject.server.protocol.crypto.exceptions.utils.BigIntegerUtils;
-import org.apache.commons.lang.mutable.MutableInt;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

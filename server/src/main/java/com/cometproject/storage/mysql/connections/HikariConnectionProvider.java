@@ -90,6 +90,6 @@ public class HikariConnectionProvider extends MySQLConnectionProvider {
     }
 
     public void shutdown() {
-        this.hikariDataSource.shutdown();
+        this.hikariDataSource.close();
     }
 }

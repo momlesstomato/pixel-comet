@@ -1,59 +1,46 @@
 [versions]
+caffeine = "3.1.8"
 guice = "7.0.0"
 guava = "33.2.1-jre"
 gson = "2.10.1"
 netty = "4.1.109.Final"
 slf4j = "1.7.36"
 logback = "1.2.13"
-log4j = "1.2.17"
-hikari = "2.6.0"
+hikari = "5.1.0"
 mysql = "8.3.0"
-commonsLang = "2.6"
 commonsLang3 = "3.14.0"
 commonsIo = "2.15.1"
 commonsCollections4 = "4.4"
 commonsCodec = "1.17.0"
 jbcrypt = "0.4"
 spark = "2.9.4"
-asyncHttp = "1.9.40"
-ehcache = "2.10.9.2"
+dotenv = "3.2.0"
 jedis = "5.1.0"
-javaWebSocket = "1.5.6"
-jodaTime = "2.12.7"
-dnsjava = "3.6.1"
 jansi = "2.4.1"
-jna = "5.14.0"
-trove4j = "3.0.3"
 jetty = "9.4.57.v20241219"
 junit4 = "4.13.2"
 validationApi = "2.0.1.Final"
 
 [libraries]
+caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine" }
 guice = { module = "com.google.inject:guice", version.ref = "guice" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 netty-all = { module = "io.netty:netty-all", version.ref = "netty" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+log4j-over-slf4j = { module = "org.slf4j:log4j-over-slf4j", version.ref = "slf4j" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
-log4j = { module = "log4j:log4j", version.ref = "log4j" }
 hikari = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }
 mysql-connector = { module = "com.mysql:mysql-connector-j", version.ref = "mysql" }
-commons-lang = { module = "commons-lang:commons-lang", version.ref = "commonsLang" }
 commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commonsLang3" }
 commons-io = { module = "commons-io:commons-io", version.ref = "commonsIo" }
 commons-collections4 = { module = "org.apache.commons:commons-collections4", version.ref = "commonsCollections4" }
 commons-codec = { module = "commons-codec:commons-codec", version.ref = "commonsCodec" }
 jbcrypt = { module = "org.mindrot:jbcrypt", version.ref = "jbcrypt" }
 spark-core = { module = "com.sparkjava:spark-core", version.ref = "spark" }
-async-http-client = { module = "com.ning:async-http-client", version.ref = "asyncHttp" }
-ehcache = { module = "net.sf.ehcache:ehcache", version.ref = "ehcache" }
+dotenv = { module = "io.github.cdimascio:dotenv-java", version.ref = "dotenv" }
 jedis = { module = "redis.clients:jedis", version.ref = "jedis" }
-java-websocket = { module = "org.java-websocket:Java-WebSocket", version.ref = "javaWebSocket" }
-joda-time = { module = "joda-time:joda-time", version.ref = "jodaTime" }
-dnsjava = { module = "dnsjava:dnsjava", version.ref = "dnsjava" }
 jansi = { module = "org.fusesource.jansi:jansi", version.ref = "jansi" }
-jna-platform = { module = "net.java.dev.jna:jna-platform", version.ref = "jna" }
-trove4j = { module = "net.sf.trove4j:trove4j", version.ref = "trove4j" }
 jetty-util = { module = "org.eclipse.jetty:jetty-util", version.ref = "jetty" }
 junit4 = { module = "junit:junit", version.ref = "junit4" }
 validation-api = { module = "javax.validation:validation-api", version.ref = "validationApi" }

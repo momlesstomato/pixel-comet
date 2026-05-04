@@ -60,17 +60,19 @@ import com.cometproject.storage.api.data.Data;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
 public class LegacyPurchaseHandler implements ICatalogPurchaseHandler {
+    private static final DateTimeFormatter PURCHASE_DATE_FORMAT = DateTimeFormatter.ofPattern("d-M-yyyy");
     private final Logger LOGGER = LoggerFactory.getLogger(LegacyPurchaseHandler.class);
     private ExecutorService executorService;
 
@@ -321,7 +323,7 @@ public class LegacyPurchaseHandler implements ICatalogPurchaseHandler {
                     return;
                 } else if (def.getInteraction().equals("trophy")) {
                     extraData +=
-                            client.getPlayer().getData().getUsername() + Character.toChars(9)[0] + DateTime.now().getDayOfMonth() + "-" + DateTime.now().getMonthOfYear() + "-" + DateTime.now().getYear() + Character.toChars(9)[0] + data;
+                            client.getPlayer().getData().getUsername() + Character.toChars(9)[0] + LocalDate.now().format(PURCHASE_DATE_FORMAT) + Character.toChars(9)[0] + data;
                 } else if (def.isTeleporter()) {
                     amount = amount * 2;
                     isTeleport = true;
@@ -390,7 +392,9 @@ public class LegacyPurchaseHandler implements ICatalogPurchaseHandler {
                 } else if (def.getInteraction().equals("group_item") || def.getInteraction().equals("group_gate")) {
                     if (data.isEmpty() || !StringUtils.isNumeric(data)) return;
 
-                    if (!client.getPlayer().getGroups().contains(new Integer(data))) {
+                    final int groupId = Integer.parseInt(data);
+
+                    if (!client.getPlayer().getGroups().contains(groupId)) {
                         return;
                     }
 
@@ -449,16 +453,17 @@ public class LegacyPurchaseHandler implements ICatalogPurchaseHandler {
                         return;
                     }
 
-                    extraData = data + "~" + client.getPlayer().getData().getUsername() + "~" + DateTime.now().getDayOfMonth() + "-" + DateTime.now().getMonthOfYear() + "-" + DateTime.now().getYear();
+                    extraData = data + "~" + client.getPlayer().getData().getUsername() + "~" + LocalDate.now().format(PURCHASE_DATE_FORMAT);
                 } else if (def.getInteraction().equals("group_forum")) {
                     if (data.isEmpty() || !StringUtils.isNumeric(data))
                         return;
 
-                    if (!client.getPlayer().getGroups().contains(new Integer(data))) {
+                    final int groupId = Integer.parseInt(data);
+
+                    if (!client.getPlayer().getGroups().contains(groupId)) {
                         return;
                     }
 
-                    int groupId = Integer.parseInt(data);
                     IGroup group = GameContext.getCurrent().getGroupService().getGroup(groupId);
 
                     if (!group.getData().hasForum() && group.getData().getOwnerId() == client.getPlayer().getId()) {

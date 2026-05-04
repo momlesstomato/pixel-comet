@@ -18,7 +18,7 @@ import com.cometproject.server.utilities.RandomUtil;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
 import com.google.common.collect.Sets;
-import org.apache.commons.lang.NumberUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 public class OreFloorItem extends RoomItemFloor {
 

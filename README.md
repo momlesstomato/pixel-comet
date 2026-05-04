@@ -80,50 +80,50 @@ The emulator distribution is produced under `server/build/`, and runtime-loaded 
 
 ## Configuration
 
-Copy `config/comet.properties` and adjust:
+Create a local `.env` from `.env.example` and adjust the values for your environment:
 
-```properties
+```dotenv
 # Database
-comet.db.host=127.0.0.1
-comet.db.name=pixel_comet
-comet.db.username=root
-comet.db.password=changeme
+COMET_DB_HOST=127.0.0.1
+COMET_DB_NAME=pixel_comet
+COMET_DB_USERNAME=root
+COMET_DB_PASSWORD=changeme
 
 # Network
-comet.network.host=0.0.0.0
-comet.network.port=2096          # TCP game port
-comet.websockets.enable=true
-comet.websockets.port=87         # WebSocket game port
+COMET_NETWORK_HOST=0.0.0.0
+COMET_NETWORK_PORT=2096
+COMET_WEBSOCKETS_ENABLE=true
+COMET_WEBSOCKETS_PORT=87
 
 # REST API (disabled by default)
-comet.api.enabled=false
-comet.api.port=30003
-comet.api.token=changeme
+COMET_API_ENABLED=false
+COMET_API_PORT=30003
+COMET_API_TOKEN=changeme
 ```
 
-Pluggable modules are declared in `config/modules.json`:
+Pluggable modules are discovered automatically from the modules directory:
 
-```json
-{
-  "modules": [
-    {
-      "path": "modules/groups.jar",
-      "alias": "Comet.Game.Groups",
-      "config": {}
-    }
-  ]
-}
+```text
+modules/
+  01-groups.jar
+  02-rooms.jar
 ```
+
+Each module JAR must contain a root-level `module.json`. Module-specific environment
+variables use the `MODULE_<MODULE_NAME>_<KEY>` namespace. Bundled modules also accept
+the shortened form without a leading `COMET_` segment, such as
+`MODULE_GROUPS_CACHE_TTL_SECONDS`.
 
 ---
 
 ## Running
 
 ```bash
-./gradlew :server:run
+./gradlew :server:shadowJar
+java -jar server/build/libs/server.jar
 ```
 
-The server binds on the configured TCP and WebSocket ports. The REST API starts only when `comet.api.enabled=true`.
+The server binds on the configured TCP and WebSocket ports. The REST API starts only when `COMET_API_ENABLED=true`.
 
 ---
 
@@ -143,7 +143,7 @@ mysql -u root -p pixel_comet < SQL.sql
 2. Extend `com.cometproject.api.modules.BaseModule`.
 3. Register commands by implementing `com.cometproject.api.commands.ModuleChatCommand`.
 4. Subscribe to game events via the event system in `com.cometproject.api.events`.
-5. Package as a JAR and declare it in `config/modules.json`.
+5. Package the module as a JAR, include a root `module.json`, and drop it into `modules/`.
 
 All module code must follow the standards in [AGENTS.md](AGENTS.md).
 
@@ -151,7 +151,7 @@ All module code must follow the standards in [AGENTS.md](AGENTS.md).
 
 ## REST Management API
 
-When enabled, the API listens on `comet.api.port` and requires the `authToken` header set to `comet.api.token`.
+When enabled, the API listens on `COMET_API_PORT` and requires the `authToken` header set to `COMET_API_TOKEN`.
 
 | Method | Path | Description |
 |--------|------|-------------|

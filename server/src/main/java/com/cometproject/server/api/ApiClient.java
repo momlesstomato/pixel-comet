@@ -1,18 +1,20 @@
 package com.cometproject.server.api;
 
-import com.cometproject.api.config.CometSettings;
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.Response;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 
-import java.util.concurrent.Future;
+import com.cometproject.api.config.CometSettings;
 
 public class ApiClient {
     private static ApiClient apiClient;
-    private AsyncHttpClient asyncHttpClient;
+    private final HttpClient httpClient;
     private boolean isOffline = false;
 
     public ApiClient() {
-        this.asyncHttpClient = new AsyncHttpClient();
+        this.httpClient = HttpClient.newHttpClient();
     }
 
     public static ApiClient getInstance() {
@@ -28,15 +30,14 @@ public class ApiClient {
 
     public String savePhoto(final byte[] data, String photoId) {
         try {
-            Future<Response> responseFuture = asyncHttpClient.preparePost(CometSettings.cameraUploadUrl.replace("%photoId%", photoId))
-                    .addHeader("Content-Type", "application/octet-stream")
-                    .setBody(data)
-                    .execute();
+            final HttpRequest request = HttpRequest.newBuilder(URI.create(CometSettings.cameraUploadUrl.replace("%photoId%", photoId)))
+                    .header("Content-Type", "application/octet-stream")
+                    .POST(HttpRequest.BodyPublishers.ofByteArray(data))
+                    .build();
 
-            Response res = responseFuture.get();
-
-            return res.getResponseBody();
+            return this.httpClient.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8)).body();
         } catch (Exception e) {
+            this.isOffline = true;
             return "";
         }
     }

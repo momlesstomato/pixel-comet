@@ -2,7 +2,7 @@ package com.cometproject.server.game.commands.development;
 
 import com.cometproject.server.game.commands.ChatCommand;
 import com.cometproject.server.network.sessions.Session;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class FastProcessCommand extends ChatCommand {
     @Override

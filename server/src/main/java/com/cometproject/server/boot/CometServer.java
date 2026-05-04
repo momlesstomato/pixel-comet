@@ -1,6 +1,8 @@
 package com.cometproject.server.boot;
 
 import com.cometproject.api.config.Configuration;
+import com.cometproject.api.config.ConfigurationSource;
+import com.cometproject.server.config.ConfigurationBootstrap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,12 +14,7 @@ public class CometServer {
     private final CometBootstrap bootstrap;
 
     public CometServer(Map<String, String> overridenConfig) {
-        Configuration.setConfiguration(new Configuration("./config/comet.properties"));
-
-        if (overridenConfig != null) {
-            Configuration.currentConfig().override(overridenConfig);
-        }
-
+        ConfigurationBootstrap.initialize(overridenConfig);
         this.bootstrap = new CometBootstrap();
     }
 
@@ -40,7 +37,7 @@ public class CometServer {
      *
      * @return Comet configuration
      */
-    public Configuration getConfig() {
+    public ConfigurationSource getConfig() {
         return Configuration.currentConfig();
     }
 

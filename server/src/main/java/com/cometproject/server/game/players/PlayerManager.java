@@ -1,20 +1,6 @@
 package com.cometproject.server.game.players;
 
-import com.cometproject.api.game.players.IPlayerService;
-import com.cometproject.api.game.players.data.PlayerAvatar;
-import com.cometproject.api.networking.sessions.ISession;
-import com.cometproject.server.boot.CometBootstrap;
-import com.cometproject.server.game.players.data.PlayerData;
-import com.cometproject.server.game.players.login.PlayerLoginRequest;
-import com.cometproject.server.network.NetworkManager;
-import com.cometproject.server.network.sessions.Session;
-import com.cometproject.server.storage.queries.player.PlayerDao;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +9,32 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.cometproject.api.game.players.IPlayerService;
+import com.cometproject.api.game.players.data.PlayerAvatar;
+import com.cometproject.api.networking.sessions.ISession;
+import com.cometproject.api.config.Configuration;
+import com.cometproject.server.boot.CometBootstrap;
+import com.cometproject.server.game.players.data.PlayerData;
+import com.cometproject.server.game.players.login.PlayerLoginRequest;
+import com.cometproject.server.network.NetworkManager;
+import com.cometproject.server.network.sessions.Session;
+import com.cometproject.server.storage.queries.player.PlayerDao;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+
 
 public class PlayerManager implements IPlayerService {
+    private static final String PLAYER_AVATAR_CACHE_SIZE_PROPERTY = "comet.cache.playerAvatar.maxSize";
+    private static final String PLAYER_DATA_CACHE_SIZE_PROPERTY = "comet.cache.playerData.maxSize";
+    private static final String PLAYER_AVATAR_CACHE_MINUTES_PROPERTY = "comet.cache.playerAvatar.expireMinutes";
+    private static final String PLAYER_DATA_CACHE_MINUTES_PROPERTY = "comet.cache.playerData.expireMinutes";
+    private static final long DEFAULT_PLAYER_AVATAR_CACHE_SIZE = 5_000L;
+    private static final long DEFAULT_PLAYER_DATA_CACHE_SIZE = 5_000L;
+    private static final long DEFAULT_PLAYER_AVATAR_CACHE_MINUTES = 30L;
+    private static final long DEFAULT_PLAYER_DATA_CACHE_MINUTES = 30L;
     private static Logger LOGGER = LoggerFactory.getLogger(PlayerManager.class.getName());
 
     private Map<Integer, Integer> playerIdToSessionId;
@@ -36,11 +46,8 @@ public class PlayerManager implements IPlayerService {
     private Map<Integer, String> playerIdToUsername;
     private Map<String, Integer> authTokenToPlayerId;
 
-    private CacheManager cacheManager;
-
-    private Cache playerAvatarCache;
-
-    private Cache playerDataCache;
+    private Cache<Integer, PlayerAvatar> playerAvatarCache;
+    private Cache<Integer, PlayerData> playerDataCache;
     private ExecutorService playerLoginService;
 
     public PlayerManager() {
@@ -57,6 +64,17 @@ public class PlayerManager implements IPlayerService {
         this.playerUsernameToPlayerId = new ConcurrentHashMap<>();
         this.ipAddressToPlayerIds = new ConcurrentHashMap<>();
         this.ssoTicketToPlayerId = new ConcurrentHashMap<>();
+        this.playerIdToUsername = new ConcurrentHashMap<>();
+        this.authTokenToPlayerId = new ConcurrentHashMap<>();
+
+        this.playerAvatarCache = Caffeine.newBuilder()
+            .maximumSize(this.getConfiguredLong(PLAYER_AVATAR_CACHE_SIZE_PROPERTY, DEFAULT_PLAYER_AVATAR_CACHE_SIZE))
+            .expireAfterAccess(Duration.ofMinutes(this.getConfiguredLong(PLAYER_AVATAR_CACHE_MINUTES_PROPERTY, DEFAULT_PLAYER_AVATAR_CACHE_MINUTES)))
+            .build();
+        this.playerDataCache = Caffeine.newBuilder()
+            .maximumSize(this.getConfiguredLong(PLAYER_DATA_CACHE_SIZE_PROPERTY, DEFAULT_PLAYER_DATA_CACHE_SIZE))
+            .expireAfterAccess(Duration.ofMinutes(this.getConfiguredLong(PLAYER_DATA_CACHE_MINUTES_PROPERTY, DEFAULT_PLAYER_DATA_CACHE_MINUTES)))
+            .build();
 
         this.playerLoginService = Executors.newFixedThreadPool(4);// TODO: configure this.
 
@@ -70,10 +88,6 @@ public class PlayerManager implements IPlayerService {
     public void stop() {
         if (this.playerLoginService != null) {
             this.playerLoginService.shutdownNow();
-        }
-
-        if (this.cacheManager != null) {
-            this.cacheManager.shutdown();
         }
     }
 
@@ -91,18 +105,17 @@ public class PlayerManager implements IPlayerService {
         }
 
         if (this.playerDataCache != null) {
-            Element cachedElement = this.playerDataCache.get(playerId);
+            final PlayerData cachedPlayerData = this.playerDataCache.getIfPresent(playerId);
 
-            if (cachedElement != null && cachedElement.getObjectValue() != null) {
-                return (PlayerData) cachedElement.getObjectValue();
+            if (cachedPlayerData != null) {
+                return cachedPlayerData;
             }
         }
 
         if (this.playerAvatarCache != null) {
-            Element cachedElement = this.playerAvatarCache.get(playerId);
+            final PlayerAvatar playerAvatar = this.playerAvatarCache.getIfPresent(playerId);
 
-            if (cachedElement != null && cachedElement.getObjectValue() != null) {
-                final PlayerAvatar playerAvatar = ((PlayerAvatar) cachedElement.getObjectValue());
+            if (playerAvatar != null) {
 
                 if (playerAvatar.getMotto() == null && mode == PlayerAvatar.USERNAME_FIGURE_MOTTO) {
                     playerAvatar.setMotto(PlayerDao.getMottoByPlayerId(playerId));
@@ -115,7 +128,7 @@ public class PlayerManager implements IPlayerService {
         PlayerAvatar playerAvatar = PlayerDao.getAvatarById(playerId, mode);
 
         if (playerAvatar != null && this.playerAvatarCache != null) {
-            this.playerAvatarCache.put(new Element(playerId, playerAvatar));
+            this.playerAvatarCache.put(playerId, playerAvatar);
         }
 
         return playerAvatar;
@@ -131,17 +144,17 @@ public class PlayerManager implements IPlayerService {
         }
 
         if (this.playerDataCache != null) {
-            Element cachedElement = this.playerDataCache.get(playerId);
+            final PlayerData cachedPlayerData = this.playerDataCache.getIfPresent(playerId);
 
-            if (cachedElement != null && cachedElement.getObjectValue() != null) {
-                return (PlayerData) cachedElement.getObjectValue();
+            if (cachedPlayerData != null) {
+                return cachedPlayerData;
             }
         }
 
         PlayerData playerData = PlayerDao.getDataById(playerId);
 
         if (playerData != null && this.playerDataCache != null) {
-            this.playerDataCache.put(new Element(playerId, playerData));
+            this.playerDataCache.put(playerId, playerData);
         }
 
         return playerData;
@@ -250,7 +263,7 @@ public class PlayerManager implements IPlayerService {
         return playerLoginService;
     }
 
-    public CacheManager getCacheManager() {
-        return cacheManager;
+    private long getConfiguredLong(final String property, final long defaultValue) {
+        return Long.parseLong(String.valueOf(Configuration.currentConfig().getOrDefault(property, String.valueOf(defaultValue))));
     }
 }

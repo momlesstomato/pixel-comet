@@ -1,13 +1,14 @@
 package com.cometproject.server.game.permissions.types;
 
-import com.cometproject.api.game.players.data.components.permissions.PlayerRank;
-import com.cometproject.server.game.permissions.Permission;
-import com.cometproject.server.game.permissions.PermissionSetting;
-import gnu.trove.map.hash.THashMap;
-
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.cometproject.api.game.players.data.components.permissions.PlayerRank;
+import com.cometproject.server.game.permissions.Permission;
+import com.cometproject.server.game.permissions.PermissionSetting;
 
 public class Rank implements PlayerRank {
     private final int id;
@@ -41,12 +42,12 @@ public class Rank implements PlayerRank {
     private boolean aboutStats;
     private boolean loginNotif;
 
-    private final THashMap<String, Permission> permissions;
-    private final THashMap<String, String> variables;
+    private final Map<String, Permission> permissions;
+    private final Map<String, String> variables;
 
     public Rank(ResultSet set) throws SQLException {
-        this.permissions = new THashMap<>();
-        this.variables = new THashMap<>();
+        this.permissions = new HashMap<>();
+        this.variables = new HashMap<>();
         this.id = set.getInt("id");
 
         this.load(set);
@@ -101,7 +102,7 @@ public class Rank implements PlayerRank {
         return false;
     }
 
-    public THashMap<String, Permission> getPermissions() {
+    public Map<String, Permission> getPermissions() {
         return permissions;
     }
 

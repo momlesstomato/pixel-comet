@@ -25,7 +25,7 @@ import com.cometproject.server.storage.queries.items.ItemDao;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
 import com.google.common.collect.Sets;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -52,10 +52,10 @@ implements Event {
         ArrayList<Integer> playersId = new ArrayList<Integer>();
         if (!voucher.getClaimedBy().isEmpty()) {
             if (!voucher.getClaimedBy().contains(",")) {
-                playersId.add(new Integer(voucher.getClaimedBy()));
+                playersId.add(Integer.parseInt(voucher.getClaimedBy()));
             } else {
                 for (String playerId : voucher.getClaimedBy().split(",")) {
-                    playersId.add(new Integer(playerId));
+                    playersId.add(Integer.parseInt(playerId));
                 }
             }
             if (playersId.contains(client.getPlayer().getId())) {

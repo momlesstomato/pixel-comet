@@ -42,7 +42,6 @@ import com.cometproject.server.modules.ModuleManager;
 import com.cometproject.server.network.messages.outgoing.messenger.InstantChatMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.google.common.collect.Lists;
-import gnu.trove.map.hash.THashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -445,13 +444,13 @@ public class CommandManager implements Startable {
     public List<ChatCommand> getCommandsForRank(int rankId) {
         List<ChatCommand> allowedCommands = new ArrayList<>();
         if (PermissionsManager.getInstance().rankExists(rankId)) {
-            THashMap<String, Permission> permissions = PermissionsManager.getInstance().getRank(rankId).getPermissions();
+            Map<String, Permission> permissions = PermissionsManager.getInstance().getRank(rankId).getPermissions();
 
             for (ChatCommand command : commands.values()) {
                 if (allowedCommands.contains(command))
                     continue;
 
-                if (permissions.contains(command.getPermission()) && permissions.get(command.getPermission()).setting != PermissionSetting.DISALLOWED) {
+                if (permissions.containsKey(command.getPermission()) && permissions.get(command.getPermission()).setting != PermissionSetting.DISALLOWED) {
                     allowedCommands.add(command);
                 }
             }

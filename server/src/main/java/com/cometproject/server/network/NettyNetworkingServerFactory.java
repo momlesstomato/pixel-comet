@@ -1,6 +1,6 @@
 package com.cometproject.server.network;
 
-import com.cometproject.api.config.Configuration;
+import com.cometproject.api.config.ConfigurationSource;
 import com.cometproject.networking.api.INetworkingServer;
 import com.cometproject.networking.api.INetworkingServerFactory;
 import com.cometproject.networking.api.config.NetworkingServerConfig;
@@ -25,7 +25,7 @@ public class NettyNetworkingServerFactory implements INetworkingServerFactory {
     private static final String CFG_ACCEPT_LOOP_COUNT = "comet.network.acceptGroupThreads";
     private static final String CFG_NETWORK_BACKLOG = "comet.network.backlog";
 
-    private final Configuration configuration;
+    private final ConfigurationSource configuration;
 
     private EventLoopGroup ioLoopGroup;
     private EventLoopGroup channelLoopGroup;
@@ -33,7 +33,7 @@ public class NettyNetworkingServerFactory implements INetworkingServerFactory {
 
     private boolean epollEnabled = false;
 
-    public NettyNetworkingServerFactory(Configuration configuration) {
+    public NettyNetworkingServerFactory(ConfigurationSource configuration) {
         final boolean epoll = Boolean.parseBoolean((String) configuration.getOrDefault(CFG_EPOLL, "false"));
         final int ioGroupCount = Integer.parseInt((String) configuration.getOrDefault(CFG_IO_LOOP_COUNT, "4"));
         final int channelGroupCount = Integer.parseInt((String) configuration.getOrDefault(CFG_CHANNEL_LOOP_COUNT, "4"));
