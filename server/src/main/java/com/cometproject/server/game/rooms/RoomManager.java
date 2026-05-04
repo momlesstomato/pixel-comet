@@ -8,7 +8,8 @@ import com.cometproject.api.game.rooms.models.CustomFloorMapData;
 import com.cometproject.api.game.rooms.settings.RoomAccessType;
 import com.cometproject.api.game.rooms.settings.RoomTradeState;
 import com.cometproject.api.networking.sessions.ISession;
-import com.cometproject.api.utilities.Initialisable;
+import com.cometproject.api.utilities.Startable;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.players.types.Player;
 import com.cometproject.server.game.rooms.filter.WordFilter;
 import com.cometproject.server.game.rooms.models.types.StaticRoomModel;
@@ -34,12 +35,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public class RoomManager implements Initialisable {
+public class RoomManager implements Startable {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(RoomManager.class);
     public static final int LRU_MAX_ENTRIES = Integer.parseInt(Configuration.currentConfig().getProperty("comet.game.rooms.data.max"));
     public static final int LRU_MAX_LOWER_WATERMARK = Integer.parseInt(Configuration.currentConfig().getProperty("comet.game.rooms.data.lowerWatermark"));
-    private static RoomManager roomManagerInstance;
     private Map<Integer, IRoomData> roomDataInstances;
 
     private Map<Integer, Room> loadedRoomInstances;
@@ -62,14 +62,11 @@ public class RoomManager implements Initialisable {
     }
 
     public static RoomManager getInstance() {
-        if (roomManagerInstance == null)
-            roomManagerInstance = new RoomManager();
-
-        return roomManagerInstance;
+        return CometBootstrap.resolve(RoomManager.class);
     }
 
     @Override
-    public void initialize() {
+    public void start() {
         this.roomDataInstances = new ConcurrentHashMap<>();
 
         this.loadedRoomInstances = new ConcurrentHashMap<>();
@@ -96,6 +93,17 @@ public class RoomManager implements Initialisable {
         });
 
         LOGGER.info("RoomManager initialized");
+    }
+
+    @Override
+    public void stop() {
+        if (this.globalCycle != null) {
+            this.globalCycle.stop();
+        }
+
+        if (this.executorService != null) {
+            this.executorService.shutdownNow();
+        }
     }
 
     public void loadPromotedRooms() {

@@ -1,25 +1,27 @@
 package com.cometproject.server.storage.cache;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cometproject.api.config.Configuration;
-import com.cometproject.api.utilities.Initialisable;
 import com.cometproject.api.utilities.JsonUtil;
+import com.cometproject.api.utilities.Startable;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.storage.cache.subscribers.GoToRoomSubscriber;
 import com.cometproject.server.storage.cache.subscribers.ISubscriber;
 import com.cometproject.server.storage.cache.subscribers.RefreshDataSubscriber;
 import com.cometproject.server.tasks.CometThreadManager;
 import com.cometproject.server.utilities.TimeSpan;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-
-public class CacheManager extends CachableObject implements Initialisable {
-    private static CacheManager cacheManager;
+public class CacheManager extends CachableObject implements Startable {
     private final Logger LOGGER = LoggerFactory.getLogger(CacheManager.class.getName());
     private final String keyPrefix;
     private final String host;
@@ -27,7 +29,7 @@ public class CacheManager extends CachableObject implements Initialisable {
     private boolean enabled;
     private JedisPool jedis;
 
-    private CacheManager() {
+    public CacheManager() {
         this.enabled = Boolean.parseBoolean((String) Configuration.currentConfig().getOrDefault("comet.cache.enabled", "false"));
         this.keyPrefix = (String) Configuration.currentConfig().getOrDefault("comet.cache.prefix", "comet");
         this.host = (String) Configuration.currentConfig().getOrDefault("comet.cache.connection.host", "");
@@ -35,14 +37,11 @@ public class CacheManager extends CachableObject implements Initialisable {
     }
 
     public static CacheManager getInstance() {
-        if (cacheManager == null)
-            cacheManager = new CacheManager();
-
-        return cacheManager;
+        return CometBootstrap.resolve(CacheManager.class);
     }
 
     @Override
-    public void initialize() {
+    public void start() {
         if (!this.enabled) {
             LOGGER.error("Cancer got removed from emulator properly.");
             return;
@@ -77,6 +76,13 @@ public class CacheManager extends CachableObject implements Initialisable {
 
         LOGGER.info("Redis caching is enabled");
 
+    }
+
+    @Override
+    public void stop() {
+        if (this.jedis != null) {
+            this.jedis.close();
+        }
     }
 
     private boolean initializeConfig() {

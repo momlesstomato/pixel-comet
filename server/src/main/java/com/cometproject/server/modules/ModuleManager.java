@@ -1,19 +1,5 @@
 package com.cometproject.server.modules;
 
-import com.cometproject.api.config.ModuleConfig;
-import com.cometproject.api.events.EventHandler;
-import com.cometproject.api.game.GameContext;
-import com.cometproject.api.modules.BaseModule;
-import com.cometproject.api.server.IGameService;
-import com.cometproject.api.utilities.Initialisable;
-import com.cometproject.api.utilities.JsonUtil;
-import com.cometproject.server.modules.events.EventHandlerService;
-import com.google.common.base.Charsets;
-import com.google.common.collect.Lists;
-import com.google.common.io.Resources;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -24,46 +10,78 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ModuleManager implements Initialisable {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.cometproject.api.config.ModuleConfig;
+import com.cometproject.api.events.EventHandler;
+import com.cometproject.api.game.GameContext;
+import com.cometproject.api.modules.BaseModule;
+import com.cometproject.api.modules.PluginGuiceModule;
+import com.cometproject.api.server.IGameService;
+import com.cometproject.api.utilities.JsonUtil;
+import com.cometproject.api.utilities.Startable;
+import com.cometproject.server.boot.CometBootstrap;
+import com.cometproject.server.modules.events.EventHandlerService;
+import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
+import com.google.common.io.Resources;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+
+public class ModuleManager implements Startable {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModuleManager.class.getName());
-    private static ModuleManager moduleManagerInstance;
-    private EventHandler eventHandler;
-    private CometGameService gameService;
+    private final Injector serverInjector;
+    private final EventHandler eventHandler;
+    private final CometGameService gameService;
+    private final Map<String, Injector> pluginInjectors;
 
     private Map<String, BaseModule> modules;
 
-    public ModuleManager() {
+    @Inject
+    ModuleManager(final Injector serverInjector) {
+        this.serverInjector = serverInjector;
         this.eventHandler = new EventHandlerService();
-        this.gameService = new CometGameService(this.eventHandler);
+        this.gameService = new CometGameService(this.eventHandler, this);
+        this.pluginInjectors = new ConcurrentHashMap<>();
     }
 
     public static ModuleManager getInstance() {
-        if (moduleManagerInstance == null) {
-            moduleManagerInstance = new ModuleManager();
-        }
-
-        return moduleManagerInstance;
+        return CometBootstrap.resolve(ModuleManager.class);
     }
 
     @Override
-    public void initialize() {
+    public void start() {
         if (this.modules != null) {
             this.modules.clear();
         } else {
             this.modules = new ConcurrentHashMap<>();
         }
 
-        ModuleManager.getInstance().getEventHandler().initialize();
+        this.pluginInjectors.clear();
+
+        this.getEventHandler().initialize();
 
         this.loadModules();
     }
 
     public void setupModules() {
         for (BaseModule baseModule : this.modules.values()) {
-            baseModule.setup();
-
-            baseModule.initialiseServices(GameContext.getCurrent());
+            this.activateModule(baseModule);
         }
+    }
+
+    private void activateModule(final BaseModule baseModule) {
+        baseModule.setup();
+
+        final PluginGuiceModule pluginGuiceModule = baseModule.getGuiceModule();
+
+        if (pluginGuiceModule != null) {
+            final Injector childInjector = this.serverInjector.createChildInjector(pluginGuiceModule);
+            this.pluginInjectors.put(baseModule.getConfig().getName(), childInjector);
+        }
+
+        baseModule.initialiseServices(GameContext.getCurrent());
     }
 
     private List<CometModule> loadModules() {
@@ -145,6 +163,10 @@ public class ModuleManager implements Initialisable {
 
     public EventHandler getEventHandler() {
         return eventHandler;
+    }
+
+    Injector getPluginInjector(final String moduleName) {
+        return this.pluginInjectors.get(moduleName);
     }
 
     private class ModulesConfig {

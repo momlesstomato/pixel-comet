@@ -4,6 +4,7 @@ import com.cometproject.api.game.achievements.IAchievementsService;
 import com.cometproject.api.game.achievements.types.AchievementType;
 import com.cometproject.api.game.achievements.types.IAchievementGroup;
 import com.cometproject.api.game.achievements.types.ITalentTrackLevel;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.storage.queries.achievements.AchievementDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,15 +26,11 @@ public class AchievementManager implements IAchievementsService {
     }
 
     public static AchievementManager getInstance() {
-        if (achievementManager == null) {
-            achievementManager = new AchievementManager();
-        }
-
-        return achievementManager;
+        return CometBootstrap.resolve(AchievementManager.class);
     }
 
     @Override
-    public void initialize() {
+    public void start() {
         this.loadAchievements();
         this.loadGameCenterAchievements();
         this.loadTalentTrack();

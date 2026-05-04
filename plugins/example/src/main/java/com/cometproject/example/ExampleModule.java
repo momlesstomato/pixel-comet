@@ -5,6 +5,7 @@ import com.cometproject.api.events.players.OnPlayerLoginEvent;
 import com.cometproject.api.events.players.args.OnPlayerLoginEventArgs;
 import com.cometproject.api.game.players.data.components.inventory.PlayerItem;
 import com.cometproject.api.modules.BaseModule;
+import com.cometproject.api.modules.PluginGuiceModule;
 import com.cometproject.api.networking.sessions.ISession;
 import com.cometproject.api.server.IGameService;
 
@@ -64,5 +65,21 @@ public class ExampleModule extends BaseModule {
 //        player.getData().save();
 //
 //        player.sendBalance();
+    }
+
+    /**
+     * Creates an empty child injector so the example plugin exercises the injector path.
+     *
+     * @return The example plugin Guice module.
+     */
+    @Override
+    public PluginGuiceModule getGuiceModule() {
+        return new PluginGuiceModule(this.getGameService()) {
+            @Override
+            protected void configure() {
+                bind(IGameService.class).toInstance(getGameService());
+                bind(ExampleModule.class).toInstance(ExampleModule.this);
+            }
+        };
     }
 }

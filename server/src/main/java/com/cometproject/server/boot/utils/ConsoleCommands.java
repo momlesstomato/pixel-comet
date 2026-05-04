@@ -67,7 +67,7 @@ public class ConsoleCommands {
                     break;
 
                 case "/reload_modules":
-                    ModuleManager.getInstance().initialize();
+                    ModuleManager.getInstance().start();
                     LOGGER.info("Modules reloaded successfully.");
                     break;
 

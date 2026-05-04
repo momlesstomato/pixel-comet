@@ -8,6 +8,7 @@ import com.cometproject.api.game.rooms.IRoomService;
 import com.cometproject.api.game.rooms.models.IRoomModelFactory;
 import com.cometproject.api.game.rooms.models.IRoomModelService;
 import com.cometproject.api.modules.BaseModule;
+import com.cometproject.api.modules.PluginGuiceModule;
 import com.cometproject.api.server.IGameService;
 import com.cometproject.common.caching.LastReferenceCache;
 import com.cometproject.game.rooms.factories.RoomModelFactory;
@@ -43,5 +44,23 @@ public class RoomsModule extends BaseModule {
 
         gameContext.setRoomService(this.roomService);
         gameContext.setRoomModelService(this.roomModelService);
+    }
+
+    /**
+     * Exposes the room services through the plugin child injector.
+     *
+     * @return The plugin Guice module for the rooms plugin.
+     */
+    @Override
+    public PluginGuiceModule getGuiceModule() {
+        return new PluginGuiceModule(this.getGameService()) {
+            @Override
+            protected void configure() {
+                bind(IRoomService.class).toInstance(RoomsModule.this.roomService);
+                bind(IRoomModelService.class).toInstance(RoomsModule.this.roomModelService);
+                bind(IGameService.class).toInstance(getGameService());
+                bind(RoomsModule.class).toInstance(RoomsModule.this);
+            }
+        };
     }
 }

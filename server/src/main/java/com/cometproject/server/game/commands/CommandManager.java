@@ -1,7 +1,8 @@
 package com.cometproject.server.game.commands;
 
 import com.cometproject.api.commands.CommandInfo;
-import com.cometproject.api.utilities.Initialisable;
+import com.cometproject.api.utilities.Startable;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.boot.Comet;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.commands.development.*;
@@ -50,8 +51,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public class CommandManager implements Initialisable {
-    private static CommandManager commandManagerInstance;
+public class CommandManager implements Startable {
     private static final Logger LOGGER = LoggerFactory.getLogger(CommandManager.class);
 
     private NotificationManager notifications;
@@ -68,20 +68,16 @@ public class CommandManager implements Initialisable {
     /**
      * Initialize the commands map and load all commands
      */
-    private CommandManager() {
+    public CommandManager() {
 
     }
 
     public static CommandManager getInstance() {
-        if (commandManagerInstance == null) {
-            commandManagerInstance = new CommandManager();
-        }
-
-        return commandManagerInstance;
+        return CometBootstrap.resolve(CommandManager.class);
     }
 
     @Override
-    public void initialize() {
+    public void start() {
         this.commands = new HashMap<>();
 
         this.reloadAllCommands();

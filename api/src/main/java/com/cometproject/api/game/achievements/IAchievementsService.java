@@ -1,13 +1,13 @@
 package com.cometproject.api.game.achievements;
 
+import java.util.Map;
+
 import com.cometproject.api.game.achievements.types.AchievementType;
 import com.cometproject.api.game.achievements.types.IAchievementGroup;
 import com.cometproject.api.game.achievements.types.ITalentTrackLevel;
-import com.cometproject.api.utilities.Initialisable;
+import com.cometproject.api.utilities.Startable;
 
-import java.util.Map;
-
-public interface IAchievementsService extends Initialisable {
+public interface IAchievementsService extends Startable {
     void loadAchievements();
     void loadTalentTrack();
     void loadGameCenterAchievements();

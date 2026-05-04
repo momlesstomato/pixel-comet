@@ -1,4 +1,5 @@
 dependencies {
+    api(libs.guice)
     api(libs.guava)
     api(libs.gson)
     api(libs.netty.all)

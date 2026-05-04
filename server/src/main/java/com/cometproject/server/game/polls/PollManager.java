@@ -1,6 +1,7 @@
 package com.cometproject.server.game.polls;
 
-import com.cometproject.api.utilities.Initialisable;
+import com.cometproject.api.utilities.Startable;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.polls.types.Poll;
 import com.cometproject.server.game.polls.types.PollQuestion;
 import com.cometproject.server.game.polls.types.questions.InfobusQuestion;
@@ -12,8 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PollManager implements Initialisable {
-    private static PollManager pollManagerInstance;
+public class PollManager implements Startable {
     private static Logger LOGGER = LoggerFactory.getLogger(PollManager.class.getName());
     private final Map<Integer, Integer> roomIdToPollId;
     private Map<Integer, Poll> polls;
@@ -24,15 +24,11 @@ public class PollManager implements Initialisable {
     }
 
     public static PollManager getInstance() {
-        if (pollManagerInstance == null) {
-            pollManagerInstance = new PollManager();
-        }
-
-        return pollManagerInstance;
+        return CometBootstrap.resolve(PollManager.class);
     }
 
     @Override
-    public void initialize() {
+    public void start() {
         if (this.polls != null) {
             for (Poll poll : this.polls.values()) {
                 for (PollQuestion pollQuestion : poll.getPollQuestions().values()) {

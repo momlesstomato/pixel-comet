@@ -3,6 +3,7 @@ package com.cometproject.server.game.catalog;
 import com.cometproject.api.game.catalog.ICatalogService;
 import com.cometproject.api.game.catalog.types.*;
 import com.cometproject.api.game.catalog.types.purchase.ICatalogPurchaseHandler;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.catalog.purchase.LegacyPurchaseHandler;
 import com.cometproject.server.game.nuxs.NuxGift;
 import com.cometproject.server.game.players.types.roleplay.RolePlayChart;
@@ -18,7 +19,6 @@ import java.util.*;
 
 
 public class CatalogManager implements ICatalogService {
-    private static CatalogManager catalogManagerInstance;
     /**
      * Maps the offer ID of an item to the page ID.
      */
@@ -75,15 +75,11 @@ public class CatalogManager implements ICatalogService {
     }
 
     public static CatalogManager getInstance() {
-        if (catalogManagerInstance == null) {
-            catalogManagerInstance = new CatalogManager();
-        }
-
-        return catalogManagerInstance;
+        return CometBootstrap.resolve(CatalogManager.class);
     }
 
     @Override
-    public void initialize() {
+    public void start() {
         this.pages = new ListOrderedMap<>();
         this.items = new ListOrderedMap<>();
         this.cmsOffers = new ListOrderedMap<>();

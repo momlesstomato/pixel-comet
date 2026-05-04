@@ -1,15 +1,15 @@
 package com.cometproject.api.game.players;
 
-import com.cometproject.api.game.players.data.IPlayerData;
-import com.cometproject.api.game.players.data.PlayerAvatar;
-import com.cometproject.api.networking.sessions.ISession;
-import com.cometproject.api.utilities.Initialisable;
-
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
-public interface IPlayerService extends Initialisable {
+import com.cometproject.api.game.players.data.IPlayerData;
+import com.cometproject.api.game.players.data.PlayerAvatar;
+import com.cometproject.api.networking.sessions.ISession;
+import com.cometproject.api.utilities.Startable;
+
+public interface IPlayerService extends Startable {
     void submitLoginRequest(ISession client, String ticket);
 
     PlayerAvatar getAvatarByPlayerId(int playerId, byte mode);

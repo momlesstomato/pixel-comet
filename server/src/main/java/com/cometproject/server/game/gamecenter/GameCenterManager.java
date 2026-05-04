@@ -1,6 +1,7 @@
 package com.cometproject.server.game.gamecenter;
 
-import com.cometproject.api.utilities.Initialisable;
+import com.cometproject.api.utilities.Startable;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.players.data.GamePlayer;
 import com.cometproject.server.storage.queries.catalog.BetDao;
 import com.cometproject.server.tasks.CometThreadManager;
@@ -12,8 +13,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
-public class GameCenterManager implements Initialisable {
-    private static GameCenterManager gameCenterManagerInstance;
+public class GameCenterManager implements Startable {
     private static int gameId;
     private List<GamePlayer> currentWeek;
     private List<GamePlayer> lastWeek;
@@ -25,7 +25,7 @@ public class GameCenterManager implements Initialisable {
     }
 
     @Override
-    public void initialize() {
+    public void start() {
         this.gamesList = new ArrayList<>();
 
         this.loadLeaderboards();
@@ -57,10 +57,7 @@ public class GameCenterManager implements Initialisable {
     }
 
     public static GameCenterManager getInstance() {
-        if (gameCenterManagerInstance == null)
-            gameCenterManagerInstance = new GameCenterManager();
-
-        return gameCenterManagerInstance;
+        return CometBootstrap.resolve(GameCenterManager.class);
     }
 
     public void loadGameCenterList() {

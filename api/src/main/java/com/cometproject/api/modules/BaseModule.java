@@ -1,5 +1,9 @@
 package com.cometproject.api.modules;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.BiConsumer;
+
 import com.cometproject.api.commands.CommandInfo;
 import com.cometproject.api.config.ModuleConfig;
 import com.cometproject.api.events.Event;
@@ -8,10 +12,6 @@ import com.cometproject.api.game.GameContext;
 import com.cometproject.api.networking.messages.IMessageEventHandler;
 import com.cometproject.api.networking.sessions.ISession;
 import com.cometproject.api.server.IGameService;
-
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.BiConsumer;
 
 public abstract class BaseModule implements EventListenerContainer {
 
@@ -70,6 +70,15 @@ public abstract class BaseModule implements EventListenerContainer {
      */
     public void initialiseServices(GameContext gameContext) {
 
+    }
+
+    /**
+     * Returns the optional Guice module used to create this plugin's child injector.
+     *
+     * @return The plugin Guice module, or {@code null} when the plugin does not declare bindings.
+     */
+    public PluginGuiceModule getGuiceModule() {
+        return null;
     }
 
     /**

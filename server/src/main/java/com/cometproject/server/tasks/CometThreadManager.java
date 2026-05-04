@@ -1,19 +1,24 @@
 package com.cometproject.server.tasks;
 
-import com.cometproject.api.config.Configuration;
-import com.cometproject.api.utilities.Initialisable;
-import com.cometproject.server.game.rooms.types.components.ItemProcessComponent;
-import com.cometproject.server.game.rooms.types.components.ProcessComponent;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.cometproject.api.config.Configuration;
+import com.cometproject.api.utilities.Startable;
+import com.cometproject.server.boot.CometBootstrap;
+import com.cometproject.server.game.rooms.types.components.ItemProcessComponent;
+import com.cometproject.server.game.rooms.types.components.ProcessComponent;
 
 
-public class CometThreadManager implements Initialisable {
+public class CometThreadManager implements Startable {
     public static int POOL_SIZE = 0;
-    private static CometThreadManager cometThreadManagerInstance;
     private ScheduledExecutorService coreExecutor;
     private ScheduledExecutorService roomProcessingExecutor;
 
@@ -22,14 +27,11 @@ public class CometThreadManager implements Initialisable {
     }
 
     public static CometThreadManager getInstance() {
-        if (cometThreadManagerInstance == null)
-            cometThreadManagerInstance = new CometThreadManager();
-
-        return cometThreadManagerInstance;
+        return CometBootstrap.resolve(CometThreadManager.class);
     }
 
     @Override
-    public void initialize() {
+    public void start() {
         int poolSize = Integer.parseInt((String) Configuration.currentConfig().getOrDefault("comet.system.threads", "8"));
 
         this.coreExecutor = Executors.newScheduledThreadPool(poolSize, r -> {
@@ -56,6 +58,17 @@ public class CometThreadManager implements Initialisable {
 
             return scheduledThread;
         });
+    }
+
+    @Override
+    public void stop() {
+        if (this.roomProcessingExecutor != null) {
+            this.roomProcessingExecutor.shutdownNow();
+        }
+
+        if (this.coreExecutor != null) {
+            this.coreExecutor.shutdownNow();
+        }
     }
 
     public Future executeOnce(CometTask task) {

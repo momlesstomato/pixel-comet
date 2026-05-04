@@ -2,7 +2,8 @@ package com.cometproject.server.game.landing;
 
 import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.game.players.data.PlayerAvatar;
-import com.cometproject.api.utilities.Initialisable;
+import com.cometproject.api.utilities.Startable;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.landing.calendar.CalendarDay;
 import com.cometproject.server.game.landing.types.PromoArticle;
 import com.cometproject.server.storage.queries.landing.LandingDao;
@@ -14,9 +15,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
-public class LandingManager implements Initialisable {
+public class LandingManager implements Startable {
     private static final Logger LOGGER = LoggerFactory.getLogger(LandingManager.class.getName());
-    private static LandingManager landingManagerInstance;
     private Map<Integer, PromoArticle> articles;
     private Map<Integer, CalendarDay> calendarDays;
 
@@ -26,15 +26,11 @@ public class LandingManager implements Initialisable {
     }
 
     public static LandingManager getInstance() {
-        if (landingManagerInstance == null) {
-            landingManagerInstance = new LandingManager();
-        }
-
-        return landingManagerInstance;
+        return CometBootstrap.resolve(LandingManager.class);
     }
 
     @Override
-    public void initialize() {
+    public void start() {
         this.loadArticles();
         this.loadHallOfFame();
         this.loadCalendar();

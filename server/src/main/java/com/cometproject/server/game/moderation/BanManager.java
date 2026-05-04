@@ -1,6 +1,7 @@
 package com.cometproject.server.game.moderation;
 
-import com.cometproject.api.utilities.Initialisable;
+import com.cometproject.api.utilities.Startable;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.boot.Comet;
 import com.cometproject.server.game.moderation.types.Ban;
 import com.cometproject.server.game.moderation.types.BanType;
@@ -15,8 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-public class BanManager implements Initialisable {
-    public static BanManager banManagerInstance;
+public class BanManager implements Startable {
     Logger LOGGER = LoggerFactory.getLogger(BanManager.class.getName());
     private Map<String, Ban> bans;
     private Set<Integer> mutedPlayers;
@@ -26,14 +26,11 @@ public class BanManager implements Initialisable {
     }
 
     public static BanManager getInstance() {
-        if (banManagerInstance == null)
-            banManagerInstance = new BanManager();
-
-        return banManagerInstance;
+        return CometBootstrap.resolve(BanManager.class);
     }
 
     @Override
-    public void initialize() {
+    public void start() {
         this.mutedPlayers = new ConcurrentHashSet<>();
 
         loadBans();
@@ -97,7 +94,7 @@ public class BanManager implements Initialisable {
                 this.bans.remove(data);
                 removeBan(data);
 
-                initialize();
+                start();
                 return true;
             } else return false;
         } else return false;

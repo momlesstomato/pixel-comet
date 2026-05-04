@@ -1,14 +1,15 @@
 package com.cometproject.api.game.furniture;
 
+import java.util.Map;
+
+import org.slf4j.Logger;
+
 import com.cometproject.api.game.furniture.types.CrackableReward;
 import com.cometproject.api.game.furniture.types.FurnitureDefinition;
 import com.cometproject.api.game.furniture.types.IMusicData;
-import com.cometproject.api.utilities.Initialisable;
-import org.slf4j.Logger;
+import com.cometproject.api.utilities.Startable;
 
-import java.util.Map;
-
-public interface IFurnitureService extends Initialisable {
+public interface IFurnitureService extends Startable {
     void loadItemDefinitions();
 
     void loadMusicData();

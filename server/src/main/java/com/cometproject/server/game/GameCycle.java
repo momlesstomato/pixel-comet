@@ -4,8 +4,9 @@ import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.game.achievements.types.AchievementType;
 import com.cometproject.api.game.players.data.components.inventory.PlayerItem;
 import com.cometproject.api.networking.sessions.ISession;
-import com.cometproject.api.utilities.Initialisable;
+import com.cometproject.api.utilities.Startable;
 import com.cometproject.server.boot.Comet;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.composers.catalog.UnseenItemsMessageComposer;
 import com.cometproject.server.game.items.ItemManager;
 import com.cometproject.server.game.moderation.BanManager;
@@ -34,10 +35,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 
-public class GameCycle implements CometTask, Initialisable {
+public class GameCycle implements CometTask, Startable {
     private static final int interval = 1;
-
-    private static GameCycle gameThreadInstance;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameCycle.class);
 
@@ -53,14 +52,11 @@ public class GameCycle implements CometTask, Initialisable {
     }
 
     public static GameCycle getInstance() {
-        if (gameThreadInstance == null)
-            gameThreadInstance = new GameCycle();
-
-        return gameThreadInstance;
+        return CometBootstrap.resolve(GameCycle.class);
     }
 
     @Override
-    public void initialize() {
+    public void start() {
         this.gameFuture = CometThreadManager.getInstance().executePeriodic(this, interval, interval, TimeUnit.MINUTES);
         this.active = true;
 
@@ -204,9 +200,13 @@ public class GameCycle implements CometTask, Initialisable {
         }
     }
 
+    @Override
     public void stop() {
         this.active = false;
-        this.gameFuture.cancel(false);
+
+        if (this.gameFuture != null) {
+            this.gameFuture.cancel(false);
+        }
     }
 
     public int getCurrentOnlineRecord() {

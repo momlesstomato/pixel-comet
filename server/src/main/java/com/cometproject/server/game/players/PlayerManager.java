@@ -3,7 +3,7 @@ package com.cometproject.server.game.players;
 import com.cometproject.api.game.players.IPlayerService;
 import com.cometproject.api.game.players.data.PlayerAvatar;
 import com.cometproject.api.networking.sessions.ISession;
-import com.cometproject.api.utilities.Initialisable;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.players.data.PlayerData;
 import com.cometproject.server.game.players.login.PlayerLoginRequest;
 import com.cometproject.server.network.NetworkManager;
@@ -24,8 +24,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public class PlayerManager implements IPlayerService, Initialisable {
-    private static PlayerManager playerManagerInstance;
+public class PlayerManager implements IPlayerService {
     private static Logger LOGGER = LoggerFactory.getLogger(PlayerManager.class.getName());
 
     private Map<Integer, Integer> playerIdToSessionId;
@@ -49,14 +48,11 @@ public class PlayerManager implements IPlayerService, Initialisable {
     }
 
     public static PlayerManager getInstance() {
-        if (playerManagerInstance == null)
-            playerManagerInstance = new PlayerManager();
-
-        return playerManagerInstance;
+        return CometBootstrap.resolve(PlayerManager.class);
     }
 
     @Override
-    public void initialize() {
+    public void start() {
         this.playerIdToSessionId = new ConcurrentHashMap<>();
         this.playerUsernameToPlayerId = new ConcurrentHashMap<>();
         this.ipAddressToPlayerIds = new ConcurrentHashMap<>();
@@ -68,6 +64,17 @@ public class PlayerManager implements IPlayerService, Initialisable {
         PlayerDao.resetOnlineStatus();
 
         LOGGER.info("PlayerManager initialized");
+    }
+
+    @Override
+    public void stop() {
+        if (this.playerLoginService != null) {
+            this.playerLoginService.shutdownNow();
+        }
+
+        if (this.cacheManager != null) {
+            this.cacheManager.shutdown();
+        }
     }
 
     public void submitLoginRequest(ISession client, String ticket) {

@@ -1285,7 +1285,7 @@ public class RconServer extends Thread{
             PetCommandManager.getInstance().initialize();
         }
         else if(section.equalsIgnoreCase("crafting")) ItemManager.getInstance().loadCraftingMachines();
-        else if(section.equalsIgnoreCase("bundles")) RoomBundleManager.getInstance().initialize();
+        else if(section.equalsIgnoreCase("bundles")) RoomBundleManager.getInstance().start();
 
         SendStringToClient("Ok", packet);
     }

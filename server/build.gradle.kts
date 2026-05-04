@@ -11,6 +11,7 @@ dependencies {
     implementation(project(":protocol"))
     implementation(project(":plugins:items"))
 
+    implementation(libs.guice)
     implementation(libs.guava)
     implementation(libs.gson)
     implementation(libs.netty.all)

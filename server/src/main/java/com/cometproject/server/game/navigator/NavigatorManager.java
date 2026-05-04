@@ -1,6 +1,7 @@
 package com.cometproject.server.game.navigator;
 
-import com.cometproject.api.utilities.Initialisable;
+import com.cometproject.api.utilities.Startable;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.navigator.types.Category;
 import com.cometproject.server.game.navigator.types.categories.NavigatorCategoryType;
 import com.cometproject.server.game.navigator.types.publics.PublicRoom;
@@ -15,8 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-public class NavigatorManager implements Initialisable {
-    private static NavigatorManager navigatorManagerInstance;
+public class NavigatorManager implements Startable {
     private final Logger LOGGER = LoggerFactory.getLogger(NavigatorManager.class.getName());
     private Map<Integer, Category> categories;
     private List<Category> userCategories;
@@ -28,14 +28,11 @@ public class NavigatorManager implements Initialisable {
     }
 
     public static NavigatorManager getInstance() {
-        if (navigatorManagerInstance == null)
-            navigatorManagerInstance = new NavigatorManager();
-
-        return navigatorManagerInstance;
+        return CometBootstrap.resolve(NavigatorManager.class);
     }
 
     @Override
-    public void initialize() {
+    public void start() {
         this.loadCategories();
         this.loadPublicRooms();
         this.loadStaffPicks();

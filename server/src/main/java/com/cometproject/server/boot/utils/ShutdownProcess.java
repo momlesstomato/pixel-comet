@@ -1,13 +1,13 @@
 package com.cometproject.server.boot.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cometproject.api.game.GameContext;
 import com.cometproject.server.boot.Comet;
 import com.cometproject.server.logging.LogManager;
 import com.cometproject.server.logging.database.queries.LogQueries;
-import com.cometproject.server.storage.StorageManager;
 import com.cometproject.server.storage.queries.system.StatisticsDao;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class ShutdownProcess {
@@ -37,8 +37,11 @@ public class ShutdownProcess {
 
         LOGGER.info("Closing all database connections");
 
+        if (Comet.getServer() != null) {
+            Comet.getServer().stop();
+        }
+
         GameContext.setCurrent(null);
-        StorageManager.getInstance().shutdown();
 
         if (exit) {
             System.exit(0);

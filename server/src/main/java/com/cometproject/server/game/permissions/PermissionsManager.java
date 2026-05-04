@@ -1,21 +1,22 @@
 package com.cometproject.server.game.permissions;
 
-import com.cometproject.api.utilities.Initialisable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.cometproject.api.utilities.Startable;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.permissions.types.EffectPermission;
 import com.cometproject.server.game.permissions.types.OverrideCommandPermission;
 import com.cometproject.server.game.permissions.types.Perk;
 import com.cometproject.server.game.permissions.types.Rank;
 import com.cometproject.server.game.players.types.Player;
 import com.cometproject.server.storage.queries.permissions.PermissionsDao;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 
-public class PermissionsManager implements Initialisable {
-    private static PermissionsManager permissionsManagerInstance;
+public class PermissionsManager implements Startable {
     private static final Logger LOGGER = LoggerFactory.getLogger(PermissionsManager.class.getName());
     private Map<Integer, Perk> perks;
     private Map<Integer, Rank> permissions;
@@ -29,14 +30,11 @@ public class PermissionsManager implements Initialisable {
     }
 
     public static PermissionsManager getInstance() {
-        if (permissionsManagerInstance == null)
-            permissionsManagerInstance = new PermissionsManager();
-
-        return permissionsManagerInstance;
+        return CometBootstrap.resolve(PermissionsManager.class);
     }
 
     @Override
-    public void initialize() {
+    public void start() {
         this.perks = new ConcurrentHashMap<>();
         this.overridecommands = new ConcurrentHashMap<>();
         this.permissions = new ConcurrentHashMap<>();

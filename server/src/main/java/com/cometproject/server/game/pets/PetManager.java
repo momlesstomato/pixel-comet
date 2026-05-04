@@ -2,7 +2,8 @@ package com.cometproject.server.game.pets;
 
 import com.cometproject.api.game.pets.IPetData;
 import com.cometproject.api.game.pets.IPetRace;
-import com.cometproject.api.utilities.Initialisable;
+import com.cometproject.api.utilities.Startable;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.pets.data.PetSpeech;
 import com.cometproject.server.game.pets.races.PetBreedLevel;
 import com.cometproject.server.game.pets.races.PetRace;
@@ -20,8 +21,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class PetManager implements Initialisable {
-    private static PetManager petManagerInstance;
+public class PetManager implements Startable {
     private final Map<Integer, IPetData> pendingPetDataSaves = Maps.newConcurrentMap();
     private Logger LOGGER = LoggerFactory.getLogger(PetManager.class.getName());
     private List<PetRace> petRaces;
@@ -36,14 +36,11 @@ public class PetManager implements Initialisable {
     }
 
     public static PetManager getInstance() {
-        if (petManagerInstance == null)
-            petManagerInstance = new PetManager();
-
-        return petManagerInstance;
+        return CometBootstrap.resolve(PetManager.class);
     }
 
     @Override
-    public void initialize() {
+    public void start() {
         this.loadPetRaces();
         this.loadPetBreedPallets();
         this.loadPetSpeech();

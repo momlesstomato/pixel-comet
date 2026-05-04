@@ -1,6 +1,7 @@
 package com.cometproject.server.game.moderation;
 
-import com.cometproject.api.utilities.Initialisable;
+import com.cometproject.api.utilities.Startable;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.moderation.types.actions.ActionCategory;
 import com.cometproject.server.game.moderation.types.tickets.HelpTicket;
 import com.cometproject.server.game.moderation.types.tickets.HelpTicketState;
@@ -20,8 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class ModerationManager implements Initialisable {
-    private static ModerationManager moderationManagerInstance;
+public class ModerationManager implements Startable {
 
     private List<String> userPresets;
     private List<String> roomPresets;
@@ -41,14 +41,11 @@ public class ModerationManager implements Initialisable {
     }
 
     public static ModerationManager getInstance() {
-        if (moderationManagerInstance == null)
-            moderationManagerInstance = new ModerationManager();
-
-        return moderationManagerInstance;
+        return CometBootstrap.resolve(ModerationManager.class);
     }
 
     @Override
-    public void initialize() {
+    public void start() {
         this.moderators = new ConcurrentHashSet<>();
         this.logChatUsers = new ConcurrentHashSet<>();
         this.alfas = new ConcurrentHashSet<>();

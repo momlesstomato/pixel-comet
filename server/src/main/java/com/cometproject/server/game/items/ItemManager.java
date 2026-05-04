@@ -4,6 +4,7 @@ import com.cometproject.api.game.furniture.IFurnitureService;
 import com.cometproject.api.game.furniture.types.CrackableReward;
 import com.cometproject.api.game.furniture.types.FurnitureDefinition;
 import com.cometproject.api.game.furniture.types.IMusicData;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.items.crafting.CraftingMachine;
 import com.cometproject.server.storage.queries.catalog.CraftingDao;
 import com.cometproject.server.storage.queries.items.ItemDao;
@@ -23,8 +24,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class ItemManager implements IFurnitureService {
-    private static ItemManager itemManagerInstance;
-
     private Logger LOGGER = LoggerFactory.getLogger(ItemManager.class);
 
     private Map<Integer, FurnitureDefinition> itemDefinitions;
@@ -45,15 +44,11 @@ public class ItemManager implements IFurnitureService {
     }
 
     public static ItemManager getInstance() {
-        if (itemManagerInstance == null) {
-            itemManagerInstance = new ItemManager();
-        }
-
-        return itemManagerInstance;
+        return CometBootstrap.resolve(ItemManager.class);
     }
 
     @Override
-    public void initialize() {
+    public void start() {
         this.itemDefinitions = new HashMap<>();
         this.musicData = new HashMap<>();
 

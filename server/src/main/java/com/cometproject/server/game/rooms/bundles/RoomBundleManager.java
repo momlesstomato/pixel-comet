@@ -1,5 +1,7 @@
 package com.cometproject.server.game.rooms.bundles;
 
+import com.cometproject.api.utilities.Startable;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.rooms.bundles.types.RoomBundle;
 import com.cometproject.server.storage.queries.rooms.BundleDao;
 import org.slf4j.Logger;
@@ -8,8 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class RoomBundleManager {
-    private static RoomBundleManager roomBundleManager;
+public class RoomBundleManager implements Startable {
     private static Logger LOGGER = LoggerFactory.getLogger(RoomBundleManager.class.getName());
 
     private Map<String, RoomBundle> bundles;
@@ -19,14 +20,11 @@ public class RoomBundleManager {
     }
 
     public static RoomBundleManager getInstance() {
-        if (roomBundleManager == null) {
-            roomBundleManager = new RoomBundleManager();
-        }
-
-        return roomBundleManager;
+        return CometBootstrap.resolve(RoomBundleManager.class);
     }
 
-    public void initialize() {
+    @Override
+    public void start() {
         if (this.bundles.size() != 0) {
             this.bundles.clear();
         }

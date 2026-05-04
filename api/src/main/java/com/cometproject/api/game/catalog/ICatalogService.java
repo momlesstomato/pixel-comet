@@ -2,14 +2,13 @@ package com.cometproject.api.game.catalog;
 
 import com.cometproject.api.game.catalog.types.*;
 import com.cometproject.api.game.catalog.types.purchase.ICatalogPurchaseHandler;
+import com.cometproject.api.utilities.Startable;
 
 import java.util.List;
 import java.util.Map;
 
-public interface ICatalogService {
+public interface ICatalogService extends Startable {
     Map<Integer, ICatalogOffer> getCatalogOffers();
-
-    void initialize();
 
     void loadItemsAndPages();
 

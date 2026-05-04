@@ -1,6 +1,6 @@
 /*package com.cometproject.server.game.guides;
 
-import com.cometproject.api.utilities.Initialisable;
+import com.cometproject.api.utilities.Startable;
 import com.cometproject.server.game.guides.types.HelpRequest;
 import com.cometproject.server.game.guides.types.HelperSession;
 import com.cometproject.server.network.messages.outgoing.help.guides.*;
@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class GuideManager implements Initialisable {
+public class GuideManager implements Startable {
     private static GuideManager guideManagerInstance;
 
     private final Map<Integer, HelperSession> sessions = new ConcurrentHashMap<>();
@@ -141,7 +141,8 @@ public class GuideManager implements Initialisable {
 
         package com.cometproject.server.game.guides;
 
-import com.cometproject.api.utilities.Initialisable;
+    import com.cometproject.api.utilities.Startable;
+    import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.guides.types.HelpRequest;
 import com.cometproject.server.game.guides.types.HelperSession;
 import com.cometproject.server.network.messages.outgoing.help.guides.GuideSessionAttachedMessageComposer;
@@ -155,8 +156,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class GuideManager implements Initialisable {
-    private static GuideManager guideManagerInstance;
+public class GuideManager implements Startable {
 
     private final Map<Integer, HelperSession> sessions = new ConcurrentHashMap<>();
 
@@ -166,7 +166,7 @@ public class GuideManager implements Initialisable {
     private final Map<Integer, HelpRequest> activeHelpRequests = new ConcurrentHashMap<>();
 
     @Override
-    public void initialize() {
+    public void start() {
         CometThreadManager.getInstance().executePeriodic(this::processRequests, 1000L, 1000L, TimeUnit.MILLISECONDS);
     }
 
@@ -427,10 +427,6 @@ public class GuideManager implements Initialisable {
     }
 
     public static GuideManager getInstance() {
-        if(guideManagerInstance == null) {
-            guideManagerInstance = new GuideManager();
-        }
-
-        return guideManagerInstance;
+        return CometBootstrap.resolve(GuideManager.class);
     }
 }

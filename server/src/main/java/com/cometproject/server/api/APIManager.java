@@ -1,18 +1,21 @@
 package com.cometproject.server.api;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cometproject.api.config.Configuration;
-import com.cometproject.api.utilities.Initialisable;
+import com.cometproject.api.utilities.Startable;
 import com.cometproject.server.api.routes.PhotoRoutes;
 import com.cometproject.server.api.routes.PlayerRoutes;
 import com.cometproject.server.api.routes.RoomRoutes;
 import com.cometproject.server.api.routes.SystemRoutes;
 import com.cometproject.server.api.transformers.JsonTransformer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.cometproject.server.boot.CometBootstrap;
+
 import spark.Spark;
 
 
-public class APIManager implements Initialisable {
+public class APIManager implements Startable {
     /**
      * Logger
      */
@@ -29,7 +32,6 @@ public class APIManager implements Initialisable {
     /**
      * The global API Manager instance
      */
-    private static APIManager apiManagerInstance;
     /**
      * Is the API enabled?
      */
@@ -59,20 +61,24 @@ public class APIManager implements Initialisable {
     }
 
     public static APIManager getInstance() {
-        if (apiManagerInstance == null)
-            apiManagerInstance = new APIManager();
-
-        return apiManagerInstance;
+        return CometBootstrap.resolve(APIManager.class);
     }
 
     /**
      * Initialize the API
      */
     @Override
-    public void initialize() {
+    public void start() {
         this.initializeConfiguration();
         this.initializeSpark();
         this.initializeRouting();
+    }
+
+    @Override
+    public void stop() {
+        if (this.enabled) {
+            Spark.stop();
+        }
     }
 
     /**

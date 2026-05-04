@@ -1,11 +1,12 @@
 package com.cometproject.server.network.websockets;
 
-import com.cometproject.api.utilities.Initialisable;
+import com.cometproject.api.utilities.Startable;
+import com.cometproject.server.boot.CometBootstrap;
 
-public class WebSocketManager implements Initialisable {
+public class WebSocketManager implements Startable {
 
     @Override
-    public void initialize() {
+    public void start() {
 /*
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -33,12 +34,8 @@ public class WebSocketManager implements Initialisable {
 */
     }
 
-    private static WebSocketManager instance;
-
     public static WebSocketManager getInstance() {
-        if (instance == null) instance = new WebSocketManager();
-
-        return instance;
+        return CometBootstrap.resolve(WebSocketManager.class);
     }
 
 }
