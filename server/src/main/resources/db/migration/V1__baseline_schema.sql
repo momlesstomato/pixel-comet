@@ -741,7 +741,6 @@ CREATE TABLE IF NOT EXISTS `players` (
   `vip_points` int(11) DEFAULT 0,
   `activity_points` int(11) NOT NULL DEFAULT 0,
   `rank` int(3) DEFAULT 1,
-  `auth_ticket` varchar(100) DEFAULT NULL,
   `gender` enum('M','F') NOT NULL DEFAULT 'M',
   `reg_timestamp` int(11) NOT NULL DEFAULT 0,
   `reg_date` varchar(12) DEFAULT '10/06/2013',

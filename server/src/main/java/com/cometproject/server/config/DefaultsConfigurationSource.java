@@ -14,6 +14,7 @@ import com.cometproject.api.config.network.ConnectionRegistryConfiguration;
 import com.cometproject.api.config.network.NetworkConfiguration;
 import com.cometproject.api.config.network.TransportConfiguration;
 import com.cometproject.api.config.rcon.RconConfiguration;
+import com.cometproject.api.config.sso.SsoConfiguration;
 import com.cometproject.api.config.system.SystemConfiguration;
 
 /**
@@ -34,6 +35,7 @@ public final class DefaultsConfigurationSource implements ConfigurationSource {
         defaultsMap.putAll(RedisConfiguration.defaults());
         defaultsMap.putAll(ApiConfiguration.defaults());
         defaultsMap.putAll(LoggingConfiguration.defaults());
+        defaultsMap.putAll(SsoConfiguration.defaults());
         defaultsMap.putAll(TransportConfiguration.defaults());
         defaultsMap.putAll(ConnectionRegistryConfiguration.defaults());
         defaultsMap.putAll(RconConfiguration.defaults());

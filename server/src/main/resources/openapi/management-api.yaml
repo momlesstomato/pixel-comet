@@ -29,13 +29,13 @@ components:
       schema:
         type: string
       description: Optional message broadcast for room actions.
-    SsoTicketHeader:
+    SessionTokenHeader:
       name: sso_ticket
       in: header
       required: true
       schema:
         type: string
-      description: Player SSO ticket used to resolve the active session.
+      description: Player session token used to resolve the active session.
     PhotoIdHeader:
       name: photo_id
       in: header
@@ -72,6 +72,24 @@ components:
         message:
           type: string
       required: [message]
+    IssueSsoTicketRequest:
+      type: object
+      required: [player_id]
+      properties:
+        player_id:
+          type: integer
+          example: 42
+    SsoTicketResponse:
+      type: object
+      required: [ticket, player_id, expires_at]
+      properties:
+        ticket:
+          type: string
+        player_id:
+          type: integer
+        expires_at:
+          type: string
+          format: date-time
 paths:
   /openapi/spec:
     get:
@@ -479,12 +497,59 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /sso/ticket:
+    post:
+      summary: Issue an SSO ticket for a specific player.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IssueSsoTicketRequest'
+      responses:
+        '201':
+          description: Ticket issued.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [success, data]
+                properties:
+                  success:
+                    type: boolean
+                    const: true
+                  data:
+                    $ref: '#/components/schemas/SsoTicketResponse'
+        '400':
+          description: Invalid or missing player_id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          headers:
+            www-authenticate:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: SSO backend unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /camera/purchase:
     get:
       summary: Trigger photo purchase validation.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
-        - $ref: '#/components/parameters/SsoTicketHeader'
+        - $ref: '#/components/parameters/SessionTokenHeader'
         - $ref: '#/components/parameters/PhotoIdHeader'
       responses:
         '200':
@@ -494,7 +559,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessEnvelope'
         '401':
-          description: Missing or invalid auth token or SSO ticket.
+          description: Missing or invalid auth token or session token.
           headers:
             www-authenticate:
               schema:
@@ -519,7 +584,7 @@ paths:
       summary: Trigger photo purchase validation.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
-        - $ref: '#/components/parameters/SsoTicketHeader'
+        - $ref: '#/components/parameters/SessionTokenHeader'
         - $ref: '#/components/parameters/PhotoIdHeader'
       responses:
         '200':
@@ -529,7 +594,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessEnvelope'
         '401':
-          description: Missing or invalid auth token or SSO ticket.
+          description: Missing or invalid auth token or session token.
           headers:
             www-authenticate:
               schema:

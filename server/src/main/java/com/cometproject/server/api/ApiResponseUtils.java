@@ -1,9 +1,9 @@
 package com.cometproject.server.api;
 
-import io.javalin.http.Context;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import io.javalin.http.Context;
 
 /**
  * Provides consistent management API response envelopes.
@@ -22,12 +22,33 @@ public final class ApiResponseUtils {
     }
 
     /**
+     * Writes a success response with the supplied status code and no payload.
+     *
+     * @param context The active request context.
+     * @param statusCode The HTTP success status code.
+     */
+    public static void success(final Context context, final int statusCode) {
+        success(context, statusCode, null);
+    }
+
+    /**
      * Writes a success response with a payload under the {@code data} field.
      *
      * @param context The active request context.
      * @param data The payload to serialize.
      */
     public static void success(final Context context, final Object data) {
+        success(context, 200, data);
+    }
+
+    /**
+     * Writes a success response with the supplied status code and optional payload.
+     *
+     * @param context The active request context.
+     * @param statusCode The HTTP success status code.
+     * @param data The payload to serialize.
+     */
+    public static void success(final Context context, final int statusCode, final Object data) {
         final Map<String, Object> response = new LinkedHashMap<>();
         response.put("success", true);
 
@@ -35,7 +56,7 @@ public final class ApiResponseUtils {
             response.put("data", data);
         }
 
-        context.status(200).json(response);
+        context.status(statusCode).json(response);
     }
 
     /**

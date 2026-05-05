@@ -1,6 +1,8 @@
 package com.cometproject.server.network.sessions;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +13,10 @@ import com.cometproject.api.networking.connections.ConnectionCloseCode;
 import com.cometproject.api.networking.connections.ConnectionState;
 import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.api.networking.sessions.ISession;
+import com.cometproject.api.game.sso.ISsoTicketService;
 import com.cometproject.games.snowwar.data.SnowWarPlayerData;
 import com.cometproject.server.boot.Comet;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.moderation.ModerationManager;
 import com.cometproject.server.game.players.PlayerManager;
 import com.cometproject.server.game.players.types.Player;
@@ -45,6 +49,7 @@ public class Session implements ISession {
     private Player player;
     private boolean disconnectCalled = false;
     public SnowWarPlayerData snowWarPlayerData;
+    private final List<String> authTokens = new CopyOnWriteArrayList<>();
 
     private WebSocketClientConnection wsChannel;
     private final HabboEncryption encryption;
@@ -113,6 +118,7 @@ public class Session implements ISession {
                     }
                 }
 
+                this.revokeAuthTokens();
                 this.setPlayer(null);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -268,5 +274,34 @@ public class Session implements ISession {
 
     public void setWsChannel(WebSocketClientConnection wsChannel) {
         this.wsChannel = wsChannel;
+    }
+
+    /**
+     * Registers a Redis-backed session token to be revoked when the session closes.
+     *
+     * @param authToken The token associated with this session.
+     */
+    public void registerAuthToken(final String authToken) {
+        if (authToken != null && !authToken.isBlank()) {
+            this.authTokens.add(authToken);
+        }
+    }
+
+    private void revokeAuthTokens() {
+        if (this.authTokens.isEmpty()) {
+            return;
+        }
+
+        final ISsoTicketService ssoTicketService = CometBootstrap.getCurrentInjector().getInstance(ISsoTicketService.class);
+
+        for (String authToken : this.authTokens) {
+            try {
+                ssoTicketService.revoke(authToken);
+            } catch (Exception exception) {
+                this.LOGGER.warn("Failed to revoke session token during disconnect", exception);
+            }
+        }
+
+        this.authTokens.clear();
     }
 }

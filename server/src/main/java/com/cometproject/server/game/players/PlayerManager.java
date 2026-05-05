@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cometproject.api.game.players.IPlayerService;
 import com.cometproject.api.game.players.data.PlayerAvatar;
+import com.cometproject.api.game.sso.ISsoTicketService;
 import com.cometproject.api.networking.sessions.ISession;
 import com.cometproject.api.config.Configuration;
 import com.cometproject.server.boot.CometBootstrap;
@@ -24,6 +25,7 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.google.inject.Inject;
 
 
 public class PlayerManager implements IPlayerService {
@@ -36,22 +38,22 @@ public class PlayerManager implements IPlayerService {
     private static final long DEFAULT_PLAYER_AVATAR_CACHE_MINUTES = 30L;
     private static final long DEFAULT_PLAYER_DATA_CACHE_MINUTES = 30L;
     private static Logger LOGGER = LoggerFactory.getLogger(PlayerManager.class.getName());
+    private final ISsoTicketService ssoTicketService;
 
     private Map<Integer, Integer> playerIdToSessionId;
     private Map<String, Integer> playerUsernameToPlayerId;
 
     private Map<String, List<Integer>> ipAddressToPlayerIds;
 
-    private Map<String, Integer> ssoTicketToPlayerId;
     private Map<Integer, String> playerIdToUsername;
-    private Map<String, Integer> authTokenToPlayerId;
 
     private Cache<Integer, PlayerAvatar> playerAvatarCache;
     private Cache<Integer, PlayerData> playerDataCache;
     private ExecutorService playerLoginService;
 
-    public PlayerManager() {
-
+    @Inject
+    PlayerManager(final ISsoTicketService ssoTicketService) {
+        this.ssoTicketService = ssoTicketService;
     }
 
     public static PlayerManager getInstance() {
@@ -63,9 +65,7 @@ public class PlayerManager implements IPlayerService {
         this.playerIdToSessionId = new ConcurrentHashMap<>();
         this.playerUsernameToPlayerId = new ConcurrentHashMap<>();
         this.ipAddressToPlayerIds = new ConcurrentHashMap<>();
-        this.ssoTicketToPlayerId = new ConcurrentHashMap<>();
         this.playerIdToUsername = new ConcurrentHashMap<>();
-        this.authTokenToPlayerId = new ConcurrentHashMap<>();
 
         this.playerAvatarCache = Caffeine.newBuilder()
             .maximumSize(this.getConfiguredLong(PLAYER_AVATAR_CACHE_SIZE_PROPERTY, DEFAULT_PLAYER_AVATAR_CACHE_SIZE))
@@ -92,7 +92,7 @@ public class PlayerManager implements IPlayerService {
     }
 
     public void submitLoginRequest(ISession client, String ticket) {
-        this.playerLoginService.submit(new PlayerLoginRequest((Session) client, ticket));
+        this.playerLoginService.submit(new PlayerLoginRequest((Session) client, ticket, this.ssoTicketService));
     }
 
     public PlayerAvatar getAvatarByPlayerId(int playerId, byte mode) {
@@ -245,18 +245,14 @@ public class PlayerManager implements IPlayerService {
         return this.playerIdToSessionId.size();
     }
 
-    public Map<String, Integer> getSsoTicketToPlayerId() {
-        return ssoTicketToPlayerId;
-    }
-
     @Override
     public Integer getPlayerIdByAuthToken(String authToken) {
-        return this.ssoTicketToPlayerId.get(authToken);
+        return this.ssoTicketService.resolvePlayerId(authToken).orElse(null);
     }
 
     @Override
     public void createAuthToken(int playerId, String authToken) {
-
+        this.ssoTicketService.createSessionToken(playerId, authToken);
     }
 
     public ExecutorService getPlayerLoadExecutionService() {

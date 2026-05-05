@@ -1,5 +1,7 @@
 package com.cometproject.server.network.messages.incoming.gamecenter;
 
+import java.util.UUID;
+
 import com.cometproject.games.snowwar.SnowPlayerQueue;
 import com.cometproject.server.composers.gamecenter.GameStatusMessageComposer;
 import com.cometproject.server.composers.gamecenter.LoadGameMessageComposer;
@@ -7,8 +9,6 @@ import com.cometproject.server.game.players.PlayerManager;
 import com.cometproject.server.network.messages.incoming.Event;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;
-
-import java.util.UUID;
 
 public class JoinGameQueueMessageEvent implements Event {
     @Override
@@ -18,10 +18,12 @@ public class JoinGameQueueMessageEvent implements Event {
         switch (gameId){
             case 1:
                 final UUID sessionId = UUID.randomUUID();
+                final String authToken = client.getPlayer().getId() + sessionId.toString();
 
-                PlayerManager.getInstance().getSsoTicketToPlayerId().put(client.getPlayer().getId() + sessionId.toString(), client.getPlayer().getId());
+                PlayerManager.getInstance().createAuthToken(client.getPlayer().getId(), authToken);
+                client.registerAuthToken(authToken);
 
-                client.send(new LoadGameMessageComposer(gameId, "http://localhost/url2/swf/games/gamecenter_basejump/BaseJump.swf", client.getPlayer().getId() + sessionId.toString(), "localhost", "30010", "30010", "http://localhost/url2/swf/games/gamecenter_basejump/BasicAssets.swf"));
+                client.send(new LoadGameMessageComposer(gameId, "http://localhost/url2/swf/games/gamecenter_basejump/BaseJump.swf", authToken, "localhost", "30010", "30010", "http://localhost/url2/swf/games/gamecenter_basejump/BasicAssets.swf"));
                 break;
             case 2:
                 SnowPlayerQueue.addPlayerInQueue(client);

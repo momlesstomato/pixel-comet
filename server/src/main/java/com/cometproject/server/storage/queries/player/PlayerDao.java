@@ -1,5 +1,15 @@
 package com.cometproject.server.storage.queries.player;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.cometproject.api.game.players.data.PlayerAvatar;
 import com.cometproject.api.game.players.data.components.navigator.ISavedSearch;
 import com.cometproject.server.boot.Comet;
@@ -16,18 +26,8 @@ import com.cometproject.server.storage.SqlHelper;
 import com.cometproject.server.storage.cache.CacheManager;
 import com.cometproject.server.utilities.collections.ConcurrentHashSet;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 public class PlayerDao {
-    public static Player getPlayer(String ssoTicket) {
+    public static Player getPlayer(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -46,43 +46,13 @@ public class PlayerDao {
                     " JOIN player_settings pSettings ON pSettings.player_id = p.id \n" +
                     " JOIN player_stats pStats ON pStats.player_id = p.id\n" +
                     "\n" +
-                    "WHERE p.auth_ticket = ?", sqlConnection);
-            preparedStatement.setString(1, ssoTicket);
+                        "WHERE p.id = ?", sqlConnection);
+                    preparedStatement.setInt(1, playerId);
 
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 return new Player(resultSet, false);
-            }
-
-        } catch (SQLException e) {
-            SqlHelper.handleSqlException(e);
-        } finally {
-            SqlHelper.closeSilently(resultSet);
-            SqlHelper.closeSilently(preparedStatement);
-            SqlHelper.closeSilently(sqlConnection);
-        }
-
-        return null;
-    }
-
-    public static Player getPlayerFallback(String ssoTicket) {
-        Connection sqlConnection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-        try {
-            sqlConnection = SqlHelper.getConnection();
-
-            preparedStatement = SqlHelper.prepare("SELECT p.id as playerId, p.username AS playerData_username, p.figure AS playerData_figure, p.motto AS playerData_motto, p.credits AS playerData_credits, p.vip_points AS playerData_vipPoints, p.rank AS playerData_rank, p.vip AS playerData_vip, p.gender AS playerData_gender, p.last_online AS playerData_lastOnline, p.reg_timestamp AS playerData_regTimestamp, p.reg_date AS playerData_regDate, p.favourite_group AS playerData_favouriteGroup, p.achievement_points AS playerData_achievementPoints, p.email AS playerData_email, p.activity_points AS playerData_activityPoints, p.seasonal_points AS playerData_seasonalPoints, p.black_money AS playerData_blackMoney, p.quest_id AS playerData_questId, p.last_ip AS playerData_lastIp, p.time_muted AS playerData_timeMuted, p.name_colour AS playerData_nameColour, p.tag AS playerData_tag, p.job AS playerData_job, p.view_points AS playerData_viewPoints \n" +
-                    "FROM players p " +
-                    "WHERE p.auth_ticket = ?", sqlConnection);
-            preparedStatement.setString(1, ssoTicket);
-
-            resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                return new Player(resultSet, true);
             }
 
         } catch (SQLException e) {
@@ -1335,26 +1305,6 @@ public class PlayerDao {
             SqlHelper.closeSilently(preparedStatement);
             SqlHelper.closeSilently(sqlConnection);
         }
-    }
-
-    public static void nullifyAuthTicket(int playerId) {
-        /*Connection sqlConnection = null;
-        PreparedStatement preparedStatement = null;
-
-        try {
-            sqlConnection = SqlHelper.getConnection();
-
-            preparedStatement = SqlHelper.prepare("UPDATE players SET auth_ticket = NULL WHERE id = ?", sqlConnection);
-
-            preparedStatement.setInt(1, playerId);
-
-            SqlHelper.executeStatementSilently(preparedStatement, false);
-        } catch (SQLException e) {
-            SqlHelper.handleSqlException(e);
-        } finally {
-            SqlHelper.closeSilently(preparedStatement);
-            SqlHelper.closeSilently(sqlConnection);
-        }*/
     }
 
     public static void updateRank(int rank, String username) {

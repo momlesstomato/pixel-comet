@@ -1,6 +1,8 @@
 package com.cometproject.server.boot;
 
 import com.cometproject.api.game.GameContext;
+import com.cometproject.api.game.sso.ISsoTicketRepository;
+import com.cometproject.api.game.sso.ISsoTicketService;
 import com.cometproject.api.utilities.Startable;
 import com.cometproject.server.api.APIManager;
 import com.cometproject.server.game.GameCycle;
@@ -21,6 +23,8 @@ import com.cometproject.server.game.polls.PollManager;
 import com.cometproject.server.game.quests.QuestManager;
 import com.cometproject.server.game.rooms.RoomManager;
 import com.cometproject.server.game.rooms.bundles.RoomBundleManager;
+import com.cometproject.server.game.sso.SsoTicketService;
+import com.cometproject.server.game.sso.storage.RedisSsoTicketRepository;
 import com.cometproject.server.logging.LogManager;
 import com.cometproject.server.modules.ModuleManager;
 import com.cometproject.server.network.NetworkManager;
@@ -66,6 +70,8 @@ public final class CometCoreModule extends AbstractModule {
         bind(GameCenterManager.class).in(Scopes.SINGLETON);
         bind(NetworkManager.class).in(Scopes.SINGLETON);
         bind(APIManager.class).in(Scopes.SINGLETON);
+        bind(ISsoTicketRepository.class).to(RedisSsoTicketRepository.class).in(Scopes.SINGLETON);
+        bind(ISsoTicketService.class).to(SsoTicketService.class).in(Scopes.SINGLETON);
         bind(ModuleManager.class).in(Scopes.SINGLETON);
         bind(GameCycle.class).in(Scopes.SINGLETON);
         bind(GameContext.class).in(Scopes.SINGLETON);

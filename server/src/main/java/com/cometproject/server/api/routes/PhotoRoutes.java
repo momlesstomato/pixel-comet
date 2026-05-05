@@ -21,10 +21,10 @@ public class PhotoRoutes {
                 context.header("photoId")
         );
 
-        final Integer playerId = PlayerManager.getInstance().getSsoTicketToPlayerId().get(ssoTicket);
+        final Integer playerId = PlayerManager.getInstance().getPlayerIdByAuthToken(ssoTicket);
 
         if (playerId == null) {
-            ApiResponseUtils.error(context, 401, "invalid_sso_ticket", "Invalid SSO ticket.");
+            ApiResponseUtils.error(context, 401, "invalid_session_token", "Invalid session token.");
             return;
         }
 

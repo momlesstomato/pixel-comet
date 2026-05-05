@@ -136,7 +136,6 @@ public class Player implements IPlayer {
     private String RPSrequest = "";
     private int RPSamount;
     private int RPSselection;
-    private String ssoTicket;
     private Set<Integer> recentPurchases;
     private boolean[] calendarGifts;
     private QueueData queueData;
@@ -235,12 +234,6 @@ public class Player implements IPlayer {
         this.getQuests().dispose();
         this.getNavigator().dispose();
         this.getWardrobe().dispose();
-
-        try {
-            PlayerManager.getInstance().getSsoTicketToPlayerId().remove(this.ssoTicket);
-        } catch (Exception e) {
-
-        }
 
         this.session.getLogger().debug(this.getData().getUsername() + " logged out");
 
@@ -936,14 +929,6 @@ public class Player implements IPlayer {
 
     public void setLastTradeFlood(long lastTradeFlood) {
         this.lastTradeFlood = lastTradeFlood;
-    }
-
-    public String getSsoTicket() {
-        return this.ssoTicket;
-    }
-
-    public void setSsoTicket(final String ssoTicket) {
-        this.ssoTicket = ssoTicket;
     }
 
     public long getLastPhotoTaken() {

@@ -1,9 +1,9 @@
 package com.cometproject.gamecenter.fastfood.net;
 
+import com.cometproject.api.networking.connections.Connection;
 import com.cometproject.networking.api.messages.IMessageHandler;
 import com.cometproject.networking.api.sessions.INetSession;
 import com.cometproject.networking.api.sessions.INetSessionFactory;
-import io.netty.channel.ChannelHandlerContext;
 
 public class SessionFactory implements INetSessionFactory {
 
@@ -14,8 +14,8 @@ public class SessionFactory implements INetSessionFactory {
     }
 
     @Override
-    public INetSession createSession(ChannelHandlerContext channel) {
-        return new FastFoodNetSession(channel, new FastFoodGameSession(), this.messageHandler);
+    public INetSession createSession(Connection connection) {
+        return new FastFoodNetSession(connection, new FastFoodGameSession(), this.messageHandler);
     }
 
     @Override

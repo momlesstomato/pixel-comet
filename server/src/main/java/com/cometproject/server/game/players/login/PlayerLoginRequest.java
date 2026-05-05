@@ -1,10 +1,19 @@
 package com.cometproject.server.game.players.login;
 
+import java.time.LocalDate;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.config.Configuration;
 import com.cometproject.api.events.players.OnPlayerLoginEvent;
 import com.cometproject.api.events.players.args.OnPlayerLoginEventArgs;
 import com.cometproject.api.game.achievements.types.AchievementType;
+import com.cometproject.api.game.sso.ISsoTicketService;
+import com.cometproject.api.game.sso.SsoTicket;
 import com.cometproject.api.networking.sessions.ISession;
 import com.cometproject.server.boot.Comet;
 import com.cometproject.server.config.Locale;
@@ -12,8 +21,10 @@ import com.cometproject.server.game.moderation.BanManager;
 import com.cometproject.server.game.moderation.ModerationManager;
 import com.cometproject.server.game.moderation.types.BanType;
 import com.cometproject.server.game.players.PlayerManager;
+import com.cometproject.server.game.players.login.exceptions.InvalidSSOTicketException;
 import com.cometproject.server.game.players.types.Player;
 import com.cometproject.server.game.rooms.RoomManager;
+import com.cometproject.server.game.sso.exceptions.SsoBackendUnavailableException;
 import com.cometproject.server.modules.ModuleManager;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.handshake.AuthenticationOKMessageComposer;
@@ -42,21 +53,17 @@ import com.cometproject.server.storage.queries.player.PlayerAccessDao;
 import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.cometproject.server.tasks.CometTask;
 import com.cometproject.server.tasks.CometThreadManager;
-import org.apache.commons.lang3.StringUtils;
-
-import java.time.LocalDate;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 public class PlayerLoginRequest implements CometTask {
 
     private final Session client;
     private final String ticket;
+    private final ISsoTicketService ssoTicketService;
 
-    public PlayerLoginRequest(Session client, String ticket) {
+    public PlayerLoginRequest(Session client, String ticket, ISsoTicketService ssoTicketService) {
         this.client = client;
         this.ticket = ticket;
+        this.ssoTicketService = ssoTicketService;
     }
 
     @Override
@@ -66,34 +73,12 @@ public class PlayerLoginRequest implements CometTask {
         }
 
         try {
-            // TODO: Tell the hotel owners to remove the id:ticket stuff
-            Player player = null;
-            boolean normalPlayerLoad = false;
-
-            if (this.ticket.contains(":")) {
-                String[] ticketData = this.ticket.split(":");
-                if (ticketData.length == 2) {
-                    String authTicket = ticketData[1];
-
-                    player = PlayerDao.getPlayer(authTicket);
-                } else {
-                    normalPlayerLoad = true;
-                }
-            } else {
-                normalPlayerLoad = true;
-            }
-
-            if (normalPlayerLoad) {
-                player = PlayerDao.getPlayer(ticket);
-            }
+            final String rawTicket = this.resolveRawTicket();
+            final SsoTicket consumedTicket = this.consumeTicket(rawTicket);
+            Player player = PlayerDao.getPlayer(consumedTicket.playerId());
 
             if (player == null) {
-                player = PlayerDao.getPlayerFallback(ticket);
-
-                if (player == null) {
-                    client.disconnect();
-                    return;
-                }
+                throw new InvalidSSOTicketException();
             }
 
             Session cloneSession = NetworkManager.getInstance().getSessions().getByPlayerId(player.getId());
@@ -241,10 +226,6 @@ public class PlayerLoginRequest implements CometTask {
                 player.getData().save();
             }
 
-            if (!Comet.isDebugging) {
-                PlayerDao.nullifyAuthTicket(player.getData().getId());
-            }
-
             if (ModuleManager.getInstance().getEventHandler().handleEvent(OnPlayerLoginEvent.class, new OnPlayerLoginEventArgs(client.getPlayer()))) {
                 client.disconnect();
             }
@@ -261,9 +242,8 @@ public class PlayerLoginRequest implements CometTask {
             }
 
             player.getSession().getLogger().info("{} logged in from IP {}", player.getData().getUsername(), player.getData().getIpAddress());
-
-            player.setSsoTicket(this.ticket);
-            PlayerManager.getInstance().getSsoTicketToPlayerId().put(this.ticket, player.getId());
+            PlayerManager.getInstance().createAuthToken(player.getId(), rawTicket);
+            client.registerAuthToken(rawTicket);
 
             if(client.getPlayer().getSettings().getNuxStatus() == 0) client.send(new MassEventMessageComposer("welcomewizard/show"));
             if(client.getPlayer().getSettings().getNuxStatus() == 0){
@@ -292,8 +272,31 @@ public class PlayerLoginRequest implements CometTask {
             }
             catch (Exception e) { }
 
+            } catch (InvalidSSOTicketException exception) {
+            client.getLogger().warn("Session was disconnected because the supplied SSO ticket was invalid.");
+            client.disconnect();
+            } catch (SsoBackendUnavailableException exception) {
+            client.getLogger().error("Session was disconnected because the SSO backend is unavailable.", exception);
+            client.disconnect();
             } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private String resolveRawTicket() {
+        if (this.ticket.contains(":")) {
+            final String[] ticketData = this.ticket.split(":", 2);
+
+            if (ticketData.length == 2 && !ticketData[1].isBlank()) {
+                return ticketData[1];
+            }
+        }
+
+        return this.ticket;
+    }
+
+    private SsoTicket consumeTicket(final String rawTicket) throws InvalidSSOTicketException {
+        return this.ssoTicketService.consume(rawTicket)
+                .orElseThrow(InvalidSSOTicketException::new);
     }
 }

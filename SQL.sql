@@ -3292,7 +3292,6 @@ CREATE TABLE IF NOT EXISTS `players` (
   `vip_points` int(11) DEFAULT 0,
   `activity_points` int(11) NOT NULL DEFAULT 0,
   `rank` int(3) DEFAULT 1,
-  `auth_ticket` varchar(100) DEFAULT NULL,
   `gender` enum('M','F') NOT NULL DEFAULT 'M',
   `reg_timestamp` int(11) NOT NULL DEFAULT 0,
   `reg_date` varchar(12) DEFAULT '10/06/2013',
@@ -3348,8 +3347,8 @@ CREATE TABLE IF NOT EXISTS `players` (
 -- Dumping data for table hylib.players: ~39 rows (approximately)
 DELETE FROM `players`;
 /*!40000 ALTER TABLE `players` DISABLE KEYS */;
-INSERT INTO `players` (`id`, `username`, `figure`, `motto`, `credits`, `vip_points`, `activity_points`, `rank`, `auth_ticket`, `gender`, `reg_timestamp`, `reg_date`, `staff_function`, `last_online`, `online`, `password`, `email`, `last_ip`, `reg_ip`, `ip_last`, `ip_reg`, `vip`, `fame_occult`, `achievement_points`, `favourite_group`, `chat_ticket`, `quest_id`, `time_muted`, `name_colour`, `dob`, `hk_code`, `seckey`, `seasonal_points`, `user_likes`, `vip_timestamp`, `pin`, `teamrank`, `fbid`, `fbenable`, `google_secret_code`, `2fa_status`, `rank_team`, `referer`, `pin_panel`, `account_disabled`, `staff_access`, `staff_occult`, `birthday`, `event_points`, `promo_points`, `black_money`, `tag`, `job`, `view_points`, `banner_id`, `color_primary`, `color_text`, `color_secondary`) VALUES
-	(1, 'Systemaccount', 'sh-725-62.hd-600-1383.ch-635-95.lg-700-110.ha-1015-62', '', 0, 0, 0, 1, NULL, 'F', 1672800979, '10/06/2013', 'tarea admini', 1672800979, '0', '$2y$10$Jh6niWNHD/9yj8UJeHB2teIZ1ki/J.jws07YsJAuKj1bBw7IuleZ6', 'dasdasd@gmail.com', NULL, NULL, '45.189.242.36', '45.189.242.36', '0', '0', 0, 0, '', 0, 0, '000000', 0, 0, NULL, 0, 0, 0, NULL, 0, NULL, '1', NULL, 0, 'lid', NULL, '1234', '0', '0', '0', 1163987779, NULL, NULL, 0, '', '', 0, 0, 'rgba(255, 255 ,255, .81)', 'rgba(0,0,0)', 'rgba(53, 196, 96)'),
+INSERT INTO `players` (`id`, `username`, `figure`, `motto`, `credits`, `vip_points`, `activity_points`, `rank`, `gender`, `reg_timestamp`, `reg_date`, `staff_function`, `last_online`, `online`, `password`, `email`, `last_ip`, `reg_ip`, `ip_last`, `ip_reg`, `vip`, `fame_occult`, `achievement_points`, `favourite_group`, `chat_ticket`, `quest_id`, `time_muted`, `name_colour`, `dob`, `hk_code`, `seckey`, `seasonal_points`, `user_likes`, `vip_timestamp`, `pin`, `teamrank`, `fbid`, `fbenable`, `google_secret_code`, `2fa_status`, `rank_team`, `referer`, `pin_panel`, `account_disabled`, `staff_access`, `staff_occult`, `birthday`, `event_points`, `promo_points`, `black_money`, `tag`, `job`, `view_points`, `banner_id`, `color_primary`, `color_text`, `color_secondary`) VALUES
+	(1, 'Systemaccount', 'sh-725-62.hd-600-1383.ch-635-95.lg-700-110.ha-1015-62', '', 0, 0, 0, 1, 'F', 1672800979, '10/06/2013', 'tarea admini', 1672800979, '0', '$2y$10$Jh6niWNHD/9yj8UJeHB2teIZ1ki/J.jws07YsJAuKj1bBw7IuleZ6', 'dasdasd@gmail.com', NULL, NULL, '45.189.242.36', '45.189.242.36', '0', '0', 0, 0, '', 0, 0, '000000', 0, 0, NULL, 0, 0, 0, NULL, 0, NULL, '1', NULL, 0, 'lid', NULL, '1234', '0', '0', '0', 1163987779, NULL, NULL, 0, '', '', 0, 0, 'rgba(255, 255 ,255, .81)', 'rgba(0,0,0)', 'rgba(53, 196, 96)'),
 /*!40000 ALTER TABLE `players` ENABLE KEYS */;
 
 -- Dumping structure for table hylib.player_access

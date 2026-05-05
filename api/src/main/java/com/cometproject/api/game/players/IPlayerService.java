@@ -1,7 +1,6 @@
 package com.cometproject.api.game.players;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import com.cometproject.api.game.players.data.IPlayerData;
@@ -35,8 +34,6 @@ public interface IPlayerService extends Startable {
     boolean isOnline(String username);
 
     int size();
-
-    Map<String, Integer> getSsoTicketToPlayerId();
 
     Integer getPlayerIdByAuthToken(final String authToken);
 

@@ -1,7 +1,16 @@
 package com.cometproject.gamecenter.fastfood.net;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.function.BiConsumer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cometproject.api.game.players.IPlayerService;
 import com.cometproject.api.game.players.data.PlayerAvatar;
+import com.cometproject.api.networking.connections.ConnectionCloseCode;
 import com.cometproject.api.networking.messages.IMessageEvent;
 import com.cometproject.gamecenter.fastfood.FastFoodGame;
 import com.cometproject.gamecenter.fastfood.net.composers.AuthenticationOKMessageComposer;
@@ -12,13 +21,6 @@ import com.cometproject.networking.api.messages.IMessageHandler;
 import com.cometproject.networking.api.sessions.INetSession;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.function.BiConsumer;
 
 public class FastFoodMessageHandler implements IMessageHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(FastFoodMessageHandler.class);
@@ -61,11 +63,11 @@ public class FastFoodMessageHandler implements IMessageHandler {
         final FastFoodGameSession gameSession = (FastFoodGameSession) session.getGameSession();
         gameSession.setPlayerId(playerId);
 
-        session.getChannel().writeAndFlush(new AuthenticationOKMessageComposer());
+        session.getConnection().send(new AuthenticationOKMessageComposer());
     }
 
     public void getLocalisations(IMessageEvent messageEvent, INetSession session) {
-        session.getChannel().writeAndFlush(new SetClientLocalisationMessageComposer());
+        session.getConnection().send(new SetClientLocalisationMessageComposer());
     }
 
     public void disconnect(IMessageEvent messageEvent, INetSession session) {
@@ -92,10 +94,10 @@ public class FastFoodMessageHandler implements IMessageHandler {
             gameSession.setFigure(playerAvatar.getFigure());
             gameSession.setGender(playerAvatar.getGender());
         } else {
-            session.getChannel().disconnect();
+            session.getConnection().close(ConnectionCloseCode.NORMAL);
         }
 
-        session.getChannel().writeAndFlush(new MyPowerUpsMessageComposer(gameSession));
+        session.getConnection().send(new MyPowerUpsMessageComposer(gameSession));
     }
 
     public void getGamesCount(IMessageEvent messageEvent, INetSession session) {

@@ -221,6 +221,25 @@ public class CacheManager extends CachableObject implements Startable {
         return this.keyPrefix + "." + key;
     }
 
+    /**
+     * Returns a prefixed Redis key using the configured cache namespace.
+     *
+     * @param key The logical key suffix.
+     * @return The prefixed Redis key.
+     */
+    public String qualifyKey(final String key) {
+        return this.getKey(key);
+    }
+
+    /**
+     * Returns the shared Jedis pool when Redis has been initialised.
+     *
+     * @return The shared Jedis pool, or {@code null} when Redis is unavailable.
+     */
+    public JedisPool getJedisPool() {
+        return this.jedis;
+    }
+
     public boolean isEnabled() {
         return this.enabled;
     }

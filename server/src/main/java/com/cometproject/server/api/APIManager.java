@@ -12,12 +12,14 @@ import org.slf4j.LoggerFactory;
 import com.cometproject.api.config.Configuration;
 import com.cometproject.api.config.api.ApiConfiguration;
 import com.cometproject.api.utilities.Startable;
+import com.cometproject.server.api.routes.SsoTicketRoutes;
 import com.cometproject.server.api.routes.PhotoRoutes;
 import com.cometproject.server.api.routes.PlayerRoutes;
 import com.cometproject.server.api.routes.RoomRoutes;
 import com.cometproject.server.api.routes.StatusRoutes;
 import com.cometproject.server.api.routes.SystemRoutes;
 import com.cometproject.server.boot.CometBootstrap;
+import com.cometproject.server.game.sso.exceptions.SsoBackendUnavailableException;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -35,7 +37,8 @@ public class APIManager implements Startable {
     );
     private static final Set<String> AUTHENTICATED_PATHS = Set.of(
         "/rooms/active/all",
-        "/camera/purchase"
+        "/camera/purchase",
+        "/sso/ticket"
     );
 
     /**
@@ -145,6 +148,8 @@ public class APIManager implements Startable {
             context.header("www-authenticate", this.authHeader);
             ApiResponseUtils.error(context, 401, "invalid_auth_token", "Invalid authentication token.");
         });
+        app.exception(SsoBackendUnavailableException.class, (exception, context) ->
+            ApiResponseUtils.error(context, 503, "sso_backend_unavailable", "SSO backend is unavailable."));
 
         app.get("/", context -> ApiResponseUtils.error(context, 404, "not_found", "Invalid request."));
         app.get(STATUS_PATH, StatusRoutes::status);
@@ -165,6 +170,7 @@ public class APIManager implements Startable {
         app.get("/system/status", SystemRoutes::status);
         app.get("/system/shutdown", SystemRoutes::shutdown);
         app.get("/system/reload/{type}", SystemRoutes::reload);
+        app.post("/sso/ticket", SsoTicketRoutes::issueTicket);
         app.post("/camera/purchase", PhotoRoutes::purchase);
         app.get("/camera/purchase", PhotoRoutes::purchase);
     }
