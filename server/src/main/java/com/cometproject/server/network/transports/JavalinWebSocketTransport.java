@@ -1,5 +1,15 @@
 package com.cometproject.server.network.transports;
 
+import java.net.URI;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.config.ConfigurationSource;
 import com.cometproject.api.config.network.TransportConfiguration;
@@ -29,6 +39,7 @@ import com.cometproject.server.network.websockets.packets.incoming.player.Builde
 import com.cometproject.server.network.websockets.packets.incoming.player.CallForHelpHandler;
 import com.cometproject.server.network.websockets.packets.incoming.player.MacroHandler;
 import com.cometproject.server.network.websockets.packets.incoming.system.SubscriptionRevisionHandler;
+
 import io.javalin.Javalin;
 import io.javalin.websocket.WsBinaryMessageContext;
 import io.javalin.websocket.WsCloseContext;
@@ -38,15 +49,6 @@ import io.javalin.websocket.WsErrorContext;
 import io.javalin.websocket.WsMessageContext;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.net.URI;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Hosts the hotel WebSocket transport and the legacy browser side-channel on Javalin.
@@ -120,7 +122,7 @@ public final class JavalinWebSocketTransport implements ConnectionTransport {
      */
     @Override
     public void start() {
-        this.app = Javalin.create();
+        this.app = Javalin.create(config -> config.showJavalinBanner = false);
         this.registerGameSocket();
         this.registerLegacyBrowserSockets();
         this.app.start(this.resolvePort());

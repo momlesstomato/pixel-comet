@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.netty.all)
     implementation(libs.slf4j.api)
     implementation(libs.logback.classic)
+    implementation(libs.logstash.logback.encoder)
     implementation(libs.log4j.over.slf4j)
     implementation(libs.jul.to.slf4j)
     implementation(libs.hikari)

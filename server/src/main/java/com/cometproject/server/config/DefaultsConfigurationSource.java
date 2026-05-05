@@ -8,6 +8,7 @@ import com.cometproject.api.config.api.ApiConfiguration;
 import com.cometproject.api.config.cache.RedisConfiguration;
 import com.cometproject.api.config.database.DatabaseConfiguration;
 import com.cometproject.api.config.game.GameConfiguration;
+import com.cometproject.api.config.logging.LoggingConfiguration;
 import com.cometproject.api.config.modules.ModuleConfiguration;
 import com.cometproject.api.config.network.ConnectionRegistryConfiguration;
 import com.cometproject.api.config.network.NetworkConfiguration;
@@ -32,6 +33,7 @@ public final class DefaultsConfigurationSource implements ConfigurationSource {
         defaultsMap.putAll(GameConfiguration.defaults());
         defaultsMap.putAll(RedisConfiguration.defaults());
         defaultsMap.putAll(ApiConfiguration.defaults());
+        defaultsMap.putAll(LoggingConfiguration.defaults());
         defaultsMap.putAll(TransportConfiguration.defaults());
         defaultsMap.putAll(ConnectionRegistryConfiguration.defaults());
         defaultsMap.putAll(RconConfiguration.defaults());

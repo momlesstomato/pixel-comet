@@ -1,70 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <withJansi>false</withJansi>
-        <encoder>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>%highlight(%-5level) %cyan(%-36logger{36}) - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <appender name="FileDebug" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logging/debug.txt</file>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>DEBUG</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>logging/debug.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
-            <maxFileSize>50MB</maxFileSize>
-            <maxHistory>7</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %level %logger - %msg%n</pattern>
-        </encoder>
-    </appender>
+    <logger name="io.netty" level="INFO"/>
+    <logger name="com.zaxxer.hikari" level="ERROR"/>
+    <logger name="io.javalin" level="WARN"/>
+    <logger name="org.eclipse.jetty" level="WARN"/>
+    <logger name="org.flywaydb.core.FlywayExecutor" level="WARN"/>
+    <logger name="org.flywaydb.core.internal.schemahistory" level="WARN"/>
+    <logger name="org.flywaydb.core.internal.database.base.Database" level="ERROR"/>
+    <logger name="org.flywaydb.core.internal.command.DbMigrate" level="ERROR"/>
 
-    <appender name="FileErrors" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logging/errors/runtime.txt</file>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>ERROR</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>logging/errors/runtime.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
-            <maxFileSize>50MB</maxFileSize>
-            <maxHistory>7</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %level %logger - %msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <!--<appender name="FileErrorsSql" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logging/errors/sql.txt</file>
-        <filter class="com.eu.habbo.util.logback.SqlExceptionFilter" />
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>logging/errors/sql.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
-            <maxFileSize>50MB</maxFileSize>
-            <maxHistory>7</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %level %logger - %msg%n</pattern>
-        </encoder>
-    </appender>-->
-
-    <logger name="io.netty">
-        <level value="info"/>
-    </logger>
-
-    <logger name="com.zaxxer.hikari">
-        <level value="error"/>
-    </logger>
-
-    <root level="info">
-        <appender-ref ref="Console" />
-        <appender-ref ref="FileDebug" />
-        <appender-ref ref="FileErrors" />
+    <root level="INFO">
+        <appender-ref ref="Console"/>
     </root>
 </configuration>

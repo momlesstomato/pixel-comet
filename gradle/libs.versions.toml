@@ -6,6 +6,7 @@ gson = "2.10.1"
 netty = "4.1.109.Final"
 slf4j = "2.0.16"
 logback = "1.5.16"
+logstash = "8.0"
 hikari = "5.1.0"
 mysql = "8.3.0"
 commonsLang3 = "3.14.0"
@@ -39,6 +40,7 @@ slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 log4j-over-slf4j = { module = "org.slf4j:log4j-over-slf4j", version.ref = "slf4j" }
 jul-to-slf4j = { module = "org.slf4j:jul-to-slf4j", version.ref = "slf4j" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+logstash-logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstash" }
 hikari = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }
 mysql-connector = { module = "com.mysql:mysql-connector-j", version.ref = "mysql" }
 commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commonsLang3" }

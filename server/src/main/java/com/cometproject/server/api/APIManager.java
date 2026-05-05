@@ -113,7 +113,7 @@ public class APIManager implements Startable {
      * Initializes the Javalin management API server.
      */
     private void initializeJavalin() {
-        this.app = Javalin.create();
+        this.app = Javalin.create(config -> config.showJavalinBanner = false);
         this.app.before(this::authenticate);
         this.app.exception(ApiUnauthorizedException.class, (exception, context) -> {
             context.header("www-authenticate", this.authHeader);

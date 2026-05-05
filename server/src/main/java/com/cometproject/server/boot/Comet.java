@@ -1,23 +1,21 @@
 package com.cometproject.server.boot;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.ConsoleAppender;
-import com.cometproject.api.stats.CometStats;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Random;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+
+import com.cometproject.api.stats.CometStats;
 import com.cometproject.server.boot.utils.ConsoleCommands;
 import com.cometproject.server.boot.utils.ShutdownProcess;
 import com.cometproject.server.game.rooms.RoomManager;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.utilities.CometRuntime;
 import com.cometproject.server.utilities.TimeSpan;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Random;
-import java.util.UUID;
 
 
 public class Comet {
@@ -51,9 +49,6 @@ public class Comet {
      */
     private static CometServer server;
 
-    private static final String OS_NAME = System.getProperty("os.name");
-    private static final String CLASS_PATH = System.getProperty("java.class.path");
-
     /**
      * Start the server!
      *
@@ -65,26 +60,11 @@ public class Comet {
 
         start = System.currentTimeMillis();
 
-        // Check if running on Windows and not in IntelliJ.
-        // If so, we need to reconfigure the console appender and enable Jansi for colors.
-        if (OS_NAME.startsWith("Windows") && !CLASS_PATH.contains("idea_rt.jar")) {
-            ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-            ConsoleAppender<ILoggingEvent> appender = (ConsoleAppender<ILoggingEvent>) root.getAppender("Console");
-
-            appender.stop();
-            appender.setWithJansi(true);
-            appender.start();
-        }
-
-
         LOGGER.info("Comet Server - " + getBuild());
 
         if (isDebugging) {
-            ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-            root.setLevel(Level.DEBUG);
             LOGGER.debug("Debugging enabled.");
         }
-
 
         server = new CometServer(null);
         server.init();
