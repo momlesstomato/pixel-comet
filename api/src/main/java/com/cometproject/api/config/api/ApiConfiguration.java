@@ -7,9 +7,9 @@ import java.util.Map;
  */
 public final class ApiConfiguration {
     public static final String ENABLED = "comet.api.enabled";
-    public static final String PORT = "comet.api.port";
     public static final String TOKEN = "comet.api.token";
     public static final String TOKEN_HEADER = "comet.api.token.header";
+    public static final String DOCS_ENABLED = "comet.api.docs.enabled";
 
     private ApiConfiguration() {
     }
@@ -22,9 +22,9 @@ public final class ApiConfiguration {
     public static Map<String, String> defaults() {
         return Map.of(
                 ENABLED, "false",
-                PORT, "30003",
-            TOKEN, "replace_with_output_of_openssl_rand_hex_32",
-            TOKEN_HEADER, "auth_token"
+                TOKEN, "replace_with_output_of_openssl_rand_hex_32",
+                TOKEN_HEADER, "auth_token",
+                DOCS_ENABLED, "false"
         );
     }
 }

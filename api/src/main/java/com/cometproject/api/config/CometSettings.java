@@ -1,12 +1,12 @@
 package com.cometproject.api.config;
 
-import com.cometproject.api.game.rooms.filter.FilterMode;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
 import java.time.DayOfWeek;
 import java.util.Map;
 import java.util.Set;
+
+import com.cometproject.api.game.rooms.filter.FilterMode;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 
 public class CometSettings {
@@ -67,7 +67,6 @@ public class CometSettings {
     public static String cameraPhotoUrl = "http://localhost:8080/camera/photo/%photoId%";
     public static String cameraUploadUrl = "http://localhost:8080/camera/upload/%photoId%";
     public static String thumbnailUploadUrl = "http://localhost:8080/camera/upload/%photoId%";
-    public static String webSocketUrl = "http://localhost/photos/photos/%photoId%.png";
 
     public static int roomWiredRewardMinimumRank = 7;
     public static boolean asyncCatalogPurchase = false;

@@ -2,9 +2,10 @@ openapi: 3.1.0
 info:
   title: Pixel Comet Management API
   version: 1.0.0
-  description: Management endpoints served by Javalin for operational control and diagnostics.
+  description: Management endpoints served by Javalin for operational control and diagnostics, plus the browser WebSocket endpoint.
 servers:
-  - url: http://localhost:30003
+  - url: /
+    description: Shared Javalin listener serving the management API and websocket upgrade endpoints.
 security:
   - authTokenHeader: []
 components:
@@ -75,8 +76,7 @@ paths:
   /openapi/spec:
     get:
       summary: Return the OpenAPI specification.
-      parameters:
-        - $ref: '#/components/parameters/AuthTokenHeader'
+      security: []
       responses:
         '200':
           description: OpenAPI YAML document.
@@ -99,6 +99,73 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /swagger:
+    get:
+      summary: Render the Swagger UI for the management API.
+      security: []
+      responses:
+        '200':
+          description: Swagger UI HTML page.
+          headers:
+            content-type:
+              schema:
+                type: string
+                example: text/html; charset=utf-8
+          content:
+            text/html:
+              schema:
+                type: string
+  /status:
+    get:
+      summary: Return a public server health snapshot.
+      description: >-
+        Returns uptime, online player count, and active room count. No
+        authentication token is required. Intended for health monitoring and
+        load-balancer probes.
+      security: []
+      responses:
+        '200':
+          description: Server is up and accepting connections.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [success, data]
+                properties:
+                  success:
+                    type: boolean
+                    const: true
+                  data:
+                    type: object
+                    required: [status, players_online, rooms_active, uptime]
+                    properties:
+                      status:
+                        type: string
+                        example: up
+                      players_online:
+                        type: integer
+                        example: 42
+                      rooms_active:
+                        type: integer
+                        example: 17
+                      uptime:
+                        type: string
+                        example: "2d 4h 13m"
+  /ws:
+    get:
+      summary: Upgrade to the browser WebSocket side-channel.
+      description: >-
+        Browser websocket endpoint hosted by the shared Javalin transport. Clients connect to this
+        path on the port configured by COMET_TRANSPORT_WEBSOCKETS_PORT and then send
+        JSON messages with a handler field such as authentication, asyncMove, or verifyOffer.
+      security: []
+      responses:
+        '101':
+          description: WebSocket protocol upgrade accepted.
+        '400':
+          description: Request did not perform a valid WebSocket upgrade.
+        '500':
+          description: Server-side websocket initialisation error.
   /player/{id}/reload:
     get:
       summary: Reload a player's runtime data.

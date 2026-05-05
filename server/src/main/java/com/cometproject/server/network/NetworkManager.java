@@ -8,6 +8,7 @@ import com.cometproject.api.config.network.ConnectionRegistryConfiguration;
 import com.cometproject.api.networking.registry.ConnectionRegistry;
 import com.cometproject.api.utilities.Startable;
 import com.cometproject.networking.api.sessions.INetSessionFactory;
+import com.cometproject.server.api.APIManager;
 import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.network.messages.GameMessageHandler;
 import com.cometproject.server.network.messages.MessageHandler;
@@ -67,7 +68,8 @@ public class NetworkManager implements Startable {
                 Configuration.currentConfig(),
                 this.sessions,
                 sessionFactory,
-                this.connectionRegistry
+            this.connectionRegistry,
+            APIManager.getInstance()
         ));
         this.transportManager.start();
     }

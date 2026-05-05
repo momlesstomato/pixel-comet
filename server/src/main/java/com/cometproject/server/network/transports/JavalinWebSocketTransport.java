@@ -1,16 +1,12 @@
 package com.cometproject.server.network.transports;
 
-import java.net.URI;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.config.ConfigurationSource;
 import com.cometproject.api.config.network.TransportConfiguration;
 import com.cometproject.api.networking.connections.ConnectionCloseCode;
@@ -21,6 +17,7 @@ import com.cometproject.api.networking.transports.ConnectionTransport;
 import com.cometproject.api.utilities.JsonUtil;
 import com.cometproject.networking.api.sessions.INetSession;
 import com.cometproject.networking.api.sessions.INetSessionFactory;
+import com.cometproject.server.api.APIManager;
 import com.cometproject.server.network.connections.JavalinWebSocketConnection;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.network.sessions.SessionManager;
@@ -51,20 +48,18 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 /**
- * Hosts the hotel WebSocket transport and the legacy browser side-channel on Javalin.
+ * Hosts the hotel WebSocket transport and the browser side-channel on Javalin.
  */
 public final class JavalinWebSocketTransport implements ConnectionTransport {
     private static final Logger LOGGER = LoggerFactory.getLogger(JavalinWebSocketTransport.class);
-    private static final String LEGACY_ENABLED_KEY = "comet.websockets.enable";
-    private static final String LEGACY_PORT_KEY = "comet.websockets.port";
     private static final String GAME_SOCKET_PATH = "/game";
-    private static final String LEGACY_SOCKET_ROOT_PATH = "/";
-    private static final String LEGACY_SOCKET_ALIAS_PATH = "/websocket";
+    private static final String BROWSER_SOCKET_PATH = "/ws";
 
     private final ConfigurationSource configuration;
     private final SessionManager sessionManager;
     private final INetSessionFactory sessionFactory;
     private final ConnectionRegistry connectionRegistry;
+    private final APIManager apiManager;
     private final Map<String, JavalinWebSocketConnection> gameConnections = new ConcurrentHashMap<>();
     private final Map<String, INetSession> gameSessions = new ConcurrentHashMap<>();
     private final Map<String, WebSocketClientConnection> browserConnections = new ConcurrentHashMap<>();
@@ -79,17 +74,20 @@ public final class JavalinWebSocketTransport implements ConnectionTransport {
      * @param sessionManager The session manager used by gameplay and browser side-channel cleanup.
      * @param sessionFactory The shared game session factory.
      * @param connectionRegistry The active registry for game transport connections.
+     * @param apiManager The management API coordinator sharing this Javalin server.
      */
     public JavalinWebSocketTransport(
             final ConfigurationSource configuration,
             final SessionManager sessionManager,
             final INetSessionFactory sessionFactory,
-            final ConnectionRegistry connectionRegistry
+            final ConnectionRegistry connectionRegistry,
+            final APIManager apiManager
     ) {
         this.configuration = configuration;
         this.sessionManager = sessionManager;
         this.sessionFactory = sessionFactory;
         this.connectionRegistry = connectionRegistry;
+        this.apiManager = apiManager;
         this.browserHandlers = this.createBrowserHandlers();
     }
 
@@ -110,11 +108,7 @@ public final class JavalinWebSocketTransport implements ConnectionTransport {
      */
     @Override
     public boolean isEnabled() {
-        return Boolean.parseBoolean(this.resolveConfigurationValue(
-                TransportConfiguration.WEBSOCKETS_ENABLED,
-                LEGACY_ENABLED_KEY,
-                TransportConfiguration.defaults().get(TransportConfiguration.WEBSOCKETS_ENABLED)
-        ));
+        return this.isWebSocketsEnabled() || this.apiManager.isEnabled();
     }
 
     /**
@@ -123,8 +117,16 @@ public final class JavalinWebSocketTransport implements ConnectionTransport {
     @Override
     public void start() {
         this.app = Javalin.create(config -> config.showJavalinBanner = false);
-        this.registerGameSocket();
-        this.registerLegacyBrowserSockets();
+
+        if (this.apiManager.isEnabled()) {
+            this.apiManager.configureRoutes(this.app);
+        }
+
+        if (this.isWebSocketsEnabled()) {
+            this.registerGameSocket();
+            this.registerBrowserSocket();
+        }
+
         this.app.start(this.resolvePort());
     }
 
@@ -153,13 +155,11 @@ public final class JavalinWebSocketTransport implements ConnectionTransport {
         });
     }
 
-    private void registerLegacyBrowserSockets() {
-        for (String path : this.resolveLegacyBrowserPaths()) {
-            this.app.ws(path, this::configureLegacyBrowserSocket);
-        }
+    private void registerBrowserSocket() {
+        this.app.ws(BROWSER_SOCKET_PATH, this::configureBrowserSocket);
     }
 
-    private void configureLegacyBrowserSocket(final WsConfig ws) {
+    private void configureBrowserSocket(final WsConfig ws) {
         ws.onConnect(this::handleBrowserConnect);
         ws.onMessage(this::handleBrowserMessage);
         ws.onClose(this::handleBrowserClose);
@@ -253,7 +253,7 @@ public final class JavalinWebSocketTransport implements ConnectionTransport {
     }
 
     private void handleBrowserError(final WsErrorContext context) {
-        LOGGER.error("Legacy browser WebSocket transport error", context.error());
+        LOGGER.error("Browser WebSocket transport error", context.error());
         this.cleanupBrowserSocket(context.sessionId(), true);
     }
 
@@ -286,14 +286,14 @@ public final class JavalinWebSocketTransport implements ConnectionTransport {
         }
 
         WebSocketSessionManager.getInstance().removeChannel(connection);
-        this.detachLegacyBrowserChannel(connection);
+        this.detachBrowserChannel(connection);
 
         if (closeConnection) {
             connection.close();
         }
     }
 
-    private void detachLegacyBrowserChannel(final WebSocketClientConnection connection) {
+    private void detachBrowserChannel(final WebSocketClientConnection connection) {
         for (ISession value : this.sessionManager.getSessions().values()) {
             if (value instanceof Session session && session.getWsChannel() == connection) {
                 session.setWsChannel(null);
@@ -317,71 +317,18 @@ public final class JavalinWebSocketTransport implements ConnectionTransport {
         return Map.copyOf(handlers);
     }
 
-    private Set<String> resolveLegacyBrowserPaths() {
-        final Set<String> paths = new LinkedHashSet<>();
-        paths.add(LEGACY_SOCKET_ROOT_PATH);
-        paths.add(LEGACY_SOCKET_ALIAS_PATH);
-
-        final String configuredPath = this.normalizePath(CometSettings.webSocketUrl);
-        if (!GAME_SOCKET_PATH.equals(configuredPath)) {
-            paths.add(configuredPath);
-        }
-
-        return paths;
-    }
-
     private int resolvePort() {
-        return Integer.parseInt(this.resolveConfigurationValue(
+        return Integer.parseInt(this.configuration.get(
                 TransportConfiguration.WEBSOCKETS_PORT,
-                LEGACY_PORT_KEY,
                 TransportConfiguration.defaults().get(TransportConfiguration.WEBSOCKETS_PORT)
         ));
     }
 
-    private String resolveConfigurationValue(
-            final String key,
-            final String legacyKey,
-            final String defaultValue
-    ) {
-        final String directValue = this.configuration.get(key);
-        if (directValue != null) {
-            return directValue;
-        }
-
-        final String legacyValue = this.configuration.get(legacyKey);
-        if (legacyValue != null) {
-            return legacyValue;
-        }
-
-        return defaultValue;
-    }
-
-    private String normalizePath(final String rawPath) {
-        if (rawPath == null || rawPath.isBlank()) {
-            return LEGACY_SOCKET_ROOT_PATH;
-        }
-
-        try {
-            if (rawPath.contains("://")) {
-                final URI uri = URI.create(rawPath);
-                final String path = uri.getPath();
-                return path == null || path.isBlank() ? LEGACY_SOCKET_ROOT_PATH : path;
-            }
-        } catch (IllegalArgumentException exception) {
-            LOGGER.debug("Ignoring invalid legacy browser WebSocket URL: {}", rawPath, exception);
-            return LEGACY_SOCKET_ROOT_PATH;
-        }
-
-        if (rawPath.startsWith("/")) {
-            return rawPath;
-        }
-
-        final int slashIndex = rawPath.indexOf('/');
-        if (slashIndex >= 0) {
-            return rawPath.substring(slashIndex);
-        }
-
-        return LEGACY_SOCKET_ROOT_PATH;
+    private boolean isWebSocketsEnabled() {
+        return Boolean.parseBoolean(this.configuration.get(
+                TransportConfiguration.WEBSOCKETS_ENABLED,
+                TransportConfiguration.defaults().get(TransportConfiguration.WEBSOCKETS_ENABLED)
+        ));
     }
 
     private static final class IncomingPayload {

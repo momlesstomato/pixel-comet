@@ -2,6 +2,8 @@ package com.cometproject.server.api;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import com.cometproject.api.utilities.Startable;
 import com.cometproject.server.api.routes.PhotoRoutes;
 import com.cometproject.server.api.routes.PlayerRoutes;
 import com.cometproject.server.api.routes.RoomRoutes;
+import com.cometproject.server.api.routes.StatusRoutes;
 import com.cometproject.server.api.routes.SystemRoutes;
 import com.cometproject.server.boot.CometBootstrap;
 
@@ -21,6 +24,20 @@ import io.javalin.http.Context;
 
 
 public class APIManager implements Startable {
+    private static final String OPENAPI_SPEC_PATH = "/openapi/spec";
+    private static final String SWAGGER_PATH = "/swagger";
+    private static final String STATUS_PATH = "/status";
+    private static final Set<String> UNAUTHENTICATED_PATHS = Set.of(OPENAPI_SPEC_PATH, SWAGGER_PATH, STATUS_PATH);
+    private static final List<String> AUTHENTICATED_PATH_PREFIXES = List.of(
+        "/player/",
+        "/room/",
+        "/system/"
+    );
+    private static final Set<String> AUTHENTICATED_PATHS = Set.of(
+        "/rooms/active/all",
+        "/camera/purchase"
+    );
+
     /**
      * Logger
      */
@@ -31,7 +48,6 @@ public class APIManager implements Startable {
      */
         private static final String[] configProperties = new String[]{
             ApiConfiguration.ENABLED,
-            ApiConfiguration.PORT,
             ApiConfiguration.TOKEN,
             ApiConfiguration.TOKEN_HEADER
         };
@@ -44,16 +60,11 @@ public class APIManager implements Startable {
     private boolean enabled;
 
     /**
-     * The port the API server will listen on
-     */
-    private int port;
-
-    /**
      * The token used for authentication
      */
     private String authToken;
     private String authHeader;
-    private Javalin app;
+    private boolean documentationEnabled;
 
     /**
      * Construct the API manager
@@ -78,16 +89,10 @@ public class APIManager implements Startable {
         }
 
         this.validateAuthenticationConfiguration();
-        this.initializeJavalin();
-        this.initializeRouting();
-        this.app.start(this.port);
     }
 
     @Override
     public void stop() {
-        if (this.app != null) {
-            this.app.stop();
-        }
     }
 
     /**
@@ -104,43 +109,64 @@ public class APIManager implements Startable {
         }
 
         this.enabled = Configuration.currentConfig().getProperty(ApiConfiguration.ENABLED).equals("true");
-        this.port = Integer.parseInt(Configuration.currentConfig().getProperty(ApiConfiguration.PORT));
         this.authToken = Configuration.currentConfig().getProperty(ApiConfiguration.TOKEN);
         this.authHeader = Configuration.currentConfig().getProperty(ApiConfiguration.TOKEN_HEADER);
+        this.documentationEnabled = Boolean.parseBoolean(Configuration.currentConfig().getProperty(
+            ApiConfiguration.DOCS_ENABLED,
+            ApiConfiguration.defaults().get(ApiConfiguration.DOCS_ENABLED)
+        ));
     }
 
     /**
-     * Initializes the Javalin management API server.
+     * Indicates whether the management API is enabled.
+     *
+     * @return True when the management API should be registered.
      */
-    private void initializeJavalin() {
-        this.app = Javalin.create(config -> config.showJavalinBanner = false);
-        this.app.before(this::authenticate);
-        this.app.exception(ApiUnauthorizedException.class, (exception, context) -> {
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
+    /**
+     * Registers the management API routes on the shared Javalin server.
+     *
+     * @param app The shared Javalin application.
+     */
+    public void configureRoutes(final Javalin app) {
+        if (!this.enabled) {
+            return;
+        }
+
+        app.before(context -> {
+            if (this.requiresAuthentication(context.path())) {
+                this.authenticate(context);
+            }
+        });
+        app.exception(ApiUnauthorizedException.class, (exception, context) -> {
             context.header("www-authenticate", this.authHeader);
             ApiResponseUtils.error(context, 401, "invalid_auth_token", "Invalid authentication token.");
         });
-    }
 
-    /**
-     * Initialize the API routing
-     */
-    private void initializeRouting() {
-        this.app.get("/", context -> ApiResponseUtils.error(context, 404, "not_found", "Invalid request."));
-        this.app.get("/openapi/spec", this::openApiSpec);
+        app.get("/", context -> ApiResponseUtils.error(context, 404, "not_found", "Invalid request."));
+        app.get(STATUS_PATH, StatusRoutes::status);
 
-        this.app.get("/player/{id}/reload", PlayerRoutes::reloadPlayerData);
-        this.app.get("/player/{id}/disconnect", PlayerRoutes::disconnect);
-        this.app.post("/player/{id}/alert", PlayerRoutes::alert);
-        this.app.get("/player/{id}/badge/{badge}", PlayerRoutes::giveBadge);
+        if (this.documentationEnabled) {
+            app.get(OPENAPI_SPEC_PATH, this::openApiSpec);
+            app.get(SWAGGER_PATH, this::swaggerUi);
+        }
 
-        this.app.get("/rooms/active/all", RoomRoutes::getAllActiveRooms);
-        this.app.get("/room/{id}/{action}", RoomRoutes::roomAction);
+        app.get("/player/{id}/reload", PlayerRoutes::reloadPlayerData);
+        app.get("/player/{id}/disconnect", PlayerRoutes::disconnect);
+        app.post("/player/{id}/alert", PlayerRoutes::alert);
+        app.get("/player/{id}/badge/{badge}", PlayerRoutes::giveBadge);
 
-        this.app.get("/system/status", SystemRoutes::status);
-        this.app.get("/system/shutdown", SystemRoutes::shutdown);
-        this.app.get("/system/reload/{type}", SystemRoutes::reload);
-        this.app.post("/camera/purchase", PhotoRoutes::purchase);
-        this.app.get("/camera/purchase", PhotoRoutes::purchase);
+        app.get("/rooms/active/all", RoomRoutes::getAllActiveRooms);
+        app.get("/room/{id}/{action}", RoomRoutes::roomAction);
+
+        app.get("/system/status", SystemRoutes::status);
+        app.get("/system/shutdown", SystemRoutes::shutdown);
+        app.get("/system/reload/{type}", SystemRoutes::reload);
+        app.post("/camera/purchase", PhotoRoutes::purchase);
+        app.get("/camera/purchase", PhotoRoutes::purchase);
     }
 
     private void authenticate(final Context context) {
@@ -167,6 +193,28 @@ public class APIManager implements Startable {
         }
     }
 
+    private boolean isUnauthenticatedRoute(final String path) {
+        return UNAUTHENTICATED_PATHS.contains(path);
+    }
+
+    private boolean requiresAuthentication(final String path) {
+        if (this.isUnauthenticatedRoute(path)) {
+            return false;
+        }
+
+        if (AUTHENTICATED_PATHS.contains(path)) {
+            return true;
+        }
+
+        for (String pathPrefix : AUTHENTICATED_PATH_PREFIXES) {
+            if (path.startsWith(pathPrefix)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void openApiSpec(final Context context) {
         try (InputStream inputStream = APIManager.class.getResourceAsStream("/openapi/management-api.yaml")) {
             if (inputStream == null) {
@@ -179,6 +227,38 @@ public class APIManager implements Startable {
         } catch (Exception exception) {
             ApiResponseUtils.error(context, 500, "openapi_spec_error", "Unable to read the OpenAPI specification.");
         }
+    }
+
+    private void swaggerUi(final Context context) {
+        context.contentType("text/html; charset=utf-8");
+        context.result("""
+                <!DOCTYPE html>
+                <html lang=\"en\">
+                <head>
+                    <meta charset=\"utf-8\">
+                    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
+                    <title>Pixel Comet Management API</title>
+                    <link rel=\"stylesheet\" href=\"https://unpkg.com/swagger-ui-dist@5/swagger-ui.css\">
+                    <style>
+                        body { margin: 0; background: #fafafa; }
+                    </style>
+                </head>
+                <body>
+                    <div id=\"swagger-ui\"></div>
+                    <script src=\"https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js\"></script>
+                    <script>
+                        window.ui = SwaggerUIBundle({
+                            url: '%s',
+                            dom_id: '#swagger-ui',
+                            deepLinking: true,
+                            persistAuthorization: true,
+                            presets: [SwaggerUIBundle.presets.apis],
+                            layout: 'BaseLayout'
+                        });
+                    </script>
+                </body>
+                </html>
+                """.formatted(OPENAPI_SPEC_PATH));
     }
 
     private static final class ApiUnauthorizedException extends RuntimeException {

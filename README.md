@@ -35,9 +35,9 @@ pixel-comet
 
 **Networking stack:**
 - Netty 4.1 handles the raw `TCP` hotel transport.
-- Javalin handles the `WEBSOCKETS` listeners, including the `/game` hotel transport endpoint and the legacy browser side-channel.
+- Javalin handles the `WEBSOCKETS` listeners, including the `/game` hotel transport endpoint and the `/ws` browser side-channel.
 - The codec pipeline applies XML-policy decoding (legacy compatibility), length-prefix framing, RC4 encryption, and short-header message dispatch.
-- The REST management API runs on Javalin and exposes an OpenAPI spec at `/openapi/spec`.
+- The REST management API runs on Javalin; when `COMET_API_DOCS_ENABLED=true`, it also exposes `/openapi/spec` and `/swagger`.
 
 **Storage:**
 - MySQL via HikariCP connection pool.
@@ -99,7 +99,6 @@ COMET_TRANSPORT_WEBSOCKETS_PORT=87
 
 # REST API (disabled by default)
 COMET_API_ENABLED=false
-COMET_API_PORT=30003
 COMET_API_TOKEN=replace_with_output_of_openssl_rand_hex_32
 COMET_API_TOKEN_HEADER=auth_token
 
@@ -130,7 +129,7 @@ the shortened form without a leading `COMET_` segment, such as
 java -jar server/build/libs/server.jar
 ```
 
-The server binds on the configured TCP and WebSocket ports. The REST API starts only when `COMET_API_ENABLED=true`.
+The server binds on the configured TCP port and on one shared Javalin port for `/game`, `/ws`, and the management API routes. The REST API starts only when `COMET_API_ENABLED=true`.
 
 ---
 
@@ -158,7 +157,9 @@ All module code must follow the standards in [AGENTS.md](AGENTS.md).
 
 ## REST Management API
 
-When enabled, the API listens on `COMET_API_PORT`, serves its OpenAPI document at `/openapi/spec`, and requires the header named by `COMET_API_TOKEN_HEADER`.
+When enabled, the API listens on `COMET_TRANSPORT_WEBSOCKETS_PORT` and requires the header named by `COMET_API_TOKEN_HEADER`.
+
+When `COMET_API_DOCS_ENABLED=true`, the API also exposes `/openapi/spec` and `/swagger` without authentication so Swagger UI can load the specification.
 
 The default header is `auth_token`, and the token value should be generated with `openssl rand -hex 32` and stored in `COMET_API_TOKEN`.
 
@@ -167,12 +168,16 @@ The default header is `auth_token`, and the token value should be generated with
 | `GET`  | `/system/status` | Server metrics and online count |
 | `GET`  | `/system/reload/:type` | Reload rooms, items, permissions, etc. |
 | `GET`  | `/system/shutdown` | Graceful shutdown |
+| `GET`  | `/openapi/spec` | OpenAPI YAML document, when `COMET_API_DOCS_ENABLED=true` |
+| `GET`  | `/swagger` | Swagger UI, when `COMET_API_DOCS_ENABLED=true` |
 | `GET`  | `/player/:id/reload` | Reload player data from DB |
 | `GET`  | `/player/:id/disconnect` | Force-disconnect a player |
 | `POST` | `/player/:id/alert` | Send an alert to a player |
 | `GET`  | `/player/:id/badge/:badge` | Award a badge to a player |
 | `GET`  | `/rooms/active/all` | List all active room instances |
 | `GET`  | `/room/:id/:action` | Room control (kick, empty, …) |
+
+The browser websocket side-channel is hosted at `/ws` on `COMET_TRANSPORT_WEBSOCKETS_PORT`. The hotel game websocket remains at `/game`, and the management HTTP routes share that same Javalin listener.
 
 ---
 
