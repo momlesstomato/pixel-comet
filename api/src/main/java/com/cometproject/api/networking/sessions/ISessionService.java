@@ -1,7 +1,7 @@
 package com.cometproject.api.networking.sessions;
 
+import com.cometproject.api.networking.connections.Connection;
 import com.cometproject.api.networking.messages.IMessageComposer;
-import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Map;
 import java.util.Set;
@@ -23,5 +23,5 @@ public interface ISessionService {
 
     void broadcastToModerators(IMessageComposer messageComposer);
 
-    void parseCommand(String[] message, ChannelHandlerContext ctx);
+    void parseCommand(String[] message, Connection connection);
 }

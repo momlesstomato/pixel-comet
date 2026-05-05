@@ -3,8 +3,8 @@ package com.cometproject.server.network.websockets.packets.incoming.player;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.sessions.Session;
+import com.cometproject.server.network.websockets.WebSocketClientConnection;
 import com.cometproject.server.network.websockets.packets.incoming.AbstractWebSocketHandler;
-import io.netty.channel.ChannelHandlerContext;
 
 public class BuilderSyncHandler extends AbstractWebSocketHandler<BuilderSyncHandler.ASMData> {
 
@@ -13,7 +13,7 @@ public class BuilderSyncHandler extends AbstractWebSocketHandler<BuilderSyncHand
     }
 
     @Override
-    public void handle(ChannelHandlerContext ctx, ASMData eventData) {
+    public void handle(WebSocketClientConnection ctx, ASMData eventData) {
         if(!isNumeric(eventData.value))
             return;
 

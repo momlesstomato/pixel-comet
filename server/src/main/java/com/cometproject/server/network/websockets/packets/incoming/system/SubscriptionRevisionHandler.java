@@ -10,12 +10,12 @@ import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.user.inventory.UpdateInventoryMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.network.websockets.interfaces.ShopOffer;
+import com.cometproject.server.network.websockets.WebSocketClientConnection;
 import com.cometproject.server.network.websockets.packets.incoming.AbstractWebSocketHandler;
 import com.cometproject.server.storage.queries.player.SubscriptionDao;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
 import com.google.common.collect.Sets;
-import io.netty.channel.ChannelHandlerContext;
 
 public class SubscriptionRevisionHandler extends AbstractWebSocketHandler<SubscriptionRevisionHandler.ASMData> {
 
@@ -24,7 +24,7 @@ public class SubscriptionRevisionHandler extends AbstractWebSocketHandler<Subscr
     }
 
     @Override
-    public void handle(ChannelHandlerContext ctx, ASMData authenticationData) {
+    public void handle(WebSocketClientConnection ctx, ASMData authenticationData) {
         if (authenticationData.pid.isEmpty() || !isNumeric(authenticationData.pid)|| !isNumeric(authenticationData.oid))
             return;
 

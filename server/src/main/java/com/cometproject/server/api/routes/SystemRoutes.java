@@ -1,5 +1,6 @@
 package com.cometproject.server.api.routes;
 
+import com.cometproject.server.api.ApiResponseUtils;
 import com.cometproject.server.boot.Comet;
 import com.cometproject.server.boot.utils.ShutdownProcess;
 import com.cometproject.server.composers.catalog.CatalogPublishMessageComposer;
@@ -16,44 +17,29 @@ import com.cometproject.server.game.rooms.RoomManager;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.moderation.ModToolMessageComposer;
 import com.cometproject.server.storage.queries.config.ConfigDao;
-import spark.Request;
-import spark.Response;
+import io.javalin.http.Context;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class SystemRoutes {
-    public static Object status(Request req, Response res) {
-        Map<String, Object> result = new HashMap<>();
-        res.type("application/json");
-
-        result.put("status", Comet.getStats());
-
-        return result;
+    public static void status(final Context context) {
+        ApiResponseUtils.success(context, Map.of("status", Comet.getStats()));
     }
 
-    public static Object shutdown(Request req, Response res) {
-        Map<String, Object> result = new HashMap<>();
-        res.type("application/json");
-
+    public static void shutdown(final Context context) {
         try {
-            result.put("success", true);
-
-            return result;
+            ApiResponseUtils.success(context, Map.of("shutdown", true));
         } finally {
             ShutdownProcess.shutdown(true);
         }
     }
 
-    public static Object reload(Request req, Response res) {
-        Map<String, Object> result = new HashMap<>();
-        res.type("application/json");
-
-        String type = req.params("type");
+    public static void reload(final Context context) {
+        String type = context.pathParam("type");
 
         if (type == null) {
-            result.put("error", "Invalid type");
-            return result;
+            ApiResponseUtils.error(context, 400, "invalid_reload_type", "Invalid reload type.");
+            return;
         }
 
         switch (type) {
@@ -105,10 +91,16 @@ public class SystemRoutes {
                     session.send(new ModToolMessageComposer());
                 }));
                 break;
+
+            default:
+                ApiResponseUtils.error(context, 400, "invalid_reload_type", "Unsupported reload type.");
+                return;
         }
 
-        result.put("success", true);
-        return result;
+        ApiResponseUtils.success(context, Map.of(
+                "reload_type", type,
+                "reloaded", true
+        ));
     }
 
 }

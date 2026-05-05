@@ -2,7 +2,9 @@ package com.cometproject.server.network.clients;
 
 import com.cometproject.networking.api.sessions.INetSession;
 import com.cometproject.networking.api.sessions.INetSessionFactory;
+import com.cometproject.api.networking.registry.ConnectionRegistry;
 import com.cometproject.server.network.NetworkManager;
+import com.cometproject.server.network.connections.NettyTcpConnection;
 import com.cometproject.server.network.messages.outgoing.misc.PingMessageComposer;
 import com.cometproject.server.protocol.messages.MessageEvent;
 import io.netty.channel.ChannelHandler;
@@ -40,13 +42,21 @@ public class ClientHandler extends SimpleChannelInboundHandler<MessageEvent> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
+        final NettyTcpConnection connection = new NettyTcpConnection(ctx);
+        final INetSession session = this.sessionFactory.createSession(connection);
 
-        final INetSession session = this.sessionFactory.createSession(ctx);
+        if (session == null) {
+            connection.dispose();
+            ctx.disconnect();
+            return;
+        }
+
+        final ConnectionRegistry connectionRegistry = NetworkManager.getInstance().getConnectionRegistry();
+        if (connectionRegistry != null) {
+            connectionRegistry.register(connection);
+        }
 
         ctx.channel().attr(ATTR_SESSION).set(session);
-        if (session == null) {
-            ctx.disconnect();
-        }
     }
 
     @Override
@@ -57,6 +67,11 @@ public class ClientHandler extends SimpleChannelInboundHandler<MessageEvent> {
 
         try {
             INetSession session = ctx.channel().attr(ATTR_SESSION).get();
+
+            final ConnectionRegistry connectionRegistry = NetworkManager.getInstance().getConnectionRegistry();
+            if (connectionRegistry != null) {
+                connectionRegistry.unregister(session.getConnection().getId());
+            }
 
             this.sessionFactory.disposeSession(session);
         } catch (Exception e) {

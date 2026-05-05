@@ -4,8 +4,8 @@ import com.cometproject.api.config.CometSettings;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.room.engine.RoomForwardMessageComposer;
 import com.cometproject.server.network.sessions.Session;
+import com.cometproject.server.network.websockets.WebSocketClientConnection;
 import com.cometproject.server.network.websockets.packets.incoming.AbstractWebSocketHandler;
-import io.netty.channel.ChannelHandlerContext;
 
 public class VisitEventHandler extends AbstractWebSocketHandler<VisitEventHandler.EventData> {
 
@@ -14,7 +14,7 @@ public class VisitEventHandler extends AbstractWebSocketHandler<VisitEventHandle
     }
 
     @Override
-    public void handle(ChannelHandlerContext ctx, EventData eventData) {
+    public void handle(WebSocketClientConnection ctx, EventData eventData) {
         Session s = NetworkManager.getInstance().getSessions().getByPlayerId(Integer.parseInt(eventData.session));
 
         if(s != null) {

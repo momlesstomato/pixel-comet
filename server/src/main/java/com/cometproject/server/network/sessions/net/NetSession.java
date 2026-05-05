@@ -1,9 +1,9 @@
 package com.cometproject.server.network.sessions.net;
 
+import com.cometproject.api.networking.connections.Connection;
 import com.cometproject.networking.api.messages.IMessageHandler;
 import com.cometproject.networking.api.sessions.INetSession;
 import com.cometproject.server.network.sessions.Session;
-import io.netty.channel.ChannelHandlerContext;
 
 public class NetSession implements INetSession<Session> {
 
@@ -16,8 +16,8 @@ public class NetSession implements INetSession<Session> {
     }
 
     @Override
-    public ChannelHandlerContext getChannel() {
-        return this.session.getChannel();
+    public Connection getConnection() {
+        return this.session.getConnection();
     }
 
     @Override

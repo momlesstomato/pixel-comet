@@ -1,0 +1,485 @@
+openapi: 3.1.0
+info:
+  title: Pixel Comet Management API
+  version: 1.0.0
+  description: Management endpoints served by Javalin for operational control and diagnostics.
+servers:
+  - url: http://localhost:30003
+security:
+  - authTokenHeader: []
+components:
+  securitySchemes:
+    authTokenHeader:
+      type: apiKey
+      in: header
+      name: auth_token
+  parameters:
+    AuthTokenHeader:
+      name: auth_token
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Secure management API token generated out-of-band, for example with `openssl rand -hex 32`.
+    RoomMessageHeader:
+      name: message
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Optional message broadcast for room actions.
+    SsoTicketHeader:
+      name: sso_ticket
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Player SSO ticket used to resolve the active session.
+    PhotoIdHeader:
+      name: photo_id
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Photo identifier assigned by the client.
+  schemas:
+    ErrorResponse:
+      type: object
+      required: [success, error_code, error_message]
+      properties:
+        success:
+          type: boolean
+          const: false
+        error_code:
+          type: string
+        error_message:
+          type: string
+    SuccessEnvelope:
+      type: object
+      required: [success]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          nullable: true
+    PlayerAlertRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        message:
+          type: string
+      required: [message]
+paths:
+  /openapi/spec:
+    get:
+      summary: Return the OpenAPI specification.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+      responses:
+        '200':
+          description: OpenAPI YAML document.
+          headers:
+            content-type:
+              schema:
+                type: string
+                example: application/yaml
+          content:
+            application/yaml:
+              schema:
+                type: string
+        '401':
+          description: Missing or invalid auth token.
+          headers:
+            www-authenticate:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /player/{id}/reload:
+    get:
+      summary: Reload a player's runtime data.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Player data reloaded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid player id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          headers:
+            www-authenticate:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Player or session not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /player/{id}/disconnect:
+    get:
+      summary: Disconnect an online player.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Player disconnected.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid player id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          headers:
+            www-authenticate:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Player or session not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /player/{id}/alert:
+    post:
+      summary: Send a management alert to an online player.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayerAlertRequest'
+      responses:
+        '200':
+          description: Alert delivered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid player id or missing message.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          headers:
+            www-authenticate:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Player or session not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /player/{id}/badge/{badge}:
+    get:
+      summary: Award a badge to a player.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: badge
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Badge awarded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid player id or badge code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          headers:
+            www-authenticate:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /rooms/active/all:
+    get:
+      summary: List all active rooms.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+      responses:
+        '200':
+          description: Active room list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '401':
+          description: Missing or invalid auth token.
+          headers:
+            www-authenticate:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /room/{id}/{action}:
+    get:
+      summary: Execute an action against an active room.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: action
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [alert, dispose, data, delete]
+        - $ref: '#/components/parameters/RoomMessageHeader'
+      responses:
+        '200':
+          description: Room action completed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid room id, action, or message.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          headers:
+            www-authenticate:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Room not active.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '501':
+          description: Action not implemented.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /system/status:
+    get:
+      summary: Return current server status metrics.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+      responses:
+        '200':
+          description: Current server status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '401':
+          description: Missing or invalid auth token.
+          headers:
+            www-authenticate:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /system/shutdown:
+    get:
+      summary: Trigger a server shutdown.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+      responses:
+        '200':
+          description: Shutdown accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '401':
+          description: Missing or invalid auth token.
+          headers:
+            www-authenticate:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /system/reload/{type}:
+    get:
+      summary: Reload a runtime subsystem.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [bans, catalog, navigator, permissions, config, news, items, filter, locale, modpresets]
+      responses:
+        '200':
+          description: Reload completed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid reload type.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          headers:
+            www-authenticate:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /camera/purchase:
+    get:
+      summary: Trigger photo purchase validation.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - $ref: '#/components/parameters/SsoTicketHeader'
+        - $ref: '#/components/parameters/PhotoIdHeader'
+      responses:
+        '200':
+          description: Photo purchase accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '401':
+          description: Missing or invalid auth token or SSO ticket.
+          headers:
+            www-authenticate:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Player session not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Photo requests are rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      summary: Trigger photo purchase validation.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - $ref: '#/components/parameters/SsoTicketHeader'
+        - $ref: '#/components/parameters/PhotoIdHeader'
+      responses:
+        '200':
+          description: Photo purchase accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '401':
+          description: Missing or invalid auth token or SSO ticket.
+          headers:
+            www-authenticate:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Player session not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Photo requests are rate limited.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

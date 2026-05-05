@@ -1,5 +1,6 @@
 package com.cometproject.server.api;
 
+import com.cometproject.api.config.api.ApiConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,10 +10,14 @@ import com.cometproject.server.api.routes.PhotoRoutes;
 import com.cometproject.server.api.routes.PlayerRoutes;
 import com.cometproject.server.api.routes.RoomRoutes;
 import com.cometproject.server.api.routes.SystemRoutes;
-import com.cometproject.server.api.transformers.JsonTransformer;
 import com.cometproject.server.boot.CometBootstrap;
 
-import spark.Spark;
+import io.javalin.Javalin;
+import io.javalin.http.Context;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 
 public class APIManager implements Startable {
@@ -24,11 +29,12 @@ public class APIManager implements Startable {
      * Create an array of config properties that are required before enabling the API
      * If none of these properties exist, the API will be automatically disabled
      */
-    private static final String[] configProperties = new String[]{
-            "comet.api.enabled",
-            "comet.api.port",
-            "comet.api.token"
-    };
+        private static final String[] configProperties = new String[]{
+            ApiConfiguration.ENABLED,
+            ApiConfiguration.PORT,
+            ApiConfiguration.TOKEN,
+            ApiConfiguration.TOKEN_HEADER
+        };
     /**
      * The global API Manager instance
      */
@@ -46,12 +52,8 @@ public class APIManager implements Startable {
      * The token used for authentication
      */
     private String authToken;
-
-
-    /**
-     * The transformer to convert objects into JSON formatted strings
-     */
-    private JsonTransformer jsonTransformer;
+    private String authHeader;
+    private Javalin app;
 
     /**
      * Construct the API manager
@@ -70,14 +72,21 @@ public class APIManager implements Startable {
     @Override
     public void start() {
         this.initializeConfiguration();
-        this.initializeSpark();
+
+        if (!this.enabled) {
+            return;
+        }
+
+        this.validateAuthenticationConfiguration();
+        this.initializeJavalin();
         this.initializeRouting();
+        this.app.start(this.port);
     }
 
     @Override
     public void stop() {
-        if (this.enabled) {
-            Spark.stop();
+        if (this.app != null) {
+            this.app.stop();
         }
     }
 
@@ -94,57 +103,87 @@ public class APIManager implements Startable {
             }
         }
 
-        this.enabled = Configuration.currentConfig().getProperty("comet.api.enabled").equals("true");
-        this.port = Integer.parseInt(Configuration.currentConfig().getProperty("comet.api.port"));
-        this.authToken = Configuration.currentConfig().getProperty("comet.api.token");
+        this.enabled = Configuration.currentConfig().getProperty(ApiConfiguration.ENABLED).equals("true");
+        this.port = Integer.parseInt(Configuration.currentConfig().getProperty(ApiConfiguration.PORT));
+        this.authToken = Configuration.currentConfig().getProperty(ApiConfiguration.TOKEN);
+        this.authHeader = Configuration.currentConfig().getProperty(ApiConfiguration.TOKEN_HEADER);
     }
 
     /**
-     * Initialize the Spark web framework
+     * Initializes the Javalin management API server.
      */
-    private void initializeSpark() {
-        if (!this.enabled)
-            return;
-
-        Spark.setPort(this.port);
-
-        this.jsonTransformer = new JsonTransformer();
+    private void initializeJavalin() {
+        this.app = Javalin.create();
+        this.app.before(this::authenticate);
+        this.app.exception(ApiUnauthorizedException.class, (exception, context) -> {
+            context.header("www-authenticate", this.authHeader);
+            ApiResponseUtils.error(context, 401, "invalid_auth_token", "Invalid authentication token.");
+        });
     }
 
     /**
      * Initialize the API routing
      */
     private void initializeRouting() {
-        if (!this.enabled)
-            return;
+        this.app.get("/", context -> ApiResponseUtils.error(context, 404, "not_found", "Invalid request."));
+        this.app.get("/openapi/spec", this::openApiSpec);
 
-        Spark.before((request, response) -> {
-            boolean authenticated = request.headers("authToken") != null && request.headers("authToken").equals(this.authToken);
+        this.app.get("/player/{id}/reload", PlayerRoutes::reloadPlayerData);
+        this.app.get("/player/{id}/disconnect", PlayerRoutes::disconnect);
+        this.app.post("/player/{id}/alert", PlayerRoutes::alert);
+        this.app.get("/player/{id}/badge/{badge}", PlayerRoutes::giveBadge);
 
-            if (!authenticated) {
-                LOGGER.error("Unauthenticated request from: " + request.ip() + "; " + request.contextPath());
-                response.type("application/json");
-                Spark.halt("{\"error\":\"Invalid authentication token\"}");
+        this.app.get("/rooms/active/all", RoomRoutes::getAllActiveRooms);
+        this.app.get("/room/{id}/{action}", RoomRoutes::roomAction);
+
+        this.app.get("/system/status", SystemRoutes::status);
+        this.app.get("/system/shutdown", SystemRoutes::shutdown);
+        this.app.get("/system/reload/{type}", SystemRoutes::reload);
+        this.app.post("/camera/purchase", PhotoRoutes::purchase);
+        this.app.get("/camera/purchase", PhotoRoutes::purchase);
+    }
+
+    private void authenticate(final Context context) {
+        final String providedToken = ApiRequestUtils.firstNonBlank(
+                context.header(this.authHeader),
+                context.header("authToken")
+        );
+
+        if (!this.authToken.equals(providedToken)) {
+            LOGGER.error("Unauthenticated request from: {} ; {}", context.ip(), context.path());
+            throw new ApiUnauthorizedException();
+        }
+    }
+
+    private void validateAuthenticationConfiguration() {
+        if (StringUtils.isBlank(this.authHeader)) {
+            throw new IllegalStateException("Management API auth header must be configured");
+        }
+
+        if (StringUtils.isBlank(this.authToken)
+                || this.authToken.contains("replace_with_output_of_openssl_rand_hex_32")
+                || this.authToken.length() < 32) {
+            throw new IllegalStateException("Management API token must be configured with a secure random value, for example `openssl rand -hex 32`");
+        }
+    }
+
+    private void openApiSpec(final Context context) {
+        try (InputStream inputStream = APIManager.class.getResourceAsStream("/openapi/management-api.yaml")) {
+            if (inputStream == null) {
+                ApiResponseUtils.error(context, 404, "openapi_spec_not_found", "OpenAPI spec resource is not available.");
+                return;
             }
-        });
 
-        Spark.get("/", (request, response) -> {
-            Spark.halt(404);
-            return "Invalid request, if you believe you received this in error, please contact the server administrator!";
-        });
+            context.contentType("application/yaml");
+            context.result(new String(inputStream.readAllBytes(), StandardCharsets.UTF_8));
+        } catch (Exception exception) {
+            ApiResponseUtils.error(context, 500, "openapi_spec_error", "Unable to read the OpenAPI specification.");
+        }
+    }
 
-        Spark.get("/player/:id/reload", PlayerRoutes::reloadPlayerData, jsonTransformer);
-        Spark.get("/player/:id/disconnect", PlayerRoutes::disconnect, jsonTransformer);
-        Spark.post("/player/:id/alert", PlayerRoutes::alert, jsonTransformer);
-        Spark.get("/player/:id/badge/:badge", PlayerRoutes::giveBadge, jsonTransformer);
-
-        Spark.get("/rooms/active/all", RoomRoutes::getAllActiveRooms, jsonTransformer);
-        Spark.get("/room/:id/:action", RoomRoutes::roomAction, jsonTransformer);
-
-        Spark.get("/system/status", SystemRoutes::status, jsonTransformer);
-        Spark.get("/system/shutdown", SystemRoutes::shutdown, jsonTransformer);
-        Spark.get("/system/reload/:type", SystemRoutes::reload, jsonTransformer);
-        Spark.post("/camera/purchase", PhotoRoutes::purchase, jsonTransformer);
-        Spark.get("/camera/purchase", PhotoRoutes::purchase, jsonTransformer);
+    private static final class ApiUnauthorizedException extends RuntimeException {
+        private ApiUnauthorizedException() {
+            super("Invalid authentication token");
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.cometproject.server.network.websockets.packets.incoming.player;
 
+import com.cometproject.server.network.websockets.WebSocketClientConnection;
 import com.cometproject.server.network.websockets.packets.incoming.AbstractWebSocketHandler;
-import io.netty.channel.ChannelHandlerContext;
 
 public class MacroHandler extends AbstractWebSocketHandler<MacroHandler.ASMData> {
 
@@ -10,7 +10,7 @@ public class MacroHandler extends AbstractWebSocketHandler<MacroHandler.ASMData>
     }
 
     @Override
-    public void handle(ChannelHandlerContext ctx, ASMData eventData) {
+    public void handle(WebSocketClientConnection ctx, ASMData eventData) {
         /*
         Session s = NetworkManager.getInstance().getSessions().getByPlayerId(Integer.parseInt(eventData.session));
 

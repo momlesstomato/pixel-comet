@@ -1,6 +1,9 @@
 package com.cometproject.server.network.sessions;
 
 import com.cometproject.api.config.CometSettings;
+import com.cometproject.api.networking.connections.Connection;
+import com.cometproject.api.networking.connections.ConnectionCloseCode;
+import com.cometproject.api.networking.connections.ConnectionState;
 import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.api.networking.sessions.ISession;
 import com.cometproject.games.snowwar.data.SnowWarPlayerData;
@@ -12,10 +15,11 @@ import com.cometproject.server.game.rooms.types.components.games.RoomGame;
 import com.cometproject.server.game.rooms.types.components.games.survival.SurvivalGame;
 import com.cometproject.server.game.rooms.types.components.games.survival.types.SurvivalPlayer;
 import com.cometproject.server.game.rooms.types.components.games.survival.types.SurvivalQueue;
+import com.cometproject.server.network.connections.NettyTcpConnection;
 import com.cometproject.server.network.messages.outgoing.notification.LogoutMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.avatar.AvatarUpdateMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.items.UpdateFloorItemMessageComposer;
-import com.cometproject.server.protocol.codec.websockets.HttpCustomHandler;
+import com.cometproject.server.network.websockets.WebSocketClientConnection;
 import com.cometproject.server.protocol.crypto.exceptions.HabboEncryption;
 import com.cometproject.server.protocol.messages.MessageEvent;
 import com.cometproject.server.storage.queries.player.PlayerDao;
@@ -29,7 +33,8 @@ import java.util.UUID;
 
 public class Session implements ISession {
     public static int CLIENT_VERSION = 0;
-    private final ChannelHandlerContext channel;
+    private final Connection connection;
+    private final int networkId;
     private final UUID uuid = UUID.randomUUID();
     private Logger LOGGER = LoggerFactory.getLogger("session");
     private SessionEventHandler eventHandler;
@@ -40,14 +45,16 @@ public class Session implements ISession {
     private boolean disconnectCalled = false;
     public SnowWarPlayerData snowWarPlayerData;
 
-    private ChannelHandlerContext wsChannel;
+    private WebSocketClientConnection wsChannel;
     private final HabboEncryption encryption;
     private boolean handshakeFinished;
     private long lastPing = Comet.getTime();
 
-    public Session(ChannelHandlerContext channel) {
-        this.channel = channel;
+    public Session(final Connection connection, final int networkId) {
+        this.connection = connection;
+        this.networkId = networkId;
         this.encryption = CometSettings.cryptoEnabled ? new HabboEncryption(CometSettings.crypto_e, CometSettings.crypto_n, CometSettings.crypto_d) : null;
+        this.connection.setState(ConnectionState.AUTHENTICATING);
     }
 
     public void initialise() {
@@ -64,7 +71,7 @@ public class Session implements ISession {
         PlayerManager.getInstance().getPlayerLoadExecutionService().submit(() -> {
             try {
                 if (player != null && player.getData() != null)
-                    PlayerManager.getInstance().remove(player.getId(), player.getData().getUsername(), this.channel.channel().attr(SessionManager.CHANNEL_ID_ATTR).get(), this.getIpAddress());
+                    PlayerManager.getInstance().remove(player.getId(), player.getData().getUsername(), this.networkId, this.getIpAddress());
 
                 this.eventHandler.dispose();
 
@@ -115,16 +122,14 @@ public class Session implements ISession {
     public void disconnect() {
         this.onDisconnect();
 
-        this.getChannel().disconnect();
+        this.connection.close(ConnectionCloseCode.NORMAL);
     }
 
     public String getIpAddress() {
         String ipAddress = "0.0.0.0";
 
-        if(this.getChannel().channel().hasAttr(HttpCustomHandler.WS_IP)) {
-            return this.getChannel().channel().attr(HttpCustomHandler.WS_IP).get();
-        } else if (this.player == null || !CometSettings.useDatabaseIp) {
-            return ((InetSocketAddress) this.getChannel().channel().remoteAddress()).getAddress().getHostAddress();
+        if (this.player == null || !CometSettings.useDatabaseIp) {
+            return this.connection.getRemoteAddress();
         } else {
             if (this.getPlayer() != null) {
                 ipAddress = PlayerDao.getIpAddress(this.getPlayer().getId());
@@ -163,16 +168,12 @@ public class Session implements ISession {
         if (!(msg instanceof AvatarUpdateMessageComposer) && !(msg instanceof UpdateFloorItemMessageComposer))
             LOGGER.debug("Sent message: " + msg.getClass().getSimpleName() + " / " + msg.getId());
 
-        if (!queue) {
-            this.channel.writeAndFlush(msg, channel.voidPromise());
-        } else {
-            this.channel.write(msg);
-        }
+        this.connection.send(msg);
         return this;
     }
 
     public void flush() {
-        this.channel.flush();
+        this.connection.flush();
     }
 
     public Logger getLogger() {
@@ -185,6 +186,7 @@ public class Session implements ISession {
 
     public void setPlayer(Player player) {
         if (player == null || player.getData() == null) {
+            this.player = null;
             return;
         }
 
@@ -194,9 +196,8 @@ public class Session implements ISession {
         this.player = player;
         this.snowWarPlayerData = new SnowWarPlayerData(player);
 
-        int channelId = this.channel.channel().attr(SessionManager.CHANNEL_ID_ATTR).get();
-
-        PlayerManager.getInstance().put(player.getId(), channelId, username, this.getIpAddress());
+        PlayerManager.getInstance().put(player.getId(), this.networkId, username, this.getIpAddress());
+        this.connection.setState(ConnectionState.AUTHENTICATED);
 
         if (player.getPermissions().getRank().modTool()) {
             ModerationManager.getInstance().addModerator(player.getSession());
@@ -211,8 +212,17 @@ public class Session implements ISession {
         }
     }
 
+    @Override
+    public Connection getConnection() {
+        return this.connection;
+    }
+
     public ChannelHandlerContext getChannel() {
-        return this.channel;
+        if (this.connection instanceof NettyTcpConnection) {
+            return ((NettyTcpConnection) this.connection).getContext();
+        }
+
+        return null;
     }
 
     public String getUniqueId() {
@@ -225,6 +235,10 @@ public class Session implements ISession {
 
     public UUID getSessionId() {
         return uuid;
+    }
+
+    public int getNetworkId() {
+        return this.networkId;
     }
 
     public HabboEncryption getEncryption() {
@@ -247,11 +261,11 @@ public class Session implements ISession {
         this.lastPing = lastPing;
     }
 
-    public ChannelHandlerContext getWsChannel() {
+    public WebSocketClientConnection getWsChannel() {
         return wsChannel;
     }
 
-    public void setWsChannel(ChannelHandlerContext wsChannel) {
+    public void setWsChannel(WebSocketClientConnection wsChannel) {
         this.wsChannel = wsChannel;
     }
 }

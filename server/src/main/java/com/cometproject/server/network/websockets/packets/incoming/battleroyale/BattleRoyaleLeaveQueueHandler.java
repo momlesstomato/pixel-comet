@@ -3,8 +3,8 @@ package com.cometproject.server.network.websockets.packets.incoming.battleroyale
 import com.cometproject.server.game.rooms.types.components.games.survival.types.SurvivalQueue;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.sessions.Session;
+import com.cometproject.server.network.websockets.WebSocketClientConnection;
 import com.cometproject.server.network.websockets.packets.incoming.AbstractWebSocketHandler;
-import io.netty.channel.ChannelHandlerContext;
 
 public class BattleRoyaleLeaveQueueHandler extends AbstractWebSocketHandler<BattleRoyaleLeaveQueueHandler.ASMData> {
 
@@ -13,7 +13,7 @@ public class BattleRoyaleLeaveQueueHandler extends AbstractWebSocketHandler<Batt
     }
 
     @Override
-    public void handle(ChannelHandlerContext ctx, ASMData eventData) {
+    public void handle(WebSocketClientConnection ctx, ASMData eventData) {
         int playerId = Integer.parseInt(eventData.session);
         int roomId = Integer.parseInt(eventData.roomId);
         Session s = NetworkManager.getInstance().getSessions().getByPlayerId(playerId);

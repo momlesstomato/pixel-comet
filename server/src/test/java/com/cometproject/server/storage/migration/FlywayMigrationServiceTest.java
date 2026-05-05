@@ -77,6 +77,27 @@ class FlywayMigrationServiceTest {
     }
 
     @Test
+    void migrate_withSeedEnabled_onLegacyPopulatedSchema_baselinesSeedHistoryWithoutReplayingSeedScripts() throws Exception {
+        final DataSource dataSource = this.createDataSource();
+        this.execute(dataSource, "CREATE TABLE flyway_probe (id INT PRIMARY KEY, name VARCHAR(64) NOT NULL)");
+        this.execute(dataSource, "CREATE TABLE test_seed_values (id INT PRIMARY KEY, seed_value VARCHAR(64) NOT NULL)");
+        this.execute(dataSource, "INSERT INTO flyway_probe (id, name) VALUES (1, 'legacy')");
+        this.execute(dataSource, "INSERT INTO test_seed_values (id, seed_value) VALUES (1, 'legacy-seeded')");
+
+        final FlywayMigrationService service = new FlywayMigrationService(
+                dataSource,
+                true,
+                TEST_MIGRATION_LOCATIONS,
+                TEST_SEED_LOCATIONS);
+
+        service.migrate();
+
+        assertEquals(1, this.queryForInt(dataSource, "SELECT COUNT(*) FROM test_seed_values"));
+        assertEquals(0, this.queryForInt(dataSource, "SELECT COUNT(*) FROM flyway_seed_history WHERE version = '100'"));
+        assertTrue(this.queryForInt(dataSource, "SELECT COUNT(*) FROM flyway_seed_history WHERE version = '115'") > 0);
+    }
+
+    @Test
     void migrate_withProductionLocations_appliesCurrentSchemaAndRuntimeSeed() throws Exception {
         Assumptions.assumeTrue(
             DockerClientFactory.instance().isDockerAvailable(),
@@ -140,6 +161,13 @@ class FlywayMigrationServiceTest {
              ResultSet resultSet = statement.executeQuery(sql)) {
             resultSet.next();
             return resultSet.getInt(1);
+        }
+    }
+
+    private void execute(final DataSource dataSource, final String sql) throws Exception {
+        try (Connection connection = dataSource.getConnection();
+             Statement statement = connection.createStatement()) {
+            statement.execute(sql);
         }
     }
 

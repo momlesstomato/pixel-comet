@@ -6,8 +6,8 @@ import com.cometproject.server.game.rooms.types.components.games.survival.types.
 import com.cometproject.server.game.rooms.types.components.games.survival.types.SurvivalPowerUp;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.sessions.Session;
+import com.cometproject.server.network.websockets.WebSocketClientConnection;
 import com.cometproject.server.network.websockets.packets.incoming.AbstractWebSocketHandler;
-import io.netty.channel.ChannelHandlerContext;
 
 public class BattleRoyaleWeaponSwapHandler extends AbstractWebSocketHandler<BattleRoyaleWeaponSwapHandler.ASMData> {
 
@@ -16,7 +16,7 @@ public class BattleRoyaleWeaponSwapHandler extends AbstractWebSocketHandler<Batt
     }
 
     @Override
-    public void handle(ChannelHandlerContext ctx, ASMData eventData) {
+    public void handle(WebSocketClientConnection ctx, ASMData eventData) {
         int playerId = Integer.parseInt(eventData.session);
         String weapon = eventData.weapon;
         Session s = NetworkManager.getInstance().getSessions().getByPlayerId(playerId);

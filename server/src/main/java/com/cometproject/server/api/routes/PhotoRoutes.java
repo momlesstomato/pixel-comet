@@ -1,41 +1,44 @@
 package com.cometproject.server.api.routes;
 
+import com.cometproject.server.api.ApiRequestUtils;
+import com.cometproject.server.api.ApiResponseUtils;
 import com.cometproject.server.game.players.PlayerManager;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.sessions.Session;
-import spark.Request;
-import spark.Response;
+import io.javalin.http.Context;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class PhotoRoutes {
-    public static Object purchase(Request req, Response res) {
-        Map<String, Object> result = new HashMap<>();
-        res.type("application/json");
-
-        final String ssoTicket = req.headers("ssoTicket");
-        final String photoId = req.headers("photoId");
+    public static void purchase(final Context context) {
+        final String ssoTicket = ApiRequestUtils.firstNonBlank(
+                context.header("sso_ticket"),
+                context.header("ssoTicket")
+        );
+        final String photoId = ApiRequestUtils.firstNonBlank(
+                context.header("photo_id"),
+                context.header("photoId")
+        );
 
         final Integer playerId = PlayerManager.getInstance().getSsoTicketToPlayerId().get(ssoTicket);
 
         if (playerId == null) {
-            result.put("error", "Invalid SSO ticket");
-            return result;
+            ApiResponseUtils.error(context, 401, "invalid_sso_ticket", "Invalid SSO ticket.");
+            return;
         }
 
         Session client = NetworkManager.getInstance().getSessions().getByPlayerId(playerId);
 
         if (client == null) {
-            result.put("error", "Cannot find Session for player ID: " + playerId);
-            return result;
+            ApiResponseUtils.error(context, 404, "session_not_found", "Cannot find session for the player.");
+            return;
         }
 
         final long currentTime = System.currentTimeMillis();
 
         if (currentTime < (client.getPlayer().getLastPhotoTaken() + 10000)) {
-            result.put("error", "Taking photos too fast");
-            return result;
+            ApiResponseUtils.error(context, 429, "photo_rate_limited", "Taking photos too fast.");
+            return;
         }
 
 //        final String itemExtraData = "{\"t\":" + System.currentTimeMillis() + ",\"u\":\"" + photoId + "\",\"n\":\"" + client.getPlayer().getData().getUsername() + "\",\"m\":\"\",\"s\":" + client.getPlayer().getId() + ",\"w\":\"" + CometSettings.cameraPhotoUrl.replace("%photoId%", photoId) + "\"}";
@@ -51,6 +54,10 @@ public class PhotoRoutes {
 //        client.send(new UnseenItemsMessageComposer(Sets.newHashSet(playerItem)));
 //
 //        client.getPlayer().getAchievements().progressAchievement(AchievementType.CAMERA_PHOTO, 1);
-        return result;
+    ApiResponseUtils.success(context, Map.of(
+        "player_id", playerId,
+        "photo_id", photoId,
+        "accepted", true
+    ));
     }
 }

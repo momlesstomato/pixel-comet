@@ -8,7 +8,6 @@ import com.cometproject.server.protocol.codec.MessageDecoder;
 import com.cometproject.server.protocol.codec.MessageEncoder;
 import com.cometproject.server.protocol.codec.MessageFrameDecoder;
 import com.cometproject.server.protocol.codec.XMLPolicyDecoder;
-import com.cometproject.server.protocol.codec.websockets.MessageInterceptorHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.string.StringEncoder;
@@ -59,7 +58,6 @@ public class NetworkChannelInitializer extends ChannelInitializer<SocketChannel>
         ch.config().setTrafficClass(0x18);
 
         ch.pipeline()
-                .addLast(MessageInterceptorHandler.NAME, new MessageInterceptorHandler())
                 .addLast("xmlDecoder", new XMLPolicyDecoder())
                 .addLast("stringEncoder", new StringEncoder(CharsetUtil.UTF_8))
                 .addLast("frameDecoder", new MessageFrameDecoder())

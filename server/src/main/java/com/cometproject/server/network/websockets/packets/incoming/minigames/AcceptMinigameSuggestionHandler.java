@@ -3,8 +3,8 @@ package com.cometproject.server.network.websockets.packets.incoming.minigames;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.nuxs.NuxGiftSelectionViewMessageComposer;
 import com.cometproject.server.network.sessions.Session;
+import com.cometproject.server.network.websockets.WebSocketClientConnection;
 import com.cometproject.server.network.websockets.packets.incoming.AbstractWebSocketHandler;
-import io.netty.channel.ChannelHandlerContext;
 
 public class AcceptMinigameSuggestionHandler extends AbstractWebSocketHandler<AcceptMinigameSuggestionHandler.ASMData> {
 
@@ -13,7 +13,7 @@ public class AcceptMinigameSuggestionHandler extends AbstractWebSocketHandler<Ac
     }
 
     @Override
-    public void handle(ChannelHandlerContext ctx, ASMData eventData) {
+    public void handle(WebSocketClientConnection ctx, ASMData eventData) {
         Session s = NetworkManager.getInstance().getSessions().getByPlayerId(Integer.parseInt(eventData.session));
         String enemyName = eventData.username;
 

@@ -34,9 +34,10 @@ pixel-comet
 ```
 
 **Networking stack:**
-- Netty 4.1 handles all I/O (TCP + WebSocket).
+- Netty 4.1 handles the raw `TCP` hotel transport.
+- Javalin handles the `WEBSOCKETS` listeners, including the `/game` hotel transport endpoint and the legacy browser side-channel.
 - The codec pipeline applies XML-policy decoding (legacy compatibility), length-prefix framing, RC4 encryption, and short-header message dispatch.
-- The REST management API runs on Spark/Jetty (port `30003` by default, disabled by default).
+- The REST management API runs on Javalin and exposes an OpenAPI spec at `/openapi/spec`.
 
 **Storage:**
 - MySQL via HikariCP connection pool.
@@ -92,13 +93,19 @@ COMET_DB_PASSWORD=changeme
 # Network
 COMET_NETWORK_HOST=0.0.0.0
 COMET_NETWORK_PORT=2096
-COMET_WEBSOCKETS_ENABLE=true
-COMET_WEBSOCKETS_PORT=87
+COMET_TRANSPORT_TCP_ENABLED=true
+COMET_TRANSPORT_WEBSOCKETS_ENABLED=true
+COMET_TRANSPORT_WEBSOCKETS_PORT=87
 
 # REST API (disabled by default)
 COMET_API_ENABLED=false
 COMET_API_PORT=30003
-COMET_API_TOKEN=changeme
+COMET_API_TOKEN=replace_with_output_of_openssl_rand_hex_32
+COMET_API_TOKEN_HEADER=auth_token
+
+# Connection registry
+COMET_CONNECTION_REGISTRY_IMPLEMENTATION=inmemory
+COMET_CONNECTION_REGISTRY_TTLSECONDS=3600
 ```
 
 Pluggable modules are discovered automatically from the modules directory:
@@ -151,7 +158,9 @@ All module code must follow the standards in [AGENTS.md](AGENTS.md).
 
 ## REST Management API
 
-When enabled, the API listens on `COMET_API_PORT` and requires the `authToken` header set to `COMET_API_TOKEN`.
+When enabled, the API listens on `COMET_API_PORT`, serves its OpenAPI document at `/openapi/spec`, and requires the header named by `COMET_API_TOKEN_HEADER`.
+
+The default header is `auth_token`, and the token value should be generated with `openssl rand -hex 32` and stored in `COMET_API_TOKEN`.
 
 | Method | Path | Description |
 |--------|------|-------------|

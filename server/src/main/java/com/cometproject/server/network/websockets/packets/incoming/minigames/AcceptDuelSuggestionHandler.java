@@ -10,10 +10,10 @@ import com.cometproject.server.network.messages.outgoing.room.avatar.ActionMessa
 import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.network.websockets.WebSocketSessionManager;
+import com.cometproject.server.network.websockets.WebSocketClientConnection;
 import com.cometproject.server.network.websockets.packets.incoming.AbstractWebSocketHandler;
 import com.cometproject.server.network.websockets.packets.outgoing.SurvivalSoundEffectWebPacket;
 import com.cometproject.server.utilities.RandomUtil;
-import io.netty.channel.ChannelHandlerContext;
 
 public class AcceptDuelSuggestionHandler extends AbstractWebSocketHandler<AcceptDuelSuggestionHandler.ASMData> {
 
@@ -22,7 +22,7 @@ public class AcceptDuelSuggestionHandler extends AbstractWebSocketHandler<Accept
     }
 
     @Override
-    public void handle(ChannelHandlerContext ctx, ASMData eventData) {
+    public void handle(WebSocketClientConnection ctx, ASMData eventData) {
         Session s = NetworkManager.getInstance().getSessions().getByPlayerId(Integer.parseInt(eventData.session));
         String enemyName = eventData.username;
 

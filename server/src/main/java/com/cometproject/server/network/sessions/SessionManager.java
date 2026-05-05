@@ -1,5 +1,7 @@
 package com.cometproject.server.network.sessions;
 
+import com.cometproject.api.networking.connections.Connection;
+import com.cometproject.api.networking.connections.ConnectionCloseCode;
 import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.api.networking.sessions.ISession;
 import com.cometproject.api.networking.sessions.ISessionManager;
@@ -9,11 +11,7 @@ import com.cometproject.api.utilities.JsonUtil;
 import com.cometproject.server.boot.Comet;
 import com.cometproject.server.game.players.PlayerManager;
 import com.google.common.collect.Sets;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.group.ChannelGroup;
-import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.util.AttributeKey;
-import io.netty.util.concurrent.GlobalEventExecutor;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -22,35 +20,39 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 public final class SessionManager implements ISessionManager, ISessionService {
-    public static final AttributeKey<Session> SESSION_ATTR = AttributeKey.valueOf("Session.attr");
-    public static final AttributeKey<Integer> CHANNEL_ID_ATTR = AttributeKey.valueOf("ChannelId.attr");
     public static boolean isLocked = false;
     private final AtomicInteger idGenerator = new AtomicInteger();
     private final Map<Integer, ISession> sessions = new ConcurrentHashMap<>();
+    private final Map<String, Integer> connectionIdToSessionId = new ConcurrentHashMap<>();
     private final Map<String, SessionAccessLog> accessLog = new ConcurrentHashMap<>();
-    private final ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
     private final Set<Integer> lotteryEntries = Sets.newConcurrentHashSet();
 
     public SessionManager() {
         SessionManagerAccessor.getInstance().setSessionManager(this);
     }
 
-    public boolean add(ChannelHandlerContext channel) {
-        Session session = new Session(channel);
+    public Session add(final Connection connection) {
+        final int sessionId = this.idGenerator.incrementAndGet();
+        Session session = new Session(connection, sessionId);
         session.initialise();
-        channel.channel().attr(SessionManager.SESSION_ATTR).set(session);
-        this.channelGroup.add(channel.channel());
-        channel.channel().attr(CHANNEL_ID_ATTR).set(this.idGenerator.incrementAndGet());
-        return this.sessions.putIfAbsent(channel.attr(CHANNEL_ID_ATTR).get(), session) == null;
+
+        if (this.sessions.putIfAbsent(sessionId, session) != null) {
+            return null;
+        }
+
+        this.connectionIdToSessionId.put(connection.getId(), sessionId);
+        return session;
     }
 
-    public boolean remove(ChannelHandlerContext channel) {
-        if (channel.channel().attr(CHANNEL_ID_ATTR).get() == null) {
+    public boolean remove(final Connection connection) {
+        final Integer sessionId = this.connectionIdToSessionId.remove(connection.getId());
+
+        if (sessionId == null) {
             return false;
         }
-        if (this.sessions.containsKey(channel.channel().attr(CHANNEL_ID_ATTR).get())) {
-            this.channelGroup.remove(channel.channel());
-            this.sessions.remove(channel.channel().attr(CHANNEL_ID_ATTR).get());
+
+        if (this.sessions.containsKey(sessionId)) {
+            this.sessions.remove(sessionId);
             return true;
         }
 
@@ -138,15 +140,9 @@ public final class SessionManager implements ISessionManager, ISessionService {
     }
 
     public void broadcast(IMessageComposer msg) {
-        this.getChannelGroup().writeAndFlush(msg);
-//
-//        for (Session client : sessions.values()) {
-//            client.getChannel().write(msg);
-//        }
-    }
-
-    public ChannelGroup getChannelGroup() {
-        return channelGroup;
+        for (ISession session : this.sessions.values()) {
+            session.send(msg);
+        }
     }
 
     public void broadcastToModerators(IMessageComposer messageComposer) {
@@ -158,19 +154,19 @@ public final class SessionManager implements ISessionManager, ISessionService {
     }
 
     @Override
-    public void parseCommand(String[] message, ChannelHandlerContext ctx) {
+    public void parseCommand(String[] message, Connection connection) {
         String password = message[0];
 
         if (password.equals("cometServer")) {
             String command = message[1];
 
             if ("stats".equals(command)) {
-                ctx.channel().writeAndFlush("response||" + JsonUtil.getInstance().toJson(Comet.getStats()));
+                connection.sendRaw("response||" + JsonUtil.getInstance().toJson(Comet.getStats()));
             } else {
-                ctx.channel().writeAndFlush("response||You're connected!");
+                connection.sendRaw("response||You're connected!");
             }
         } else {
-            ctx.disconnect();
+            connection.close(ConnectionCloseCode.AUTHENTICATION_FAILED);
         }
     }
 

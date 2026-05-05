@@ -1,37 +1,37 @@
 package com.cometproject.server.network.websockets;
+
 import com.google.gson.Gson;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class WebSocketSessionManager {
 
-    private Queue<ChannelHandlerContext> channelHandlerContexts = new ConcurrentLinkedQueue<>();
+    private Queue<WebSocketClientConnection> channelHandlerContexts = new ConcurrentLinkedQueue<>();
 
-    public void addChannel(ChannelHandlerContext channel) {
+    public void addChannel(WebSocketClientConnection channel) {
         this.channelHandlerContexts.add(channel);
     }
 
-    public void removeChannel(ChannelHandlerContext channel) {
+    public void removeChannel(WebSocketClientConnection channel) {
         this.channelHandlerContexts.remove(channel);
     }
 
     public void sendMessage(String message) {
-        for (ChannelHandlerContext context : this.channelHandlerContexts) {
-            if(context != null)
-            context.writeAndFlush(new TextWebSocketFrame(message));
+        for (WebSocketClientConnection context : this.channelHandlerContexts) {
+            if (context != null) {
+                context.sendText(message);
+            }
         }
     }
 
-    public void sendMessage(ChannelHandlerContext session, Object obj) {
+    public void sendMessage(WebSocketClientConnection session, Object obj) {
         String message = gson.toJson(obj);
 
-        if(session == null)
+        if (session == null)
             return;
 
-        session.writeAndFlush(new TextWebSocketFrame(message));
+        session.sendText(message);
     }
 
     public void sendMessage(Object obj) {

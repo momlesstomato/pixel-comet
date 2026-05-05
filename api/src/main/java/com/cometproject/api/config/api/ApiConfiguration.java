@@ -9,6 +9,7 @@ public final class ApiConfiguration {
     public static final String ENABLED = "comet.api.enabled";
     public static final String PORT = "comet.api.port";
     public static final String TOKEN = "comet.api.token";
+    public static final String TOKEN_HEADER = "comet.api.token.header";
 
     private ApiConfiguration() {
     }
@@ -22,7 +23,8 @@ public final class ApiConfiguration {
         return Map.of(
                 ENABLED, "false",
                 PORT, "30003",
-                TOKEN, "changeme"
+            TOKEN, "replace_with_output_of_openssl_rand_hex_32",
+            TOKEN_HEADER, "auth_token"
         );
     }
 }

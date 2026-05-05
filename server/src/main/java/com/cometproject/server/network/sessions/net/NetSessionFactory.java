@@ -1,11 +1,11 @@
 package com.cometproject.server.network.sessions.net;
 
+import com.cometproject.api.networking.connections.Connection;
 import com.cometproject.networking.api.messages.IMessageHandler;
 import com.cometproject.networking.api.sessions.INetSession;
 import com.cometproject.networking.api.sessions.INetSessionFactory;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.network.sessions.SessionManager;
-import io.netty.channel.ChannelHandlerContext;
 
 public class NetSessionFactory implements INetSessionFactory {
     private final SessionManager sessionManager;
@@ -18,12 +18,12 @@ public class NetSessionFactory implements INetSessionFactory {
     }
 
     @Override
-    public INetSession createSession(ChannelHandlerContext channel) {
-        if (!sessionManager.add(channel)) {
+    public INetSession createSession(final Connection connection) {
+        final Session session = this.sessionManager.add(connection);
+
+        if (session == null) {
             return null;
         }
-
-        final Session session = channel.attr(SessionManager.SESSION_ATTR).get();
         final INetSession netSession = new NetSession(session, this.messageHandler);
 
         return netSession;
@@ -33,6 +33,6 @@ public class NetSessionFactory implements INetSessionFactory {
     public void disposeSession(INetSession session) {
         ((Session) session.getGameSession()).onDisconnect();
 
-        this.sessionManager.remove(session.getChannel());
+        this.sessionManager.remove(session.getConnection());
     }
 }

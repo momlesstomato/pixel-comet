@@ -2,9 +2,8 @@ package com.cometproject.server.network.messages.incoming.handshake;
 
 import com.cometproject.server.network.messages.incoming.Event;
 import com.cometproject.server.network.messages.outgoing.handshake.SecretKeyMessageComposer;
+import com.cometproject.server.network.ciphers.Rc4ConnectionCipher;
 import com.cometproject.server.network.sessions.Session;
-import com.cometproject.server.protocol.codec.EncryptionDecoder;
-import com.cometproject.server.protocol.codec.EncryptionEncoder;
 import com.cometproject.server.protocol.crypto.exceptions.HabboCryptoException;
 import com.cometproject.server.protocol.messages.MessageEvent;
 
@@ -21,8 +20,6 @@ public class GenerateSecretKeyMessageEvent implements Event {
         client.setHandshakeFinished(true);
 
         client.send(new SecretKeyMessageComposer(client.getEncryption().getDiffie().getPublicKey()));
-
-        client.getChannel().pipeline().addFirst("encryptionDecoder", new EncryptionDecoder(sharedKey));
-        client.getChannel().pipeline().addFirst("encryptionEncoder", new EncryptionEncoder(sharedKey));
+        client.getConnection().setCipher(new Rc4ConnectionCipher(sharedKey));
     }
 }

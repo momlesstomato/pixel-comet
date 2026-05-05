@@ -1,24 +1,24 @@
 package com.cometproject.server.network;
 
 import com.cometproject.api.config.Configuration;
+import com.cometproject.api.config.network.ConnectionRegistryConfiguration;
+import com.cometproject.api.networking.registry.ConnectionRegistry;
 import com.cometproject.api.utilities.Startable;
-import com.cometproject.networking.api.INetworkingServer;
-import com.cometproject.networking.api.INetworkingServerFactory;
-import com.cometproject.networking.api.NetworkingContext;
-import com.cometproject.networking.api.config.NetworkingServerConfig;
 import com.cometproject.networking.api.sessions.INetSessionFactory;
 import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.network.messages.GameMessageHandler;
 import com.cometproject.server.network.messages.MessageHandler;
 import com.cometproject.server.network.monitor.MonitorClient;
+import com.cometproject.server.network.registry.InMemoryConnectionRegistry;
+import com.cometproject.server.network.registry.RedisConnectionRegistry;
 import com.cometproject.server.network.sessions.SessionManager;
 import com.cometproject.server.network.sessions.net.NetSessionFactory;
-import com.google.common.collect.Sets;
 import io.netty.util.ResourceLeakDetector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Set;
+import com.cometproject.server.network.transports.JavalinWebSocketTransport;
+import com.cometproject.server.network.transports.NettyTcpTransport;
 
 
 public class NetworkManager implements Startable {
@@ -31,6 +31,8 @@ public class NetworkManager implements Startable {
     private SessionManager sessions;
     private MessageHandler messageHandler;
     private MonitorClient monitorClient;
+    private ConnectionRegistry connectionRegistry;
+    private TransportManager transportManager;
 
     public NetworkManager() {
 
@@ -48,6 +50,8 @@ public class NetworkManager implements Startable {
     private void start(final String ip, final String ports) {
         this.sessions = new SessionManager();
         this.messageHandler = new MessageHandler();
+        this.connectionRegistry = this.createConnectionRegistry();
+        this.transportManager = new TransportManager();
 
         this.serverPort = Integer.parseInt(ports.split(",")[0]);
 
@@ -57,25 +61,25 @@ public class NetworkManager implements Startable {
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
 
         final INetSessionFactory sessionFactory = new NetSessionFactory(this.sessions, new GameMessageHandler());
-        final INetworkingServerFactory serverFactory = new NettyNetworkingServerFactory(Configuration.currentConfig());
-        final NetworkingContext networkingContext = new NetworkingContext(serverFactory);
+        this.transportManager.addTransport(new NettyTcpTransport(Configuration.currentConfig(), ip, ports, sessionFactory));
+        this.transportManager.addTransport(new JavalinWebSocketTransport(
+                Configuration.currentConfig(),
+                this.sessions,
+                sessionFactory,
+                this.connectionRegistry
+        ));
+        this.transportManager.start();
+    }
 
-        NetworkingContext.setCurrentContext(networkingContext);
-
-        final Set<Short> portSet = Sets.newHashSet();
-
-        if (ports.contains(",")) {
-            for (String port : ports.split(",")) {
-                portSet.add(Short.parseShort(port));
-            }
-        } else {
-            portSet.add(Short.parseShort(ports));
+    @Override
+    public void stop() {
+        if (this.transportManager != null) {
+            this.transportManager.stop();
         }
 
-        final INetworkingServer gameServer = serverFactory.createServer(new NetworkingServerConfig(ip, portSet),
-                sessionFactory);
-
-        gameServer.start();
+        if (this.connectionRegistry instanceof RedisConnectionRegistry redisConnectionRegistry) {
+            redisConnectionRegistry.dispose();
+        }
     }
 
     public SessionManager getSessions() {
@@ -86,11 +90,30 @@ public class NetworkManager implements Startable {
         return this.messageHandler;
     }
 
+    public ConnectionRegistry getConnectionRegistry() {
+        return this.connectionRegistry;
+    }
+
     public MonitorClient getMonitorClient() {
         return monitorClient;
     }
 
     public int getServerPort() {
         return serverPort;
+    }
+
+    private ConnectionRegistry createConnectionRegistry() {
+        final String implementation = Configuration.currentConfig().getOrDefault(
+                ConnectionRegistryConfiguration.IMPLEMENTATION,
+                ConnectionRegistryConfiguration.defaults().get(ConnectionRegistryConfiguration.IMPLEMENTATION)
+        );
+
+        if ("redis".equalsIgnoreCase(implementation)) {
+            LOGGER.info("Using Redis-backed connection registry");
+            return new RedisConnectionRegistry();
+        }
+
+        LOGGER.info("Using in-memory connection registry");
+        return new InMemoryConnectionRegistry();
     }
 }

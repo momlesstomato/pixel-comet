@@ -90,7 +90,20 @@ The codebase is designed for future extraction as a public SDK and plugin platfo
 
 ---
 
-## 6. Summary Checklist
+## 6. HTTP and OpenAPI Standards
+
+All HTTP management endpoints **must** use Javalin. Spark Core routes or new embedded HTTP frameworks are not permitted.
+
+**Rules:**
+- **Document every endpoint.** Every HTTP endpoint must be added to the OpenAPI specification in the same change.
+- **Use snake_case.** Route parameters, JSON request fields, JSON response fields, error codes, and documented headers must use snake_case.
+- **Document bodies and responses fully.** OpenAPI entries must describe request bodies, success responses, error responses, response headers, and authentication headers.
+- **Document errors explicitly.** Expected `4xx` and `5xx` responses must be named and described rather than relying on generic fallback text.
+- **Header-based API auth only.** Management API authentication tokens must be supplied via a configured header, never in query parameters.
+
+---
+
+## 7. Summary Checklist
 
 Before every pull request, verify:
 
@@ -101,4 +114,5 @@ Before every pull request, verify:
 - [ ] New functionality is exposed via an interface in `Comet-API` or `Comet-Networking-API`.
 - [ ] No magic numbers or magic config strings — constants are named, grouped, and documented.
 - [ ] Every new config key is present in `.env.example`.
+- [ ] Every HTTP endpoint is implemented in Javalin and documented in OpenAPI with snake_case fields, headers, and error responses.
 - [ ] SOLID principles are followed (if in doubt, ask in the PR description and explain your design).

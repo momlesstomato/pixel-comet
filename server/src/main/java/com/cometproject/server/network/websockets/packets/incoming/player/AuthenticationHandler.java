@@ -2,8 +2,8 @@ package com.cometproject.server.network.websockets.packets.incoming.player;
 
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.sessions.Session;
+import com.cometproject.server.network.websockets.WebSocketClientConnection;
 import com.cometproject.server.network.websockets.packets.incoming.AbstractWebSocketHandler;
-import io.netty.channel.ChannelHandlerContext;
 
 public class AuthenticationHandler extends AbstractWebSocketHandler<AuthenticationHandler.AuthenticationData> {
 
@@ -12,7 +12,7 @@ public class AuthenticationHandler extends AbstractWebSocketHandler<Authenticati
     }
 
     @Override
-    public void handle(ChannelHandlerContext ctx, AuthenticationData authenticationData) {
+    public void handle(WebSocketClientConnection ctx, AuthenticationData authenticationData) {
         if(authenticationData.ssoTicket.isEmpty() || !isNumeric(authenticationData.ssoTicket))
             return;
 

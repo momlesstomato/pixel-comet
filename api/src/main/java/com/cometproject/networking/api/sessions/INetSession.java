@@ -1,11 +1,11 @@
 package com.cometproject.networking.api.sessions;
 
+import com.cometproject.api.networking.connections.Connection;
 import com.cometproject.networking.api.messages.IMessageHandler;
-import io.netty.channel.ChannelHandlerContext;
 
 public interface INetSession<T> {
 
-    ChannelHandlerContext getChannel();
+    Connection getConnection();
 
     IMessageHandler getMessageHandler();
 

@@ -87,7 +87,7 @@ dependencies {
     implementation(libs.commons.collections4)
     implementation(libs.commons.codec)
     implementation(libs.jbcrypt)
-    implementation(libs.spark.core)
+    implementation(libs.javalin)
     implementation(libs.dotenv)
     implementation(libs.jedis)
     implementation(libs.jansi)
