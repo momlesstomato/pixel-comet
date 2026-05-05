@@ -1,10 +1,10 @@
 package com.cometproject.api.networking.connections;
 
+import java.time.Instant;
+
 import com.cometproject.api.networking.ciphers.ConnectionCipher;
 import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.api.utilities.Disposable;
-
-import java.time.Instant;
 
 /**
  * Represents a single logical client connection independent of transport.

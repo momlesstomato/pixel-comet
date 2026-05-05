@@ -9,8 +9,8 @@ import com.cometproject.server.game.players.components.types.inventory.Inventory
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.user.inventory.UpdateInventoryMessageComposer;
 import com.cometproject.server.network.sessions.Session;
-import com.cometproject.server.network.websockets.interfaces.ShopOffer;
 import com.cometproject.server.network.websockets.WebSocketClientConnection;
+import com.cometproject.server.network.websockets.interfaces.ShopOffer;
 import com.cometproject.server.network.websockets.packets.incoming.AbstractWebSocketHandler;
 import com.cometproject.server.storage.queries.player.SubscriptionDao;
 import com.cometproject.storage.api.StorageContext;

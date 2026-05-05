@@ -1,5 +1,8 @@
 package com.cometproject.server.network;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cometproject.api.config.Configuration;
 import com.cometproject.api.config.network.ConnectionRegistryConfiguration;
 import com.cometproject.api.networking.registry.ConnectionRegistry;
@@ -13,12 +16,10 @@ import com.cometproject.server.network.registry.InMemoryConnectionRegistry;
 import com.cometproject.server.network.registry.RedisConnectionRegistry;
 import com.cometproject.server.network.sessions.SessionManager;
 import com.cometproject.server.network.sessions.net.NetSessionFactory;
-import io.netty.util.ResourceLeakDetector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.cometproject.server.network.transports.JavalinWebSocketTransport;
 import com.cometproject.server.network.transports.NettyTcpTransport;
+
+import io.netty.util.ResourceLeakDetector;
 
 
 public class NetworkManager implements Startable {

@@ -1,12 +1,13 @@
 package com.cometproject.server.network.connections;
 
+import java.nio.ByteBuffer;
+
 import com.cometproject.api.networking.connections.ConnectionCloseCode;
 import com.cometproject.api.networking.connections.ConnectionTransportType;
 import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.server.network.util.ProtocolMessageCodec;
-import io.javalin.websocket.WsContext;
 
-import java.nio.ByteBuffer;
+import io.javalin.websocket.WsContext;
 
 /**
  * Connection adapter for the binary hotel WebSocket transport.

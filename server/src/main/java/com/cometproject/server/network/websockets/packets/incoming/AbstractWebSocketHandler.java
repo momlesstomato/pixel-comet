@@ -1,7 +1,7 @@
 package com.cometproject.server.network.websockets.packets.incoming;
 
-import com.google.gson.Gson;
 import com.cometproject.server.network.websockets.WebSocketClientConnection;
+import com.google.gson.Gson;
 
 public abstract class AbstractWebSocketHandler<TData> implements IWebSocketHandler {
 

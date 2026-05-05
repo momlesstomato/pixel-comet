@@ -1,12 +1,12 @@
 package com.cometproject.server.network.registry;
 
-import com.cometproject.api.networking.connections.Connection;
-import com.cometproject.api.networking.registry.ConnectionRegistry;
-import com.cometproject.api.networking.registry.ConnectionRegistryEntry;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.cometproject.api.networking.connections.Connection;
+import com.cometproject.api.networking.registry.ConnectionRegistry;
+import com.cometproject.api.networking.registry.ConnectionRegistryEntry;
 
 /**
  * In-memory registry implementation used when Redis is disabled.

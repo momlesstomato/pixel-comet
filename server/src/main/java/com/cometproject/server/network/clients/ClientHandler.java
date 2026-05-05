@@ -1,12 +1,18 @@
 package com.cometproject.server.network.clients;
 
+import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.cometproject.api.networking.registry.ConnectionRegistry;
 import com.cometproject.networking.api.sessions.INetSession;
 import com.cometproject.networking.api.sessions.INetSessionFactory;
-import com.cometproject.api.networking.registry.ConnectionRegistry;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.connections.NettyTcpConnection;
 import com.cometproject.server.network.messages.outgoing.misc.PingMessageComposer;
 import com.cometproject.server.protocol.messages.MessageEvent;
+
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -15,10 +21,6 @@ import io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.AttributeKey;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 @ChannelHandler.Sharable
 public class ClientHandler extends SimpleChannelInboundHandler<MessageEvent> {

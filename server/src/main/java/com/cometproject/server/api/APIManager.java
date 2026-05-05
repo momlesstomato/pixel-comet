@@ -1,10 +1,14 @@
 package com.cometproject.server.api;
 
-import com.cometproject.api.config.api.ApiConfiguration;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cometproject.api.config.Configuration;
+import com.cometproject.api.config.api.ApiConfiguration;
 import com.cometproject.api.utilities.Startable;
 import com.cometproject.server.api.routes.PhotoRoutes;
 import com.cometproject.server.api.routes.PlayerRoutes;
@@ -14,10 +18,6 @@ import com.cometproject.server.boot.CometBootstrap;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 
 public class APIManager implements Startable {

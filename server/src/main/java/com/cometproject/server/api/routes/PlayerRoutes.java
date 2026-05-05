@@ -1,5 +1,9 @@
 package com.cometproject.server.api.routes;
 
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.cometproject.server.api.ApiRequestUtils;
 import com.cometproject.server.api.ApiResponseUtils;
 import com.cometproject.server.game.players.PlayerManager;
@@ -9,11 +13,8 @@ import com.cometproject.server.network.messages.outgoing.notification.AdvancedAl
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.cometproject.server.storage.queries.player.inventory.InventoryDao;
-import io.javalin.http.Context;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashMap;
-import java.util.Map;
+import io.javalin.http.Context;
 
 
 public class PlayerRoutes {

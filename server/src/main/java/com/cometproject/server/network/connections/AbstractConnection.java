@@ -1,5 +1,9 @@
 package com.cometproject.server.network.connections;
 
+import java.time.Instant;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
+
 import com.cometproject.api.networking.ciphers.ConnectionCipher;
 import com.cometproject.api.networking.connections.Connection;
 import com.cometproject.api.networking.connections.ConnectionCloseCode;
@@ -7,10 +11,6 @@ import com.cometproject.api.networking.connections.ConnectionState;
 import com.cometproject.api.networking.connections.ConnectionTransportType;
 import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.server.network.ciphers.NullConnectionCipher;
-
-import java.time.Instant;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Base connection implementation shared by all transport adapters.

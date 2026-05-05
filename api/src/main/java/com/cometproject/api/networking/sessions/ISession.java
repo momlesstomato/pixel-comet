@@ -1,9 +1,10 @@
 package com.cometproject.api.networking.sessions;
 
+import org.slf4j.Logger;
+
 import com.cometproject.api.game.players.IPlayer;
 import com.cometproject.api.networking.connections.Connection;
 import com.cometproject.api.networking.messages.IMessageComposer;
-import org.slf4j.Logger;
 
 public interface ISession {
     IPlayer getPlayer();

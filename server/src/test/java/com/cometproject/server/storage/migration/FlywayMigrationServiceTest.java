@@ -1,21 +1,22 @@
 package com.cometproject.server.storage.migration;
 
-import com.zaxxer.hikari.HikariDataSource;
-import org.h2.jdbcx.JdbcDataSource;
-import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Test;
-import org.testcontainers.DockerClientFactory;
-import org.testcontainers.containers.MariaDBContainer;
-
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
 import java.util.UUID;
 
+import javax.sql.DataSource;
+
+import org.h2.jdbcx.JdbcDataSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Test;
+import org.testcontainers.DockerClientFactory;
+import org.testcontainers.containers.MariaDBContainer;
+
+import com.zaxxer.hikari.HikariDataSource;
 
 class FlywayMigrationServiceTest {
     private static final List<String> TEST_MIGRATION_LOCATIONS = List.of("classpath:db/test-migration");

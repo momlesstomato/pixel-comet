@@ -1,5 +1,7 @@
 package com.cometproject.server.network.connections;
 
+import java.net.InetSocketAddress;
+
 import com.cometproject.api.networking.ciphers.ConnectionCipher;
 import com.cometproject.api.networking.connections.ConnectionCloseCode;
 import com.cometproject.api.networking.connections.ConnectionTransportType;
@@ -7,9 +9,8 @@ import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.server.network.ciphers.Rc4ConnectionCipher;
 import com.cometproject.server.protocol.codec.EncryptionDecoder;
 import com.cometproject.server.protocol.codec.EncryptionEncoder;
-import io.netty.channel.ChannelHandlerContext;
 
-import java.net.InetSocketAddress;
+import io.netty.channel.ChannelHandlerContext;
 
 /**
  * Connection adapter for the Netty TCP transport.

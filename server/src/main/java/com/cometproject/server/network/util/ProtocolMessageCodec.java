@@ -1,15 +1,16 @@
 package com.cometproject.server.network.util;
 
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.cometproject.api.networking.ciphers.ConnectionCipher;
 import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.server.protocol.messages.Composer;
 import com.cometproject.server.protocol.messages.MessageEvent;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Encodes and decodes hotel protocol frames independent of transport.

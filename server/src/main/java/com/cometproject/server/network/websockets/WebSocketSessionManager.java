@@ -1,9 +1,9 @@
 package com.cometproject.server.network.websockets;
 
-import com.google.gson.Gson;
-
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import com.google.gson.Gson;
 
 public class WebSocketSessionManager {
 

@@ -1,5 +1,10 @@
 package com.cometproject.server.network.sessions;
 
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.networking.connections.Connection;
 import com.cometproject.api.networking.connections.ConnectionCloseCode;
@@ -23,12 +28,8 @@ import com.cometproject.server.network.websockets.WebSocketClientConnection;
 import com.cometproject.server.protocol.crypto.exceptions.HabboEncryption;
 import com.cometproject.server.protocol.messages.MessageEvent;
 import com.cometproject.server.storage.queries.player.PlayerDao;
-import io.netty.channel.ChannelHandlerContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.net.InetSocketAddress;
-import java.util.UUID;
+import io.netty.channel.ChannelHandlerContext;
 
 
 public class Session implements ISession {

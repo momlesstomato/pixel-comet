@@ -1,9 +1,9 @@
 package com.cometproject.api.networking.registry;
 
+import java.time.Instant;
+
 import com.cometproject.api.networking.connections.ConnectionState;
 import com.cometproject.api.networking.connections.ConnectionTransportType;
-
-import java.time.Instant;
 
 /**
  * Captures the immutable metadata stored for a registered connection.

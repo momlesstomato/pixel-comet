@@ -1,5 +1,11 @@
 package com.cometproject.server.network;
 
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cometproject.api.config.CometSettings;
 import com.cometproject.networking.api.sessions.INetSessionFactory;
 import com.cometproject.server.network.clients.ClientHandler;
@@ -8,17 +14,13 @@ import com.cometproject.server.protocol.codec.MessageDecoder;
 import com.cometproject.server.protocol.codec.MessageEncoder;
 import com.cometproject.server.protocol.codec.MessageFrameDecoder;
 import com.cometproject.server.protocol.codec.XMLPolicyDecoder;
+
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.EventExecutorGroup;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class NetworkChannelInitializer extends ChannelInitializer<SocketChannel> {
     private static final Logger LOGGER = LoggerFactory.getLogger(NetworkChannelInitializer.class.getName());

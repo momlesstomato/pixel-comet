@@ -1,13 +1,14 @@
 package com.cometproject.server.api.routes;
 
+import java.util.Map;
+
 import com.cometproject.server.api.ApiRequestUtils;
 import com.cometproject.server.api.ApiResponseUtils;
 import com.cometproject.server.game.players.PlayerManager;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.sessions.Session;
-import io.javalin.http.Context;
 
-import java.util.Map;
+import io.javalin.http.Context;
 
 public class PhotoRoutes {
     public static void purchase(final Context context) {

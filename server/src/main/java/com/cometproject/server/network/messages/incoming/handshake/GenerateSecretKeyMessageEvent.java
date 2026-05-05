@@ -1,8 +1,8 @@
 package com.cometproject.server.network.messages.incoming.handshake;
 
+import com.cometproject.server.network.ciphers.Rc4ConnectionCipher;
 import com.cometproject.server.network.messages.incoming.Event;
 import com.cometproject.server.network.messages.outgoing.handshake.SecretKeyMessageComposer;
-import com.cometproject.server.network.ciphers.Rc4ConnectionCipher;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.crypto.exceptions.HabboCryptoException;
 import com.cometproject.server.protocol.messages.MessageEvent;

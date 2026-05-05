@@ -1,10 +1,10 @@
 package com.cometproject.api.networking.sessions;
 
-import com.cometproject.api.networking.connections.Connection;
-import com.cometproject.api.networking.messages.IMessageComposer;
-
 import java.util.Map;
 import java.util.Set;
+
+import com.cometproject.api.networking.connections.Connection;
+import com.cometproject.api.networking.messages.IMessageComposer;
 
 public interface ISessionManager {
     boolean disconnectByPlayerId(int id);

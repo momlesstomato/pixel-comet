@@ -1,9 +1,9 @@
 package com.cometproject.api.networking.registry;
 
-import com.cometproject.api.networking.connections.Connection;
-
 import java.util.Map;
 import java.util.Optional;
+
+import com.cometproject.api.networking.connections.Connection;
 
 /**
  * Stores metadata for currently active client connections.

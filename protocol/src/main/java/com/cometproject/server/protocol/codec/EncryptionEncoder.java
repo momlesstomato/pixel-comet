@@ -2,6 +2,7 @@ package com.cometproject.server.protocol.codec;
 
 import com.cometproject.api.networking.ciphers.ConnectionCipher;
 import com.cometproject.server.protocol.crypto.exceptions.HabboRC4;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;

@@ -1,5 +1,10 @@
 package com.cometproject.server.network.registry;
 
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import com.cometproject.api.config.Configuration;
 import com.cometproject.api.config.cache.RedisConfiguration;
 import com.cometproject.api.config.network.ConnectionRegistryConfiguration;
@@ -9,14 +14,10 @@ import com.cometproject.api.networking.connections.ConnectionTransportType;
 import com.cometproject.api.networking.registry.ConnectionRegistry;
 import com.cometproject.api.networking.registry.ConnectionRegistryEntry;
 import com.cometproject.api.utilities.Disposable;
+
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Redis-backed registry implementation for active transport connections.

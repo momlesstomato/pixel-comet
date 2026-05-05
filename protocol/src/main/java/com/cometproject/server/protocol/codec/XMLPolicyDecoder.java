@@ -1,5 +1,8 @@
 package com.cometproject.server.protocol.codec;
 
+import java.time.Instant;
+import java.util.List;
+
 import com.cometproject.api.networking.ciphers.ConnectionCipher;
 import com.cometproject.api.networking.connections.Connection;
 import com.cometproject.api.networking.connections.ConnectionCloseCode;
@@ -7,14 +10,12 @@ import com.cometproject.api.networking.connections.ConnectionState;
 import com.cometproject.api.networking.connections.ConnectionTransportType;
 import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.api.networking.sessions.SessionManagerAccessor;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.util.CharsetUtil;
-
-import java.time.Instant;
-import java.util.List;
 
 public class XMLPolicyDecoder extends ByteToMessageDecoder {
 

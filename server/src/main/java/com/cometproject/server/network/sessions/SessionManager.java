@@ -1,5 +1,11 @@
 package com.cometproject.server.network.sessions;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.cometproject.api.networking.connections.Connection;
 import com.cometproject.api.networking.connections.ConnectionCloseCode;
 import com.cometproject.api.networking.messages.IMessageComposer;
@@ -11,12 +17,6 @@ import com.cometproject.api.utilities.JsonUtil;
 import com.cometproject.server.boot.Comet;
 import com.cometproject.server.game.players.PlayerManager;
 import com.google.common.collect.Sets;
-
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 public final class SessionManager implements ISessionManager, ISessionService {

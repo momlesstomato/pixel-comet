@@ -1,6 +1,7 @@
 package com.cometproject.server.network.ciphers;
 
 import com.cometproject.api.networking.ciphers.ConnectionCipher;
+
 import io.netty.buffer.ByteBuf;
 
 /**

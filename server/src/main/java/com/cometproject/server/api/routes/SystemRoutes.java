@@ -1,5 +1,7 @@
 package com.cometproject.server.api.routes;
 
+import java.util.Map;
+
 import com.cometproject.server.api.ApiResponseUtils;
 import com.cometproject.server.boot.Comet;
 import com.cometproject.server.boot.utils.ShutdownProcess;
@@ -17,9 +19,8 @@ import com.cometproject.server.game.rooms.RoomManager;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.moderation.ModToolMessageComposer;
 import com.cometproject.server.storage.queries.config.ConfigDao;
-import io.javalin.http.Context;
 
-import java.util.Map;
+import io.javalin.http.Context;
 
 public class SystemRoutes {
     public static void status(final Context context) {
