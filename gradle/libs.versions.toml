@@ -24,7 +24,7 @@ jooqPlugin = "9.0"
 junit4 = "4.13.2"
 mockito = "5.12.0"
 h2 = "2.2.224"
-flyway = "10.15.0"
+flyway = "10.17.0"
 testcontainers = "1.20.1"
 validationApi = "2.0.1.Final"
 
@@ -36,6 +36,7 @@ gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 netty-all = { module = "io.netty:netty-all", version.ref = "netty" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 log4j-over-slf4j = { module = "org.slf4j:log4j-over-slf4j", version.ref = "slf4j" }
+jul-to-slf4j = { module = "org.slf4j:jul-to-slf4j", version.ref = "slf4j" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 hikari = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }
 mysql-connector = { module = "com.mysql:mysql-connector-j", version.ref = "mysql" }

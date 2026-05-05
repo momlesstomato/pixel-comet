@@ -40,7 +40,7 @@ public class CacheManager extends CachableObject implements Startable {
     @Override
     public void start() {
         if (!this.enabled) {
-            LOGGER.error("Cancer got removed from emulator properly.");
+            LOGGER.info("Redis cache is disabled.");
             return;
         }
 

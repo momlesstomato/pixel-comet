@@ -1,3 +1,2 @@
--- catalog_items from populated.sql is intentionally deferred.
--- The Arcturus furniture definition IDs do not match the Comet items_base/item catalog IDs.
--- Do not import this data until furniture definition reconciliation is implemented.
+-- Superseded by V115__runtime_content_seed.sql.
+-- Catalog and runtime content now seed through plain SQL files in db/seed.

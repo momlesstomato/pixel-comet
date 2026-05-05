@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import com.cometproject.api.stats.CometStats;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 import com.cometproject.server.boot.utils.ConsoleCommands;
 import com.cometproject.server.boot.utils.ShutdownProcess;
 import com.cometproject.server.game.rooms.RoomManager;
@@ -59,6 +60,9 @@ public class Comet {
      * @param args The arguments passed from the run command
      */
     public static void run(String[] args) {
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+
         start = System.currentTimeMillis();
 
         // Check if running on Windows and not in IntelliJ.

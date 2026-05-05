@@ -79,6 +79,7 @@ dependencies {
     implementation(libs.slf4j.api)
     implementation(libs.logback.classic)
     implementation(libs.log4j.over.slf4j)
+    implementation(libs.jul.to.slf4j)
     implementation(libs.hikari)
     implementation(libs.mysql.connector)
     implementation(libs.commons.lang3)

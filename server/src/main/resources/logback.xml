@@ -66,6 +66,5 @@
         <appender-ref ref="Console" />
         <appender-ref ref="FileDebug" />
         <appender-ref ref="FileErrors" />
-        <appender-ref ref="FileErrorsSql" />
     </root>
 </configuration>

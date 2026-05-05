@@ -1,7 +1,11 @@
 package com.cometproject.server.storage.migration;
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.h2.jdbcx.JdbcDataSource;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.DockerClientFactory;
+import org.testcontainers.containers.MariaDBContainer;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -16,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class FlywayMigrationServiceTest {
     private static final List<String> TEST_MIGRATION_LOCATIONS = List.of("classpath:db/test-migration");
     private static final List<String> TEST_SEED_LOCATIONS = List.of("classpath:db/test-seed");
+    private static final String PRODUCTION_MARIADB_IMAGE = "mariadb:11.4";
+    private static final int PRODUCTION_MARIADB_PORT = 3306;
 
     @Test
     void migrate_appliesBaselineMigration_successfully() throws Exception {
@@ -67,7 +73,33 @@ class FlywayMigrationServiceTest {
         service.migrate();
 
         assertEquals(1, this.queryForInt(dataSource, "SELECT COUNT(*) FROM test_seed_values"));
-        assertTrue(this.queryForInt(dataSource, "SELECT COUNT(*) FROM flyway_schema_history WHERE version = '100'") > 0);
+        assertTrue(this.queryForInt(dataSource, "SELECT COUNT(*) FROM flyway_seed_history WHERE version = '100'") > 0);
+    }
+
+    @Test
+    void migrate_withProductionLocations_appliesCurrentSchemaAndRuntimeSeed() throws Exception {
+        Assumptions.assumeTrue(
+            DockerClientFactory.instance().isDockerAvailable(),
+            "Docker is required for the production Flyway migration integration test.");
+
+        try (MariaDBContainer<?> mariaDb = new MariaDBContainer<>(PRODUCTION_MARIADB_IMAGE)
+                .withDatabaseName("pixel_comet_test")
+                .withUsername("pixel")
+                .withPassword("pixel")) {
+            mariaDb.start();
+
+            try (HikariDataSource dataSource = this.createMariaDbDataSource(mariaDb)) {
+                final FlywayMigrationService service = new FlywayMigrationService(dataSource, true);
+
+                service.migrate();
+
+                assertEquals("3", service.currentVersion());
+                assertTrue(this.queryForInt(dataSource, "SELECT COUNT(*) FROM flyway_seed_history WHERE version = '115' AND success = TRUE") > 0);
+                assertTrue(this.queryForInt(dataSource, "SELECT COUNT(*) FROM furniture") > 0);
+                assertTrue(this.queryForInt(dataSource, "SELECT COUNT(*) FROM catalog_pages") > 0);
+                assertTrue(this.queryForInt(dataSource, "SELECT COUNT(*) FROM catalog_items") > 0);
+            }
+        }
     }
 
     private FlywayMigrationService createService(final boolean seedEnabled) {
@@ -85,6 +117,20 @@ class FlywayMigrationServiceTest {
         dataSource.setURL("jdbc:h2:mem:" + databaseName + ";MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1");
         dataSource.setUser("sa");
         dataSource.setPassword("");
+        return dataSource;
+    }
+
+    private HikariDataSource createMariaDbDataSource(final MariaDBContainer<?> mariaDb) {
+        final HikariDataSource dataSource = new HikariDataSource();
+
+        dataSource.setJdbcUrl(String.format(
+                "jdbc:mysql://%s:%d/%s?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
+                mariaDb.getHost(),
+            mariaDb.getMappedPort(PRODUCTION_MARIADB_PORT),
+                mariaDb.getDatabaseName()));
+        dataSource.setUsername(mariaDb.getUsername());
+        dataSource.setPassword(mariaDb.getPassword());
+        dataSource.setMaximumPoolSize(2);
         return dataSource;
     }
 

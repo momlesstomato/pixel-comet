@@ -125,18 +125,30 @@ public class CatalogItem implements ICatalogItem {
                     items = bundledItems;
                 } else {
 
-                    if (itemId.contains(",")) {
-                        String[] split = itemId.replace("\n", "").split(",");
+                    if (itemId.contains(",") || itemId.contains(";")) {
+                        final boolean legacyBundleFormat = itemId.contains(";");
+                        final String[] split = itemId.replace("\n", "").split(legacyBundleFormat ? ";" : ",");
 
-                        for (String str : split) {
+                        for (final String str : split) {
                             if (!str.equals("")) {
-                                String[] parts = str.split(":");
-                                if (parts.length != 3) continue;
+                                final String[] parts = str.split(":");
 
                                 try {
                                     final int aItemId = Integer.parseInt(parts[0]);
-                                    final int aAmount = Integer.parseInt(parts[1]);
-                                    final String aPresetData = parts[2];
+                                    final int aAmount;
+                                    final String aPresetData;
+
+                                    if (legacyBundleFormat) {
+                                        aAmount = parts.length >= 2 && !parts[1].isEmpty() ? Integer.parseInt(parts[1]) : 1;
+                                        aPresetData = "";
+                                    } else {
+                                        if (parts.length != 3) {
+                                            continue;
+                                        }
+
+                                        aAmount = Integer.parseInt(parts[1]);
+                                        aPresetData = parts[2];
+                                    }
 
                                     this.items.add(new CatalogBundledItem(aPresetData, aAmount, aItemId));
                                 } catch (Exception ignored) {

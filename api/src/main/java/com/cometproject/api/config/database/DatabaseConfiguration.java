@@ -42,7 +42,7 @@ public final class DatabaseConfiguration {
                 Map.entry(POOL_ACQUIRE_RETRY_ATTEMPTS, "50"),
                 Map.entry(POOL_AUTO_RECONNECT, "false"),
                 Map.entry(POOL_TCP_KEEP_ALIVE, "true"),
-                Map.entry(SEED_ENABLED, "false")
+                Map.entry(SEED_ENABLED, "true")
         );
     }
 }
