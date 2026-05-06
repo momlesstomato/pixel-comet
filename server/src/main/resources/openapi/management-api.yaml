@@ -13,10 +13,10 @@ components:
     authTokenHeader:
       type: apiKey
       in: header
-      name: auth_token
+      name: X-API-Key
   parameters:
     AuthTokenHeader:
-      name: auth_token
+      name: X-API-Key
       in: header
       required: true
       schema:

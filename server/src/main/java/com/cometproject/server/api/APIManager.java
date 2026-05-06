@@ -176,10 +176,7 @@ public class APIManager implements Startable {
     }
 
     private void authenticate(final Context context) {
-        final String providedToken = ApiRequestUtils.firstNonBlank(
-                context.header(this.authHeader),
-                context.header("authToken")
-        );
+        final String providedToken = context.header(this.authHeader);
 
         if (!this.authToken.equals(providedToken)) {
             LOGGER.error("Unauthenticated request from: {} ; {}", context.ip(), context.path());
