@@ -114,7 +114,7 @@ public final class SsoTicketService implements ISsoTicketService {
         final String normalizedToken = token.trim();
         this.repository.revoke(normalizedToken);
 
-        if (!this.cacheManager.isEnabled() || this.cacheManager.getJedisPool() == null) {
+        if (this.cacheManager.getJedisPool() == null) {
             return;
         }
 
@@ -191,7 +191,7 @@ public final class SsoTicketService implements ISsoTicketService {
     }
 
     private void assertBackendAvailable() {
-        if (!this.cacheManager.isEnabled() || this.cacheManager.getJedisPool() == null) {
+        if (this.cacheManager.getJedisPool() == null) {
             throw new SsoBackendUnavailableException();
         }
     }

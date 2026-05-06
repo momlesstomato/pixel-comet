@@ -153,7 +153,7 @@ public class RoomManager implements Startable {
 
         Room room = null;
 
-        if (CacheManager.getInstance().isEnabled() && CacheManager.getInstance().exists("rooms." + id)) {
+        if (CacheManager.getInstance().exists("rooms." + id)) {
             final RoomDataObject roomDataObject = CacheManager.getInstance().get(RoomDataObject.class, "rooms." + id);
 
             if (roomDataObject != null) {

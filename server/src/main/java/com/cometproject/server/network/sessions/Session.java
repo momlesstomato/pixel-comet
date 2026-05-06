@@ -173,7 +173,8 @@ public class Session implements ISession {
         }
 
         if (!(msg instanceof AvatarUpdateMessageComposer) && !(msg instanceof UpdateFloorItemMessageComposer))
-            LOGGER.debug("Sent message: " + msg.getClass().getSimpleName() + " / " + msg.getId());
+            LOGGER.debug("Sent packet {} (id={}) to connection {}",
+                    msg.getClass().getSimpleName(), msg.getId(), this.networkId);
 
         this.connection.send(msg);
         return this;

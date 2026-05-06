@@ -553,10 +553,8 @@ public class PlayerDao {
     }
 
     public static String getUsernameByPlayerId(int playerId) {
-        if (CacheManager.getInstance().isEnabled()) {
-            if (CacheManager.getInstance().exists("players.username." + playerId)) {
-                return CacheManager.getInstance().getString("players.username." + playerId);
-            }
+        if (CacheManager.getInstance().exists("players.username." + playerId)) {
+            return CacheManager.getInstance().getString("players.username." + playerId);
         }
 
         Connection sqlConnection = null;
@@ -574,9 +572,7 @@ public class PlayerDao {
             while (resultSet.next()) {
                 final String username = resultSet.getString("username");
 
-                if (CacheManager.getInstance().isEnabled()) {
-                    CacheManager.getInstance().putString("players.username." + playerId, username);
-                }
+                CacheManager.getInstance().putString("players.username." + playerId, username);
 
                 return resultSet.getString("username");
             }

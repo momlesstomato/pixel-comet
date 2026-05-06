@@ -58,7 +58,6 @@ class SsoTicketServiceTest {
         final Clock clock = Clock.fixed(Instant.now().plusSeconds(600), ZoneOffset.UTC);
         final SecureRandom secureRandom = new SecureRandom(new byte[]{1, 2, 3, 4});
 
-        when(cacheManager.isEnabled()).thenReturn(true);
         when(cacheManager.getJedisPool()).thenReturn(Mockito.mock(JedisPool.class));
 
         final SsoTicketService service = new SsoTicketService(repository, cacheManager, clock, secureRandom, 3600, "session");
@@ -79,7 +78,7 @@ class SsoTicketServiceTest {
         final ISsoTicketRepository repository = Mockito.mock(ISsoTicketRepository.class);
         final CacheManager cacheManager = Mockito.mock(CacheManager.class);
 
-        when(cacheManager.isEnabled()).thenReturn(false);
+        when(cacheManager.getJedisPool()).thenReturn(null);
 
         final SsoTicketService service = new SsoTicketService(
                 repository,
@@ -142,7 +141,6 @@ class SsoTicketServiceTest {
         final redis.clients.jedis.Jedis jedis = Mockito.mock(redis.clients.jedis.Jedis.class);
         final Clock clock = Clock.fixed(Instant.now().plusSeconds(600), ZoneOffset.UTC);
 
-        when(cacheManager.isEnabled()).thenReturn(true);
         when(cacheManager.getJedisPool()).thenReturn(jedisPool);
         when(cacheManager.qualifyKey(any())).thenAnswer(invocation -> "comet." + invocation.getArgument(0, String.class));
         when(jedisPool.getResource()).thenReturn(jedis);

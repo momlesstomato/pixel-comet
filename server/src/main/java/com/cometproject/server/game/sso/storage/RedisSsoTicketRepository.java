@@ -41,29 +41,27 @@ public final class RedisSsoTicketRepository implements ISsoTicketRepository {
 
     /**
      * Creates a Redis-backed ticket repository using the shared cache manager.
+     * The pool is resolved lazily so construction before {@code CacheManager.start()} is safe.
      *
      * @param cacheManager The shared Redis cache manager.
      */
     @Inject
     public RedisSsoTicketRepository(final CacheManager cacheManager) {
-        this(
-                cacheManager,
-                cacheManager.getJedisPool(),
-                Configuration.currentConfig().getOrDefault(
-                        RedisConfiguration.PREFIX,
-                        RedisConfiguration.defaults().get(RedisConfiguration.PREFIX)),
-                Configuration.currentConfig().getOrDefault(
-                        SsoConfiguration.TICKET_KEY_PREFIX,
-                        SsoConfiguration.defaults().get(SsoConfiguration.TICKET_KEY_PREFIX))
-        );
+        this.cacheManager = cacheManager;
+        this.jedisPool = null;
+        this.cachePrefix = Configuration.currentConfig().getOrDefault(
+                RedisConfiguration.PREFIX,
+                RedisConfiguration.defaults().get(RedisConfiguration.PREFIX));
+        this.ticketKeyPrefix = Configuration.currentConfig().getOrDefault(
+                SsoConfiguration.TICKET_KEY_PREFIX,
+                SsoConfiguration.defaults().get(SsoConfiguration.TICKET_KEY_PREFIX));
     }
 
     RedisSsoTicketRepository(
-            final CacheManager cacheManager,
             final JedisPool jedisPool,
             final String cachePrefix,
             final String ticketKeyPrefix) {
-        this.cacheManager = cacheManager;
+        this.cacheManager = null;
         this.jedisPool = jedisPool;
         this.cachePrefix = cachePrefix;
         this.ticketKeyPrefix = ticketKeyPrefix;
@@ -131,11 +129,13 @@ public final class RedisSsoTicketRepository implements ISsoTicketRepository {
     }
 
     private JedisPool requireJedisPool() {
-        if (!this.cacheManager.isEnabled() || this.jedisPool == null) {
+        final JedisPool pool = this.jedisPool != null ? this.jedisPool : (this.cacheManager != null ? this.cacheManager.getJedisPool() : null);
+
+        if (pool == null) {
             throw new SsoBackendUnavailableException();
         }
 
-        return this.jedisPool;
+        return pool;
     }
 
     private String redisKey(final String token) {

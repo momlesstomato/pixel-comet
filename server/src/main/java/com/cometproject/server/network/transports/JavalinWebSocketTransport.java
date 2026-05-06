@@ -52,8 +52,8 @@ import io.netty.buffer.Unpooled;
  */
 public final class JavalinWebSocketTransport implements ConnectionTransport {
     private static final Logger LOGGER = LoggerFactory.getLogger(JavalinWebSocketTransport.class);
-    private static final String GAME_SOCKET_PATH = "/game";
-    private static final String BROWSER_SOCKET_PATH = "/ws";
+    private static final String GAME_SOCKET_PATH = "/ws";
+    private static final String BROWSER_SOCKET_PATH = "/browser";
 
     private final ConfigurationSource configuration;
     private final SessionManager sessionManager;

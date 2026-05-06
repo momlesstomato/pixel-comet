@@ -23,11 +23,9 @@ public class CacheManager extends CachableObject implements Startable {
     private final String keyPrefix;
     private final String host;
     private final int port;
-    private boolean enabled;
-    private JedisPool jedis;
+    private JedisPool jedisPool;
 
     public CacheManager() {
-        this.enabled = Boolean.parseBoolean(Configuration.currentConfig().getOrDefault(RedisConfiguration.ENABLED, RedisConfiguration.defaults().get(RedisConfiguration.ENABLED)));
         this.keyPrefix = Configuration.currentConfig().getOrDefault(RedisConfiguration.PREFIX, RedisConfiguration.defaults().get(RedisConfiguration.PREFIX));
         this.host = Configuration.currentConfig().getOrDefault(RedisConfiguration.CONNECTION_HOST, RedisConfiguration.defaults().get(RedisConfiguration.CONNECTION_HOST));
         this.port = Integer.parseInt(Configuration.currentConfig().getOrDefault(RedisConfiguration.CONNECTION_PORT, RedisConfiguration.defaults().get(RedisConfiguration.CONNECTION_PORT)));
@@ -39,61 +37,42 @@ public class CacheManager extends CachableObject implements Startable {
 
     @Override
     public void start() {
-        if (!this.enabled) {
-            LOGGER.info("Redis cache is disabled.");
-            return;
-        }
-
         if (this.host.isEmpty()) {
-            LOGGER.error("Invalid redis connection string");
-
-            this.enabled = false;
-            return;
+            throw new IllegalStateException("Redis host is not configured (COMET_CACHE_CONNECTION_HOST)");
         }
 
-        if (!this.initializeJedis()) {
-            LOGGER.error("Failed to initialize Redis cluster, disabling caching");
-
-            this.enabled = false;
-            return;
-        }
+        this.initializeJedis();
 
         this.doSubscriptions(new ISubscriber[]{
                 new RefreshDataSubscriber(),
                 new GoToRoomSubscriber()
         });
 
-        LOGGER.info("Redis caching is enabled");
-
+        LOGGER.info("Redis connected on {}:{}", this.host, this.port);
     }
 
     @Override
     public void stop() {
-        if (this.jedis != null) {
-            this.jedis.close();
+        if (this.jedisPool != null) {
+            this.jedisPool.close();
         }
     }
 
-    private boolean initializeJedis() {
+    private void initializeJedis() {
         try {
             final JedisPoolConfig poolConfig = new JedisPoolConfig();
             poolConfig.setMaxTotal(1000);
-
-            // Wait 100ms before we fall back to MySQL.
             poolConfig.setMaxWaitMillis(1000);
 
-            this.jedis = new JedisPool(poolConfig, this.host, this.port, 3000);
-
-            return true;
+            this.jedisPool = new JedisPool(poolConfig, this.host, this.port, 3000);
         } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            throw new IllegalStateException("Failed to connect to Redis at " + this.host + ":" + this.port, e);
         }
     }
 
     private void doSubscriptions(ISubscriber[] subscribers) {
         for (ISubscriber subscriber : subscribers) {
-            subscriber.setJedis(this.jedis);
+            subscriber.setJedis(this.jedisPool);
 
             CometThreadManager.getInstance().executeOnce(subscriber::subscribe);
 
@@ -102,46 +81,37 @@ public class CacheManager extends CachableObject implements Startable {
     }
 
     public void put(final String key, CachableObject object) {
-        if (this.jedis == null) {
+        if (this.jedisPool == null) {
             return;
         }
 
         try {
-            try (final Jedis jedis = this.jedis.getResource()) {
+            try (final Jedis connection = this.jedisPool.getResource()) {
                 final long startTime = System.currentTimeMillis();
-
-                // Build the String from the object
                 final String objectData = object.toString();
-
-                jedis.set(this.getKey(key), objectData);
-
+                connection.set(this.getKey(key), objectData);
                 LOGGER.info("Data put to redis: " + object.getClass().getSimpleName() + " in " + new TimeSpan(startTime, System.currentTimeMillis()).toMilliseconds() + "ms");
-            } catch (Exception e) {
-                throw e;
             }
         } catch (Exception e) {
-            LOGGER.error("Error while setting object in Redis with key: " + key + ", type: " +
-                    object.getClass().getSimpleName(), e);
+            LOGGER.error("Error while setting object in Redis with key: " + key + ", type: " + object.getClass().getSimpleName(), e);
         }
     }
 
     public void publishString(final String key, final String value, boolean setter, String setterKey) {
-        if (this.jedis == null) {
+        if (this.jedisPool == null) {
             return;
         }
 
         try {
-            try (final Jedis jedis = this.jedis.getResource()) {
+            try (final Jedis connection = this.jedisPool.getResource()) {
                 final long startTime = System.currentTimeMillis();
+                connection.publish(this.getKey(key), value);
 
-                jedis.publish(this.getKey(key), value);
-
-                if (setter && setterKey != null)
-                    jedis.set(this.getKey(setterKey), value);
+                if (setter && setterKey != null) {
+                    connection.set(this.getKey(setterKey), value);
+                }
 
                 LOGGER.info("Data published to redis channel: " + key + " in " + new TimeSpan(startTime, System.currentTimeMillis()).toMilliseconds() + "ms");
-            } catch (Exception e) {
-                throw e;
             }
         } catch (Exception e) {
             LOGGER.error("Error while setting string with key: " + key, e);
@@ -149,19 +119,15 @@ public class CacheManager extends CachableObject implements Startable {
     }
 
     public void putString(final String key, final String value) {
-        if (this.jedis == null) {
+        if (this.jedisPool == null) {
             return;
         }
 
         try {
-            try (final Jedis jedis = this.jedis.getResource()) {
+            try (final Jedis connection = this.jedisPool.getResource()) {
                 final long startTime = System.currentTimeMillis();
-
-                jedis.set(this.getKey(key), value);
-
+                connection.set(this.getKey(key), value);
                 LOGGER.info("Data put to redis with key: " + key + " in " + new TimeSpan(startTime, System.currentTimeMillis()).toMilliseconds() + "ms");
-            } catch (Exception e) {
-                throw e;
             }
         } catch (Exception e) {
             LOGGER.error("Error while setting string with key: " + key, e);
@@ -170,10 +136,8 @@ public class CacheManager extends CachableObject implements Startable {
 
     public String getString(String key) {
         try {
-            try (final Jedis jedis = this.jedis.getResource()) {
-                return jedis.get(this.getKey(key));
-            } catch (Exception e) {
-                throw e;
+            try (final Jedis connection = this.jedisPool.getResource()) {
+                return connection.get(this.getKey(key));
             }
         } catch (Exception e) {
             LOGGER.error("Error while reading string from Redis with key: " + key, e);
@@ -184,17 +148,13 @@ public class CacheManager extends CachableObject implements Startable {
 
     public <T> T get(final Class<T> clazz, final String key) {
         try {
-            try (final Jedis jedis = this.jedis.getResource()) {
-                final String data = jedis.get(this.getKey(key));
-
-                // Build the object from the String.
+            try (final Jedis connection = this.jedisPool.getResource()) {
+                final String data = connection.get(this.getKey(key));
                 final T object = JsonUtil.getInstance().fromJson(data, clazz);
 
                 if (object != null) {
                     return object;
                 }
-            } catch (Exception e) {
-                throw e;
             }
         } catch (Exception e) {
             LOGGER.error("Error while reading object from Redis with key: " + key + ", type: " + clazz.getSimpleName(), e);
@@ -205,10 +165,8 @@ public class CacheManager extends CachableObject implements Startable {
 
     public boolean exists(final String key) {
         try {
-            try (final Jedis jedis = this.jedis.getResource()) {
-                return jedis.exists(getKey(key));
-            } catch (Exception e) {
-                throw e;
+            try (final Jedis connection = this.jedisPool.getResource()) {
+                return connection.exists(getKey(key));
             }
         } catch (Exception e) {
             LOGGER.error("Error while reading EXISTS from redis, key: " + key, e);
@@ -232,15 +190,11 @@ public class CacheManager extends CachableObject implements Startable {
     }
 
     /**
-     * Returns the shared Jedis pool when Redis has been initialised.
+     * Returns the shared Jedis connection pool.
      *
-     * @return The shared Jedis pool, or {@code null} when Redis is unavailable.
+     * @return The shared Jedis pool.
      */
     public JedisPool getJedisPool() {
-        return this.jedis;
-    }
-
-    public boolean isEnabled() {
-        return this.enabled;
+        return this.jedisPool;
     }
 }

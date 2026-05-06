@@ -21,7 +21,6 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import com.cometproject.api.game.sso.SsoTicket;
-import com.cometproject.server.storage.cache.CacheManager;
 
 import redis.clients.jedis.JedisPool;
 
@@ -48,12 +47,8 @@ class RedisSsoTicketRepositoryTest {
 
     @Test
     void save_andConsume_roundTripsTicket() {
-        final CacheManager cacheManager = org.mockito.Mockito.mock(CacheManager.class);
-
         try (JedisPool jedisPool = new JedisPool(redis.getHost(), redis.getMappedPort(6379))) {
-            org.mockito.Mockito.when(cacheManager.isEnabled()).thenReturn(true);
-
-            final RedisSsoTicketRepository repository = new RedisSsoTicketRepository(cacheManager, jedisPool, "comet", "sso");
+            final RedisSsoTicketRepository repository = new RedisSsoTicketRepository(jedisPool, "comet", "sso");
             final SsoTicket ticket = new SsoTicket("0123456789abcdef", 42, Instant.now().plusSeconds(60));
 
             repository.save(ticket);
@@ -67,12 +62,8 @@ class RedisSsoTicketRepositoryTest {
 
     @Test
     void consume_isAtomic_acrossConcurrentRequests() throws InterruptedException, ExecutionException {
-        final CacheManager cacheManager = org.mockito.Mockito.mock(CacheManager.class);
-
         try (JedisPool jedisPool = new JedisPool(redis.getHost(), redis.getMappedPort(6379))) {
-            org.mockito.Mockito.when(cacheManager.isEnabled()).thenReturn(true);
-
-            final RedisSsoTicketRepository repository = new RedisSsoTicketRepository(cacheManager, jedisPool, "comet", "sso");
+            final RedisSsoTicketRepository repository = new RedisSsoTicketRepository(jedisPool, "comet", "sso");
             final SsoTicket ticket = new SsoTicket("abcdef0123456789", 42, Instant.now().plusSeconds(60));
 
             repository.save(ticket);

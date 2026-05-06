@@ -151,9 +151,10 @@ public class PlayerLoginRequest implements CometTask {
             PlayerDao.updatePlayerStatus(player, player.isOnline(), true);
 
             client.sendQueue(new UniqueIDMessageComposer(client.getUniqueId()))
-                    .sendQueue(new AuthenticationOKMessageComposer()).
-                    sendQueue(new FuserightsMessageComposer(client.getPlayer().getSubscription().isValid(), client.getPlayer().getData().getRank())).
-                    sendQueue(new ClubStatusMessageComposer(client.getPlayer().getSubscription())).
+                    .sendQueue(new AuthenticationOKMessageComposer())
+                    .sendQueue(new UserObjectMessageComposer(client.getPlayer()))
+                    .sendQueue(new FuserightsMessageComposer(client.getPlayer().getSubscription().isValid(), client.getPlayer().getData().getRank()))
+                    .sendQueue(new ClubStatusMessageComposer(client.getPlayer().getSubscription())).
                     sendQueue(new FavouriteRoomsMessageComposer(client.getPlayer().getNavigator().getFavouriteRooms())).
                     sendQueue(new AvailabilityStatusMessageComposer()).
                     sendQueue(new PlayerSettingsMessageComposer(player.getSettings(), 2)).

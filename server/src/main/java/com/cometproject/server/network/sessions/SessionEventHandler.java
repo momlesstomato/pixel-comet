@@ -1,5 +1,8 @@
 package com.cometproject.server.network.sessions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.protocol.headers.Events;
 import com.cometproject.server.protocol.messages.MessageEvent;
@@ -9,6 +12,8 @@ import java.util.Map;
 
 
 public class SessionEventHandler {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SessionEventHandler.class);
+
     /**
      * The session attached to the event handler
      */
@@ -49,6 +54,9 @@ public class SessionEventHandler {
                 this.loginEvents.replace(msg.getId(), false);
             }
         }
+
+        LOGGER.debug("Received packet {} (id={}) from connection {}",
+                msg.getClass().getSimpleName(), msg.getId(), this.session.getNetworkId());
 
         NetworkManager.getInstance().getMessages().handle(msg, this.session);
     }

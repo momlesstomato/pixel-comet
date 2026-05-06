@@ -29,7 +29,6 @@ import com.cometproject.server.network.messages.outgoing.room.polls.GetInfobusPo
 import com.cometproject.server.network.messages.outgoing.room.polls.QuickPollMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.polls.QuickPollResultsMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.polls.StartInfobusPollMessageComposer;
-import com.cometproject.server.storage.cache.CacheManager;
 import com.cometproject.server.storage.cache.objects.RoomDataObject;
 import com.cometproject.server.storage.cache.objects.items.FloorItemDataObject;
 import com.cometproject.server.storage.cache.objects.items.WallItemDataObject;
@@ -222,9 +221,7 @@ public class Room implements Attributable, IRoom {
 
         long currentTime = System.currentTimeMillis();
 
-        boolean isCacheEnabled = CacheManager.getInstance().isEnabled();
-
-        /*if (isCacheEnabled) {
+        /*if (true) {
             CacheManager.getInstance().put("rooms." + this.getId(), this.getCacheObject());
         }*/
 
