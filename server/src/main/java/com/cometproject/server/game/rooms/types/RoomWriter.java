@@ -40,7 +40,9 @@ public class RoomWriter {
         }
 
         RoomPromotion promotion = RoomManager.getInstance().getRoomPromotions().get(room.getId());
-        IGroupData group = GameContext.getCurrent().getGroupService().getData(room.getGroupId());
+        IGroupData group = GameContext.getCurrent().getGroupService() != null
+                ? GameContext.getCurrent().getGroupService().getData(room.getGroupId())
+                : null;
 
         composeRoomSpecials(msg, room, promotion, group, room.getType());
     }

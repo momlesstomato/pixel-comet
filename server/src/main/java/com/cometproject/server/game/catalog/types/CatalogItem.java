@@ -372,7 +372,7 @@ public class CatalogItem implements ICatalogItem {
 
     @Override
     public boolean hasBadge() {
-        return !(this.badgeId.isEmpty());
+        return this.badgeId != null && !this.badgeId.isEmpty();
     }
 
     @Override

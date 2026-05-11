@@ -115,7 +115,9 @@ public class Room implements Attributable, IRoom {
         }
 
         // Cache the group.
-        this.group = GameContext.getCurrent().getGroupService().getGroup(this.getData().getGroupId());
+        this.group = GameContext.getCurrent().getGroupService() != null
+                ? GameContext.getCurrent().getGroupService().getGroup(this.getData().getGroupId())
+                : null;
 
         this.attributes = new HashMap<>();
         this.ratings = new HashSet<>();

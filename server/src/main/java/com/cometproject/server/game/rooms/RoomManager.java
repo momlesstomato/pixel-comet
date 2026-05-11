@@ -4,14 +4,20 @@ import com.cometproject.api.config.Configuration;
 import com.cometproject.api.game.GameContext;
 import com.cometproject.api.game.players.IPlayer;
 import com.cometproject.api.game.rooms.IRoomData;
+import com.cometproject.api.game.rooms.IRoomService;
+import com.cometproject.api.game.rooms.models.IRoomModel;
+import com.cometproject.api.game.rooms.models.IRoomModelFactory;
+import com.cometproject.api.game.rooms.models.IRoomModelService;
 import com.cometproject.api.game.rooms.models.CustomFloorMapData;
 import com.cometproject.api.game.rooms.settings.RoomAccessType;
 import com.cometproject.api.game.rooms.settings.RoomTradeState;
 import com.cometproject.api.networking.sessions.ISession;
 import com.cometproject.api.utilities.Startable;
 import com.cometproject.server.boot.CometBootstrap;
+import com.cometproject.storage.api.StorageContext;
 import com.cometproject.server.game.players.types.Player;
 import com.cometproject.server.game.rooms.filter.WordFilter;
+import com.cometproject.server.game.rooms.models.ServerRoomModelFactory;
 import com.cometproject.server.game.rooms.models.types.StaticRoomModel;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.WiredUtil;
 import com.cometproject.server.game.rooms.types.Room;
@@ -35,7 +41,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public class RoomManager implements Startable {
+public class RoomManager implements Startable, IRoomService, IRoomModelService {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(RoomManager.class);
     public static final int LRU_MAX_ENTRIES = Integer.parseInt(Configuration.currentConfig().getProperty("comet.game.rooms.data.max"));
@@ -80,7 +86,7 @@ public class RoomManager implements Startable {
         this.globalCycle = new RoomCycle();
 
         this.loadPromotedRooms();
-//        this.loadModels();
+        this.loadModels();
 
         this.globalCycle.start();
 
@@ -121,24 +127,31 @@ public class RoomManager implements Startable {
         });
     }
 
-//    public void loadModels() {
-//        if (this.models != null && this.getModels().size() != 0) {
-//            this.getModels().clear();
-//        }
-//
-//        this.models = RoomDao.getModels();
-//
-//        LOGGER.info("Loaded " + this.getModels().size() + " room models");
-//    }
+    @Override
+    public void loadModels() {
+        if (this.models != null && !this.models.isEmpty()) {
+            this.models.clear();
+        }
 
-//    public StaticRoomModel getModel(String id) {
-//        if (this.models.containsKey(id))
-//            return this.models.get(id);
-//
-//        LOGGER.debug("Couldn't find model: " + id);
-//
-//        return null;
-//    }
+        this.models = RoomDao.getModels();
+
+        LOGGER.info("Loaded " + this.models.size() + " room models");
+    }
+
+    @Override
+    public IRoomModel getModel(String id) {
+        if (this.models != null && this.models.containsKey(id)) {
+            return this.models.get(id);
+        }
+
+        LOGGER.debug("Couldn't find model: {}", id);
+        return null;
+    }
+
+    @Override
+    public IRoomModelFactory getRoomModelFactory() {
+        return ServerRoomModelFactory.INSTANCE;
+    }
 
     public Room get(int id) {
         if (id < 1) return null;
@@ -162,7 +175,7 @@ public class RoomManager implements Startable {
         }
 
         if (room == null) {
-            IRoomData data = GameContext.getCurrent().getRoomService().getRoomData(id);
+            IRoomData data = this.getRoomData(id);
 
             if (data == null) {
                 return null;
@@ -187,19 +200,25 @@ public class RoomManager implements Startable {
         room.getItems().onLoaded();
     }
 //
-//    public IRoomData getRoomData(int id) {
-//        if (this.getRoomDataInstances().getMap().containsKey(id)) {
-//            return this.getRoomDataInstances().get(id).setLastReferenced(Comet.getTime());
-//        }
-//
-//        IRoomData roomData = RoomDao.getRoomDataById(id);
-//
-//        if (roomData != null) {
-//            this.getRoomDataInstances().put(id, roomData);
-//        }
-//
-//        return roomData;
-//    }
+@Override
+    public IRoomData getRoomData(int id) {
+        if (this.roomDataInstances.containsKey(id)) {
+            return this.roomDataInstances.get(id);
+        }
+
+        IRoomData roomData = RoomDao.getRoomDataById(id);
+
+        if (roomData != null) {
+            this.roomDataInstances.put(id, roomData);
+        }
+
+        return roomData;
+    }
+
+    @Override
+    public void saveRoomData(IRoomData roomData) {
+        StorageContext.getCurrentContext().getRoomRepository().updateRoom(roomData);
+    }
 
     public void unloadIdleRooms() {
         for (Room room : this.unloadingRoomInstances.values()) {

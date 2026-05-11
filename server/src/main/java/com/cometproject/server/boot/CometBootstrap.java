@@ -9,6 +9,7 @@ import com.cometproject.server.game.catalog.CatalogManager;
 import com.cometproject.server.game.groups.items.GroupItemManager;
 import com.cometproject.server.game.items.ItemManager;
 import com.cometproject.server.game.players.PlayerManager;
+import com.cometproject.server.game.rooms.RoomManager;
 import com.cometproject.server.game.utilities.validator.PlayerFigureValidator;
 import com.cometproject.server.modules.ModuleManager;
 import com.cometproject.server.network.rcon.RconServer;
@@ -140,6 +141,8 @@ public final class CometBootstrap {
         gameContext.setCatalogService(this.injector.getInstance(CatalogManager.class));
         gameContext.setFurnitureService(this.injector.getInstance(ItemManager.class));
         gameContext.setPlayerService(this.injector.getInstance(PlayerManager.class));
+        gameContext.setRoomService(this.injector.getInstance(RoomManager.class));
+        gameContext.setRoomModelService(this.injector.getInstance(RoomManager.class));
 
         GameContext.setCurrent(gameContext);
     }

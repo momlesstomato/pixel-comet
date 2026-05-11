@@ -1,13 +1,18 @@
 package com.cometproject.server.game.rooms.models;
 
 import com.cometproject.api.game.rooms.models.InvalidModelException;
+import com.cometproject.api.game.rooms.models.IRoomModel;
+import com.cometproject.api.game.rooms.models.RoomModelData;
 import com.cometproject.api.game.rooms.models.RoomTileState;
 import com.cometproject.api.utilities.ModelUtils;
 import org.slf4j.LoggerFactory;
 
 
-public abstract class RoomModel {
+public abstract class RoomModel implements IRoomModel {
+    private static final char[] HEIGHT_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz".toCharArray();
+
     private String name;
+    private String heightmap;
     private String map = "";
     private int doorX;
     private int doorY;
@@ -21,6 +26,7 @@ public abstract class RoomModel {
 
     public RoomModel(String name, String heightmap, int doorX, int doorY, int doorRotation, int wallHeight) throws InvalidModelException {
         this.name = name;
+        this.heightmap = heightmap;
         this.doorX = doorX;
         this.doorY = doorY;
         this.doorRotation = doorRotation;
@@ -131,5 +137,26 @@ public abstract class RoomModel {
 
     public int getWallHeight() {
         return wallHeight;
+    }
+
+    @Override
+    public String getRelativeHeightmap() {
+        StringBuilder builder = new StringBuilder();
+        for (int y = 0; y < this.getSizeY(); y++) {
+            for (int x = 0; x < this.getSizeX(); x++) {
+                if (this.squareState[x][y] == RoomTileState.INVALID) {
+                    builder.append('x');
+                } else {
+                    builder.append(HEIGHT_CHARS[(int) Math.floor(this.squareHeight[x][y] + 0.5d)]);
+                }
+            }
+            builder.append((char) 13);
+        }
+        return builder.toString();
+    }
+
+    @Override
+    public RoomModelData getRoomModelData() {
+        return new RoomModelData(this.name, this.heightmap, this.doorX, this.doorY, this.doorRotation, this.wallHeight);
     }
 }

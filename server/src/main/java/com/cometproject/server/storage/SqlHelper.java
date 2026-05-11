@@ -124,8 +124,14 @@ public class SqlHelper {
     }
 
     public static void handleSqlException(SQLException e) {
-        if (e.getMessage().equals("Pool has been shutdown") || e.getMessage().contains("Data too long for column"))
+        final String msg = e.getMessage();
+        if (msg == null) return;
+        if (msg.equals("Pool has been shutdown")
+                || msg.contains("has been closed")
+                || msg.contains("Communications link failure")
+                || msg.contains("Data too long for column")) {
             return;
+        }
         LOGGER.error("Error while executing query", e);
     }
 
