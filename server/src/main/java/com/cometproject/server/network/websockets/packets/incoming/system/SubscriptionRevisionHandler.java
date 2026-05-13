@@ -2,6 +2,7 @@ package com.cometproject.server.network.websockets.packets.incoming.system;
 
 import com.cometproject.api.game.furniture.types.FurnitureDefinition;
 import com.cometproject.api.game.players.data.components.inventory.PlayerItem;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.composers.catalog.UnseenItemsMessageComposer;
 import com.cometproject.server.game.catalog.CatalogManager;
 import com.cometproject.server.game.items.ItemManager;
@@ -15,6 +16,8 @@ import com.cometproject.server.network.websockets.packets.incoming.AbstractWebSo
 import com.cometproject.server.storage.queries.player.SubscriptionDao;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.services.ICurrencyService;
 import com.google.common.collect.Sets;
 
 public class SubscriptionRevisionHandler extends AbstractWebSocketHandler<SubscriptionRevisionHandler.ASMData> {
@@ -47,12 +50,18 @@ public class SubscriptionRevisionHandler extends AbstractWebSocketHandler<Subscr
         ShopOffer offer = CatalogManager.getInstance().getWebsiteOffer(claimableOffer);
 
         if (offer != null) {
+            final ICurrencyService currencyService = CometBootstrap.resolve(ICurrencyService.class);
+
             if(offer.getDiamonds() > 0){
-                s.getPlayer().getData().increaseVipPoints(offer.getDiamonds());
+                s.getPlayer().getData().increaseCurrency(
+                        currencyService.currencyCodeForUseCase(CurrencyUseCases.SUBSCRIPTION_REWARD_SECONDARY),
+                        offer.getDiamonds());
             }
 
             if(offer.getPixels() > 0){
-                s.getPlayer().getData().increaseActivityPoints(offer.getPixels());
+                s.getPlayer().getData().increaseCurrency(
+                        currencyService.currencyCodeForUseCase(CurrencyUseCases.SUBSCRIPTION_REWARD_PRIMARY),
+                        offer.getPixels());
             }
 
             if(offer.getDays() > 0){

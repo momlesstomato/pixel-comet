@@ -19,11 +19,11 @@ public class CometSettings {
     public static boolean onlineRewardEnabled = false;
     public static boolean survivalEnabled = true;
     public static int onlineRewardCredits = 0;
-    public static int onlineRewardDuckets = 3;
+    public static int onlineRewardCurrencyAmount = 3;
 
-    public static int onlineRewardDiamondsInterval = 45;
+    public static int onlineRewardProtocolCurrencyInterval = 45;
     public static int onlineSalaryInterval = 45;
-    public static int onlineRewardDiamonds = 0;
+    public static int onlineRewardProtocolCurrencyAmount = 0;
     public static int onlineRewardInterval = 15;
     public static Set<DayOfWeek> onlineRewardDoubleDays = Sets.newHashSet();
 
@@ -100,12 +100,12 @@ public class CometSettings {
     public static int wiredMaxExecuteStacks = 5;
     public static int betSystemRoomId = 0;
     public static int bankSystemMinimumRequired = 0;
-    public static boolean bankSystemSeasonalEnabled = false;
+    public static boolean bankSystemCurrencyEnabled = false;
     public static boolean maxConnectionsBlockSuspicious = true;
     public static boolean betSystemEnabled = true;
 
-    public static int maxSeasonalRewardPoints = 0;
-    public static int seasonalRewardActivityPoints = 0;
+    public static int maxEventRewardCurrencyAmount = 0;
+    public static int eventRewardAchievementPoints = 0;
     public static boolean eventWinnerNotification = false;
     public static boolean casinoFreeRolls = false;
     public static boolean console_debugging = false;

@@ -8,6 +8,7 @@ import com.cometproject.api.game.quests.IQuest;
 import com.cometproject.api.game.quests.QuestType;
 import com.cometproject.api.game.rooms.entities.PlayerRoomEntity;
 import com.cometproject.server.boot.Comet;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.composers.catalog.UnseenItemsMessageComposer;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.items.ItemManager;
@@ -24,6 +25,9 @@ import com.cometproject.server.network.messages.outgoing.user.purse.UpdateActivi
 import com.cometproject.server.storage.queries.quests.PlayerQuestsDao;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.data.currency.ICurrencyDefinition;
+import com.cometproject.storage.api.services.ICurrencyService;
 import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -173,12 +177,15 @@ public class QuestComponent extends PlayerComponent implements PlayerQuests {
             boolean refreshCreditBalance = false;
             boolean refreshCurrenciesBalance = false;
             int rewardType = 0;
+            String rewardCurrencyCode = "";
 
             try {
                 switch (quest.getRewardType()) {
                     case ACTIVITY_POINTS:
-                        this.getPlayer().getData().increaseActivityPoints(quest.getReward());
+                        rewardCurrencyCode = currencyCodeForUseCase(CurrencyUseCases.QUEST_REWARD_PRIMARY);
+                        this.getPlayer().getData().increaseCurrency(rewardCurrencyCode, quest.getReward());
                         refreshCurrenciesBalance = true;
+                        rewardType = protocolCurrencyId(rewardCurrencyCode);
                         break;
 
                     case ACHIEVEMENT_POINTS:
@@ -188,15 +195,17 @@ public class QuestComponent extends PlayerComponent implements PlayerQuests {
                         break;
 
                     case VIP_POINTS:
-                        this.getPlayer().getData().increaseVipPoints(quest.getReward());
+                        rewardCurrencyCode = currencyCodeForUseCase(CurrencyUseCases.QUEST_REWARD_SPECIAL);
+                        this.getPlayer().getData().increaseCurrency(rewardCurrencyCode, quest.getReward());
                         refreshCurrenciesBalance = true;
-                        rewardType = 105;
+                        rewardType = protocolCurrencyId(rewardCurrencyCode);
                         break;
 
                     case SEASONAL_POINTS:
-                        this.getPlayer().getData().increaseSeasonalPoints(quest.getReward());
+                        rewardCurrencyCode = currencyCodeForUseCase(CurrencyUseCases.QUEST_REWARD_SECONDARY);
+                        this.getPlayer().getData().increaseCurrency(rewardCurrencyCode, quest.getReward());
                         refreshCurrenciesBalance = true;
-                        rewardType = 103;
+                        rewardType = protocolCurrencyId(rewardCurrencyCode);
                         break;
 
                     case GO_TO_ROOM:
@@ -205,8 +214,10 @@ public class QuestComponent extends PlayerComponent implements PlayerQuests {
 
                     case CANDY_CHEST:
                         this.getPlayer().getSession().send(new NotificationMessageComposer("candy", Locale.getOrDefault("action.candy.recieved", "Acabas de recibir la cesta con caramelos."), "catalog/open"));
-                        this.getPlayer().getData().increaseSeasonalPoints(quest.getReward());
+                        rewardCurrencyCode = currencyCodeForUseCase(CurrencyUseCases.QUEST_REWARD_SECONDARY);
+                        this.getPlayer().getData().increaseCurrency(rewardCurrencyCode, quest.getReward());
                         refreshCurrenciesBalance = true;
+                        rewardType = protocolCurrencyId(rewardCurrencyCode);
                         break;
 
                     case ITEM:
@@ -247,7 +258,10 @@ public class QuestComponent extends PlayerComponent implements PlayerQuests {
                 this.getPlayer().getSession().send(this.getPlayer().composeCreditBalance());
             } else if (refreshCurrenciesBalance) {
                 this.getPlayer().getSession().send(this.getPlayer().composeCurrenciesBalance());
-                this.getPlayer().getSession().send(new UpdateActivityPointsMessageComposer(this.getPlayer().getData().getSeasonalPoints(), quest.getReward(), rewardType));
+                this.getPlayer().getSession().send(new UpdateActivityPointsMessageComposer(
+                        this.getPlayer().getData().getCurrencyBalance(rewardCurrencyCode),
+                        quest.getReward(),
+                        rewardType));
             }
             this.getPlayer().getSession().send(new QuestCompletedMessageComposer(quest, this.getPlayer()));
             this.getPlayer().getSession().send(new QuestListMessageComposer(QuestManager.getInstance().getQuests(), this.getPlayer(), true));
@@ -257,6 +271,15 @@ public class QuestComponent extends PlayerComponent implements PlayerQuests {
 
         this.getPlayer().getData().save();
         PlayerQuestsDao.saveProgression(false, this.getPlayer().getId(), questId, newProgressValue);
+    }
+
+    private static String currencyCodeForUseCase(final String useCase) {
+        return CometBootstrap.resolve(ICurrencyService.class).currencyCodeForUseCase(useCase);
+    }
+
+    private static int protocolCurrencyId(final String currencyCode) {
+        final ICurrencyDefinition definition = CometBootstrap.resolve(ICurrencyService.class).definition(currencyCode);
+        return definition.getProtocolCurrencyId().orElse(0);
     }
 
     @Override

@@ -3,13 +3,14 @@ package com.cometproject.storage.api.data.rewards;
 public class RewardData {
     private String code;
     private String badge;
-    private int diamonds;
-    private int seasonal;
+    private int primaryCurrencyAmount;
+    private int secondaryCurrencyAmount;
 
-    public RewardData(String code, String badge, int diamonds, int seasonal) {
+    public RewardData(String code, String badge, int primaryCurrencyAmount, int secondaryCurrencyAmount) {
         this.code = code;
         this.badge = badge;
-        this.diamonds = diamonds;
+        this.primaryCurrencyAmount = primaryCurrencyAmount;
+        this.secondaryCurrencyAmount = secondaryCurrencyAmount;
     }
 
     public String getCode() {
@@ -20,11 +21,11 @@ public class RewardData {
         return badge;
     }
 
-    public int getDiamonds() {
-        return diamonds;
+    public int getPrimaryCurrencyAmount() {
+        return primaryCurrencyAmount;
     }
 
-    public int getSeasonal() {
-        return seasonal;
+    public int getSecondaryCurrencyAmount() {
+        return secondaryCurrencyAmount;
     }
 }

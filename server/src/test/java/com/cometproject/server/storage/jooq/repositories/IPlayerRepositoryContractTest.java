@@ -107,17 +107,13 @@ abstract class IPlayerRepositoryContractTest {
         when(data.getMotto()).thenReturn("working");
         when(data.getFigure()).thenReturn("hr-100-61");
         when(data.getCredits()).thenReturn(credits);
-        when(data.getVipPoints()).thenReturn(25);
         when(data.getGender()).thenReturn("M");
         when(data.getFavouriteGroup()).thenReturn(0);
-        when(data.getActivityPoints()).thenReturn(10);
-        when(data.getSeasonalPoints()).thenReturn(3);
         when(data.getQuestId()).thenReturn(4);
         when(data.getAchievementPoints()).thenReturn(5);
         when(data.getNameColour()).thenReturn("000000");
         when(data.getTag()).thenReturn("tag");
         when(data.getJob()).thenReturn("job");
-        when(data.getBlackMoney()).thenReturn(6);
 
         return data;
     }

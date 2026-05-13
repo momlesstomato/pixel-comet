@@ -13,9 +13,9 @@ import com.cometproject.api.config.modules.ModuleConfiguration;
 import com.cometproject.api.config.network.ConnectionRegistryConfiguration;
 import com.cometproject.api.config.network.NetworkConfiguration;
 import com.cometproject.api.config.network.TransportConfiguration;
-import com.cometproject.api.config.rcon.RconConfiguration;
 import com.cometproject.api.config.sso.SsoConfiguration;
 import com.cometproject.api.config.system.SystemConfiguration;
+import com.cometproject.storage.api.config.currency.CurrencyConfiguration;
 
 /**
  * Exposes the documented safe defaults for optional configuration keys.
@@ -38,8 +38,8 @@ public final class DefaultsConfigurationSource implements ConfigurationSource {
         defaultsMap.putAll(SsoConfiguration.defaults());
         defaultsMap.putAll(TransportConfiguration.defaults());
         defaultsMap.putAll(ConnectionRegistryConfiguration.defaults());
-        defaultsMap.putAll(RconConfiguration.defaults());
         defaultsMap.putAll(ModuleConfiguration.defaults());
+        defaultsMap.putAll(CurrencyConfiguration.defaults());
         this.defaults = Map.copyOf(defaultsMap);
     }
 

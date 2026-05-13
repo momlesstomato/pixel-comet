@@ -12,7 +12,6 @@ import com.cometproject.server.game.players.PlayerManager;
 import com.cometproject.server.game.rooms.RoomManager;
 import com.cometproject.server.game.utilities.validator.PlayerFigureValidator;
 import com.cometproject.server.modules.ModuleManager;
-import com.cometproject.server.network.rcon.RconServer;
 import com.cometproject.server.storage.queries.config.ConfigDao;
 import com.cometproject.server.storage.queries.rooms.RoomDao;
 import com.google.inject.Guice;
@@ -117,8 +116,6 @@ public final class CometBootstrap {
             }
         }
 
-        this.startRconServer();
-
         if (Comet.showGui) {
             new CometGui().setVisible(true);
         }
@@ -158,12 +155,4 @@ public final class CometBootstrap {
         }));
     }
 
-    private void startRconServer() {
-        final Thread rconThread = new Thread(() -> {
-            System.out.println("Starting RCON TCP server...");
-            new RconServer().run();
-        }, "Comet-Rcon-Thread");
-
-        rconThread.start();
-    }
 }

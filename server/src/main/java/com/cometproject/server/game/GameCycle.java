@@ -17,7 +17,6 @@ import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.notification.NotificationMessageComposer;
 import com.cometproject.server.network.messages.outgoing.user.details.UserObjectMessageComposer;
 import com.cometproject.server.network.messages.outgoing.user.inventory.UpdateInventoryMessageComposer;
-import com.cometproject.server.network.messages.outgoing.user.purse.UpdateActivityPointsMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.cometproject.server.storage.queries.system.StatisticsDao;
@@ -25,7 +24,11 @@ import com.cometproject.server.tasks.CometTask;
 import com.cometproject.server.tasks.CometThreadManager;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.data.currency.ICurrencyDefinition;
+import com.cometproject.storage.api.services.ICurrencyService;
 import com.google.common.collect.Sets;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,22 +136,30 @@ public class GameCycle implements CometTask, Startable {
                     client.getPlayer().getAchievements().progressAchievement(AchievementType.ACH_2, 1);
 
                     final boolean needsReward = (Comet.getTime() - client.getPlayer().getLastReward()) >= (60 * CometSettings.onlineRewardInterval);
-                    final boolean needsDiamondsReward = (Comet.getTime() - client.getPlayer().getLastDiamondReward()) >= (60 * CometSettings.onlineRewardDiamondsInterval);
+                    final boolean needsProtocolReward = (Comet.getTime() - client.getPlayer().getLastDiamondReward()) >= (60 * CometSettings.onlineRewardProtocolCurrencyInterval);
 
                     int creditsAmount = CometSettings.onlineRewardCredits * (doubleRewards ? 2 : 1) * (clubReward ? 2 : 1);
-                    int asteroidesAmount = CometSettings.onlineRewardDuckets * (doubleRewards ? 2 : 1) * (clubReward ? 2 : 1);
+                    int primaryCurrencyAmount = CometSettings.onlineRewardCurrencyAmount * (doubleRewards ? 2 : 1) * (clubReward ? 2 : 1);
 
-                    if (needsReward || needsDiamondsReward) {
+                    if (needsReward || needsProtocolReward) {
                         if(needsReward) {
                             if (CometSettings.onlineRewardCredits > 0) {
                                 client.getPlayer().getData().increaseCredits(creditsAmount);
                                 client.getPlayer().composeCreditBalance();
                             }
 
-                            if (CometSettings.onlineRewardDuckets > 0) {
-                                client.getPlayer().getData().increaseActivityPoints(asteroidesAmount);
-                                client.send(new UpdateActivityPointsMessageComposer(client.getPlayer().getData().getActivityPoints(), CometSettings.onlineRewardDuckets, 0));
-                                client.getPlayer().sendBubble("pixel", "Has recibido " +  creditsAmount + " Créditos y " + asteroidesAmount + " Asteroides por estar conectad" + (client.getPlayer().getData().getGender().equals("F") ? "a" : "o") + ".\n\nBonus VIP: " + (clubReward ? "Sí" : "No") + "\nBonus Especial: " + (doubleRewards ? "Sí" : "No"));
+                            if (CometSettings.onlineRewardCurrencyAmount > 0) {
+                                final ICurrencyService currencyService = CometBootstrap.resolve(ICurrencyService.class);
+                                final String currencyCode = currencyService.currencyCodeForUseCase(CurrencyUseCases.ONLINE_REWARD_PRIMARY);
+                                final ICurrencyDefinition definition = currencyService.definition(currencyCode);
+
+                                client.getPlayer().getData().increaseCurrency(currencyCode, primaryCurrencyAmount);
+                                client.getPlayer().sendBubble(
+                                        StringUtils.defaultIfBlank(definition.getIconKey(), "currency"),
+                                        "Has recibido " + creditsAmount + " Créditos y " + primaryCurrencyAmount + " "
+                                                + StringUtils.defaultIfBlank(definition.getNounPlural(), definition.getDisplayName())
+                                                + " por estar conectad" + (client.getPlayer().getData().getGender().equals("F") ? "a" : "o") + ".\n\nBonus VIP: "
+                                                + (clubReward ? "Sí" : "No") + "\nBonus Especial: " + (doubleRewards ? "Sí" : "No"));
                             }
 
                             if(!(((PlayerData)client.getPlayer().getData()).viewPoints >= 100)){
@@ -177,11 +188,18 @@ public class GameCycle implements CometTask, Startable {
                             client.getPlayer().setLastReward(Comet.getTime());
                         }
 
-                        if(needsDiamondsReward) {
+                        if(needsProtocolReward) {
                             if(clubReward) {
-                                if (CometSettings.onlineRewardDiamonds > 0) {
-                                    client.getPlayer().getData().increaseVipPoints(client.getPlayer().getData().getRank() == 2 ? CometSettings.onlineRewardDiamonds * 2 : CometSettings.onlineRewardDiamonds);
-                                    client.send(new UpdateActivityPointsMessageComposer(client.getPlayer().getData().getVipPoints(), client.getPlayer().getData().getRank() == 2 ? CometSettings.onlineRewardDiamonds * 2 : CometSettings.onlineRewardDiamonds, 5));
+                                if (CometSettings.onlineRewardProtocolCurrencyAmount > 0) {
+                                    final int rewardAmount = client.getPlayer().getData().getRank() == 2
+                                            ? CometSettings.onlineRewardProtocolCurrencyAmount * 2
+                                            : CometSettings.onlineRewardProtocolCurrencyAmount;
+
+                                    client.getPlayer().getData().increaseCurrency(
+                                            CometBootstrap.resolve(ICurrencyService.class)
+                                                    .currencyCodeForUseCase(CurrencyUseCases.ONLINE_REWARD_CLUB),
+                                            rewardAmount);
+                                    client.send(client.getPlayer().composeCurrenciesBalance());
                                 }
                                 client.getPlayer().setLastDiamondReward(Comet.getTime());
                             }

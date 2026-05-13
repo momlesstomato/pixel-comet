@@ -2,6 +2,7 @@ package com.cometproject.storage.mysql.repositories;
 
 import com.cometproject.storage.api.data.rewards.RewardData;
 import com.cometproject.storage.api.repositories.IRewardRepository;
+import com.cometproject.storage.mysql.data.transactions.Transaction;
 import com.cometproject.storage.mysql.MySQLConnectionProvider;
 import com.google.common.collect.Maps;
 
@@ -23,11 +24,12 @@ public class MySQLRewardRepository extends MySQLRepository implements IRewardRep
     }
 
     @Override
-    public void giveReward(int playerId, String badgeCode, int vipPoints, int seasonalPoints) {
+    public void giveReward(int playerId, String badgeCode, int primaryCurrencyAmount, int secondaryCurrencyAmount) {
         transaction(transaction -> {
             update("INSERT into player_events (player_id, events) VALUES(?, 1) ON DUPLICATE KEY UPDATE  events = events + 1;", transaction, playerId);
             update("INSERT into player_badges (player_id, badge_code) VALUES(?, ?);", transaction, playerId, badgeCode);
-            update("UPDATE players SET vip_points = vip_points + ?, seasonal_points = seasonal_points + ? WHERE id = ?", transaction, vipPoints, seasonalPoints, playerId);
+            addInventoryBalance(transaction, playerId, "currency_5", primaryCurrencyAmount);
+            addInventoryBalance(transaction, playerId, "currency_103", secondaryCurrencyAmount);
 
             transaction.commit();
         });
@@ -37,8 +39,8 @@ public class MySQLRewardRepository extends MySQLRepository implements IRewardRep
     public void getActiveRewards(Consumer<Map<String, RewardData>> consumer) {
         final Map<String, RewardData> rewards = Maps.newConcurrentMap();
 
-        select("SELECT code, badge, vip_points, seasonal_points FROM player_rewards WHERE active = ?", (data) -> {
-            rewards.put(data.readString("code"), new RewardData(data.readString("code"), data.readString("badge"), data.readInteger("vip_points"), data.readInteger("seasonal_points")));
+        select("SELECT code, badge, primary_currency_amount, secondary_currency_amount FROM player_rewards WHERE active = ?", (data) -> {
+            rewards.put(data.readString("code"), new RewardData(data.readString("code"), data.readString("badge"), data.readInteger("primary_currency_amount"), data.readInteger("secondary_currency_amount")));
         }, "1");
 
         consumer.accept(rewards);
@@ -58,9 +60,28 @@ public class MySQLRewardRepository extends MySQLRepository implements IRewardRep
         transaction(transaction -> {
             update("INSERT into player_rewards_redeemed (player_id, reward_code) VALUES(?, ?);", transaction, playerId, data.getCode());
             update("INSERT into player_badges (player_id, badge_code) VALUES(?, ?);", transaction, playerId, data.getBadge());
-            update("UPDATE players SET vip_points = vip_points + ?, seasonal_points = seasonal_points + 1 WHERE id = ?", transaction, data.getDiamonds(), data.getSeasonal(), playerId);
+            addInventoryBalance(transaction, playerId, "currency_5", data.getPrimaryCurrencyAmount());
+            addInventoryBalance(transaction, playerId, "currency_103", data.getSecondaryCurrencyAmount());
 
             transaction.commit();
         });
+    }
+
+    private void addInventoryBalance(
+            final Transaction transaction,
+            final int playerId,
+            final String currencyCode,
+            final int amount) {
+        if (amount <= 0) {
+            return;
+        }
+
+        update("INSERT INTO player_currency_balances (player_id, currency_id, balance) "
+                        + "SELECT ?, id, ? FROM currencies WHERE code = ? "
+                        + "ON DUPLICATE KEY UPDATE balance = balance + VALUES(balance);",
+                transaction,
+                playerId,
+                amount,
+                currencyCode);
     }
 }

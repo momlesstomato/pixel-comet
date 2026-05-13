@@ -412,11 +412,9 @@ public class CatalogDao {
         final int id = resultSet.getInt("id");
         final String itemIds = resultSet.getString("item_ids");
         final String catalogName = resultSet.getString("catalog_name");
-        final int costCredits = resultSet.getInt("cost_credits");
-        final int costPixels = resultSet.getInt("cost_pixels");
-        final int costDiamonds = resultSet.getInt("cost_diamonds");
-        final int costSeasonal = resultSet.getInt("cost_seasonal");
-        final int costTokens = resultSet.getInt("cost_tokens");
+        final CatalogPriceSnapshot prices = getCatalogPriceSnapshot(
+                id,
+                resultSet.getInt("cost_credits"));
         final int amount = resultSet.getInt("amount");
         final boolean vip = resultSet.getBoolean("vip");
         final int limitedStack = resultSet.getInt("limited_stack");
@@ -426,8 +424,61 @@ public class CatalogDao {
         final String extraData = resultSet.getString("extradata");
         final int pageId = resultSet.getInt("page_id");
 
-        return new CatalogItem(id, itemIds, catalogName, costCredits, costPixels,
-                costDiamonds, costSeasonal, costTokens, amount, vip, limitedStack, limitedSells, offerActive, badgeId,
+        return new CatalogItem(id, itemIds, catalogName, prices.credits(), prices.protocol0(),
+                prices.protocol5(), prices.protocol103(), prices.protocol105(), amount, vip, limitedStack, limitedSells, offerActive, badgeId,
                 extraData, pageId);
+    }
+
+    private static CatalogPriceSnapshot getCatalogPriceSnapshot(
+            final int catalogItemId,
+            final int legacyCredits) {
+        int credits = 0;
+        int protocol0 = 0;
+        int protocol5 = 0;
+        int protocol103 = 0;
+        int protocol105 = 0;
+        boolean loaded = false;
+
+        try (Connection sqlConnection = SqlHelper.getConnection();
+             PreparedStatement preparedStatement = SqlHelper.prepare(
+                     "SELECT c.is_credits, c.protocol_currency_id, cip.amount "
+                             + "FROM catalog_item_prices cip "
+                             + "JOIN currencies c ON c.id = cip.currency_id "
+                             + "WHERE cip.catalog_item_id = ? "
+                             + "ORDER BY cip.display_order ASC",
+                     sqlConnection)) {
+            preparedStatement.setInt(1, catalogItemId);
+
+            try (ResultSet priceSet = preparedStatement.executeQuery()) {
+                while (priceSet.next()) {
+                    loaded = true;
+
+                    if ("1".equals(priceSet.getString("is_credits"))) {
+                        credits = priceSet.getInt("amount");
+                        continue;
+                    }
+
+                    switch (priceSet.getInt("protocol_currency_id")) {
+                        case 0 -> protocol0 = priceSet.getInt("amount");
+                        case 5 -> protocol5 = priceSet.getInt("amount");
+                        case 103 -> protocol103 = priceSet.getInt("amount");
+                        case 105 -> protocol105 = priceSet.getInt("amount");
+                        default -> {
+                        }
+                    }
+                }
+            }
+        } catch (SQLException exception) {
+            loaded = false;
+        }
+
+        if (!loaded) {
+            return new CatalogPriceSnapshot(legacyCredits, 0, 0, 0, 0);
+        }
+
+        return new CatalogPriceSnapshot(credits, protocol0, protocol5, protocol103, protocol105);
+    }
+
+    private record CatalogPriceSnapshot(int credits, int protocol0, int protocol5, int protocol103, int protocol105) {
     }
 }

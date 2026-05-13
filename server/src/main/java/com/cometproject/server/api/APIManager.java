@@ -13,6 +13,7 @@ import com.cometproject.api.config.Configuration;
 import com.cometproject.api.config.api.ApiConfiguration;
 import com.cometproject.api.utilities.Startable;
 import com.cometproject.server.api.routes.SsoTicketRoutes;
+import com.cometproject.server.api.routes.CurrencyRoutes;
 import com.cometproject.server.api.routes.PhotoRoutes;
 import com.cometproject.server.api.routes.PlayerRoutes;
 import com.cometproject.server.api.routes.RoomRoutes;
@@ -31,6 +32,7 @@ public class APIManager implements Startable {
     private static final String STATUS_PATH = "/status";
     private static final Set<String> UNAUTHENTICATED_PATHS = Set.of(OPENAPI_SPEC_PATH, SWAGGER_PATH, STATUS_PATH);
     private static final List<String> AUTHENTICATED_PATH_PREFIXES = List.of(
+        "/currencies",
         "/player/",
         "/room/",
         "/system/"
@@ -163,6 +165,22 @@ public class APIManager implements Startable {
         app.get("/player/{id}/disconnect", PlayerRoutes::disconnect);
         app.post("/player/{id}/alert", PlayerRoutes::alert);
         app.get("/player/{id}/badge/{badge}", PlayerRoutes::giveBadge);
+        app.get("/player/{id}/currencies", CurrencyRoutes::playerBalances);
+        app.post("/player/{id}/currencies/{code}/add", CurrencyRoutes::addBalance);
+        app.post("/player/{id}/currencies/{code}/remove", CurrencyRoutes::removeBalance);
+        app.put("/player/{id}/currencies/{code}", CurrencyRoutes::setBalance);
+        app.get("/player/{id}/currency-movements", CurrencyRoutes::movements);
+
+        app.get("/currencies", CurrencyRoutes::listCurrencies);
+        app.post("/currencies", CurrencyRoutes::upsertCurrency);
+        app.patch("/currencies/{code}", CurrencyRoutes::upsertCurrency);
+        app.delete("/currencies/{code}", CurrencyRoutes::disableCurrency);
+        app.get("/currencies/{code}/roles", CurrencyRoutes::listRoleRules);
+        app.put("/currencies/{code}/roles/{rank_id}", CurrencyRoutes::upsertRoleRule);
+        app.delete("/currencies/{code}/roles/{rank_id}", CurrencyRoutes::deleteRoleRule);
+        app.get("/currencies/{code}/aliases", CurrencyRoutes::listAliases);
+        app.post("/currencies/{code}/aliases", CurrencyRoutes::upsertAlias);
+        app.delete("/currencies/{code}/aliases/{alias}", CurrencyRoutes::deleteAlias);
 
         app.get("/rooms/active/all", RoomRoutes::getAllActiveRooms);
         app.get("/room/{id}/{action}", RoomRoutes::roomAction);

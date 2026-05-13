@@ -78,4 +78,52 @@ public final class ApiRequestUtils {
             return null;
         }
     }
+
+    /**
+     * Reads an integer field from the JSON request body.
+     *
+     * @param context The active request context.
+     * @param key     The JSON property name.
+     * @return The parsed integer, or null when not present or invalid.
+     */
+    public static Integer bodyInt(final Context context, final String key) {
+        final String value = bodyField(context, key);
+
+        if (!StringUtils.isNumeric(value)) {
+            return null;
+        }
+
+        return Integer.parseInt(value);
+    }
+
+    /**
+     * Reads a long field from the JSON request body.
+     *
+     * @param context The active request context.
+     * @param key     The JSON property name.
+     * @return The parsed long, or null when not present or invalid.
+     */
+    public static Long bodyLong(final Context context, final String key) {
+        final String value = bodyField(context, key);
+
+        if (!StringUtils.isNumeric(value)) {
+            return null;
+        }
+
+        return Long.parseLong(value);
+    }
+
+    /**
+     * Reads a boolean field from the JSON request body.
+     *
+     * @param context The active request context.
+     * @param key     The JSON property name.
+     * @param fallback The fallback value when absent.
+     * @return The parsed boolean or fallback.
+     */
+    public static boolean bodyBoolean(final Context context, final String key, final boolean fallback) {
+        final String value = bodyField(context, key);
+
+        return StringUtils.isBlank(value) ? fallback : Boolean.parseBoolean(value);
+    }
 }

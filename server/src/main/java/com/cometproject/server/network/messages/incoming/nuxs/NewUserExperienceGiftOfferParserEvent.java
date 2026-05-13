@@ -63,14 +63,9 @@ public class NewUserExperienceGiftOfferParserEvent implements Event {
         NuxGift selectedGift = CatalogManager.getInstance().getNuxGifts().get(giftId);
 
         switch (selectedGift.getType()) {
-            case DIAMONDS:
-                int diamonds = Integer.parseInt(selectedGift.getRandomData());
-                client.getPlayer().getData().increaseVipPoints(diamonds);
-                client.getPlayer().sendBalance();
-                break;
-            case SEASONAL:
-                int seasonal = Integer.parseInt(selectedGift.getRandomData());
-                client.getPlayer().getData().increaseSeasonalPoints(seasonal);
+            case CURRENCY:
+                int amount = Integer.parseInt(selectedGift.getRandomData());
+                client.getPlayer().getData().increaseCurrency(selectedGift.getCurrencyCode(), amount);
                 client.getPlayer().sendBalance();
                 break;
             case BADGE:

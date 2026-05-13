@@ -7,6 +7,7 @@ import com.cometproject.api.game.quests.IQuest;
 import com.cometproject.api.game.quests.QuestType;
 import com.cometproject.api.networking.sessions.ISession;
 import com.cometproject.server.boot.Comet;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.guides.GuideManager;
 import com.cometproject.server.game.guides.types.HelpRequest;
@@ -42,6 +43,7 @@ import com.cometproject.server.storage.queries.permissions.PermissionsDao;
 import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.cometproject.server.utilities.collections.ConcurrentHashSet;
 import com.cometproject.storage.api.StorageContext;
+import com.cometproject.storage.api.services.ICurrencyService;
 import com.google.common.collect.Sets;
 
 import java.sql.ResultSet;
@@ -163,6 +165,7 @@ public class Player implements IPlayer {
         this.id = data.getInt("playerId");
 
         this.data = new PlayerData(data, this);
+        this.refreshCurrencyInventorySnapshot();
 
         if (isFallback) {
             this.settings = PlayerDao.getSettingsById(this.id);
@@ -196,6 +199,16 @@ public class Player implements IPlayer {
 
         //this.addObserver(new PlayerObserver());
         this.getCalendarGifts();
+    }
+
+    private void refreshCurrencyInventorySnapshot() {
+        final ICurrencyService currencyService = this.currencyService();
+        if (currencyService == null || !currencyService.readFromInventory()) {
+            return;
+        }
+
+        currencyService.balances(this.id).forEach((currencyCode, balance) ->
+                this.data.applyCurrencyBalance(currencyCode, balance));
     }
 
     @Override
@@ -306,19 +319,34 @@ public class Player implements IPlayer {
 
     @Override
     public MessageComposer composeCreditBalance() {
-        return new SendCreditsMessageComposer(CometSettings.playerInfiniteBalance ? INFINITE_BALANCE : Integer.toString(session.getPlayer().getData().getCredits()));
+        if (CometSettings.playerInfiniteBalance) {
+            return new SendCreditsMessageComposer(INFINITE_BALANCE);
+        }
+
+        final ICurrencyService currencyService = this.currencyService();
+        if (currencyService != null && currencyService.readFromInventory()) {
+            return new SendCreditsMessageComposer(Long.toString(currencyService.balance(this.id, "credits")));
+        }
+
+        return new SendCreditsMessageComposer(Integer.toString(session.getPlayer().getData().getCredits()));
     }
 
     @Override
     public MessageComposer composeCurrenciesBalance() {
-        Map<Integer, Integer> currencies = new HashMap<>();
+        final ICurrencyService currencyService = this.currencyService();
+        if (currencyService != null && currencyService.readFromInventory()) {
+            return new CurrenciesMessageComposer(currencyService.protocolVisibleBalances(this.id));
+        }
 
-        currencies.put(0, getData().getActivityPoints());
-        currencies.put(5, getData().getVipPoints());
-        currencies.put(103, getData().getSeasonalPoints());
-        currencies.put(105, getData().getBlackMoney()); // black monney
+        return new CurrenciesMessageComposer(Map.of());
+    }
 
-        return new CurrenciesMessageComposer(currencies);
+    private ICurrencyService currencyService() {
+        try {
+            return CometBootstrap.resolve(ICurrencyService.class);
+        } catch (IllegalStateException exception) {
+            return null;
+        }
     }
 
     @Override

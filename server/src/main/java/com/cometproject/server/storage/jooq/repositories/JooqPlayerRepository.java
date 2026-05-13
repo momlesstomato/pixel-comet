@@ -133,23 +133,19 @@ public final class JooqPlayerRepository extends JooqRepository implements IPlaye
      */
     @Override
     public void save(final IPlayerData data) {
-        this.dsl()
+        var update = this.dsl()
                 .update(PLAYERS)
                 .set(stringField("players", "username"), data.getUsername())
                 .set(stringField("players", "motto"), data.getMotto())
                 .set(stringField("players", "figure"), data.getFigure())
                 .set(integerField("players", "credits"), data.getCredits())
-                .set(integerField("players", "vip_points"), data.getVipPoints())
                 .set(stringField("players", "gender"), data.getGender())
                 .set(integerField("players", "favourite_group"), data.getFavouriteGroup())
-                .set(integerField("players", "activity_points"), data.getActivityPoints())
-                .set(integerField("players", "seasonal_points"), data.getSeasonalPoints())
                 .set(integerField("players", "quest_id"), data.getQuestId())
                 .set(integerField("players", "achievement_points"), data.getAchievementPoints())
                 .set(stringField("players", "name_colour"), data.getNameColour())
                 .set(stringField("players", "tag"), data.getTag())
                 .set(stringField("players", "job"), data.getJob())
-                .set(integerField("players", "black_money"), data.getBlackMoney())
                 .where(PLAYERS_ID.eq(data.getId()))
                 .execute();
     }
@@ -204,11 +200,11 @@ public final class JooqPlayerRepository extends JooqRepository implements IPlaye
                 stringField("players", "figure").as("playerData_figure"),
                 stringField("players", "motto").as("playerData_motto"),
                 integerField("players", "credits").as("playerData_credits"),
-                integerField("players", "vip_points").as("playerData_vipPoints"),
+                DSL.inline(0).as("playerData_currency5"),
                 integerField("players", "rank").as("playerData_rank"),
                 stringField("players", "last_ip").as("playerData_lastIp"),
-                integerField("players", "seasonal_points").as("playerData_seasonalPoints"),
-                integerField("players", "black_money").as("playerData_blackMoney"),
+                DSL.inline(0).as("playerData_currency103"),
+                DSL.inline(0).as("playerData_currency105"),
                 stringField("players", "vip").as("playerData_vip"),
                 stringField("players", "gender").as("playerData_gender"),
                 integerField("players", "last_online").as("playerData_lastOnline"),
@@ -217,7 +213,7 @@ public final class JooqPlayerRepository extends JooqRepository implements IPlaye
                 integerField("players", "favourite_group").as("playerData_favouriteGroup"),
                 integerField("players", "achievement_points").as("playerData_achievementPoints"),
                 stringField("players", "email").as("playerData_email"),
-                integerField("players", "activity_points").as("playerData_activityPoints"),
+                DSL.inline(0).as("playerData_currency0"),
                 integerField("players", "quest_id").as("playerData_questId"),
                 integerField("players", "time_muted").as("playerData_timeMuted"),
                 stringField("players", "name_colour").as("playerData_nameColour"),
@@ -278,10 +274,10 @@ public final class JooqPlayerRepository extends JooqRepository implements IPlaye
                 stringField("players", "email"),
                 integerField("players", "rank"),
                 integerField("players", "credits"),
-                integerField("players", "vip_points"),
-                integerField("players", "activity_points"),
-                integerField("players", "seasonal_points"),
-                integerField("players", "black_money"),
+                DSL.inline(0).as("currency5"),
+                DSL.inline(0).as("currency0"),
+                DSL.inline(0).as("currency103"),
+                DSL.inline(0).as("currency105"),
                 stringField("players", "reg_date"),
                 integerField("players", "last_online"),
                 stringField("players", "vip"),
@@ -309,4 +305,5 @@ public final class JooqPlayerRepository extends JooqRepository implements IPlaye
     private static Field<String> stringField(final String table, final String field) {
         return DSL.field(DSL.name(table, field), String.class);
     }
+
 }

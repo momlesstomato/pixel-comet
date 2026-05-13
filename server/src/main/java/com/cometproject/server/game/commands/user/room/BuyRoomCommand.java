@@ -1,6 +1,7 @@
 package com.cometproject.server.game.commands.user.room;
 
 import com.cometproject.api.game.GameContext;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.commands.ChatCommand;
 import com.cometproject.server.game.players.types.Player;
@@ -14,7 +15,9 @@ import com.cometproject.server.network.messages.outgoing.room.engine.RoomForward
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.queries.items.ItemDao;
 import com.cometproject.server.storage.queries.rooms.RoomDao;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
 import com.cometproject.storage.api.data.rooms.RoomData;
+import com.cometproject.storage.api.services.ICurrencyService;
 
 import java.util.ArrayList;
 
@@ -26,16 +29,18 @@ public class BuyRoomCommand extends ChatCommand {
 
         if(roomData.isOnSale){
             if(room.getData().getOwnerId() != client.getPlayer().getId()){
-                if(client.getPlayer().getData().getActivityPoints() > roomData.roomPrice){
+                final String currencyCode = CometBootstrap.resolve(ICurrencyService.class)
+                        .currencyCodeForUseCase(CurrencyUseCases.ROOM_PURCHASE);
+                if(client.getPlayer().getData().getCurrencyBalance(currencyCode) > roomData.roomPrice){
                     Session roomSeller = NetworkManager.getInstance().getSessions().getByPlayerId(roomData.getOwnerId());
                     if (roomSeller == null) {
                         BuyRoomCommand.sendNotif(Locale.getOrDefault("command.user.offline", "\u00a1El usuario no est\u00e1 en l\u00ednea!"), client);
                         return;
                     }
 
-                    client.getPlayer().getData().decreaseActivityPoints(roomData.roomPrice);
+                    client.getPlayer().getData().decreaseCurrency(currencyCode, roomData.roomPrice);
                     client.getPlayer().sendBalance();
-                    roomSeller.getPlayer().getData().increaseActivityPoints(roomData.roomPrice);
+                    roomSeller.getPlayer().getData().increaseCurrency(currencyCode, roomData.roomPrice);
                     roomSeller.getPlayer().sendBalance();
 
                     room.getData().setOwnerId(client.getPlayer().getId());
@@ -96,4 +101,3 @@ public class BuyRoomCommand extends ChatCommand {
         return Locale.get("command.buyroom.description");
     }
 }
-

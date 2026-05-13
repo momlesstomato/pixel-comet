@@ -3,6 +3,7 @@ package com.cometproject.server.game.rooms.objects.items.types;
 import com.cometproject.api.config.Configuration;
 import com.cometproject.api.game.quests.QuestType;
 import com.cometproject.api.game.rooms.objects.data.RoomItemData;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.rooms.objects.entities.RoomEntity;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
@@ -10,6 +11,8 @@ import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 import com.cometproject.server.storage.queries.items.ItemDao;
 import com.cometproject.server.utilities.RandomUtil;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.services.ICurrencyService;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -48,14 +51,15 @@ public class DefaultFloorItem extends RoomItemFloor {
                     entity.moveTo(this.getPosition().squareInFront(this.getRotation()).getX(), this.getPosition().squareBehind(this.getRotation()).getY());
                     return false;
                 }
-                //WebSocketSessionManager.getInstance().sendMessage(playerEntity.getPlayer().getSession().getWsChannel(), new OpenBadgeShopWebPacket(playerEntity.getPlayer().getData().getVipPoints()));
                 RoomItemData rData = (RoomItemData)this.getItemData();
                 if(!rData.isOnCooldown){
                     rData.isOnCooldown = true;
 
                     int diamondsBonus = RandomUtil.getRandomInt(0,5);
                     int creditsBonus = RandomUtil.getRandomInt(0,15);
-                    pEntity.getPlayer().getData().increaseActivityPoints(diamondsBonus);
+                    pEntity.getPlayer().getData().increaseCurrency(
+                            CometBootstrap.resolve(ICurrencyService.class).currencyCodeForUseCase(CurrencyUseCases.CRACKABLE_REWARD_PRIMARY),
+                            diamondsBonus);
                     pEntity.getPlayer().getData().increaseCredits(creditsBonus);
                     pEntity.getPlayer().sendBalance();
                     pEntity.getPlayer().getEntity().getRoom().getEntities().broadcastMessage(new WhisperMessageComposer(pEntity.getPlayer().getEntity().getId(), "Has recibido " + diamondsBonus + " asteroides y " + creditsBonus + " créditos de bonus.", 11));

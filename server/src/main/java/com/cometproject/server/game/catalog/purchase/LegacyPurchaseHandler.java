@@ -27,6 +27,7 @@ import com.cometproject.api.game.utilities.Position;
 import com.cometproject.api.networking.sessions.ISession;
 import com.cometproject.api.utilities.JsonUtil;
 import com.cometproject.server.boot.Comet;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.composers.catalog.BoughtItemMessageComposer;
 import com.cometproject.server.composers.catalog.GiftUserNotFoundMessageComposer;
 import com.cometproject.server.composers.catalog.UnseenItemsMessageComposer;
@@ -57,6 +58,7 @@ import com.cometproject.server.storage.queries.pets.PetDao;
 import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
+import com.cometproject.storage.api.services.ICurrencyService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -230,7 +232,13 @@ public class LegacyPurchaseHandler implements ICatalogPurchaseHandler {
                 totalCostTokens = item.getCostTokens();
             }
 
-            if ((!CometSettings.playerInfiniteBalance && (client.getPlayer().getData().getCredits() < totalCostCredits || client.getPlayer().getData().getActivityPoints() < totalCostActivityPoints)) || client.getPlayer().getData().getVipPoints() < totalCostPoints || client.getPlayer().getData().getSeasonalPoints() < totalCostSeasonal || client.getPlayer().getData().getBlackMoney() < totalCostTokens) {
+            final ICurrencyService currencyService = CometBootstrap.resolve(ICurrencyService.class);
+            final String protocol0Currency = currencyService.currencyCodeForProtocolId(0);
+            final String protocol5Currency = currencyService.currencyCodeForProtocolId(5);
+            final String protocol103Currency = currencyService.currencyCodeForProtocolId(103);
+            final String protocol105Currency = currencyService.currencyCodeForProtocolId(105);
+
+            if ((!CometSettings.playerInfiniteBalance && (client.getPlayer().getData().getCredits() < totalCostCredits || client.getPlayer().getData().getCurrencyBalance(protocol0Currency) < totalCostActivityPoints)) || client.getPlayer().getData().getCurrencyBalance(protocol5Currency) < totalCostPoints || client.getPlayer().getData().getCurrencyBalance(protocol103Currency) < totalCostSeasonal || client.getPlayer().getData().getCurrencyBalance(protocol105Currency) < totalCostTokens) {
                 client.getLogger().warn("Player with ID: " + client.getPlayer().getId() + " tried to purchase item with ID: " + item.getId() + " with the incorrect amount of credits or points.");
                 client.send(new AlertMessageComposer(Locale.get("catalog.error.notenough")));
                 return;
@@ -244,12 +252,12 @@ public class LegacyPurchaseHandler implements ICatalogPurchaseHandler {
 
             if (!CometSettings.playerInfiniteBalance) {
                 client.getPlayer().getData().decreaseCredits(totalCostCredits);
-                client.getPlayer().getData().decreaseActivityPoints(totalCostActivityPoints);
+                client.getPlayer().getData().decreaseCurrency(protocol0Currency, totalCostActivityPoints);
             }
 
-            client.getPlayer().getData().decreaseVipPoints(totalCostPoints);
-            client.getPlayer().getData().decreaseSeasonalPoints(totalCostSeasonal);
-            client.getPlayer().getData().decreaseBlackMoney(totalCostTokens);
+            client.getPlayer().getData().decreaseCurrency(protocol5Currency, totalCostPoints);
+            client.getPlayer().getData().decreaseCurrency(protocol103Currency, totalCostSeasonal);
+            client.getPlayer().getData().decreaseCurrency(protocol105Currency, totalCostTokens);
 
             client.getPlayer().sendBalance();
             client.getPlayer().getData().save();
@@ -271,7 +279,7 @@ public class LegacyPurchaseHandler implements ICatalogPurchaseHandler {
                     String[] token = item.getBadgeId().split("token_");
                     int tokenValue = Integer.parseInt(token[1]);
 
-                    client.getPlayer().getData().increaseBlackMoney(tokenValue);
+                    client.getPlayer().getData().increaseCurrency(protocol105Currency, tokenValue);
                     client.getPlayer().sendBalance();
                     client.getPlayer().sendBubble("token_purchase", "Acabas de canjear %tokens% Tokens, ¡disfruta de la aleatoriedad pixelizada!".replace("%tokens%", "" + tokenValue));
                     client.getPlayer().getData().save();
@@ -356,7 +364,7 @@ public class LegacyPurchaseHandler implements ICatalogPurchaseHandler {
                     client.send(client.getPlayer().getSubscription().update());
 
                     // VIP REWARDS
-                    client.getPlayer().getData().increaseVipPoints(80);
+                    client.getPlayer().getData().increaseCurrency(protocol5Currency, 80);
 
                     // Give 100 seeds.
                     FurnitureDefinition itemDefinition = ItemManager.getInstance().getDefinition(2976);
@@ -579,7 +587,7 @@ public class LegacyPurchaseHandler implements ICatalogPurchaseHandler {
             LOGGER.error("Error while buying catalog item", e);
         } finally {
             // Clean up the purchase - even if there was an exception!!
-            PlayerDao.updatePlayerCurrencies(client.getPlayer().getId(), client.getPlayer().getData().getCredits(), client.getPlayer().getData().getVipPoints(), client.getPlayer().getData().getActivityPoints(), client.getPlayer().getData().getSeasonalPoints(), client.getPlayer().getData().getBlackMoney());
+            PlayerDao.updatePlayerCredits(client.getPlayer().getId(), client.getPlayer().getData().getCredits());
             unseenItems.clear();
         }
     }

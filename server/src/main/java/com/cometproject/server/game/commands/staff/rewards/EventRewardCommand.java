@@ -1,5 +1,6 @@
 package com.cometproject.server.game.commands.staff.rewards;
 
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.achievements.BattlePassGlobals;
 import com.cometproject.server.game.achievements.types.BattlePassMission;
@@ -8,6 +9,8 @@ import com.cometproject.server.game.commands.ChatCommand;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.notification.NotificationMessageComposer;
 import com.cometproject.server.network.sessions.Session;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.services.ICurrencyService;
 
 public class EventRewardCommand extends ChatCommand {
 
@@ -21,7 +24,9 @@ public class EventRewardCommand extends ChatCommand {
 
         Session session = NetworkManager.getInstance().getSessions().getByPlayerUsername(params[0]);
         if(session != null){
-            session.getPlayer().getData().increaseActivityPoints(7);
+            session.getPlayer().getData().increaseCurrency(
+                    CometBootstrap.resolve(ICurrencyService.class).currencyCodeForUseCase(CurrencyUseCases.STAFF_EVENT_PRIMARY),
+                    7);
             session.getPlayer().getData().increaseCredits(10);
             session.getPlayer().getData().flush();
             session.getPlayer().sendBalance();

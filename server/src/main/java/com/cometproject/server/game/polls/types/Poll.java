@@ -1,8 +1,11 @@
 package com.cometproject.server.game.polls.types;
 
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.players.types.Player;
 import com.cometproject.server.network.messages.outgoing.notification.AlertMessageComposer;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.services.ICurrencyService;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -62,7 +65,7 @@ public class Poll {
         }
 
         if (this.rewardActivityPoints != 0) {
-            player.getData().increaseActivityPoints(this.rewardActivityPoints);
+            player.getData().increaseCurrency(currencyCodeForUseCase(CurrencyUseCases.POLL_REWARD_PRIMARY), this.rewardActivityPoints);
             player.getSession().send(new AlertMessageComposer(
                     Locale.getOrDefault("wired.reward.duckets", "You received %s ducket(s)!").replace("%s", this.rewardActivityPoints + "")));
 
@@ -79,7 +82,7 @@ public class Poll {
         }
 
         if (this.rewardVipPoints != 0) {
-            player.getData().increaseVipPoints(this.rewardVipPoints);
+            player.getData().increaseCurrency(currencyCodeForUseCase(CurrencyUseCases.POLL_REWARD_SECONDARY), this.rewardVipPoints);
             player.getSession().send(player.composeCurrenciesBalance());
 
             player.getSession().send(new AlertMessageComposer(
@@ -90,6 +93,10 @@ public class Poll {
         if (save) {
             player.getData().save();
         }
+    }
+
+    private static String currencyCodeForUseCase(final String useCase) {
+        return CometBootstrap.resolve(ICurrencyService.class).currencyCodeForUseCase(useCase);
     }
 
     public void addQuestion(int questionId, PollQuestion pollQuestion) {

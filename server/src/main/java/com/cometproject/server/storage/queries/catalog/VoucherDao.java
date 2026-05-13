@@ -28,8 +28,9 @@ public class VoucherDao {
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                voucher = new Voucher(resultSet.getInt("id"), VoucherType.valueOf(resultSet.getString("type")),
-                        resultSet.getString("data"), resultSet.getInt("created_by"), resultSet.getInt("created_at"),
+                final String rawType = resultSet.getString("type");
+                voucher = new Voucher(resultSet.getInt("id"), voucherType(rawType),
+                        resultSet.getString("data"), currencyCode(rawType), resultSet.getInt("created_by"), resultSet.getInt("created_at"),
                         resultSet.getString("claimed_by"), resultSet.getInt("claimed_at"), resultSet.getInt("limit_use"),
                         VoucherStatus.valueOf(resultSet.getString("status")), resultSet.getString("code"));
             }
@@ -91,5 +92,17 @@ public class VoucherDao {
             SqlHelper.closeSilently(preparedStatement);
             SqlHelper.closeSilently(sqlConnection);
         }
+    }
+
+    private static VoucherType voucherType(final String rawType) {
+        try {
+            return VoucherType.valueOf(rawType);
+        } catch (IllegalArgumentException exception) {
+            return VoucherType.CURRENCY;
+        }
+    }
+
+    private static String currencyCode(final String rawType) {
+        return voucherType(rawType) == VoucherType.CURRENCY ? rawType : "";
     }
 }

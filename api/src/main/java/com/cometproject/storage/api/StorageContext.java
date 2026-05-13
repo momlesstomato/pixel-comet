@@ -15,6 +15,7 @@ public final class StorageContext {
     private IRewardRepository rewardRepository;
     private IPhotoRepository photoRepository;
     private IPlayerRepository playerRepository;
+    private ICurrencyRepository currencyRepository;
 
     public IGroupRepository getGroupRepository() {
         return groupRepository;
@@ -104,5 +105,23 @@ public final class StorageContext {
      */
     public void setPlayerRepository(IPlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
+    }
+
+    /**
+     * Returns the repository responsible for currency inventory persistence.
+     *
+     * @return the configured currency repository.
+     */
+    public ICurrencyRepository getCurrencyRepository() {
+        return currencyRepository;
+    }
+
+    /**
+     * Sets the repository responsible for currency inventory persistence.
+     *
+     * @param currencyRepository the currency repository implementation.
+     */
+    public void setCurrencyRepository(ICurrencyRepository currencyRepository) {
+        this.currencyRepository = currencyRepository;
     }
 }

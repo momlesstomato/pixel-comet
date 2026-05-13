@@ -11,6 +11,8 @@ import com.cometproject.server.network.messages.outgoing.room.engine.RoomActionM
 import com.cometproject.server.network.messages.outgoing.user.mistery.MisteryBoxDataMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.utilities.RandomUtil;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.services.ICurrencyService;
 
 public class FinalEventCommand extends ChatCommand {
 
@@ -93,10 +95,11 @@ public class FinalEventCommand extends ChatCommand {
     private void serializeInfo(PlayerEntity p, String type){
         switch (type) {
             case "ween":
+            final ICurrencyService currencyService = com.cometproject.server.boot.CometBootstrap.resolve(ICurrencyService.class);
             p.getPlayer().getSession().send(new MisteryBoxDataMessageComposer(p.getPlayer().getMistery()));
-            p.getPlayer().getData().increaseSeasonalPoints(5);
-            p.getPlayer().getData().increaseActivityPoints(500);
-            p.getPlayer().getData().increaseVipPoints(2);
+            p.getPlayer().getData().increaseCurrency(currencyService.currencyCodeForUseCase(CurrencyUseCases.STAFF_EVENT_SPECIAL), 5);
+            p.getPlayer().getData().increaseCurrency(currencyService.currencyCodeForUseCase(CurrencyUseCases.STAFF_EVENT_PRIMARY), 500);
+            p.getPlayer().getData().increaseCurrency(currencyService.currencyCodeForUseCase(CurrencyUseCases.STAFF_EVENT_SECONDARY), 2);
             p.getPlayer().getInventory().addBadge("LAB07", true);
             p.getPlayer().sendBalance();
             p.getPlayer().getQuests().progressQuest(QuestType.WEEN_FINAL);

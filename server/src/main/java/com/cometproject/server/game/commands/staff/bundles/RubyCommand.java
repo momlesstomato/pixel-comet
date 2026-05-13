@@ -1,10 +1,13 @@
 package com.cometproject.server.game.commands.staff.bundles;
 
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.commands.ChatCommand;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.notification.NotificationMessageComposer;
 import com.cometproject.server.network.sessions.Session;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.services.ICurrencyService;
 
 public class RubyCommand extends ChatCommand {
     @Override
@@ -33,7 +36,9 @@ public class RubyCommand extends ChatCommand {
 
         if(session != null && session.getPlayer() != null) {
             session.send(new NotificationMessageComposer("ruby_bundle", Locale.getOrDefault("ruby.acquired", "Acabas de recibir el lote de Rubíes %type%, disfruta de tus %amount% Rubíes. Haz click aquí para ir a la tienda.").replace("%type%", type + "").replace("%amount%", amount + ""), "catalog/open/club_buy"));
-            session.getPlayer().getData().increaseVipPoints(amount);
+            session.getPlayer().getData().increaseCurrency(
+                    CometBootstrap.resolve(ICurrencyService.class).currencyCodeForUseCase(CurrencyUseCases.STAFF_BUNDLE_PRIMARY),
+                    amount);
             client.getPlayer().sendBalance();
             client.getPlayer().getData().save();
         }

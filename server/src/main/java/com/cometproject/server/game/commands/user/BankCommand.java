@@ -1,10 +1,13 @@
 package com.cometproject.server.game.commands.user;
 
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.commands.ChatCommand;
 import com.cometproject.server.game.players.data.PlayerData;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.sessions.Session;
+import com.cometproject.storage.api.data.currency.ICurrencyDefinition;
+import com.cometproject.storage.api.services.ICurrencyService;
 
 
 public class BankCommand extends ChatCommand {
@@ -24,10 +27,6 @@ public class BankCommand extends ChatCommand {
             int cantidad = Integer.parseInt(params[1]);
             Session kissedSession = NetworkManager.getInstance().getSessions().getByPlayerUsername(params[0]);
             if(kissedSession == null){
-                BankCommand.sendNotif("Esta moneda no existe.", client);
-                return;
-            }
-            if (kissedSession == null) {
                 BankCommand.sendNotif(Locale.getOrDefault("command.user.offline", "\u00a1El usuario no est\u00e1 en l\u00ednea!"), client);
                 return;
             }
@@ -40,40 +39,36 @@ public class BankCommand extends ChatCommand {
                 return;
             }
 
-            if(params[2].toLowerCase().contains("cometas")){
-                if(cantidad < client.getPlayer().getData().getVipPoints()){
-                    client.getPlayer().getData().decreaseVipPoints(cantidad);
-                    kissedSession.getPlayer().getData().increaseVipPoints(cantidad);
-                    client.getPlayer().sendBalance();
-                    kissedSession.getPlayer().sendBalance();
+            final ICurrencyService currencyService = CometBootstrap.resolve(ICurrencyService.class);
+            final String requestedCurrency = params[2].toLowerCase();
+            final String currencyCode = "creditos".equals(requestedCurrency)
+                    ? "credits"
+                    : currencyService.resolveCurrencyCode(requestedCurrency);
+            final ICurrencyDefinition definition = currencyService.definition(currencyCode);
 
-                    BankCommand.sendNotif("Le has enviado " + cantidad + " cometas a " + params[0], client);
-                    BankCommand.sendNotif(client.getPlayer().getEntity().getUsername() + " te ha enviado " + cantidad + " cometas.", kissedSession);
-                }
-            }
-            else if(params[2].toLowerCase().contains("creditos")){
+            if(definition.isCredits()){
                 if(cantidad < client.getPlayer().getData().getCredits()){
                     client.getPlayer().getData().decreaseCredits(cantidad);
                     kissedSession.getPlayer().getData().increaseCredits(cantidad);
                     client.getPlayer().sendBalance();
                     kissedSession.getPlayer().sendBalance();
 
-                    BankCommand.sendNotif("Le has enviado " + cantidad + " creditos a " + params[0], client);
-                    BankCommand.sendNotif(client.getPlayer().getEntity().getUsername() + " te ha enviado " + cantidad + " creditos.", kissedSession);
+                    BankCommand.sendNotif("Le has enviado " + cantidad + " credits a " + params[0], client);
+                    BankCommand.sendNotif(client.getPlayer().getEntity().getUsername() + " te ha enviado " + cantidad + " credits.", kissedSession);
                 }
             }
-            else if(params[2].toLowerCase().contains("asteroides")){
-                if(cantidad < client.getPlayer().getData().getActivityPoints()){
-                    client.getPlayer().getData().decreaseActivityPoints(cantidad);
-                    kissedSession.getPlayer().getData().increaseActivityPoints(cantidad);
+            else {
+                if(cantidad < client.getPlayer().getData().getCurrencyBalance(currencyCode)){
+                    client.getPlayer().getData().decreaseCurrency(currencyCode, cantidad);
+                    kissedSession.getPlayer().getData().increaseCurrency(currencyCode, cantidad);
                     client.getPlayer().sendBalance();
                     kissedSession.getPlayer().sendBalance();
 
-                    BankCommand.sendNotif("Le has enviado " + cantidad + " asteroides a " + params[0], client);
-                    BankCommand.sendNotif(client.getPlayer().getEntity().getUsername() + " te ha enviado " + cantidad + " asteroides.", kissedSession);
+                    final String noun = cantidad == 1 ? definition.getNounSingular() : definition.getNounPlural();
+                    BankCommand.sendNotif("Le has enviado " + cantidad + " " + noun + " a " + params[0], client);
+                    BankCommand.sendNotif(client.getPlayer().getEntity().getUsername() + " te ha enviado " + cantidad + " " + noun + ".", kissedSession);
                 }
             }
-            else BankCommand.sendNotif("Esta moneda no existe.", client);
         }
         catch (Exception ex){
             BankCommand.sendNotif("Cantidad incorrecta.", client);

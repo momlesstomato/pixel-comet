@@ -4,6 +4,6 @@ public class BattlePassRewardEnum {
     public static enum RewardType{
         RARE,
         BADGE,
-        DIAMONDS
+        CURRENCY
     }
 }

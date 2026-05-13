@@ -8,6 +8,7 @@ public class Voucher implements IVoucher {
     private final int id;
     private final VoucherType type;
     private final String data;
+    private final String currencyCode;
     private final int createdBy;
     private final int createdAt;
     private final String claimedBy;
@@ -17,9 +18,14 @@ public class Voucher implements IVoucher {
     private final String code;
 
     public Voucher(int id, VoucherType type, String data, int createdBy, int createdAt, String claimedBy, int claimedAt, int limitUse, VoucherStatus status, String code) {
+        this(id, type, data, "", createdBy, createdAt, claimedBy, claimedAt, limitUse, status, code);
+    }
+
+    public Voucher(int id, VoucherType type, String data, String currencyCode, int createdBy, int createdAt, String claimedBy, int claimedAt, int limitUse, VoucherStatus status, String code) {
         this.id = id;
         this.type = type;
         this.data = data;
+        this.currencyCode = currencyCode == null ? "" : currencyCode;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
         this.claimedBy = claimedBy;
@@ -42,6 +48,11 @@ public class Voucher implements IVoucher {
     @Override
     public String getData() {
         return data;
+    }
+
+    @Override
+    public String getCurrencyCode() {
+        return this.currencyCode;
     }
 
     @Override

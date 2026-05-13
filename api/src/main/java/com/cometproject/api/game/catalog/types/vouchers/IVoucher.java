@@ -7,6 +7,13 @@ public interface IVoucher {
 
     String getData();
 
+    /**
+     * Returns the configured currency code when this voucher grants inventory currency.
+     *
+     * @return the currency code, or an empty string for non-currency vouchers.
+     */
+    String getCurrencyCode();
+
     int getCreatedBy();
 
     int getCreatedAt();

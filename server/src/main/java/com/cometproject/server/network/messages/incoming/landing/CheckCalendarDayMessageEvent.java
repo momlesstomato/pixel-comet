@@ -3,6 +3,7 @@ package com.cometproject.server.network.messages.incoming.landing;
 import com.cometproject.api.game.furniture.types.FurnitureDefinition;
 import com.cometproject.api.game.players.IPlayer;
 import com.cometproject.api.game.players.data.components.inventory.PlayerItem;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.composers.catalog.UnseenItemsMessageComposer;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.items.ItemManager;
@@ -19,6 +20,9 @@ import com.cometproject.server.protocol.messages.MessageEvent;
 import com.cometproject.server.storage.queries.landing.LandingDao;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.data.currency.ICurrencyDefinition;
+import com.cometproject.storage.api.services.ICurrencyService;
 import com.google.common.collect.Sets;
 
 
@@ -53,11 +57,15 @@ public class CheckCalendarDayMessageEvent implements Event {
         boolean refreshCreditBalance = false;
         boolean refreshCurrenciesBalance = false;
         int rewardType = 0;
+        String rewardCurrencyCode = "";
+        final ICurrencyService currencyService = CometBootstrap.resolve(ICurrencyService.class);
 
         switch (type.toUpperCase()) {
             case "ACTIVITY_POINTS":
-                client.getPlayer().getData().increaseActivityPoints(Integer.parseInt(value));
+                rewardCurrencyCode = currencyService.currencyCodeForUseCase(CurrencyUseCases.CALENDAR_REWARD_PRIMARY);
+                client.getPlayer().getData().increaseCurrency(rewardCurrencyCode, Integer.parseInt(value));
                 refreshCurrenciesBalance = true;
+                rewardType = protocolCurrencyId(currencyService, rewardCurrencyCode);
                 break;
 
             case "ACHIEVEMENT_POINTS":
@@ -67,15 +75,17 @@ public class CheckCalendarDayMessageEvent implements Event {
                 break;
 
             case "VIP_POINTS":
-                client.getPlayer().getData().increaseVipPoints(Integer.parseInt(value));
+                rewardCurrencyCode = currencyService.currencyCodeForUseCase(CurrencyUseCases.CALENDAR_REWARD_SECONDARY);
+                client.getPlayer().getData().increaseCurrency(rewardCurrencyCode, Integer.parseInt(value));
                 refreshCurrenciesBalance = true;
-                rewardType = 105;
+                rewardType = protocolCurrencyId(currencyService, rewardCurrencyCode);
                 break;
 
             case "SEASONAL_POINTS":
-                client.getPlayer().getData().increaseSeasonalPoints(Integer.parseInt(value));
+                rewardCurrencyCode = currencyService.currencyCodeForUseCase(CurrencyUseCases.CALENDAR_REWARD_SPECIAL);
+                client.getPlayer().getData().increaseCurrency(rewardCurrencyCode, Integer.parseInt(value));
                 refreshCurrenciesBalance = true;
-                rewardType = 103;
+                rewardType = protocolCurrencyId(currencyService, rewardCurrencyCode);
                 break;
 
             case "BADGE":
@@ -114,12 +124,17 @@ public class CheckCalendarDayMessageEvent implements Event {
             client.getPlayer().getSession().send(client.getPlayer().composeCreditBalance());
         } else if (refreshCurrenciesBalance) {
             client.getPlayer().getSession().send(client.getPlayer().composeCurrenciesBalance());
-            client.getPlayer().getSession().send(new UpdateActivityPointsMessageComposer(client.getPlayer().getData().getSeasonalPoints(), Integer.parseInt(value), rewardType));
+            client.getPlayer().getSession().send(new UpdateActivityPointsMessageComposer(client.getPlayer().getData().getCurrencyBalance(rewardCurrencyCode), Integer.parseInt(value), rewardType));
         }
 
         client.getPlayer().getData().save();
         client.getPlayer().flush();
 
         LandingDao.saveCalendarDay(client.getPlayer().getData().getId(), day + 1);
+    }
+
+    private static int protocolCurrencyId(final ICurrencyService currencyService, final String currencyCode) {
+        final ICurrencyDefinition definition = currencyService.definition(currencyCode);
+        return definition.getProtocolCurrencyId().orElse(0);
     }
 }

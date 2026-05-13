@@ -8,21 +8,37 @@ public interface IPlayerData extends PlayerAvatar {
 
     void increaseCredits(int amount);
 
-    void decreaseVipPoints(int points);
+    /**
+     * Adds a configured inventory currency.
+     *
+     * @param currencyCode the currency code or alias.
+     * @param amount       the positive amount.
+     */
+    void increaseCurrency(String currencyCode, int amount);
 
-    void increaseVipPoints(int points);
+    /**
+     * Removes a configured inventory currency.
+     *
+     * @param currencyCode the currency code or alias.
+     * @param amount       the positive amount.
+     */
+    void decreaseCurrency(String currencyCode, int amount);
 
-    void increaseActivityPoints(int points);
+    /**
+     * Returns a configured inventory balance snapshot.
+     *
+     * @param currencyCode the currency code or alias.
+     * @return the balance, or zero when absent.
+     */
+    int getCurrencyBalance(String currencyCode);
 
-    void decreaseActivityPoints(int points);
-
-    void increaseSeasonalPoints(int points);
-
-    void decreaseSeasonalPoints(int points);
-
-    void increaseBlackMoney(int points);
-
-    void decreaseBlackMoney(int points);
+    /**
+     * Applies a inventory balance snapshot without recording a new movement.
+     *
+     * @param currencyCode the currency code or alias.
+     * @param balance      the exact balance.
+     */
+    void setCurrencyBalance(String currencyCode, int balance);
 
     int getId();
 
@@ -47,14 +63,6 @@ public interface IPlayerData extends PlayerAvatar {
     int getCredits();
 
     void setCredits(int credits);
-
-    int getVipPoints();
-
-    int getSeasonalPoints();
-
-    int getBlackMoney();
-
-    void setSeasonalPoints(int points);
 
     int getLastVisit();
 
@@ -85,12 +93,6 @@ public interface IPlayerData extends PlayerAvatar {
     String getIpAddress();
 
     void setIpAddress(String ipAddress);
-
-    int getActivityPoints();
-
-    void setActivityPoints(int activityPoints);
-
-    void setVipPoints(int vipPoints);
 
     void setRank(int rank);
 

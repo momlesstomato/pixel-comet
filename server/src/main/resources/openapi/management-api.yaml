@@ -615,3 +615,597 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /currencies:
+    get:
+      summary: List currency definitions.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+      responses:
+        '200':
+          description: Currency definitions returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      summary: Create or update a currency definition.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code, display_name]
+              properties:
+                code:
+                  type: string
+                display_name:
+                  type: string
+                protocol_currency_id:
+                  type: integer
+                  nullable: true
+                visible_in_purse:
+                  type: boolean
+                enabled:
+                  type: boolean
+                sort_order:
+                  type: integer
+                icon_key:
+                  type: string
+                noun_singular:
+                  type: string
+                  nullable: true
+                noun_plural:
+                  type: string
+                  nullable: true
+                description:
+                  type: string
+                  nullable: true
+                role_policy:
+                  type: string
+                  enum: [ALL, ALLOW_LIST, DENY_LIST]
+      responses:
+        '200':
+          description: Currency definition persisted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid currency definition.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /currencies/{code}:
+    patch:
+      summary: Update a currency definition.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [display_name]
+              properties:
+                display_name:
+                  type: string
+                protocol_currency_id:
+                  type: integer
+                  nullable: true
+                visible_in_purse:
+                  type: boolean
+                enabled:
+                  type: boolean
+                sort_order:
+                  type: integer
+                icon_key:
+                  type: string
+                noun_singular:
+                  type: string
+                  nullable: true
+                noun_plural:
+                  type: string
+                  nullable: true
+                description:
+                  type: string
+                  nullable: true
+                role_policy:
+                  type: string
+                  enum: [ALL, ALLOW_LIST, DENY_LIST]
+      responses:
+        '200':
+          description: Currency definition updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid currency definition.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Soft-disable a currency definition.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Currency disabled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid currency code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /currencies/{code}/roles:
+    get:
+      summary: List role rules for a currency.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Role rules returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /currencies/{code}/roles/{rank_id}:
+    put:
+      summary: Create or replace one currency role rule.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: rank_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                can_view:
+                  type: boolean
+                can_earn:
+                  type: boolean
+                can_spend:
+                  type: boolean
+                can_manage:
+                  type: boolean
+      responses:
+        '200':
+          description: Role rule persisted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid rank, currency, or credit restriction attempt.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete one currency role rule.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: rank_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Role rule deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid rank id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /currencies/{code}/aliases:
+    get:
+      summary: List compatibility aliases for a currency.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Currency aliases returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      summary: Create or replace one compatibility alias.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [alias]
+              properties:
+                alias:
+                  type: string
+      responses:
+        '200':
+          description: Currency alias persisted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Missing alias or invalid currency.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /currencies/{code}/aliases/{alias}:
+    delete:
+      summary: Delete one compatibility alias.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: alias
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Currency alias deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /player/{id}/currencies:
+    get:
+      summary: Return a player's currency balances.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Player balances returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid player id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /player/{id}/currencies/{code}/add:
+    post:
+      summary: Add to a player currency balance.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount, reason]
+              properties:
+                amount:
+                  type: integer
+                  minimum: 0
+                reason:
+                  type: string
+                source_ref:
+                  type: string
+                notify_player:
+                  type: boolean
+      responses:
+        '200':
+          description: Balance added and movement recorded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid amount, player id, or currency code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Currency is disabled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /player/{id}/currencies/{code}/remove:
+    post:
+      summary: Remove from a player currency balance.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount, reason]
+              properties:
+                amount:
+                  type: integer
+                  minimum: 0
+                reason:
+                  type: string
+                source_ref:
+                  type: string
+                notify_player:
+                  type: boolean
+      responses:
+        '200':
+          description: Balance removed and movement recorded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid amount, currency, or negative balance.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Currency is disabled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /player/{id}/currencies/{code}:
+    put:
+      summary: Set a player currency balance.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount, reason]
+              properties:
+                amount:
+                  type: integer
+                  minimum: 0
+                reason:
+                  type: string
+                source_ref:
+                  type: string
+                notify_player:
+                  type: boolean
+      responses:
+        '200':
+          description: Balance set and movement recorded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid amount, player id, or currency code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Currency is disabled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /player/{id}/currency-movements:
+    get:
+      summary: Return recent currency movements for a player.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Movement log returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid player id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

@@ -1,16 +1,22 @@
 package com.cometproject.server.network.messages.incoming.nuxs;
 
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.network.messages.incoming.Event;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.services.ICurrencyService;
 
 public class ConfirmWelcomeGiftMessageEvent implements Event {
     @Override
     public void handle(Session client, MessageEvent msg) throws Exception {
         int amount = msg.readInt();
         try {
-            if (amount < 6 || client.getPlayer().getData().getBlackMoney() < amount) {
+            final String currencyCode = CometBootstrap.resolve(ICurrencyService.class)
+                    .currencyCodeForUseCase(CurrencyUseCases.CASINO_BET);
+
+            if (amount < 6 || client.getPlayer().getData().getCurrencyBalance(currencyCode) < amount) {
                 client.getPlayer().sendBubble("inters", Locale.getOrDefault("command.setbet.minimum", "El mínimo de apuesta son 6 de Fichas, si dispones de ellos vuelve a hacer click, para conseguir Koins debes ganar algun evento o conseguirlos en el calendario."));
                 return;
             } else if (amount > 100) {

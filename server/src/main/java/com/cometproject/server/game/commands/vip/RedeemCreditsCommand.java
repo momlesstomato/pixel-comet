@@ -1,11 +1,14 @@
 package com.cometproject.server.game.commands.vip;
 
 import com.cometproject.api.game.players.data.components.inventory.PlayerItem;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.commands.ChatCommand;
 import com.cometproject.server.network.messages.outgoing.user.inventory.UpdateInventoryMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.storage.api.StorageContext;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.services.ICurrencyService;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -59,7 +62,9 @@ public class RedeemCreditsCommand extends ChatCommand {
         client.send(new UpdateInventoryMessageComposer());
 
         if (diamondsToGive > 0) {
-            client.getPlayer().getData().increaseVipPoints(diamondsToGive);
+            client.getPlayer().getData().increaseCurrency(
+                    CometBootstrap.resolve(ICurrencyService.class).currencyCodeForUseCase(CurrencyUseCases.EXCHANGE_SECONDARY),
+                    diamondsToGive);
         }
 
         if (coinsToGive > 0) {

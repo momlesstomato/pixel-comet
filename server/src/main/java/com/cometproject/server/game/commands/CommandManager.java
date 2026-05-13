@@ -22,8 +22,7 @@ import com.cometproject.server.game.commands.staff.muting.RoomMuteCommand;
 import com.cometproject.server.game.commands.staff.muting.UnmuteCommand;
 import com.cometproject.server.game.commands.staff.rewards.*;
 import com.cometproject.server.game.commands.staff.rewards.mass.MassBadgeCommand;
-import com.cometproject.server.game.commands.staff.rewards.mass.MassDucketsCommand;
-import com.cometproject.server.game.commands.staff.rewards.mass.MassTokensCommand;
+import com.cometproject.server.game.commands.staff.rewards.mass.MassPlayerCurrencyCommand;
 import com.cometproject.server.game.commands.user.*;
 import com.cometproject.server.game.commands.user.group.AssignGroupRoleCommand;
 import com.cometproject.server.game.commands.user.group.DeleteGroupCommand;
@@ -226,8 +225,7 @@ public class CommandManager implements Startable {
         this.addCommand(Locale.get("command.givebadge.name"), new GiveBadgeCommand());
         this.addCommand(Locale.get("command.removebadge.name"), new RemoveBadgeCommand());
         this.addCommand(Locale.get("command.roomkick.name"), new RoomKickCommand());
-        this.addCommand(Locale.get("command.points.name"), new PointsCommand());
-        this.addCommand(Locale.get("command.duckets.name"), new DucketsCommand());
+        this.addCommand(Locale.getOrDefault("command.currency.name", "currency"), new CurrencyCommand());
         this.addCommand(Locale.get("command.unload.name"), new UnloadCommand());
         this.addCommand(Locale.get("command.roommute.name"), new RoomMuteCommand());
         this.addCommand(Locale.get("command.reload.name"), new ReloadCommand());
@@ -238,7 +236,7 @@ public class CommandManager implements Startable {
         this.addCommand(Locale.get("command.mute.name"), new MuteCommand());
         this.addCommand(Locale.get("command.unmute.name"), new UnmuteCommand());
         this.addCommand(Locale.get("command.massbadge.name"), new MassBadgeCommand());
-        this.addCommand(Locale.get("command.massduckets.name"), new MassDucketsCommand());
+        this.addCommand(Locale.getOrDefault("command.masscurrency.name", "masscurrency"), new MassPlayerCurrencyCommand());
         this.addCommand(Locale.get("command.playerinfo.name"), new PlayerInfoCommand());
         this.addCommand(Locale.get("command.roombadge.name"), new RoomBadgeCommand());
         this.addCommand(Locale.get("command.shutdown.name"), new ShutdownCommand());
@@ -266,8 +264,6 @@ public class CommandManager implements Startable {
         this.addCommand(Locale.get("command.murder.name"), new KillCommand());
         this.addCommand("test", new TestCommand());
         this.addCommand("lottery", new LotteryCommand());
-        this.addCommand("tokens", new TokenCommand());
-        this.addCommand("masstokens", new MassTokensCommand());
         this.addCommand(Locale.get("command.closedice.name"), new CloseDiceCommand());
         this.addCommand(Locale.get("command.prefix.name"), new PrefixCommand());
 

@@ -1,6 +1,7 @@
 package com.cometproject.server.game.rooms.objects.items.types.wall;
 
 import com.cometproject.api.game.rooms.objects.data.RoomItemData;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.achievements.BattlePassGlobals;
 import com.cometproject.server.game.achievements.types.BattlePassMission;
 import com.cometproject.server.game.achievements.types.BattlePassMissionEnums;
@@ -13,6 +14,8 @@ import com.cometproject.server.game.rooms.types.misc.ChatEmotion;
 import com.cometproject.server.network.messages.outgoing.notification.MassEventMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessageComposer;
 import com.cometproject.server.network.sessions.Session;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.services.ICurrencyService;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -99,12 +102,12 @@ public class WheelWallItem extends RoomItemWall {
                         }
                         else if(pEntity.getPlayer().getData().coinOnBet == 2){
                             message = "¡Felicidades! Has ganado " + priceWin + " asteroides.";
-                            pEntity.getPlayer().getData().increaseActivityPoints(priceWin);
+                            pEntity.getPlayer().getData().increaseCurrency(currencyCodeForUseCase(CurrencyUseCases.CASINO_PAYOUT_PRIMARY), priceWin);
                             pEntity.getPlayer().sendBalance();
                         }
                         else if(pEntity.getPlayer().getData().coinOnBet == 3){
                             message = "¡Felicidades! Has ganado " + priceWin + " cometas.";
-                            pEntity.getPlayer().getData().increaseVipPoints(priceWin);
+                            pEntity.getPlayer().getData().increaseCurrency(currencyCodeForUseCase(CurrencyUseCases.CASINO_PAYOUT_SECONDARY), priceWin);
                             pEntity.getPlayer().sendBalance();
                         }
 
@@ -122,12 +125,12 @@ public class WheelWallItem extends RoomItemWall {
                         }
                         else if(pEntity.getPlayer().getData().coinOnBet == 2){
                             message = "¡Felicidades! Has ganado " + priceWin + " asteroides.";
-                            pEntity.getPlayer().getData().increaseActivityPoints(priceWin);
+                            pEntity.getPlayer().getData().increaseCurrency(currencyCodeForUseCase(CurrencyUseCases.CASINO_PAYOUT_PRIMARY), priceWin);
                             pEntity.getPlayer().sendBalance();
                         }
                         else if(pEntity.getPlayer().getData().coinOnBet == 3){
                             message = "¡Felicidades! Has ganado " + priceWin + " cometas.";
-                            pEntity.getPlayer().getData().increaseVipPoints(priceWin);
+                            pEntity.getPlayer().getData().increaseCurrency(currencyCodeForUseCase(CurrencyUseCases.CASINO_PAYOUT_SECONDARY), priceWin);
                             pEntity.getPlayer().sendBalance();
                         }
 
@@ -149,5 +152,9 @@ public class WheelWallItem extends RoomItemWall {
                 isInUse = false;
             }
         }, 4000);
+    }
+
+    private static String currencyCodeForUseCase(final String useCase) {
+        return CometBootstrap.resolve(ICurrencyService.class).currencyCodeForUseCase(useCase);
     }
 }

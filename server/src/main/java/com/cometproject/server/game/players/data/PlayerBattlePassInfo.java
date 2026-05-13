@@ -1,6 +1,7 @@
 package com.cometproject.server.game.players.data;
 
 import com.cometproject.api.game.players.data.components.inventory.PlayerItem;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.composers.catalog.UnseenItemsMessageComposer;
 import com.cometproject.server.game.achievements.BattlePassGlobals;
 import com.cometproject.server.game.achievements.types.BattlePassMission;
@@ -14,7 +15,11 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.data.currency.ICurrencyDefinition;
+import com.cometproject.storage.api.services.ICurrencyService;
 import com.google.common.collect.Sets;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 
@@ -69,12 +74,17 @@ public class PlayerBattlePassInfo {
             player.send(new NotificationMessageComposer("generic", "Has recibido una placa como recompensa por subir al nivel " + this.level));
         }
 
-        if(ms.rewardType == BattlePassRewardEnum.RewardType.DIAMONDS){
+        if(ms.rewardType == BattlePassRewardEnum.RewardType.CURRENCY){
             try{
-                int diamonds = Integer.parseInt(ms.rewardReference);
-                player.getPlayer().getData().increaseActivityPoints(diamonds);
+                int amount = Integer.parseInt(ms.rewardReference);
+                final ICurrencyService currencyService = CometBootstrap.resolve(ICurrencyService.class);
+                final ICurrencyDefinition definition = currencyService.definition(currencyService.firstNonCreditCurrencyCode());
+
+                player.getPlayer().getData().increaseCurrency(definition.getCode(), amount);
                 player.getPlayer().sendBalance();
-                player.send(new NotificationMessageComposer("generic", "Has recibido " + diamonds + " asteroides como recompensa por subir al nivel " + this.level));
+                player.send(new NotificationMessageComposer("generic", "Has recibido " + amount + " "
+                        + StringUtils.defaultIfBlank(definition.getNounPlural(), definition.getDisplayName())
+                        + " como recompensa por subir al nivel " + this.level));
             }
             catch (Exception ex) { }
         }
@@ -102,8 +112,11 @@ public class PlayerBattlePassInfo {
         }
 
         if(ms.id == 10){
+            final ICurrencyService currencyService = CometBootstrap.resolve(ICurrencyService.class);
             player.getPlayer().getInventory().addBadge("GLXF5", true);
-            player.getPlayer().getData().increaseVipPoints(5);
+            player.getPlayer().getData().increaseCurrency(
+                    currencyService.currencyCodeForUseCase(CurrencyUseCases.BATTLE_PASS_REWARD),
+                    5);
             player.getPlayer().getData().flush();
         }
     }

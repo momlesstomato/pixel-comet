@@ -1,6 +1,7 @@
 package com.cometproject.server.game.rooms.objects.items.types.floor;
 
 import com.cometproject.api.game.rooms.objects.data.RoomItemData;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.rooms.objects.entities.RoomEntity;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFactory;
@@ -10,6 +11,8 @@ import com.cometproject.server.game.rooms.types.misc.ChatEmotion;
 import com.cometproject.server.network.messages.outgoing.notification.MassEventMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessageComposer;
 import com.cometproject.server.network.sessions.Session;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.services.ICurrencyService;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -141,12 +144,12 @@ public class DiceFloorItem extends RoomItemFloor {
                 }
                 else if(pEntity.getPlayer().getData().coinOnBet == 2){
                     message = "¡Felicidades! Has ganado " + priceWin + " cometas.";
-                    pEntity.getPlayer().getData().increaseActivityPoints(priceWin);
+                    pEntity.getPlayer().getData().increaseCurrency(currencyCodeForUseCase(CurrencyUseCases.CASINO_PAYOUT_PRIMARY), priceWin);
                     pEntity.getPlayer().sendBalance();
                 }
                 else if(pEntity.getPlayer().getData().coinOnBet == 3){
                     message = "¡Felicidades! Has ganado " + priceWin + " estrellas.";
-                    pEntity.getPlayer().getData().increaseVipPoints(priceWin);
+                    pEntity.getPlayer().getData().increaseCurrency(currencyCodeForUseCase(CurrencyUseCases.CASINO_PAYOUT_SECONDARY), priceWin);
                     pEntity.getPlayer().sendBalance();
                 }
             }
@@ -160,5 +163,9 @@ public class DiceFloorItem extends RoomItemFloor {
 
             this.getRoom().getEntities().broadcastMessage(new TalkMessageComposer(this.r.getId(), message, ChatEmotion.NONE, 26));
         }
+    }
+
+    private static String currencyCodeForUseCase(final String useCase) {
+        return CometBootstrap.resolve(ICurrencyService.class).currencyCodeForUseCase(useCase);
     }
 }

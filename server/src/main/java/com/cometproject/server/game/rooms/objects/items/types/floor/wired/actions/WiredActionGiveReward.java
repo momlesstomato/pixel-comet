@@ -5,6 +5,7 @@ import com.cometproject.api.game.furniture.types.FurnitureDefinition;
 import com.cometproject.api.game.players.data.components.inventory.PlayerItem;
 import com.cometproject.api.game.rooms.objects.data.RoomItemData;
 import com.cometproject.server.boot.Comet;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.composers.catalog.UnseenItemsMessageComposer;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.items.ItemManager;
@@ -25,6 +26,8 @@ import com.cometproject.server.network.messages.outgoing.user.inventory.UpdateIn
 import com.cometproject.server.utilities.RandomUtil;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
+import com.cometproject.storage.api.data.currency.ICurrencyDefinition;
+import com.cometproject.storage.api.services.ICurrencyService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -34,7 +37,6 @@ import java.util.*;
 
 import static com.cometproject.server.game.rooms.objects.items.types.floor.wired.actions.types.IntervalType.getIntervalByInt;
 import static com.cometproject.server.game.rooms.objects.items.types.floor.wired.actions.types.RewardType.ALERT;
-import static com.cometproject.server.game.rooms.objects.items.types.floor.wired.actions.types.RewardType.getCurrencyTypeByKey;
 
 
 public class WiredActionGiveReward extends WiredActionItem {
@@ -199,7 +201,7 @@ public class WiredActionGiveReward extends WiredActionItem {
                         String[] itemData = reward.productCode.contains("%") ? reward.productCode.split("%") : reward.productCode.split(":");
 
                         if (isCurrencyReward(itemData[0])) {
-                            RewardType amount = getCurrencyTypeByKey(itemData[0]);
+                            RewardType amount = rewardType(itemData[0]);
 
                             int value = 0;
 
@@ -219,22 +221,15 @@ public class WiredActionGiveReward extends WiredActionItem {
                                             Locale.getOrDefault("wired.reward.coins", "You received %s coin(s)!").replace("%s", value + "")));
                                     break;
 
-                                case ACTIVITY_POINTS:
-                                    playerEntity.getPlayer().getData().increaseActivityPoints(value);
-                                    playerEntity.getPlayer().getSession().send(new AlertMessageComposer(
-                                            Locale.getOrDefault("wired.reward.duckets", "You received %s ducket(s)!").replace("%s", value + "")));
-                                    break;
+                                case CURRENCY:
+                                    final ICurrencyDefinition definition = currencyService().definition(itemData[0]);
+                                    final String currencyName = StringUtils.defaultIfBlank(definition.getNounPlural(), definition.getDisplayName());
 
-                                case VIP_POINTS:
-                                    playerEntity.getPlayer().getData().increaseVipPoints(value);
+                                    playerEntity.getPlayer().getData().increaseCurrency(definition.getCode(), value);
                                     playerEntity.getPlayer().getSession().send(new AlertMessageComposer(
-                                            Locale.getOrDefault("wired.reward.diamonds", "You received %s diamond(s)!").replace("%s", value + "")));
-                                    break;
-
-                                case SEASONAL_POINTS:
-                                    playerEntity.getPlayer().getData().increaseSeasonalPoints(value);
-                                    playerEntity.getPlayer().getSession().send(new AlertMessageComposer(
-                                            Locale.getOrDefault("wired.reward.seasonal", "You received %s seasonal(s)!").replace("%s", value + "")));
+                                            Locale.getOrDefault("wired.reward.currency", "You received %s %currency_name%!")
+                                                    .replace("%s", value + "")
+                                                    .replace("%currency_name%", currencyName)));
                                     break;
 
                                 case GO_TO_ROOM:
@@ -322,7 +317,32 @@ public class WiredActionGiveReward extends WiredActionItem {
     }
 
     private boolean isCurrencyReward(final String key) {
-        return getCurrencyTypeByKey(key) != null;
+        try {
+            return rewardType(key) != null;
+        } catch (IllegalStateException exception) {
+            return false;
+        }
+    }
+
+    private RewardType rewardType(final String key) {
+        if (RewardType.CREDITS.getCurrency().equals(key)) {
+            return RewardType.CREDITS;
+        }
+
+        if (RewardType.GO_TO_ROOM.getCurrency().equals(key)) {
+            return RewardType.GO_TO_ROOM;
+        }
+
+        if (ALERT.getCurrency().equals(key)) {
+            return ALERT;
+        }
+
+        currencyService().definition(key);
+        return RewardType.CURRENCY;
+    }
+
+    private static ICurrencyService currencyService() {
+        return CometBootstrap.resolve(ICurrencyService.class);
     }
 
     @Override

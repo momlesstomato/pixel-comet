@@ -1,10 +1,13 @@
 package com.cometproject.server.game.rooms.objects.items.types.floor.wired.conditions.positive.custom;
 
 import com.cometproject.api.game.rooms.objects.data.RoomItemData;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.rooms.objects.entities.RoomEntity;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.base.WiredConditionItem;
 import com.cometproject.server.game.rooms.types.Room;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.services.ICurrencyService;
 
 
 public class WiredConditionCustomHasDuckets extends WiredConditionItem {
@@ -32,11 +35,15 @@ public class WiredConditionCustomHasDuckets extends WiredConditionItem {
 
         PlayerEntity playerEntity = (PlayerEntity) entity;
 
-        if (playerEntity.getPlayer().getData().getActivityPoints() >= duckets) {
+        if (playerEntity.getPlayer().getData().getCurrencyBalance(currencyCodeForUseCase(CurrencyUseCases.WIRED_CONDITION_PRIMARY)) >= duckets) {
             hasDuckets = true;
         }
 
 
         return isNegative != hasDuckets;
+    }
+
+    private static String currencyCodeForUseCase(final String useCase) {
+        return CometBootstrap.resolve(ICurrencyService.class).currencyCodeForUseCase(useCase);
     }
 }

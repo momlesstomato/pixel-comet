@@ -7,8 +7,7 @@ import java.util.List;
 public class NuxGift {
     public enum RewardType {
         ITEM,
-        DIAMONDS,
-        SEASONAL,
+        CURRENCY,
         BADGE,
         REWARD1,
         REWARD2,
@@ -24,6 +23,7 @@ public class NuxGift {
     private String name;
     private String icon;
     private String productdata;
+    private String currencyCode;
     private List<String> data = new ArrayList<>();
 
     public NuxGift(int id, String type, int pageType, String icon, String name, String productdata, String data){
@@ -32,12 +32,6 @@ public class NuxGift {
             case "item":
                 this.type = RewardType.ITEM;
             break;
-            case "diamonds":
-                this.type = RewardType.DIAMONDS;
-                break;
-            case "seasonal":
-                this.type = RewardType.SEASONAL;
-                break;
             case "reward1":
                 this.type = RewardType.REWARD1;
                 break;
@@ -57,8 +51,11 @@ public class NuxGift {
                 this.type = RewardType.SCISSORS;
                 break;
             case "badge":
-            default:
                 this.type = RewardType.BADGE;
+                break;
+            default:
+                this.type = RewardType.CURRENCY;
+                this.currencyCode = type;
                 break;
         }
         this.pageType = pageType;
@@ -74,6 +71,7 @@ public class NuxGift {
     public String getName() { return this.name; }
     public String getIcon() { return this.icon; }
     public String getProductdata() { return this.productdata; }
+    public String getCurrencyCode() { return this.currencyCode; }
     public String getRandomData() {
         int max = this.data.size() - 1;
         int min = 0;

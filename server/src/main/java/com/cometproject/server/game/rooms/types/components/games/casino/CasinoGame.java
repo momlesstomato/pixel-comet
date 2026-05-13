@@ -2,6 +2,7 @@ package com.cometproject.server.game.rooms.types.components.games.casino;
 
 import com.cometproject.api.game.achievements.types.AchievementType;
 import com.cometproject.server.boot.Comet;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.players.types.Player;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.highscore.HighscoreClassicFloorItem;
@@ -14,6 +15,9 @@ import com.cometproject.server.network.messages.outgoing.notification.Notificati
 import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 import com.cometproject.server.network.messages.outgoing.user.purse.UpdateActivityPointsMessageComposer;
 import com.cometproject.server.storage.queries.catalog.BetDao;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.data.currency.ICurrencyDefinition;
+import com.cometproject.storage.api.services.ICurrencyService;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -174,8 +178,16 @@ public class CasinoGame extends RoomGame {
             BetDao.insertBet(bet.getPlayer().getData().getId(), "roullette", bet.getAmount() + " to " + (bet.getBet() == 37 ? "RED" : bet.getBet() == 38 ? "BLACK" : bet.getBet() + ""), time + "", hasWon ? "win" : "share");
 
             if(hasWon){
-                bet.getPlayer().getData().increaseBlackMoney(prize);
-                bet.getPlayer().getSession().send(new UpdateActivityPointsMessageComposer(bet.getPlayer().getData().getBlackMoney(), prize, 105));
+                final ICurrencyService currencyService = CometBootstrap.resolve(ICurrencyService.class);
+                final String payoutCurrency = currencyService.currencyCodeForUseCase(CurrencyUseCases.CASINO_PAYOUT);
+                final ICurrencyDefinition definition = currencyService.definition(payoutCurrency);
+                final int protocolCurrencyId = definition.getProtocolCurrencyId().orElse(0);
+
+                bet.getPlayer().getData().increaseCurrency(payoutCurrency, prize);
+                bet.getPlayer().getSession().send(new UpdateActivityPointsMessageComposer(
+                        bet.getPlayer().getData().getCurrencyBalance(payoutCurrency),
+                        prize,
+                        protocolCurrencyId));
                 bet.getPlayer().getData().save();
                 bet.getPlayer().getEntity().incrementBetRow();
                 bet.setPaid();

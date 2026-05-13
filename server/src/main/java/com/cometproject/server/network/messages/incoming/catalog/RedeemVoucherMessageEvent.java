@@ -78,28 +78,19 @@ implements Event {
                 client.send(new AdvancedAlertMessageComposer(Locale.get("command.coins.title"), Locale.get("command.coins.received").replace("%amount%", String.valueOf(coinAmount))));
                 break;
             }
-            case DUCKETS: {
+            case CURRENCY: {
                 if (!StringUtils.isNumeric((String)voucher.getData())) {
                     failure = true;
                     break;
                 }
-                int ducketAmount = Integer.parseInt(voucher.getData());
-                client.getPlayer().getData().increaseActivityPoints(ducketAmount);
+                int currencyAmount = Integer.parseInt(voucher.getData());
+                client.getPlayer().getData().increaseCurrency(voucher.getCurrencyCode(), currencyAmount);
                 client.getPlayer().getData().save();
                 client.send(client.getPlayer().composeCurrenciesBalance());
-                client.send(new AdvancedAlertMessageComposer(Locale.get("command.duckets.successtitle"), Locale.get("command.duckets.successmessage").replace("%amount%", String.valueOf(ducketAmount))));
-                break;
-            }
-            case VIP_POINTS: {
-                if (!StringUtils.isNumeric((String)voucher.getData())) {
-                    failure = true;
-                    break;
-                }
-                int vipPointAmount = Integer.parseInt(voucher.getData());
-                client.getPlayer().getData().increaseVipPoints(vipPointAmount);
-                client.getPlayer().getData().save();
-                client.send(client.getPlayer().composeCurrenciesBalance());
-                client.send(new AdvancedAlertMessageComposer(Locale.get("command.points.successtitle"), Locale.get("command.points.successmessage").replace("%amount%", String.valueOf(vipPointAmount))));
+                client.send(new AdvancedAlertMessageComposer(
+                        Locale.getOrDefault("command.currency.successtitle", "Currency received"),
+                        Locale.getOrDefault("command.currency.successmessage", "Your balance changed by %amount%.")
+                                .replace("%amount%", String.valueOf(currencyAmount))));
                 break;
             }
             case ITEM: {
@@ -133,4 +124,3 @@ implements Event {
         client.getPlayer().setVoucherRedeemAttempts(0);
     }
 }
-

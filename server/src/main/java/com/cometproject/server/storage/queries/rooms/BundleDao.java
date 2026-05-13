@@ -26,7 +26,7 @@ public class BundleDao {
         try {
             sqlConnection = SqlHelper.getConnection();
 
-            preparedStatement = SqlHelper.prepare("SELECT * FROM room_bundles WHERE enabled = '1'", sqlConnection);
+            preparedStatement = SqlHelper.prepare("SELECT id, room_id, alias, model_data, bundle_data, cost_credits, protocol_103_cost, protocol_5_cost, protocol_0_cost, room_config FROM room_bundles WHERE enabled = '1'", sqlConnection);
 
             resultSet = preparedStatement.executeQuery();
 
@@ -43,7 +43,7 @@ public class BundleDao {
                             new TypeToken<ArrayList<RoomBundleItem>>() {
                             }.getType());
 
-                    bundles.put(alias, new RoomBundle(bundleId, resultSet.getInt("room_id"), alias, roomModelData, bundleItems, resultSet.getInt("cost_credits"), resultSet.getInt("cost_seasonal"), resultSet.getInt("cost_vip"), resultSet.getInt("cost_activity_points"), JsonUtil.getInstance().fromJson(resultSet.getString("room_config"), RoomBundleConfig.class)));
+                    bundles.put(alias, new RoomBundle(bundleId, resultSet.getInt("room_id"), alias, roomModelData, bundleItems, resultSet.getInt("cost_credits"), resultSet.getInt("protocol_103_cost"), resultSet.getInt("protocol_5_cost"), resultSet.getInt("protocol_0_cost"), JsonUtil.getInstance().fromJson(resultSet.getString("room_config"), RoomBundleConfig.class)));
                 } catch (Exception e) {
                     Comet.getServer().getLogger().warn("Failed to load room bundle with id: " + bundleId, e);
                 }

@@ -36,9 +36,9 @@ public class PlayerDao {
         try {
             sqlConnection = SqlHelper.getConnection();
 
-            preparedStatement = SqlHelper.prepare("SELECT p.id as playerId, p.username AS playerData_username, p.figure AS playerData_figure, p.motto AS playerData_motto, p.credits AS playerData_credits, p.vip_points AS playerData_vipPoints, p.rank AS playerData_rank, p.last_ip AS playerData_lastIp, p.seasonal_points AS playerData_seasonalPoints, p.black_money AS playerData_blackMoney, " +
+            preparedStatement = SqlHelper.prepare("SELECT p.id as playerId, p.username AS playerData_username, p.figure AS playerData_figure, p.motto AS playerData_motto, p.credits AS playerData_credits, 0 AS playerData_currency5, p.rank AS playerData_rank, p.last_ip AS playerData_lastIp, 0 AS playerData_currency103, 0 AS playerData_currency105, " +
                     " p.vip AS playerData_vip, p.gender AS playerData_gender, p.last_online AS playerData_lastOnline, p.reg_timestamp AS playerData_regTimestamp, p.reg_date AS playerData_regDate, p.favourite_group AS playerData_favouriteGroup, p.achievement_points AS playerData_achievementPoints," +
-                    " p.email AS playerData_email, p.activity_points AS playerData_activityPoints, p.quest_id AS playerData_questId, p.time_muted AS playerData_timeMuted, p.name_colour AS playerData_nameColour, p.tag AS playerData_tag, p.job AS playerData_job, p.view_points AS playerData_viewPoints, \n" +
+                    " p.email AS playerData_email, 0 AS playerData_currency0, p.quest_id AS playerData_questId, p.time_muted AS playerData_timeMuted, p.name_colour AS playerData_nameColour, p.tag AS playerData_tag, p.job AS playerData_job, p.view_points AS playerData_viewPoints, \n" +
                     "  pSettings.volume AS playerSettings_volume, pSettings.home_room AS playerSettings_homeRoom, pSettings.hide_online AS playerSettings_hideOnline, pSettings.nux AS playerSettings_nux, pSettings.hide_inroom AS playerSettings_hideInRoom, pSettings.personal_pin AS playerSettings_personalPin, pSettings.ignore_invites AS playerSettings_ignoreInvites, pSettings.event_type AS playerSettings_eventType, pSettings.royale_xp AS playerSettings_royaleXP, \n" +
                     "   pSettings.allow_friend_requests AS playerSettings_allowFriendRequests, pSettings.allow_trade AS playerSettings_allowTrade, pSettings.allow_follow AS playerSettings_allowFollow, pSettings.allow_mimic AS playerSettings_allowMimic, pSettings.wardrobe AS playerSettings_wardrobe, pSettings.playlist AS playerSettings_playlist, pSettings.chat_oldstyle AS playerSettings_useOldChat,\n" +
                     " pSettings.navigator_x AS playerSettings_navigatorX, pSettings.navigator_y AS playerSettings_navigatorY, pSettings.navigator_height AS playerSettings_navigatorHeight, pSettings.navigator_width AS playerSettings_navigatorWidth, pSettings.navigator_show_searches AS playerSettings_navigatorShowSearches, pSettings.ignore_events AS playerSettings_ignoreEvents, pSettings.disable_whisper AS playerSettings_disableWhisper, pSettings.send_login_notif AS playerSettings_sendLoginNotif, pSettings.personalstaff AS playerSettings_personalstaff, pSettings.bubble_id AS playerSettings_bubbleId, pSettings.room_tool_state AS playerSettings_roomToolState, pSettings.camera_follow AS playerSettings_roomCameraFollow, pSettings.claimed_goal AS playerSettings_claimedGoal, " +
@@ -289,15 +289,15 @@ public class PlayerDao {
         try {
             sqlConnection = SqlHelper.getConnection();
 
-            preparedStatement = SqlHelper.prepare("SELECT id, motto, figure, gender, email, rank, credits, vip_points, activity_points, seasonal_points, black_money, reg_date, last_online, vip, achievement_points, reg_timestamp, favourite_group, last_ip, quest_id, time_muted, name_colour, tag, job FROM players WHERE username = ?", sqlConnection);
+            preparedStatement = SqlHelper.prepare("SELECT id, motto, figure, gender, email, rank, credits, 0 AS currency5, 0 AS currency0, 0 AS currency103, 0 AS currency105, reg_date, last_online, vip, achievement_points, reg_timestamp, favourite_group, last_ip, quest_id, time_muted, name_colour, tag, job FROM players WHERE username = ?", sqlConnection);
             preparedStatement.setString(1, username);
 
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 return new PlayerData(resultSet.getInt("id"), username, resultSet.getString("motto"), resultSet.getString("figure"), resultSet.getString("gender"),
-                        resultSet.getString("email") == null ? "" : resultSet.getString("email"), resultSet.getInt("rank"), resultSet.getInt("credits"), resultSet.getInt("vip_points"),
-                        resultSet.getInt("activity_points"), resultSet.getInt("seasonal_points"), resultSet.getInt("black_money"), resultSet.getString("reg_date"), resultSet.getInt("last_online"), resultSet.getString("vip").equals("1"),
+                        resultSet.getString("email") == null ? "" : resultSet.getString("email"), resultSet.getInt("rank"), resultSet.getInt("credits"), resultSet.getInt("currency5"),
+                        resultSet.getInt("currency0"), resultSet.getInt("currency103"), resultSet.getInt("currency105"), resultSet.getString("reg_date"), resultSet.getInt("last_online"), resultSet.getString("vip").equals("1"),
                         resultSet.getInt("achievement_points"), resultSet.getInt("reg_timestamp"), resultSet.getInt("favourite_group"), resultSet.getString("last_ip"), resultSet.getInt("quest_id"), resultSet.getInt("time_muted"), resultSet.getString("name_colour"), resultSet.getString("tag"), resultSet.getString("job"), resultSet.getInt("view_points"), null);
             }
         } catch (SQLException e) {
@@ -319,15 +319,15 @@ public class PlayerDao {
         try {
             sqlConnection = SqlHelper.getConnection();
 
-            preparedStatement = SqlHelper.prepare("SELECT id, username, motto, figure, gender, email, rank, credits, vip_points, activity_points, seasonal_points, black_money, reg_date, last_online, vip, name_colour, achievement_points, reg_timestamp, favourite_group, last_ip, quest_id, time_muted, tag, job, view_points FROM players WHERE id = ?", sqlConnection);
+            preparedStatement = SqlHelper.prepare("SELECT id, username, motto, figure, gender, email, rank, credits, 0 AS currency5, 0 AS currency0, 0 AS currency103, 0 AS currency105, reg_date, last_online, vip, name_colour, achievement_points, reg_timestamp, favourite_group, last_ip, quest_id, time_muted, tag, job, view_points FROM players WHERE id = ?", sqlConnection);
             preparedStatement.setInt(1, id);
 
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 return new PlayerData(resultSet.getInt("id"), resultSet.getString("username"), resultSet.getString("motto"), resultSet.getString("figure"), resultSet.getString("gender"),
-                        resultSet.getString("email") == null ? "" : resultSet.getString("email"), resultSet.getInt("rank"), resultSet.getInt("credits"), resultSet.getInt("vip_points"),
-                        resultSet.getInt("activity_points"), resultSet.getInt("seasonal_points"), resultSet.getInt("black_money"), resultSet.getString("reg_date"), resultSet.getInt("last_online"), resultSet.getString("vip").equals("1"),
+                        resultSet.getString("email") == null ? "" : resultSet.getString("email"), resultSet.getInt("rank"), resultSet.getInt("credits"), resultSet.getInt("currency5"),
+                        resultSet.getInt("currency0"), resultSet.getInt("currency103"), resultSet.getInt("currency105"), resultSet.getString("reg_date"), resultSet.getInt("last_online"), resultSet.getString("vip").equals("1"),
                         resultSet.getInt("achievement_points"), resultSet.getInt("reg_timestamp"), resultSet.getInt("favourite_group"), resultSet.getString("last_ip"), resultSet.getInt("quest_id"), resultSet.getInt("time_muted"), resultSet.getString("name_colour"), resultSet.getString("tag"), resultSet.getString("job"), resultSet.getInt("view_points"), null);
             }
 
@@ -700,29 +700,44 @@ public class PlayerDao {
     }
 
     public static void updatePlayerData(int id, String username, String motto, String figure, int credits, int points, String gender, int favouriteGroup, int activityPoints, int seasonalPoints, int blackMoney, int questId, int achievementPoints, String nameColour, String tag, String job) {
+        updatePlayerDataWithoutCurrencies(id, username, motto, figure, credits, gender, favouriteGroup, questId, achievementPoints, nameColour, tag, job);
+    }
+
+    /**
+     * Persists mutable player data while leaving legacy currency columns untouched.
+     *
+     * @param id                the player id.
+     * @param username          the player username.
+     * @param motto             the profile motto.
+     * @param figure            the avatar figure.
+     * @param gender            the avatar gender.
+     * @param favouriteGroup    the favourite group id.
+     * @param questId           the active quest id.
+     * @param achievementPoints the achievement point total.
+     * @param nameColour        the profile name colour.
+     * @param tag               the profile tag.
+     * @param job               the roleplay job.
+     */
+    public static void updatePlayerDataWithoutCurrencies(int id, String username, String motto, String figure, int credits, String gender, int favouriteGroup, int questId, int achievementPoints, String nameColour, String tag, String job) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             sqlConnection = SqlHelper.getConnection();
 
-            preparedStatement = SqlHelper.prepare("UPDATE players SET username = ?, motto = ?, figure = ?, credits = ?, vip_points = ?, gender = ?, favourite_group = ?, activity_points = ?, seasonal_points = ?, quest_id = ?, achievement_points = ?, name_colour = ?, tag = ?, job = ?, black_money = ? WHERE id = ?", sqlConnection);
+            preparedStatement = SqlHelper.prepare("UPDATE players SET username = ?, motto = ?, figure = ?, credits = ?, gender = ?, favourite_group = ?, quest_id = ?, achievement_points = ?, name_colour = ?, tag = ?, job = ? WHERE id = ?", sqlConnection);
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, motto);
             preparedStatement.setString(3, figure);
             preparedStatement.setInt(4, credits);
-            preparedStatement.setInt(5, points);
-            preparedStatement.setString(6, gender);
-            preparedStatement.setInt(7, favouriteGroup);
-            preparedStatement.setInt(8, activityPoints);
-            preparedStatement.setInt(9, seasonalPoints);
-            preparedStatement.setInt(10, questId);
-            preparedStatement.setInt(11, achievementPoints);
-            preparedStatement.setString(12, nameColour);
-            preparedStatement.setString(13, tag);
-            preparedStatement.setString(14, job);
-            preparedStatement.setInt(15, blackMoney);
-            preparedStatement.setInt(16, id);
+            preparedStatement.setString(5, gender);
+            preparedStatement.setInt(6, favouriteGroup);
+            preparedStatement.setInt(7, questId);
+            preparedStatement.setInt(8, achievementPoints);
+            preparedStatement.setString(9, nameColour);
+            preparedStatement.setString(10, tag);
+            preparedStatement.setString(11, job);
+            preparedStatement.setInt(12, id);
 
             SqlHelper.executeStatementSilently(preparedStatement, false);
         } catch (SQLException e) {
@@ -763,20 +778,16 @@ public class PlayerDao {
         }
     }
 
-    public static void updatePlayerCurrencies(int id, int credits, int points, int activityPoints, int seasonalPoints, int blackMoney) {
+    public static void updatePlayerCredits(int id, int credits) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             sqlConnection = SqlHelper.getConnection();
 
-            preparedStatement = SqlHelper.prepare("UPDATE players SET credits = ?, vip_points = ?, activity_points = ?, seasonal_points = ?, black_money = ? WHERE id = ?", sqlConnection);
+            preparedStatement = SqlHelper.prepare("UPDATE players SET credits = ? WHERE id = ?", sqlConnection);
             preparedStatement.setInt(1, credits);
-            preparedStatement.setInt(2, points);
-            preparedStatement.setInt(3, activityPoints);
-            preparedStatement.setInt(4, seasonalPoints);
-            preparedStatement.setInt(5, blackMoney);
-            preparedStatement.setInt(6, id);
+            preparedStatement.setInt(2, id);
 
             SqlHelper.executeStatementSilently(preparedStatement, false);
         } catch (SQLException e) {
@@ -1329,20 +1340,18 @@ public class PlayerDao {
         try {
             sqlConnection = SqlHelper.getConnection();
 
-            preparedStatement = SqlHelper.prepare("UPDATE players SET username = ?, motto = ?, figure = ?, credits = ?, vip_points = ?, gender = ?, favourite_group = ?, activity_points = ?, quest_id = ?, achievement_points = ? WHERE id = ?;", sqlConnection);
+            preparedStatement = SqlHelper.prepare("UPDATE players SET username = ?, motto = ?, figure = ?, credits = ?, gender = ?, favourite_group = ?, quest_id = ?, achievement_points = ? WHERE id = ?;", sqlConnection);
 
             for (PlayerData playerDataInstance : playerData.values()) {
                 preparedStatement.setString(1, playerDataInstance.getUsername());
                 preparedStatement.setString(2, playerDataInstance.getMotto());
                 preparedStatement.setString(3, playerDataInstance.getFigure());
                 preparedStatement.setInt(4, playerDataInstance.getCredits());
-                preparedStatement.setInt(5, playerDataInstance.getVipPoints());
-                preparedStatement.setString(6, playerDataInstance.getGender());
-                preparedStatement.setInt(7, playerDataInstance.getFavouriteGroup());
-                preparedStatement.setInt(8, playerDataInstance.getActivityPoints());
-                preparedStatement.setInt(9, playerDataInstance.getQuestId());
-                preparedStatement.setInt(10, playerDataInstance.getAchievementPoints());
-                preparedStatement.setInt(11, playerDataInstance.getId());
+                preparedStatement.setString(5, playerDataInstance.getGender());
+                preparedStatement.setInt(6, playerDataInstance.getFavouriteGroup());
+                preparedStatement.setInt(7, playerDataInstance.getQuestId());
+                preparedStatement.setInt(8, playerDataInstance.getAchievementPoints());
+                preparedStatement.setInt(9, playerDataInstance.getId());
 
                 preparedStatement.addBatch();
             }
@@ -1475,48 +1484,6 @@ public class PlayerDao {
             preparedStatement = SqlHelper.prepare("UPDATE rooms SET owner = ? WHERE owner_id = ?", sqlConnection);
             preparedStatement.setString(1, newName);
             preparedStatement.setInt(2, playerId);
-
-            SqlHelper.executeStatementSilently(preparedStatement, false);
-        } catch (SQLException e) {
-            SqlHelper.handleSqlException(e);
-        } finally {
-            SqlHelper.closeSilently(preparedStatement);
-            SqlHelper.closeSilently(sqlConnection);
-        }
-    }
-
-    public static void updateDiamonds(int d, String p) {
-        Connection sqlConnection = null;
-        PreparedStatement preparedStatement = null;
-
-        try {
-            sqlConnection = SqlHelper.getConnection();
-
-            preparedStatement = SqlHelper.prepare("UPDATE players SET vip_points = (SELECT players.vip_points WHERE username = ?) + ? WHERE username = ?", sqlConnection);
-            preparedStatement.setString(1, p);
-            preparedStatement.setInt(2, d);
-            preparedStatement.setString(3, p);
-
-            SqlHelper.executeStatementSilently(preparedStatement, false);
-        } catch (SQLException e) {
-            SqlHelper.handleSqlException(e);
-        } finally {
-            SqlHelper.closeSilently(preparedStatement);
-            SqlHelper.closeSilently(sqlConnection);
-        }
-    }
-
-    public static void updateSeasonal(int s, String p) {
-        Connection sqlConnection = null;
-        PreparedStatement preparedStatement = null;
-
-        try {
-            sqlConnection = SqlHelper.getConnection();
-
-            preparedStatement = SqlHelper.prepare("UPDATE players SET seasonal_points = (SELECT seasonal_points FROM players WHERE username = ?) + ? WHERE username = ?", sqlConnection);
-            preparedStatement.setString(1, p);
-            preparedStatement.setInt(2, s);
-            preparedStatement.setString(3, p);
 
             SqlHelper.executeStatementSilently(preparedStatement, false);
         } catch (SQLException e) {

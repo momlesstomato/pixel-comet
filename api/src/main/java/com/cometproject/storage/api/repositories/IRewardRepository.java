@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 public interface IRewardRepository {
     void playerReceivedReward(int playerId, String badgeCode, Consumer<Boolean> consumer);
 
-    void giveReward(int playerId, String badgeCode, int points, int seasonal);
+    void giveReward(int playerId, String badgeCode, int primaryCurrencyAmount, int secondaryCurrencyAmount);
 
     void getActiveRewards(Consumer<Map<String, RewardData>> consumer);
 

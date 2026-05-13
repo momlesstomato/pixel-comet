@@ -1,5 +1,6 @@
 package com.cometproject.server.network.messages.incoming.room.item;
 
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.items.ItemManager;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
 import com.cometproject.server.game.rooms.types.Room;
@@ -7,6 +8,8 @@ import com.cometproject.server.network.messages.incoming.Event;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;
 import com.cometproject.server.storage.queries.player.PlayerDao;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.services.ICurrencyService;
 
 
 public class ExchangeItemMessageEvent implements Event {
@@ -57,13 +60,16 @@ public class ExchangeItemMessageEvent implements Event {
 
         room.getItems().removeItem(item, client, false, true);
         String exchangeValue;
+        final ICurrencyService currencyService = CometBootstrap.resolve(ICurrencyService.class);
 
         if (isDiamond) {
-            client.getPlayer().getData().increaseVipPoints(value);
-            exchangeValue = "Diamonds: " + client.getPlayer().getData().getVipPoints();
+            final String currencyCode = currencyService.currencyCodeForUseCase(CurrencyUseCases.EXCHANGE_SECONDARY);
+            client.getPlayer().getData().increaseCurrency(currencyCode, value);
+            exchangeValue = currencyCode + ": " + client.getPlayer().getData().getCurrencyBalance(currencyCode);
         } else if(isDuckets){
-            client.getPlayer().getData().increaseActivityPoints(value);
-            exchangeValue = "Duckets: " + client.getPlayer().getData().getActivityPoints();
+            final String currencyCode = currencyService.currencyCodeForUseCase(CurrencyUseCases.EXCHANGE_PRIMARY);
+            client.getPlayer().getData().increaseCurrency(currencyCode, value);
+            exchangeValue = currencyCode + ": " + client.getPlayer().getData().getCurrencyBalance(currencyCode);
         } else {
             client.getPlayer().getData().increaseCredits(value);
             exchangeValue = "Credits: " + client.getPlayer().getData().getCredits();

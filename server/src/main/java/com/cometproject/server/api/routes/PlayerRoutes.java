@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.cometproject.server.api.ApiRequestUtils;
 import com.cometproject.server.api.ApiResponseUtils;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.players.PlayerManager;
 import com.cometproject.server.game.players.data.PlayerData;
 import com.cometproject.server.network.NetworkManager;
@@ -13,6 +14,7 @@ import com.cometproject.server.network.messages.outgoing.notification.AdvancedAl
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.cometproject.server.storage.queries.player.inventory.InventoryDao;
+import com.cometproject.storage.api.services.ICurrencyService;
 
 import io.javalin.http.Context;
 
@@ -46,9 +48,11 @@ public class PlayerRoutes {
             return;
         }
 
+        final ICurrencyService currencyService = CometBootstrap.resolve(ICurrencyService.class);
+        final Map<String, Long> balances = currencyService.balances(playerId);
         final boolean sendCurrencies = (newPlayerData.getCredits() != currentPlayerData.getCredits()) ||
-                (newPlayerData.getActivityPoints() != currentPlayerData.getActivityPoints()) ||
-                (newPlayerData.getVipPoints() != currentPlayerData.getVipPoints() || (newPlayerData.getSeasonalPoints() != currentPlayerData.getSeasonalPoints()));
+                balances.entrySet().stream()
+                        .anyMatch(balance -> currentPlayerData.getCurrencyBalance(balance.getKey()) != Math.toIntExact(balance.getValue()));
 
         currentPlayerData.setRank(newPlayerData.getRank());
         currentPlayerData.setMotto(newPlayerData.getMotto());
@@ -57,9 +61,7 @@ public class PlayerRoutes {
         currentPlayerData.setEmail(newPlayerData.getEmail());
 
         currentPlayerData.setCredits(newPlayerData.getCredits());
-        currentPlayerData.setVipPoints(newPlayerData.getVipPoints());
-        currentPlayerData.setActivityPoints(newPlayerData.getActivityPoints());
-        currentPlayerData.setSeasonalPoints(newPlayerData.getSeasonalPoints());
+        balances.forEach((currencyCode, balance) -> currentPlayerData.setCurrencyBalance(currencyCode, Math.toIntExact(balance)));
 
         currentPlayerData.setAchievementPoints(newPlayerData.getAchievementPoints());
         currentPlayerData.setFavouriteGroup(newPlayerData.getFavouriteGroup());

@@ -123,6 +123,8 @@ tasks.test {
 tasks.register<Test>("integrationTest") {
     description = "Runs integration tests that require external services such as Docker."
     group = "verification"
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
     useJUnitPlatform {
         includeTags("integration")
     }

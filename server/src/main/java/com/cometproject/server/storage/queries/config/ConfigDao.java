@@ -32,7 +32,7 @@ public class ConfigDao {
                 CometSettings.groupCost = config.getInt("group_cost");
                 CometSettings.onlineRewardEnabled = config.getBoolean("online_reward_enabled");
                 CometSettings.onlineRewardCredits = config.getInt("online_reward_credits");
-                CometSettings.onlineRewardDuckets = config.getInt("online_reward_duckets");
+                CometSettings.onlineRewardCurrencyAmount = config.getInt("online_reward_duckets");
                 CometSettings.onlineRewardInterval = config.getInt("online_reward_interval");
                 CometSettings.aboutImg = config.getString("about_image");
                 CometSettings.aboutShowPlayersOnline = config.getBoolean("about_show_players_online");
@@ -78,19 +78,19 @@ public class ConfigDao {
 
                 CometSettings.snowStormMinPlayers = config.getInt("snow_storm_min_players");
                 CometSettings.calendarTimestamp = config.getInt("calendar_timestamp");
-                CometSettings.onlineRewardDiamondsInterval = config.getInt("online_reward_diamonds_interval");
-                CometSettings.onlineRewardDiamonds = config.getInt("online_reward_diamonds");
+                CometSettings.onlineRewardProtocolCurrencyInterval = config.getInt("online_reward_diamonds_interval");
+                CometSettings.onlineRewardProtocolCurrencyAmount = config.getInt("online_reward_diamonds");
                 CometSettings.betSystemEnabled = config.getBoolean("bet_system_enabled");
                 CometSettings.eventWinnerNotification = config.getBoolean("event_winner_enabled");
-                CometSettings.maxSeasonalRewardPoints = config.getInt("max_seasonal_reward");
-                CometSettings.seasonalRewardActivityPoints = config.getInt("seasonal_activity_points");
+                CometSettings.maxEventRewardCurrencyAmount = config.getInt("max_seasonal_reward");
+                CometSettings.eventRewardAchievementPoints = config.getInt("seasonal_activity_points");
                 CometSettings.betSystemRoomId = config.getInt("bet_system_roomid");
                 CometSettings.bankSystemMinimumRequired = config.getInt("bank_mininum_required");
                 CometSettings.communityGoal = config.getInt("community_goal");
                 CometSettings.communityGoalPrize = config.getString("community_goal_prize");
                 CometSettings.casinoRoomId = config.getInt("casino_roomid");
                 CometSettings.globalEggsCrafted = config.getInt("easter_limited");
-                CometSettings.bankSystemSeasonalEnabled = config.getBoolean("bank_seasonal_enabled");
+                CometSettings.bankSystemCurrencyEnabled = config.getBoolean("bank_seasonal_enabled");
                 CometSettings.eventWinnerNotification = config.getBoolean("casino_free_roll_enabled");
                 CometSettings.bonusBagEnabled = config.getBoolean("landing_bag_enabled");
                 CometSettings.currencySystemEnabled = config.getBoolean("currency_enabled");
@@ -173,5 +173,4 @@ public class ConfigDao {
         }
     }
 }
-
 

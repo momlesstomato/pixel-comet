@@ -3,6 +3,7 @@ package com.cometproject.server.game.rooms.objects.items.types.floor;
 import com.cometproject.api.game.achievements.types.AchievementType;
 import com.cometproject.api.game.rooms.objects.data.RoomItemData;
 import com.cometproject.server.boot.Comet;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.rooms.objects.entities.RoomEntity;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
@@ -15,6 +16,8 @@ import com.cometproject.server.network.messages.outgoing.nuxs.NuxGiftEmailViewMe
 import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 import com.cometproject.server.storage.queries.catalog.BetDao;
 import com.cometproject.server.utilities.RandomUtil;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.services.ICurrencyService;
 
 
 public class SlotMachineFloorItem extends RoomItemFloor {
@@ -43,8 +46,11 @@ public class SlotMachineFloorItem extends RoomItemFloor {
         }
 
         int bet = ((PlayerEntity) entity).getBetAmount();
+        final ICurrencyService currencyService = CometBootstrap.resolve(ICurrencyService.class);
+        final String betCurrency = currencyService.currencyCodeForUseCase(CurrencyUseCases.CASINO_BET);
+        final String payoutCurrency = currencyService.currencyCodeForUseCase(CurrencyUseCases.CASINO_PAYOUT);
 
-        if(((PlayerEntity) entity).getPlayer().getData().getBlackMoney() < bet || bet == 0){
+        if(((PlayerEntity) entity).getPlayer().getData().getCurrencyBalance(betCurrency) < bet || bet == 0){
             ((PlayerEntity) entity).getPlayer().getSession().send(new MassEventMessageComposer("habbopages/users/slotmachine.txt?" + Comet.getTime()));
             ((PlayerEntity) entity).getPlayer().getSession().send(new NuxGiftEmailViewMessageComposer(6 + "", 0, true, false, true));
             //((PlayerEntity) entity).getPlayer().getSession().send(new WhisperMessageComposer(this.getVirtualId(), "No dispones de la cantidad que quieres apostar o tu apuesta es de 0. Ajusta tu apuesta con :setbet {CANTIDAD}", 34));
@@ -55,7 +61,7 @@ public class SlotMachineFloorItem extends RoomItemFloor {
         boolean isWin = false;
 
         // Remove currency from the bet.
-        ((PlayerEntity) entity).getPlayer().getData().decreaseBlackMoney(bet);
+        ((PlayerEntity) entity).getPlayer().getData().decreaseCurrency(betCurrency, bet);
         ((PlayerEntity) entity).getPlayer().getData().save();
 
         String rand1 = "";
@@ -95,7 +101,7 @@ public class SlotMachineFloorItem extends RoomItemFloor {
                     .replace("%m", multiplier + "")));
 
             ((PlayerEntity) entity).getPlayer().getAchievements().progressAchievement(AchievementType.ACH_24, 1);
-            ((PlayerEntity) entity).getPlayer().getData().increaseBlackMoney(bet * multiplier);
+            ((PlayerEntity) entity).getPlayer().getData().increaseCurrency(payoutCurrency, bet * multiplier);
             ((PlayerEntity) entity).getPlayer().getData().save();
 
         }

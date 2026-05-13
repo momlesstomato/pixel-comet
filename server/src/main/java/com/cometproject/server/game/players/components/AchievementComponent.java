@@ -6,6 +6,7 @@ import com.cometproject.api.game.achievements.types.IAchievementGroup;
 import com.cometproject.api.game.players.IPlayer;
 import com.cometproject.api.game.players.data.components.PlayerAchievements;
 import com.cometproject.api.game.players.data.components.achievements.IAchievementProgress;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.achievements.AchievementManager;
 import com.cometproject.server.game.players.components.types.achievements.AchievementProgress;
 import com.cometproject.server.game.players.types.PlayerComponent;
@@ -15,6 +16,7 @@ import com.cometproject.server.network.messages.outgoing.user.achievements.Achie
 import com.cometproject.server.network.messages.outgoing.user.achievements.AchievementUnlockedMessageComposer;
 import com.cometproject.server.network.messages.outgoing.user.purse.UpdateActivityPointsMessageComposer;
 import com.cometproject.server.storage.queries.achievements.PlayerAchievementDao;
+import com.cometproject.storage.api.services.ICurrencyService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -113,26 +115,28 @@ public class AchievementComponent extends PlayerComponent implements PlayerAchie
     private void processUnlock(IAchievement currentAchievement, IAchievement targetAchievement, IAchievementGroup achievementGroup, IAchievementProgress progress, int targetLevel, AchievementType type) {
         this.getPlayer().getData().increaseAchievementPoints(currentAchievement.getRewardAchievement());
 
-        boolean isPixel = false;
+        boolean sendsProtocolUpdate = false;
+        int protocolCurrencyId = currentAchievement.getRewardType();
 
         switch (currentAchievement.getRewardType()){
             case 0:
-                this.getPlayer().getData().increaseActivityPoints(currentAchievement.getRewardActivityPoints());
-                isPixel = true;
-                break;
             case 5:
-                this.getPlayer().getData().increaseVipPoints(currentAchievement.getRewardActivityPoints());
-                break;
             case 103:
-                this.getPlayer().getData().increaseSeasonalPoints(currentAchievement.getRewardActivityPoints());
+                this.getPlayer().getData().increaseCurrency(
+                        CometBootstrap.resolve(ICurrencyService.class).currencyCodeForProtocolId(protocolCurrencyId),
+                        currentAchievement.getRewardActivityPoints());
+                sendsProtocolUpdate = protocolCurrencyId == 0;
                 break;
         }
 
         this.getPlayer().poof();
         this.getPlayer().sendBalance();
 
-        if(isPixel) {
-            this.getPlayer().getSession().send(new UpdateActivityPointsMessageComposer(this.getPlayer().getData().getActivityPoints(), currentAchievement.getRewardAchievement(), 0));
+        if(sendsProtocolUpdate) {
+            this.getPlayer().getSession().send(new UpdateActivityPointsMessageComposer(
+                    this.getPlayer().getData().getCurrencyBalance(CometBootstrap.resolve(ICurrencyService.class).currencyCodeForProtocolId(protocolCurrencyId)),
+                    currentAchievement.getRewardAchievement(),
+                    protocolCurrencyId));
         }
 
         boolean hasFinished = false;

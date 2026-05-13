@@ -5,9 +5,7 @@ import java.util.Map;
 
 public enum RewardType {
     CREDITS("credits"),
-    ACTIVITY_POINTS("duckets"),
-    VIP_POINTS("diamonds"),
-    SEASONAL_POINTS("seasonal"),
+    CURRENCY("currency"),
     GO_TO_ROOM("goto"),
     ALERT("alert");
 
@@ -27,7 +25,7 @@ public enum RewardType {
     }
 
     public static RewardType getCurrencyTypeByKey(String str) {
-        return map.get(str);
+        return map.getOrDefault(str, CURRENCY);
     }
 
     public String getCurrency() {

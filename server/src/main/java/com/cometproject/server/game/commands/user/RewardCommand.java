@@ -1,11 +1,14 @@
 package com.cometproject.server.game.commands.user;
 
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.commands.ChatCommand;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
 import com.cometproject.storage.api.data.rewards.RewardData;
+import com.cometproject.storage.api.services.ICurrencyService;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,15 +33,20 @@ public class RewardCommand extends ChatCommand {
                             rewardData.getCode(), received::set);
 
                     if (!received.get()) {
-                        client.getPlayer().getData().increaseVipPoints(rewardData.getDiamonds());
-                        client.getPlayer().getData().increaseSeasonalPoints(rewardData.getSeasonal());
+                        final ICurrencyService currencyService = CometBootstrap.resolve(ICurrencyService.class);
+                        client.getPlayer().getData().increaseCurrency(
+                                currencyService.currencyCodeForUseCase(CurrencyUseCases.REWARD_COMMAND_PRIMARY),
+                                rewardData.getPrimaryCurrencyAmount());
+                        client.getPlayer().getData().increaseCurrency(
+                                currencyService.currencyCodeForUseCase(CurrencyUseCases.REWARD_COMMAND_SECONDARY),
+                                rewardData.getSecondaryCurrencyAmount());
                         client.getPlayer().getInventory().addBadge(rewardData.getBadge(), false, true);
                         client.getPlayer().sendBalance();
 
                         StorageContext.getCurrentContext().getRewardRepository().redeemReward(client.getPlayer().getId(),
                                 rewardData);
 
-                        sendAlert(Locale.get("command.reward.redeemed").replace("%diamonds%", rewardData.getDiamonds() + "").replace("%badge_id%", rewardData.getBadge()), client);
+                        sendAlert(Locale.get("command.reward.redeemed").replace("%amount%", rewardData.getPrimaryCurrencyAmount() + "").replace("%badge_id%", rewardData.getBadge()), client);
                     }
                 }
             }
@@ -82,4 +90,3 @@ public class RewardCommand extends ChatCommand {
         return Locale.get("command.reward.description");
     }
 }
-

@@ -2,6 +2,7 @@ package com.cometproject.server.network.messages.incoming.user.newyear;
 
 import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.game.achievements.types.AchievementType;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.rooms.types.components.games.RoomGame;
 import com.cometproject.server.game.rooms.types.components.games.casino.CasinoGame;
@@ -12,6 +13,9 @@ import com.cometproject.server.network.messages.outgoing.user.purse.UpdateActivi
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;
 import com.cometproject.server.utilities.RandomUtil;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.data.currency.ICurrencyDefinition;
+import com.cometproject.storage.api.services.ICurrencyService;
 
 public class ResolutionSelectMessageEvent implements Event {
     public void handle(Session client, MessageEvent msg) {
@@ -29,14 +33,18 @@ public class ResolutionSelectMessageEvent implements Event {
         if (!(game instanceof CasinoGame)) { return; }
 
         final CasinoGame casinoGame = (CasinoGame) game;
+        final ICurrencyService currencyService = CometBootstrap.resolve(ICurrencyService.class);
+        final String betCurrency = currencyService.currencyCodeForUseCase(CurrencyUseCases.CASINO_BET);
+        final ICurrencyDefinition definition = currencyService.definition(betCurrency);
+        final int protocolCurrencyId = definition.getProtocolCurrencyId().orElse(0);
 
         if(casinoGame.getBets().size() > 50){
             client.getPlayer().sendBubble("casino_full", Locale.getOrDefault("casino.full", "Ahora mismo hay 50 apuestas en la ruleta, espera a la siguiente ronda para hacer más."));
             return;
         }
 
-        if(client.getPlayer().getEntity().getBetAmount() > client.getPlayer().getData().getBlackMoney()){
-            client.send(new NotificationMessageComposer("generic", Locale.getOrDefault("casino.missing.currency", "¡No tienes suficientes Tokens para realizar la apuesta!\n\nTienes %currency% Tokens y la apuesta en %bet%.").replace("%currency%", client.getPlayer().getData().getBlackMoney() + "").replace("%bet%", client.getPlayer().getEntity().getBetAmount() + "")));
+        if(client.getPlayer().getEntity().getBetAmount() > client.getPlayer().getData().getCurrencyBalance(betCurrency)){
+            client.send(new NotificationMessageComposer("generic", Locale.getOrDefault("casino.missing.currency", "¡No tienes suficientes Tokens para realizar la apuesta!\n\nTienes %currency% Tokens y la apuesta en %bet%.").replace("%currency%", client.getPlayer().getData().getCurrencyBalance(betCurrency) + "").replace("%bet%", client.getPlayer().getEntity().getBetAmount() + "")));
             return;
         }
 
@@ -82,9 +90,9 @@ public class ResolutionSelectMessageEvent implements Event {
             return;
         }
 
-        client.getPlayer().getData().decreaseBlackMoney(client.getPlayer().getEntity().getBetAmount());
+        client.getPlayer().getData().decreaseCurrency(betCurrency, client.getPlayer().getEntity().getBetAmount());
         client.getPlayer().getData().save();
-        client.send(new UpdateActivityPointsMessageComposer(client.getPlayer().getData().getBlackMoney(), -client.getPlayer().getEntity().getBetAmount(), 105));
+        client.send(new UpdateActivityPointsMessageComposer(client.getPlayer().getData().getCurrencyBalance(betCurrency), -client.getPlayer().getEntity().getBetAmount(), protocolCurrencyId));
 
         casinoGame.addPlayerBet(client.getPlayer(), selectionId, client.getPlayer().getEntity().getBetAmount());
 
@@ -114,4 +122,3 @@ public class ResolutionSelectMessageEvent implements Event {
         return convertedSelection;
     }
 }
-

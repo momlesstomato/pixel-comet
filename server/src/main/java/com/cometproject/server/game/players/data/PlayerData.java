@@ -1,6 +1,7 @@
 package com.cometproject.server.game.players.data;
 
 import com.cometproject.api.game.players.data.IPlayerData;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.achievements.BattlePassGlobals;
 import com.cometproject.server.game.achievements.types.BattlePassMission;
@@ -10,17 +11,27 @@ import com.cometproject.server.game.rooms.objects.items.RoomItem;
 import com.cometproject.server.game.utilities.validator.PlayerFigureValidator;
 import com.cometproject.server.network.messages.outgoing.notification.MassEventMessageComposer;
 import com.cometproject.server.network.messages.outgoing.user.achievements.AchievementPointsMessageComposer;
-import com.cometproject.server.network.rcon.packets.OpenBattlePass;
 import com.cometproject.server.storage.queries.player.PlayerDao;
+import com.cometproject.storage.api.data.currency.CurrencyMovementResult;
+import com.cometproject.storage.api.data.currency.CurrencyOperation;
+import com.cometproject.storage.api.data.currency.CurrencySource;
+import com.cometproject.storage.api.services.ICurrencyService;
 import com.google.gson.Gson;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class PlayerData implements IPlayerData {
     public static final String DEFAULT_FIGURE = "hr-100-61.hd-180-2.sh-290-91.ch-210-66.lg-270-82";
+    private static final String CREDITS_CURRENCY_CODE = "credits";
+    private static final int PROTOCOL_CURRENCY_0 = 0;
+    private static final int PROTOCOL_CURRENCY_5 = 5;
+    private static final int PROTOCOL_CURRENCY_103 = 103;
+    private static final int PROTOCOL_CURRENCY_105 = 105;
 
     private int id;
     private int rank;
@@ -37,10 +48,7 @@ public class PlayerData implements IPlayerData {
     private String ipAddress;
 
     private int credits;
-    private int vipPoints;
-    private int activityPoints;
-    private int seasonalPoints;
-    private int blackMoney;
+    private final Map<String, Integer> currencyBalances = new ConcurrentHashMap<>();
 
     private String regDate;
     private int lastVisit;
@@ -80,8 +88,8 @@ public class PlayerData implements IPlayerData {
     public PlayerBattlePassInfo battlePass = null;
     public int viewPoints = 0;
 
-    public PlayerData(int id, String username, String motto, String figure, String gender, String email, int rank, int credits, int vipPoints, int activityPoints,
-                      int seasonalPoints, int blackMoney, String reg, int lastVisit, boolean vip, int achievementPoints, int regTimestamp, int favouriteGroup, String ipAddress, int questId, int timeMuted, String nameColour, String tag, String job, int viewPoints, Player player) {
+    public PlayerData(int id, String username, String motto, String figure, String gender, String email, int rank, int credits, int currency5, int currency0,
+                      int currency103, int currency105, String reg, int lastVisit, boolean vip, int achievementPoints, int regTimestamp, int favouriteGroup, String ipAddress, int questId, int timeMuted, String nameColour, String tag, String job, int viewPoints, Player player) {
         this.id = id;
         this.username = username;
         this.motto = motto;
@@ -89,10 +97,6 @@ public class PlayerData implements IPlayerData {
         this.figure = figure;
         this.rank = rank;
         this.credits = credits;
-        this.vipPoints = vipPoints;
-        this.activityPoints = activityPoints;
-        this.seasonalPoints = seasonalPoints;
-        this.blackMoney = blackMoney;
         this.gender = gender;
         this.vip = vip;
         this.achievementPoints = achievementPoints;
@@ -108,6 +112,10 @@ public class PlayerData implements IPlayerData {
         this.tag = tag;
         this.job = job;
         this.viewPoints = viewPoints;
+        this.currencyBalances.put(this.currencyCodeForProtocolId(PROTOCOL_CURRENCY_0), currency0);
+        this.currencyBalances.put(this.currencyCodeForProtocolId(PROTOCOL_CURRENCY_5), currency5);
+        this.currencyBalances.put(this.currencyCodeForProtocolId(PROTOCOL_CURRENCY_103), currency103);
+        this.currencyBalances.put(this.currencyCodeForProtocolId(PROTOCOL_CURRENCY_105), currency105);
 
         if (this.figure != null) {
             if (!PlayerFigureValidator.isValidFigureCode(this.figure, this.gender.toLowerCase())) {
@@ -136,10 +144,10 @@ public class PlayerData implements IPlayerData {
                 data.getString("playerData_email"),
                 data.getInt("playerData_rank"),
                 data.getInt("playerData_credits"),
-                data.getInt("playerData_vipPoints"),
-                data.getInt("playerData_activityPoints"),
-                data.getInt("playerData_seasonalPoints"),
-                data.getInt("playerData_blackMoney"),
+                data.getInt("playerData_currency5"),
+                data.getInt("playerData_currency0"),
+                data.getInt("playerData_currency103"),
+                data.getInt("playerData_currency105"),
                 data.getString("playerData_regDate"),
                 data.getInt("playerData_lastOnline"),
                 data.getString("playerData_vip").equals("1"),
@@ -170,57 +178,35 @@ public class PlayerData implements IPlayerData {
     }
 
     public void saveNow() {
-        PlayerDao.updatePlayerData(id, username, motto, figure, credits, vipPoints, gender, favouriteGroup, activityPoints, seasonalPoints, blackMoney, questId, achievementPoints, nameColour, tag, job);
+        PlayerDao.updatePlayerDataWithoutCurrencies(id, username, motto, figure, credits, gender, favouriteGroup, questId, achievementPoints, nameColour, tag, job);
     }
 
     public void decreaseCredits(int amount) {
+        if (this.adjustInventory(CREDITS_CURRENCY_CODE, CurrencyOperation.REMOVE, amount)) {
+            return;
+        }
+
         this.credits -= amount;
 
         flush();
     }
 
     public void decreaseCurrency(int currency, int amount){
-        switch (currency){
-            case 1:
-                this.credits -= amount;
-                break;
-            case 2:
-                this.activityPoints -= amount;
-                break;
-            case 3:
-                this.vipPoints -= amount;
-                break;
+        if (this.adjustInventory(this.currencyCodeForLegacyId(currency), CurrencyOperation.REMOVE, amount)) {
+            return;
         }
+
+        this.applyFallbackCurrencyDelta(this.currencyCodeForLegacyId(currency), -amount);
 
         flush();
     }
 
     public void increaseCredits(int amount) {
+        if (this.adjustInventory(CREDITS_CURRENCY_CODE, CurrencyOperation.ADD, amount)) {
+            return;
+        }
+
         this.credits += amount;
-
-        flush();
-    }
-
-    public void decreaseVipPoints(int points) {
-        this.vipPoints -= points;
-
-        flush();
-    }
-
-    public void increaseVipPoints(int points) {
-        this.vipPoints += points;
-
-        flush();
-    }
-
-    public void increaseActivityPoints(int points) {
-        this.activityPoints += points;
-
-        flush();
-    }
-
-    public void decreaseActivityPoints(int points) {
-        this.activityPoints -= points;
 
         flush();
     }
@@ -231,34 +217,6 @@ public class PlayerData implements IPlayerData {
         if (this.rank == 2) this.viewPoints++;
 
         PlayerDao.UpdateViewPoints(this.viewPoints, this.id);
-    }
-
-    public void increaseSeasonalPoints(int points) {
-        this.seasonalPoints += points;
-
-        flush();
-    }
-
-    public void increaseBlackMoney(int points) {
-        this.blackMoney += points;
-
-        flush();
-    }
-
-    public void decreaseBlackMoney(int points) {
-        this.blackMoney -= points;
-
-        flush();
-    }
-
-    public int getBlackMoney() {
-        return blackMoney;
-    }
-
-    public void decreaseSeasonalPoints(int points) {
-        this.seasonalPoints -= points;
-
-        flush();
     }
 
     public void increaseAchievementPoints(int points) {
@@ -298,7 +256,14 @@ public class PlayerData implements IPlayerData {
             }
         }
 
-        return this.gson.toJson(new OpenBattlePass(isActive, level, exp, missions, this.username, this.figure));
+        return this.gson.toJson(Map.of(
+                "handle", "openBattlePass",
+                "isActive", isActive,
+                "level", level,
+                "exp", exp,
+                "missionStats", missions,
+                "name", this.username,
+                "look", this.figure));
     }
 
     public void openBattlePass(){
@@ -403,14 +368,6 @@ public class PlayerData implements IPlayerData {
         flush();
     }
 
-    public int getVipPoints() {
-        return this.vipPoints;
-    }
-
-    public void setVipPoints(int vipPoints) {
-        this.vipPoints = vipPoints;
-    }
-
     public int getLastVisit() {
         return this.lastVisit;
     }
@@ -481,14 +438,6 @@ public class PlayerData implements IPlayerData {
         this.ipAddress = ipAddress;
     }
 
-    public int getActivityPoints() {
-        return activityPoints;
-    }
-
-    public void setActivityPoints(int activityPoints) {
-        this.activityPoints = activityPoints;
-    }
-
     public String getTemporaryFigure() {
         return temporaryFigure;
     }
@@ -557,18 +506,155 @@ public class PlayerData implements IPlayerData {
         flush();
     }
 
-    public int getSeasonalPoints() {
-        return seasonalPoints;
+    /**
+     * Adds a configured inventory currency and refreshes in-memory snapshots.
+     *
+     * @param currencyCode the currency code or alias.
+     * @param amount       the positive amount.
+     */
+    @Override
+    public void increaseCurrency(final String currencyCode, final int amount) {
+        if (this.adjustInventory(currencyCode, CurrencyOperation.ADD, amount)) {
+            return;
+        }
+
+        this.applyFallbackCurrencyDelta(currencyCode, amount);
+        flush();
     }
 
-    public void setSeasonalPoints(int seasonalPoints) {
-        this.seasonalPoints = seasonalPoints;
+    /**
+     * Removes a configured inventory currency and refreshes in-memory snapshots.
+     *
+     * @param currencyCode the currency code or alias.
+     * @param amount       the positive amount.
+     */
+    @Override
+    public void decreaseCurrency(final String currencyCode, final int amount) {
+        if (this.adjustInventory(currencyCode, CurrencyOperation.REMOVE, amount)) {
+            return;
+        }
 
+        this.applyFallbackCurrencyDelta(currencyCode, -amount);
         flush();
+    }
+
+    /**
+     * Returns the current configured player inventory balance.
+     *
+     * @param currencyCode the currency code or alias.
+     * @return the current balance, or zero when unavailable.
+     */
+    @Override
+    public int getCurrencyBalance(final String currencyCode) {
+        try {
+            final ICurrencyService currencyService = CometBootstrap.resolve(ICurrencyService.class);
+
+            return Math.toIntExact(currencyService.balance(this.id, currencyCode));
+        } catch (IllegalStateException exception) {
+            return this.cachedBalanceFor(currencyCode);
+        }
+    }
+
+    /**
+     * Applies a configured player inventory balance snapshot.
+     *
+     * @param currencyCode the currency code or alias.
+     * @param balance      the exact balance.
+     */
+    @Override
+    public void setCurrencyBalance(final String currencyCode, final int balance) {
+        this.applyCurrencyBalance(currencyCode, balance);
     }
 
     public Player getPlayer() {
         return player;
+    }
+
+    /**
+     * Applies an inventory balance snapshot without recording a movement.
+     *
+     * @param currencyCode the canonical currency code.
+     * @param balance      the exact balance.
+     */
+    public void applyCurrencyBalance(final String currencyCode, final long balance) {
+        final int intBalance = Math.toIntExact(balance);
+        final String resolvedCurrencyCode = this.resolveCurrencyCode(currencyCode);
+
+        if (CREDITS_CURRENCY_CODE.equals(resolvedCurrencyCode)) {
+            this.credits = intBalance;
+        } else {
+            this.currencyBalances.put(resolvedCurrencyCode, intBalance);
+        }
+
+        flush();
+    }
+
+    private String currencyCodeForLegacyId(final int currency) {
+        return switch (currency) {
+            case 2 -> this.currencyCodeForProtocolId(PROTOCOL_CURRENCY_0);
+            case 3 -> this.currencyCodeForProtocolId(PROTOCOL_CURRENCY_5);
+            case 4 -> this.currencyCodeForProtocolId(PROTOCOL_CURRENCY_103);
+            case 5 -> this.currencyCodeForProtocolId(PROTOCOL_CURRENCY_105);
+            default -> CREDITS_CURRENCY_CODE;
+        };
+    }
+
+    private String currencyCodeForProtocolId(final int protocolCurrencyId) {
+        try {
+            return CometBootstrap.resolve(ICurrencyService.class).currencyCodeForProtocolId(protocolCurrencyId);
+        } catch (IllegalStateException exception) {
+            return "currency_" + protocolCurrencyId;
+        }
+    }
+
+    private void applyFallbackCurrencyDelta(final String currencyCode, final int delta) {
+        final String resolvedCurrencyCode = this.resolveCurrencyCode(currencyCode);
+
+        if (CREDITS_CURRENCY_CODE.equals(resolvedCurrencyCode)) {
+            this.credits += delta;
+            return;
+        }
+
+        this.currencyBalances.merge(resolvedCurrencyCode, delta, Integer::sum);
+    }
+
+    private int cachedBalanceFor(final String currencyCode) {
+        final String resolvedCurrencyCode = this.resolveCurrencyCode(currencyCode);
+        if (CREDITS_CURRENCY_CODE.equals(resolvedCurrencyCode)) {
+            return this.credits;
+        }
+
+        return this.currencyBalances.getOrDefault(resolvedCurrencyCode, 0);
+    }
+
+    private boolean adjustInventory(final String currencyCode, final CurrencyOperation operation, final int amount) {
+        try {
+            final ICurrencyService currencyService = CometBootstrap.resolve(ICurrencyService.class);
+            final CurrencySource source = new CurrencySource(
+                    "system",
+                    "",
+                    "legacy_player_data",
+                    Integer.toString(this.id),
+                    "Legacy PlayerData currency mutation");
+            final CurrencyMovementResult result = switch (operation) {
+                case ADD -> currencyService.add(this.id, currencyCode, amount, source);
+                case REMOVE -> currencyService.remove(this.id, currencyCode, amount, source);
+                case SET -> currencyService.set(this.id, currencyCode, amount, source);
+            };
+
+            this.applyCurrencyBalance(currencyCode, result.getNewBalance());
+            return true;
+        } catch (RuntimeException exception) {
+            return false;
+        }
+    }
+
+    private String resolveCurrencyCode(final String currencyCode) {
+        try {
+            return CometBootstrap.resolve(ICurrencyService.class).resolveCurrencyCode(currencyCode);
+        } catch (RuntimeException exception) {
+            return currencyCode;
+        }
     }
 
     public void flush() {

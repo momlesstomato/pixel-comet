@@ -9,6 +9,7 @@ import com.cometproject.api.game.rooms.objects.data.LimitedEditionItemData;
 import com.cometproject.api.game.rooms.objects.data.RoomItemData;
 import com.cometproject.api.game.utilities.Position;
 import com.cometproject.api.networking.messages.IComposer;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.composers.catalog.UnseenItemsMessageComposer;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.items.ItemManager;
@@ -24,6 +25,8 @@ import com.cometproject.server.storage.queries.items.LimitedEditionDao;
 import com.cometproject.server.utilities.RandomUtil;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.services.ICurrencyService;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -77,13 +80,17 @@ public class CrackableFloorItem extends RoomItemFloor {
                     break;
 
                 case VIP_POINTS:
-                    player.getData().increaseVipPoints(crackableReward.getRewardDataInt());
+                    player.getData().increaseCurrency(
+                            currencyCodeForUseCase(CurrencyUseCases.CRACKABLE_REWARD_SECONDARY),
+                            crackableReward.getRewardDataInt());
                     player.sendBalance();
                     player.getData().save();
                     break;
 
                 case ACTIVITY_POINTS:
-                    player.getData().increaseActivityPoints(crackableReward.getRewardDataInt());
+                    player.getData().increaseCurrency(
+                            currencyCodeForUseCase(CurrencyUseCases.CRACKABLE_REWARD_PRIMARY),
+                            crackableReward.getRewardDataInt());
                     player.sendBalance();
                     player.getData().save();
                     break;
@@ -126,7 +133,9 @@ public class CrackableFloorItem extends RoomItemFloor {
                                 CraftingDao.updateLimitedEgg();
                             }
                         } else {
-                            player.getData().increaseActivityPoints(seasonalPrize);
+                            player.getData().increaseCurrency(
+                                    currencyCodeForUseCase(CurrencyUseCases.CRACKABLE_REWARD_PRIMARY),
+                                    seasonalPrize);
                             player.sendBalance();
                             player.getData().save();
                             player.sendBubble("eggSeasonal","¡Has recibido " + seasonalPrize + " Píxeles tras explotar el huevo!");
@@ -134,14 +143,18 @@ public class CrackableFloorItem extends RoomItemFloor {
                     }
 
                     if(result >= 2 && result < 17) {
-                        player.getData().increaseActivityPoints(seasonalPrize);
+                        player.getData().increaseCurrency(
+                                currencyCodeForUseCase(CurrencyUseCases.CRACKABLE_REWARD_PRIMARY),
+                                seasonalPrize);
                         player.sendBalance();
                         player.getData().save();
                         player.sendBubble("eggSeasonal","¡Has recibido " + seasonalPrize + " Píxeles tras explotar el huevo!");
                     }
 
                     if(result > 17){
-                        player.getData().increaseVipPoints(1);
+                        player.getData().increaseCurrency(
+                                currencyCodeForUseCase(CurrencyUseCases.CRACKABLE_REWARD_SECONDARY),
+                                diamondPrize);
                         player.sendBalance();
                         player.getData().save();
                         player.sendBubble("eggDiamond","¡Has recibido " + diamondPrize + " Amatistas tras explotar el huevo!");
@@ -190,6 +203,10 @@ public class CrackableFloorItem extends RoomItemFloor {
             msg.writeInt(state);//state
             msg.writeInt(20);//max
         }
+    }
+
+    private static String currencyCodeForUseCase(final String useCase) {
+        return CometBootstrap.resolve(ICurrencyService.class).currencyCodeForUseCase(useCase);
     }
 
     private int calculateState(int maxHits, int currentHits) {

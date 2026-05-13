@@ -183,6 +183,16 @@ CREATE TABLE IF NOT EXISTS `catalog_items` (
   PRIMARY KEY (`id`)
 );
 
+CREATE TABLE IF NOT EXISTS `catalog_item_prices` (
+  `catalog_item_id` int unsigned NOT NULL,
+  `currency_code` varchar(64) NOT NULL,
+  `amount` int NOT NULL DEFAULT 0,
+  `display_order` int NOT NULL DEFAULT 0,
+  `client_visible` enum('1','0') NOT NULL DEFAULT '1',
+  PRIMARY KEY (`catalog_item_id`, `currency_code`),
+  KEY `idx_catalog_item_prices_currency` (`currency_code`)
+);
+
 CREATE TABLE IF NOT EXISTS `catalog_products` (
   `id` int(3) unsigned NOT NULL AUTO_INCREMENT,
   `item_id` int(11) NOT NULL DEFAULT 0,
@@ -2119,4 +2129,3 @@ CREATE TABLE IF NOT EXISTS `cms_wordfilter` (
   `word` text DEFAULT NULL,
   `replacement` text DEFAULT NULL
 );
-

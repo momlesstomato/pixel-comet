@@ -1,5 +1,6 @@
 package com.cometproject.server.game.commands.staff;
 
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.commands.ChatCommand;
 import com.cometproject.server.game.permissions.PermissionsManager;
@@ -9,6 +10,8 @@ import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.notification.AdvancedAlertMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.queries.player.PlayerDao;
+import com.cometproject.storage.api.data.currency.ICurrencyDefinition;
+import com.cometproject.storage.api.services.ICurrencyService;
 
 public class PlayerInfoCommand extends ChatCommand {
     @Override
@@ -58,12 +61,20 @@ public class PlayerInfoCommand extends ChatCommand {
         userInfo.append("<b>" + Locale.getOrDefault("command.playerinfo.currencyBalances", "Monedas del usuario") + "</b><br>");
         userInfo.append("<i>" + playerData.getCredits() + " <b><font color='#E79D1C'>" + Locale.getOrDefault("command.playerinfo.koins", "créditos") + "</font></b></i><br>");
 
-        if (client.getPlayer().getPermissions().getRank().modTool()) {
-            userInfo.append("<i>" + playerData.getVipPoints() + " <b><font color='#F71053'>" + Locale.getOrDefault("command.playerinfo.rubys", "asteroides") + "</font></b></i><br>");
+        final ICurrencyService currencyService = CometBootstrap.resolve(ICurrencyService.class);
+        for (ICurrencyDefinition definition : currencyService.definitionsForRank(playerData.getRank())) {
+            if (definition.isCredits() || !definition.isEnabled()) {
+                continue;
+            }
+
+            userInfo.append("<i>")
+                    .append(playerData.getCurrencyBalance(definition.getCode()))
+                    .append(" <b><font color='#28BCD4'>")
+                    .append(displayName(definition))
+                    .append("</font></b></i><br>");
         }
 
-        userInfo.append("<i>" + playerData.getActivityPoints() + " <b><font color='#28BCD4'>" + Locale.getOrDefault("command.playerinfo.activityPoints", "cometas") + "</font></b></i><br>");
-        userInfo.append("<i>" + playerData.getSeasonalPoints() + " <b><font color='#1C9DE7'>" + Locale.getOrDefault("command.playerinfo.seasonal", "Puntos de Juego") + "</font></b></i><br><br>");
+        userInfo.append("<br>");
 
 
         userInfo.append("<b>" + Locale.getOrDefault("command.playerinfo.roomInfo", "Información de la sala:") + "</b><br>");
@@ -100,5 +111,11 @@ public class PlayerInfoCommand extends ChatCommand {
     @Override
     public String getDescription() {
         return Locale.get("command.playerinfo.description");
+    }
+
+    private static String displayName(final ICurrencyDefinition definition) {
+        return definition.getNounPlural() == null || definition.getNounPlural().isBlank()
+                ? definition.getDisplayName()
+                : definition.getNounPlural();
     }
 }

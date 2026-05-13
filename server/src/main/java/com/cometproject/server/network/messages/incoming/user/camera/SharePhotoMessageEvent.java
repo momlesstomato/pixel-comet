@@ -3,6 +3,7 @@ package com.cometproject.server.network.messages.incoming.user.camera;
 import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.game.achievements.types.AchievementType;
 import com.cometproject.api.game.players.data.components.inventory.PlayerItem;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.composers.camera.PurchasedPhotoMessageComposer;
 import com.cometproject.server.composers.catalog.UnseenItemsMessageComposer;
 import com.cometproject.server.config.Locale;
@@ -17,6 +18,9 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
+import com.cometproject.storage.api.data.currency.CurrencyUseCases;
+import com.cometproject.storage.api.data.currency.ICurrencyDefinition;
+import com.cometproject.storage.api.services.ICurrencyService;
 import com.google.common.collect.Sets;
 
 public class SharePhotoMessageEvent implements Event {
@@ -34,14 +38,18 @@ public class SharePhotoMessageEvent implements Event {
 
         if (!CometSettings.playerInfiniteBalance) {
             int pixelCost = 3;
+            final ICurrencyService currencyService = CometBootstrap.resolve(ICurrencyService.class);
+            final String currencyCode = currencyService.currencyCodeForUseCase(CurrencyUseCases.CAMERA_SHARE);
+            final ICurrencyDefinition definition = currencyService.definition(currencyCode);
+            final int protocolCurrencyId = definition.getProtocolCurrencyId().orElse(0);
 
-            if(client.getPlayer().getData().getActivityPoints() < pixelCost) {
+            if(client.getPlayer().getData().getCurrencyBalance(currencyCode) < pixelCost) {
                 client.send(new AlertMessageComposer(Locale.get("catalog.error.notenough")));
                 return;
             }
 
-            client.getPlayer().getData().decreaseActivityPoints(pixelCost);
-            client.send(new UpdateActivityPointsMessageComposer(client.getPlayer().getData().getActivityPoints(), -pixelCost, 0));
+            client.getPlayer().getData().decreaseCurrency(currencyCode, pixelCost);
+            client.send(new UpdateActivityPointsMessageComposer(client.getPlayer().getData().getCurrencyBalance(currencyCode), -pixelCost, protocolCurrencyId));
             client.getPlayer().composeCurrenciesBalance();
             client.getPlayer().getData().save();
         }
