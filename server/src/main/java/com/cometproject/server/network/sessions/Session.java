@@ -172,11 +172,17 @@ public class Session implements ISession {
             LOGGER.debug("Unknown header ID for message: " + msg.getClass().getSimpleName());
         }
 
+        final ConnectionState connectionState = this.connection.getState();
+        if (connectionState == ConnectionState.CLOSING || connectionState == ConnectionState.CLOSED) {
+            return this;
+        }
+
+        this.connection.send(msg);
+
         if (!(msg instanceof AvatarUpdateMessageComposer) && !(msg instanceof UpdateFloorItemMessageComposer))
             LOGGER.debug("Sent packet {} (id={}) to connection {}",
                     msg.getClass().getSimpleName(), msg.getId(), this.networkId);
 
-        this.connection.send(msg);
         return this;
     }
 

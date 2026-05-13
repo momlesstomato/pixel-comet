@@ -36,17 +36,31 @@ public final class JavalinWebSocketConnection extends AbstractConnection {
 
     @Override
     protected void sendInternal(final IMessageComposer composer) {
+        if (!this.context.session.isOpen()) {
+            this.markClosed();
+            return;
+        }
+
         final ByteBuffer payload = ProtocolMessageCodec.encode(composer, this.getCipher());
         this.context.send(payload);
     }
 
     @Override
     protected void sendRawInternal(final String payload) {
+        if (!this.context.session.isOpen()) {
+            this.markClosed();
+            return;
+        }
+
         this.context.send(payload);
     }
 
     @Override
     protected void closeInternal(final ConnectionCloseCode closeCode) {
+        if (!this.context.session.isOpen()) {
+            return;
+        }
+
         this.context.closeSession();
     }
 }

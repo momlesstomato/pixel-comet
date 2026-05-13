@@ -65,19 +65,45 @@ public abstract class AbstractConnection implements Connection {
 
     @Override
     public void send(final IMessageComposer composer) {
-        this.sendInternal(composer);
+        if (!this.canWrite()) {
+            return;
+        }
+
+        try {
+            this.sendInternal(composer);
+        } catch (Exception exception) {
+            this.markClosed();
+        }
     }
 
     @Override
     public void sendRaw(final String payload) {
-        this.sendRawInternal(payload);
+        if (!this.canWrite()) {
+            return;
+        }
+
+        try {
+            this.sendRawInternal(payload);
+        } catch (Exception exception) {
+            this.markClosed();
+        }
     }
 
     @Override
     public void close(final ConnectionCloseCode closeCode) {
-        this.state.set(ConnectionState.CLOSING);
-        this.closeInternal(closeCode);
-        this.state.set(ConnectionState.CLOSED);
+        if (!this.state.compareAndSet(ConnectionState.CONNECTING, ConnectionState.CLOSING)
+                && !this.state.compareAndSet(ConnectionState.AUTHENTICATING, ConnectionState.CLOSING)
+                && !this.state.compareAndSet(ConnectionState.AUTHENTICATED, ConnectionState.CLOSING)) {
+            return;
+        }
+
+        try {
+            this.closeInternal(closeCode);
+        } catch (Exception exception) {
+            // The transport may already be gone; the logical connection is still closed.
+        } finally {
+            this.markClosed();
+        }
     }
 
     @Override
@@ -91,6 +117,23 @@ public abstract class AbstractConnection implements Connection {
      * @param cipher The cipher that has just been applied.
      */
     protected void onCipherChanged(final ConnectionCipher cipher) {
+    }
+
+    /**
+     * Returns whether this connection can still accept outgoing writes.
+     *
+     * @return true when the logical connection is not closing or closed.
+     */
+    protected boolean canWrite() {
+        final ConnectionState currentState = this.state.get();
+        return currentState != ConnectionState.CLOSING && currentState != ConnectionState.CLOSED;
+    }
+
+    /**
+     * Marks the logical connection closed without invoking transport close callbacks.
+     */
+    protected void markClosed() {
+        this.state.set(ConnectionState.CLOSED);
     }
 
     /**
