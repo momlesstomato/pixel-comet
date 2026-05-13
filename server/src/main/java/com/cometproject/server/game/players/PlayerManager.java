@@ -23,6 +23,7 @@ import com.cometproject.server.game.players.login.PlayerLoginRequest;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.queries.player.PlayerDao;
+import com.cometproject.storage.api.repositories.IPlayerRepository;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.inject.Inject;
@@ -39,6 +40,7 @@ public class PlayerManager implements IPlayerService {
     private static final long DEFAULT_PLAYER_DATA_CACHE_MINUTES = 30L;
     private static Logger LOGGER = LoggerFactory.getLogger(PlayerManager.class.getName());
     private final ISsoTicketService ssoTicketService;
+    private final IPlayerRepository playerRepository;
 
     private Map<Integer, Integer> playerIdToSessionId;
     private Map<String, Integer> playerUsernameToPlayerId;
@@ -52,8 +54,11 @@ public class PlayerManager implements IPlayerService {
     private ExecutorService playerLoginService;
 
     @Inject
-    PlayerManager(final ISsoTicketService ssoTicketService) {
+    PlayerManager(
+            final ISsoTicketService ssoTicketService,
+            final IPlayerRepository playerRepository) {
         this.ssoTicketService = ssoTicketService;
+        this.playerRepository = playerRepository;
     }
 
     public static PlayerManager getInstance() {
@@ -79,7 +84,7 @@ public class PlayerManager implements IPlayerService {
         this.playerLoginService = Executors.newFixedThreadPool(4);// TODO: configure this.
 
         LOGGER.info("Resetting player online status");
-        PlayerDao.resetOnlineStatus();
+        this.playerRepository.resetOnlineStatus();
 
         LOGGER.info("PlayerManager initialized");
     }
@@ -92,7 +97,11 @@ public class PlayerManager implements IPlayerService {
     }
 
     public void submitLoginRequest(ISession client, String ticket) {
-        this.playerLoginService.submit(new PlayerLoginRequest((Session) client, ticket, this.ssoTicketService));
+        this.playerLoginService.submit(new PlayerLoginRequest(
+            (Session) client,
+            ticket,
+            this.ssoTicketService,
+            this.playerRepository));
     }
 
     public PlayerAvatar getAvatarByPlayerId(int playerId, byte mode) {

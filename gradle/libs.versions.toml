@@ -29,6 +29,7 @@ h2 = "2.2.224"
 flyway = "10.17.0"
 testcontainers = "1.20.1"
 validationApi = "2.0.1.Final"
+jakartaXmlBind = "4.0.2"
 
 [libraries]
 caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine" }
@@ -69,3 +70,4 @@ flyway-mysql = { module = "org.flywaydb:flyway-mysql", version.ref = "flyway" }
 testcontainers-junit = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
 testcontainers-mariadb = { module = "org.testcontainers:mariadb", version.ref = "testcontainers" }
 validation-api = { module = "javax.validation:validation-api", version.ref = "validationApi" }
+jakarta-xml-bind-api = { module = "jakarta.xml.bind:jakarta.xml.bind-api", version.ref = "jakartaXmlBind" }

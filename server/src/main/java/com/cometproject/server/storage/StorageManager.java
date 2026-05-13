@@ -8,14 +8,27 @@ import com.cometproject.server.storage.cache.CacheManager;
 import com.cometproject.server.storage.migration.FlywayMigrationService;
 import com.cometproject.storage.api.migration.IMigrationService;
 import com.cometproject.storage.api.StorageContext;
+import com.cometproject.storage.api.repositories.IPlayerRepository;
 import com.cometproject.storage.mysql.MySQLStorageInitializer;
 import com.cometproject.storage.mysql.connections.HikariConnectionProvider;
+import com.google.inject.Inject;
 
 public class StorageManager implements Startable {
     private final HikariConnectionProvider hikariConnectionProvider;
+    private final IPlayerRepository playerRepository;
 
-    public StorageManager() {
-        hikariConnectionProvider = new HikariConnectionProvider();
+    /**
+     * Creates the storage manager with shared database collaborators.
+     *
+     * @param hikariConnectionProvider the server-wide Hikari connection provider.
+     * @param playerRepository         the player repository exposed through storage context.
+     */
+    @Inject
+    public StorageManager(
+            final HikariConnectionProvider hikariConnectionProvider,
+            final IPlayerRepository playerRepository) {
+        this.hikariConnectionProvider = hikariConnectionProvider;
+        this.playerRepository = playerRepository;
     }
 
     public static StorageManager getInstance() {
@@ -24,7 +37,9 @@ public class StorageManager implements Startable {
 
     @Override
     public void start() {
-        final MySQLStorageInitializer initializer = new MySQLStorageInitializer(hikariConnectionProvider);
+        final MySQLStorageInitializer initializer = new MySQLStorageInitializer(
+            hikariConnectionProvider,
+            this.playerRepository);
         final StorageContext storageContext = new StorageContext();
         final boolean seedEnabled = Boolean.parseBoolean(
             Configuration.currentConfig().getOrDefault(

@@ -27,6 +27,7 @@ import com.cometproject.server.storage.cache.CacheManager;
 import com.cometproject.server.utilities.collections.ConcurrentHashSet;
 
 public class PlayerDao {
+    @Deprecated
     public static Player getPlayer(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

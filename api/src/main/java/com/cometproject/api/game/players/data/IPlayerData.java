@@ -110,4 +110,11 @@ public interface IPlayerData extends PlayerAvatar {
 
     void setNameColour(String nameColour);
     void setTag(String tag);
+
+    /**
+     * Returns the profile tag shown alongside the player account.
+     *
+     * @return the persisted profile tag.
+     */
+    String getTag();
 }

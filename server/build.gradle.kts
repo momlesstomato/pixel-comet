@@ -105,6 +105,7 @@ dependencies {
     testImplementation(libs.h2)
     testImplementation(libs.testcontainers.junit)
     testImplementation(libs.testcontainers.mariadb)
+    testImplementation(libs.jakarta.xml.bind.api)
     testRuntimeOnly(libs.junit.platform.launcher)
     testRuntimeOnly(libs.junit.vintage.engine)
 
@@ -114,5 +115,16 @@ dependencies {
 }
 
 tasks.test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        excludeTags("integration")
+    }
+}
+
+tasks.register<Test>("integrationTest") {
+    description = "Runs integration tests that require external services such as Docker."
+    group = "verification"
+    useJUnitPlatform {
+        includeTags("integration")
+    }
+    shouldRunAfter(tasks.test)
 }

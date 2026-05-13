@@ -19,7 +19,7 @@ public class PhotoRoutes {
         final String photoId = ApiRequestUtils.firstNonBlank(
                 context.header("photo_id"),
                 context.header("photoId")
-        )
+        );
         final Integer playerId = PlayerManager.getInstance().getPlayerIdByAuthToken(ssoTicket);
 
         if (playerId == null) {

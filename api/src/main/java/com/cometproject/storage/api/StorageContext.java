@@ -14,6 +14,7 @@ public final class StorageContext {
     private IInventoryRepository inventoryRepository;
     private IRewardRepository rewardRepository;
     private IPhotoRepository photoRepository;
+    private IPlayerRepository playerRepository;
 
     public IGroupRepository getGroupRepository() {
         return groupRepository;
@@ -85,5 +86,23 @@ public final class StorageContext {
 
     public void setPhotoRepository(IPhotoRepository photoRepository) {
         this.photoRepository = photoRepository;
+    }
+
+    /**
+     * Returns the repository responsible for player account persistence.
+     *
+     * @return the configured player repository.
+     */
+    public IPlayerRepository getPlayerRepository() {
+        return playerRepository;
+    }
+
+    /**
+     * Sets the repository responsible for player account persistence.
+     *
+     * @param playerRepository the player repository implementation.
+     */
+    public void setPlayerRepository(IPlayerRepository playerRepository) {
+        this.playerRepository = playerRepository;
     }
 }

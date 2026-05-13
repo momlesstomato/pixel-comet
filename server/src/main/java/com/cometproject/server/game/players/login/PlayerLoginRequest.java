@@ -51,6 +51,7 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.network.sessions.SessionManager;
 import com.cometproject.server.storage.queries.player.PlayerAccessDao;
 import com.cometproject.server.storage.queries.player.PlayerDao;
+import com.cometproject.storage.api.repositories.IPlayerRepository;
 import com.cometproject.server.tasks.CometTask;
 import com.cometproject.server.tasks.CometThreadManager;
 
@@ -59,11 +60,25 @@ public class PlayerLoginRequest implements CometTask {
     private final Session client;
     private final String ticket;
     private final ISsoTicketService ssoTicketService;
+    private final IPlayerRepository playerRepository;
 
-    public PlayerLoginRequest(Session client, String ticket, ISsoTicketService ssoTicketService) {
+    /**
+     * Creates a login task for a single client authentication attempt.
+     *
+     * @param client           the authenticating client session.
+     * @param ticket           the SSO ticket supplied by the client.
+     * @param ssoTicketService the service that validates and consumes SSO tickets.
+     * @param playerRepository the repository used to load the authenticated player.
+     */
+    public PlayerLoginRequest(
+            Session client,
+            String ticket,
+            ISsoTicketService ssoTicketService,
+            IPlayerRepository playerRepository) {
         this.client = client;
         this.ticket = ticket;
         this.ssoTicketService = ssoTicketService;
+        this.playerRepository = playerRepository;
     }
 
     @Override
@@ -75,7 +90,7 @@ public class PlayerLoginRequest implements CometTask {
         try {
             final String rawTicket = this.resolveRawTicket();
             final SsoTicket consumedTicket = this.consumeTicket(rawTicket);
-            Player player = PlayerDao.getPlayer(consumedTicket.playerId());
+            final Player player = this.loadPlayer(consumedTicket.playerId());
 
             if (player == null) {
                 throw new InvalidSSOTicketException();
@@ -148,7 +163,8 @@ public class PlayerLoginRequest implements CometTask {
 
             boolean newPlayer = false;//client.getPlayer().getSettings().getNuxStatus() == 0;
 
-            PlayerDao.updatePlayerStatus(player, player.isOnline(), true);
+            this.playerRepository.updateOnlineStatus(player.getId(), player.isOnline());
+            this.playerRepository.updateLastOnline(player.getId(), player.getData().getIpAddress());
 
             client.sendQueue(new UniqueIDMessageComposer(client.getUniqueId()))
                     .sendQueue(new AuthenticationOKMessageComposer())
@@ -299,5 +315,17 @@ public class PlayerLoginRequest implements CometTask {
     private SsoTicket consumeTicket(final String rawTicket) throws InvalidSSOTicketException {
         return this.ssoTicketService.consume(rawTicket)
                 .orElseThrow(InvalidSSOTicketException::new);
+    }
+
+    private Player loadPlayer(final int playerId) {
+        final Player[] loadedPlayer = new Player[1];
+
+        this.playerRepository.findById(playerId, player -> {
+            if (player instanceof Player serverPlayer) {
+                loadedPlayer[0] = serverPlayer;
+            }
+        });
+
+        return loadedPlayer[0];
     }
 }
