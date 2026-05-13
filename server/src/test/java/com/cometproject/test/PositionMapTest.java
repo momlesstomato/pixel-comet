@@ -7,9 +7,15 @@ import junit.framework.TestCase;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Verifies that immutable position values can be used safely as map keys.
+ */
 public class PositionMapTest extends TestCase {
     private Map<Position, String> positionMap;
 
+    /**
+     * Builds a fixture with multiple positions sharing the same x coordinate.
+     */
     public PositionMapTest() {
         this.positionMap = new HashMap<>();
 
@@ -17,6 +23,9 @@ public class PositionMapTest extends TestCase {
         this.positionMap.put(new Position(1, 3), "lala");
     }
 
+    /**
+     * Ensures key lookup uses the full position value rather than object identity.
+     */
     public void testMapContains() {
         Position pos = new Position(1, 3);
         Assert.assertTrue(this.positionMap.containsKey(pos));

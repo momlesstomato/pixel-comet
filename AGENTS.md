@@ -43,6 +43,7 @@ Every public class, interface, enum, and public/protected method **must** have a
 - Document thread-safety guarantees where relevant.
 - Document protocol-level semantics where a method maps to a Pixel Protocol concept.
 - Private helpers do not require Javadoc but may have a brief `//` comment for non-obvious logic.
+- Javadocs are enforced by Checkstyle. Run `./gradlew checkstyleMain` locally when changing public APIs, and `./gradlew check` before handing off a larger change.
 
 ---
 
@@ -50,7 +51,7 @@ Every public class, interface, enum, and public/protected method **must** have a
 
 All new code **must compile without warnings**. Before opening a pull request:
 
-- Run `mvn clean package -Werror` (or the equivalent goal for the target module).
+- Run `./gradlew clean check` for the full repository, or the equivalent `:<module>:check` task for a focused module.
 - Fix every unchecked cast, raw type, unused import, unused variable, and deprecation warning.
 - Do not suppress warnings with `@SuppressWarnings` unless you include a comment explaining why suppression is unavoidable (and link to the JDK or library issue that causes it).
 
@@ -109,7 +110,7 @@ All HTTP management endpoints **must** use Javalin. Spark Core routes or new emb
 Before every pull request, verify:
 
 - [ ] Every public type and member has a Javadoc comment.
-- [ ] `mvn clean package -Werror` passes with no warnings.
+- [ ] `./gradlew clean check` passes with no warnings.
 - [ ] All new packet opcodes match the Pixel Protocol spec.
 - [ ] No direct dependency from a `Comet-Game-*` module onto `Comet-Server` internals.
 - [ ] New functionality is exposed via an interface in `Comet-API` or `Comet-Networking-API`.
