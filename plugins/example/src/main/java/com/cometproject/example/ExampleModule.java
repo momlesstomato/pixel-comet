@@ -1,8 +1,8 @@
 package com.cometproject.example;
 
 import com.cometproject.api.config.ModuleConfig;
+import com.cometproject.api.events.EventSubscribe;
 import com.cometproject.api.events.players.OnPlayerLoginEvent;
-import com.cometproject.api.events.players.args.OnPlayerLoginEventArgs;
 import com.cometproject.api.game.players.data.components.inventory.PlayerItem;
 import com.cometproject.api.modules.BaseModule;
 import com.cometproject.api.modules.PluginGuiceModule;
@@ -17,7 +17,7 @@ public class ExampleModule extends BaseModule {
     public ExampleModule(ModuleConfig config, IGameService gameService) {
         super(config, gameService);
 
-        this.registerEvent(new OnPlayerLoginEvent(this::onPlayerLogin));
+        this.registerListeners();
 
         this.registerChatCommand("!about", this::aboutCommand);
         this.registerChatCommand("!inventory", this::inventoryCommand);
@@ -56,10 +56,16 @@ public class ExampleModule extends BaseModule {
         session.getPlayer().sendMotd(inventoryStr.toString());
     }
 
-    public void onPlayerLogin(OnPlayerLoginEventArgs eventArgs) {
+    /**
+     * Handles player login events for the example module.
+     *
+     * @param event the player login event.
+     */
+    @EventSubscribe
+    public void onPlayerLogin(final OnPlayerLoginEvent event) {
 //         player = eventArgs.getPlayer();
 //
-//        player.sendNotif("Welcome!", "Hey " + eventArgs.getPlayer().getData().getUsername() + ", you've received your login bonus!");
+//        player.sendNotif("Welcome!", "Hey " + event.getPlayer().getData().getUsername() + ", you've received your login bonus!");
 //
 //        player.getData().increaseCredits(100);
 //        player.getData().save();

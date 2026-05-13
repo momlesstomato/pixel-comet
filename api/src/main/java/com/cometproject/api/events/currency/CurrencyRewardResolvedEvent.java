@@ -1,20 +1,22 @@
 package com.cometproject.api.events.currency;
 
-import com.cometproject.api.events.Event;
-import com.cometproject.api.events.currency.args.CurrencyConfigurationEventArgs;
-
-import java.util.function.Consumer;
+import java.util.Map;
 
 /**
  * Event fired when reward logic resolves a configured currency reward.
  */
-public final class CurrencyRewardResolvedEvent extends Event<CurrencyConfigurationEventArgs> {
+public final class CurrencyRewardResolvedEvent extends CurrencyConfigurationEvent {
     /**
-     * Creates a reward-resolved listener.
+     * Creates a reward-resolved event.
      *
-     * @param eventConsumer the listener callback.
+     * @param action       the configuration action name.
+     * @param currencyCode the affected currency code.
+     * @param metadata     event metadata describing the changed resource.
      */
-    public CurrencyRewardResolvedEvent(final Consumer<CurrencyConfigurationEventArgs> eventConsumer) {
-        super(eventConsumer);
+    public CurrencyRewardResolvedEvent(
+            final String action,
+            final String currencyCode,
+            final Map<String, String> metadata) {
+        super(action, currencyCode, metadata);
     }
 }

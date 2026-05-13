@@ -96,6 +96,7 @@ All HTTP management endpoints **must** use Javalin. Spark Core routes or new emb
 
 **Rules:**
 - **Document every endpoint.** Every HTTP endpoint must be added to the OpenAPI specification in the same change.
+- **Group OpenAPI routes by section.** Every OpenAPI operation must declare a bounded-context `tags` section, and route blocks must be kept under the matching section comment in `management-api.yaml`.
 - **Use snake_case.** Route parameters, JSON request fields, JSON response fields, error codes, and documented headers must use snake_case.
 - **Document bodies and responses fully.** OpenAPI entries must describe request bodies, success responses, error responses, response headers, and authentication headers.
 - **Document errors explicitly.** Expected `4xx` and `5xx` responses must be named and described rather than relying on generic fallback text.
@@ -115,4 +116,5 @@ Before every pull request, verify:
 - [ ] No magic numbers or magic config strings — constants are named, grouped, and documented.
 - [ ] Every new config key is present in `.env.example`.
 - [ ] Every HTTP endpoint is implemented in Javalin and documented in OpenAPI with snake_case fields, headers, and error responses.
+- [ ] Every OpenAPI operation is tagged and placed under the correct bounded-context route section.
 - [ ] SOLID principles are followed (if in doubt, ask in the PR description and explain your design).

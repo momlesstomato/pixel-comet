@@ -70,10 +70,10 @@ INSERT INTO `currencies` (
   `role_policy`
 ) VALUES
   ('credits', 'Credits', NULL, '1', '1', '1', 0, 'credits', 'Credit', 'Credits', 'Protocol credits balance.', 'ALL'),
-  ('currency_0', 'Currency 0', 0, '0', '1', '1', 10, 'currency_0', 'Currency 0', 'Currency 0', 'Protocol currency 0 balance.', 'ALL'),
-  ('currency_5', 'Currency 5', 5, '0', '1', '1', 20, 'currency_5', 'Currency 5', 'Currency 5', 'Protocol currency 5 balance.', 'ALL'),
-  ('currency_103', 'Currency 103', 103, '0', '1', '1', 30, 'currency_103', 'Currency 103', 'Currency 103', 'Protocol currency 103 balance.', 'ALL'),
-  ('currency_105', 'Currency 105', 105, '0', '1', '1', 40, 'currency_105', 'Currency 105', 'Currency 105', 'Protocol currency 105 balance.', 'ALL')
+  ('currency_0', 'Pixels', 0, '0', '1', '1', 10, 'pixels', 'Pixel', 'Pixels', 'Legacy protocol currency 0 balance.', 'ALL'),
+  ('currency_5', 'Diamonds', 5, '0', '1', '1', 20, 'diamonds', 'Diamond', 'Diamonds', 'Legacy protocol currency 5 balance.', 'ALL'),
+  ('currency_103', 'Duckets', 103, '0', '1', '1', 30, 'duckets', 'Ducket', 'Duckets', 'Legacy protocol currency 103 balance.', 'ALL'),
+  ('currency_105', 'Tokens', 105, '0', '1', '1', 40, 'tokens', 'Token', 'Tokens', 'Legacy protocol currency 105 balance.', 'ALL')
 ON DUPLICATE KEY UPDATE
   `display_name` = VALUES(`display_name`),
   `protocol_currency_id` = VALUES(`protocol_currency_id`),

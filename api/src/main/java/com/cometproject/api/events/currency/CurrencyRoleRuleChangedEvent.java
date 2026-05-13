@@ -1,20 +1,22 @@
 package com.cometproject.api.events.currency;
 
-import com.cometproject.api.events.Event;
-import com.cometproject.api.events.currency.args.CurrencyConfigurationEventArgs;
-
-import java.util.function.Consumer;
+import java.util.Map;
 
 /**
  * Event fired after a currency role rule is created, updated, or deleted.
  */
-public final class CurrencyRoleRuleChangedEvent extends Event<CurrencyConfigurationEventArgs> {
+public final class CurrencyRoleRuleChangedEvent extends CurrencyConfigurationEvent {
     /**
-     * Creates a role-rule-changed listener.
+     * Creates a role-rule-changed event.
      *
-     * @param eventConsumer the listener callback.
+     * @param action       the configuration action name.
+     * @param currencyCode the affected currency code.
+     * @param metadata     event metadata describing the changed resource.
      */
-    public CurrencyRoleRuleChangedEvent(final Consumer<CurrencyConfigurationEventArgs> eventConsumer) {
-        super(eventConsumer);
+    public CurrencyRoleRuleChangedEvent(
+            final String action,
+            final String currencyCode,
+            final Map<String, String> metadata) {
+        super(action, currencyCode, metadata);
     }
 }

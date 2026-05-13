@@ -1,11 +1,13 @@
-package com.cometproject.api.events.currency.args;
+package com.cometproject.api.events.currency;
 
-import com.cometproject.api.events.EventArgs;
+import com.cometproject.api.events.Cancellable;
+import com.cometproject.api.events.Event;
 
 /**
- * Base event arguments for cancellable currency events.
+ * Base class for currency events that may be cancelled before persistence.
  */
-public abstract class CurrencyEventArgs extends EventArgs {
+public abstract class CancellableCurrencyEvent extends Event implements Cancellable {
+    private boolean cancelled;
     private String cancellationCode = "currency_operation_cancelled";
     private String cancellationMessage = "Currency operation was cancelled.";
 
@@ -37,5 +39,21 @@ public abstract class CurrencyEventArgs extends EventArgs {
      */
     public String getCancellationMessage() {
         return this.cancellationMessage;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isCancelled() {
+        return this.cancelled;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setCancelled(final boolean cancelled) {
+        this.cancelled = cancelled;
     }
 }

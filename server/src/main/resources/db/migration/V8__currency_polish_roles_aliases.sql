@@ -36,11 +36,19 @@ CREATE TABLE IF NOT EXISTS `currency_use_cases` (
 INSERT INTO `currency_aliases` (`alias`, `currency_id`)
 SELECT 'credits', `id` FROM `currencies` WHERE `code` = 'credits'
 UNION ALL
+SELECT 'pixels', `id` FROM `currencies` WHERE `code` = 'currency_0'
+UNION ALL
 SELECT 'protocol_0', `id` FROM `currencies` WHERE `code` = 'currency_0'
+UNION ALL
+SELECT 'diamonds', `id` FROM `currencies` WHERE `code` = 'currency_5'
 UNION ALL
 SELECT 'protocol_5', `id` FROM `currencies` WHERE `code` = 'currency_5'
 UNION ALL
+SELECT 'duckets', `id` FROM `currencies` WHERE `code` = 'currency_103'
+UNION ALL
 SELECT 'protocol_103', `id` FROM `currencies` WHERE `code` = 'currency_103'
+UNION ALL
+SELECT 'tokens', `id` FROM `currencies` WHERE `code` = 'currency_105'
 UNION ALL
 SELECT 'protocol_105', `id` FROM `currencies` WHERE `code` = 'currency_105'
 ON DUPLICATE KEY UPDATE

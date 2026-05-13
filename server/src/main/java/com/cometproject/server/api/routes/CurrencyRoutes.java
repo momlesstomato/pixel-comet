@@ -1,14 +1,12 @@
 package com.cometproject.server.api.routes;
 
 import com.cometproject.api.events.Event;
-import com.cometproject.api.events.EventArgs;
 import com.cometproject.api.events.EventHandler;
 import com.cometproject.api.events.currency.CurrencyAliasChangedEvent;
 import com.cometproject.api.events.currency.CurrencyDefinitionDisabledEvent;
 import com.cometproject.api.events.currency.CurrencyDefinitionUpsertedEvent;
 import com.cometproject.api.events.currency.CurrencyDefinitionUpsertRequestedEvent;
 import com.cometproject.api.events.currency.CurrencyRoleRuleChangedEvent;
-import com.cometproject.api.events.currency.args.CurrencyConfigurationEventArgs;
 import com.cometproject.server.api.ApiRequestUtils;
 import com.cometproject.server.api.ApiResponseUtils;
 import com.cometproject.server.boot.CometBootstrap;
@@ -71,18 +69,18 @@ public final class CurrencyRoutes {
         }
 
         try {
-            final CurrencyConfigurationEventArgs eventArgs = new CurrencyConfigurationEventArgs(
+            final CurrencyDefinitionUpsertRequestedEvent event = new CurrencyDefinitionUpsertRequestedEvent(
                     "definition_upsert_requested",
                     mutation.getCode(),
                     Map.of("source_type", "management_api"));
-            if (publish(CurrencyDefinitionUpsertRequestedEvent.class, eventArgs)) {
-                ApiResponseUtils.error(context, 409, eventArgs.getCancellationCode(), eventArgs.getCancellationMessage());
+            if (publish(event)) {
+                ApiResponseUtils.error(context, 409, event.getCancellationCode(), event.getCancellationMessage());
                 return;
             }
 
             final AtomicReference<ICurrencyDefinition> definition = new AtomicReference<>();
             currencyRepository().upsertDefinition(mutation, definition::set);
-            publish(CurrencyDefinitionUpsertedEvent.class, new CurrencyConfigurationEventArgs(
+            publish(new CurrencyDefinitionUpsertedEvent(
                     "definition_upserted",
                     definition.get().getCode(),
                     Map.of("source_type", "management_api")));
@@ -106,7 +104,7 @@ public final class CurrencyRoutes {
         }
 
         currencyRepository().disableDefinition(currencyCode);
-        publish(CurrencyDefinitionDisabledEvent.class, new CurrencyConfigurationEventArgs(
+        publish(new CurrencyDefinitionDisabledEvent(
                 "definition_disabled",
                 currencyCode,
                 Map.of("source_type", "management_api")));
@@ -216,7 +214,7 @@ public final class CurrencyRoutes {
                     ApiRequestUtils.bodyBoolean(context, "can_earn", true),
                     ApiRequestUtils.bodyBoolean(context, "can_spend", true),
                     ApiRequestUtils.bodyBoolean(context, "can_manage", false)), roleRule::set);
-            publish(CurrencyRoleRuleChangedEvent.class, new CurrencyConfigurationEventArgs(
+            publish(new CurrencyRoleRuleChangedEvent(
                     "role_rule_upserted",
                     context.pathParam("code"),
                     Map.of("rank_id", Integer.toString(rankId), "source_type", "management_api")));
@@ -241,7 +239,7 @@ public final class CurrencyRoutes {
         }
 
         currencyRepository().deleteRoleRule(context.pathParam("code"), rankId);
-        publish(CurrencyRoleRuleChangedEvent.class, new CurrencyConfigurationEventArgs(
+        publish(new CurrencyRoleRuleChangedEvent(
                 "role_rule_deleted",
                 context.pathParam("code"),
                 Map.of("rank_id", Integer.toString(rankId), "source_type", "management_api")));
@@ -280,7 +278,7 @@ public final class CurrencyRoutes {
 
         try {
             currencyRepository().upsertAlias(alias, context.pathParam("code"));
-            publish(CurrencyAliasChangedEvent.class, new CurrencyConfigurationEventArgs(
+            publish(new CurrencyAliasChangedEvent(
                     "alias_upserted",
                     context.pathParam("code"),
                     Map.of("alias", alias, "source_type", "management_api")));
@@ -297,7 +295,7 @@ public final class CurrencyRoutes {
      */
     public static void deleteAlias(final Context context) {
         currencyRepository().deleteAlias(context.pathParam("alias"));
-        publish(CurrencyAliasChangedEvent.class, new CurrencyConfigurationEventArgs(
+        publish(new CurrencyAliasChangedEvent(
                 "alias_deleted",
                 "",
                 Map.of("alias", context.pathParam("alias"), "source_type", "management_api")));
@@ -493,8 +491,8 @@ public final class CurrencyRoutes {
         return CometBootstrap.resolve(ICurrencyRepository.class);
     }
 
-    private static <T extends EventArgs> boolean publish(final Class<? extends Event> eventClass, final T args) {
-        return CometBootstrap.resolve(EventHandler.class).handleEvent(eventClass, args);
+    private static boolean publish(final Event event) {
+        return CometBootstrap.resolve(EventHandler.class).handleEvent(event);
     }
 
     private static CurrencyRolePolicy rolePolicy(

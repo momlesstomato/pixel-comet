@@ -1,30 +1,40 @@
 package com.cometproject.server.modules.events;
 
 import com.cometproject.api.commands.CommandInfo;
+import com.cometproject.api.events.Cancellable;
 import com.cometproject.api.events.Event;
-import com.cometproject.api.events.EventArgs;
 import com.cometproject.api.events.EventHandler;
+import com.cometproject.api.events.EventListenerContainer;
+import com.cometproject.api.events.EventSubscribe;
 import com.cometproject.api.networking.sessions.ISession;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
 
+/**
+ * Reflection-backed module event bus using concrete event payload classes.
+ */
 public class EventHandlerService implements EventHandler {
     private final ExecutorService asyncEventExecutor;
-    private final Logger LOGGER = LoggerFactory.getLogger(EventHandlerService.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(EventHandlerService.class.getName());
 
-    private final Map<Class<?>, List<Event>> listeners;
+    private final Map<Class<? extends Event>, List<RegisteredEventListener>> listeners;
 
     private final Map<String, BiConsumer<ISession, String[]>> chatCommands;
     private final Map<String, CommandInfo> commandInfo;
 
+    /**
+     * Creates the event handler service.
+     */
     public EventHandlerService() {
         this.asyncEventExecutor = Executors.newCachedThreadPool();
 
@@ -33,94 +43,150 @@ public class EventHandlerService implements EventHandler {
         this.commandInfo = Maps.newConcurrentMap();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void initialize() {
-        if (this.listeners != null) {
-            this.listeners.clear();
-        }
-
-        if (this.chatCommands != null) {
-            this.chatCommands.clear();
-        }
-
-        if (this.commandInfo != null) {
-            this.commandInfo.clear();
-        }
+        this.listeners.clear();
+        this.chatCommands.clear();
+        this.commandInfo.clear();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void registerCommandInfo(String commandName, CommandInfo info) {
+    public void registerCommandInfo(final String commandName, final CommandInfo info) {
         this.commandInfo.put(commandName, info);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void registerChatCommand(String commandExecutor, BiConsumer<ISession, String[]> consumer) {
+    public void registerChatCommand(final String commandExecutor, final BiConsumer<ISession, String[]> consumer) {
         this.chatCommands.put(commandExecutor, consumer);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void registerEvent(Event consumer) {
-        if (this.listeners.containsKey(consumer.getClass())) {
-            this.listeners.get(consumer.getClass()).add(consumer);
-        } else {
-            this.listeners.put(consumer.getClass(), Lists.newArrayList(consumer));
-        }
+    public void registerListeners(final EventListenerContainer listenerContainer) {
+        for (Method method : listenerContainer.getClass().getDeclaredMethods()) {
+            final EventSubscribe subscription = method.getAnnotation(EventSubscribe.class);
 
-        LOGGER.debug(String.format("Registered event listener for %s", consumer.getClass().getSimpleName()));
+            if (subscription == null) {
+                continue;
+            }
+
+            this.registerListenerMethod(listenerContainer, method, subscription);
+        }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public <T extends EventArgs> boolean handleEvent(Class<? extends Event> eventClass, T args) {
-        if (this.listeners.containsKey(eventClass)) {
-            this.invoke(eventClass, args);
-            LOGGER.debug(String.format("Event handled: %s\n", eventClass.getSimpleName()));
-        } else {
-            LOGGER.debug(String.format("Unhandled event: %s\n", eventClass.getSimpleName()));
+    public boolean handleEvent(final Event event) {
+        final List<RegisteredEventListener> registeredListeners = this.listeners.get(event.getClass());
+
+        if (registeredListeners == null || registeredListeners.isEmpty()) {
+            this.logger.debug("Unhandled event: {}", event.getClass().getSimpleName());
+            return this.cancelled(event);
         }
 
-        return args.isCancelled();
+        this.invoke(event, registeredListeners);
+        this.logger.debug("Event handled: {}", event.getClass().getSimpleName());
+
+        return this.cancelled(event);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<String, CommandInfo> getCommands() {
         return this.commandInfo;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public boolean handleCommand(ISession session, String commandExectutor, String[] arguments) {
+    public boolean handleCommand(final ISession session, final String commandExectutor, final String[] arguments) {
         if (!this.chatCommands.containsKey(commandExectutor) || !this.commandInfo.containsKey(commandExectutor)) {
             return false;
         }
 
-        CommandInfo commandInfo = this.commandInfo.get(commandExectutor);
+        final CommandInfo command = this.commandInfo.get(commandExectutor);
 
-        if (!session.getPlayer().getPermissions().hasCommand(commandInfo.getPermission()) && !commandInfo.getPermission().isEmpty()) {
+        if (!session.getPlayer().getPermissions().hasCommand(command.getPermission()) && !command.getPermission().isEmpty()) {
             return false;
         }
 
-        BiConsumer<ISession, String[]> chatCommand = this.chatCommands.get(commandExectutor);
+        final BiConsumer<ISession, String[]> chatCommand = this.chatCommands.get(commandExectutor);
 
         try {
             chatCommand.accept(session, arguments);
-        } catch (Exception e) {
-            LOGGER.warn("Failed to execute module command: " + commandExectutor);
+        } catch (Exception exception) {
+            this.logger.warn("Failed to execute module command: {}", commandExectutor, exception);
         }
 
         return true;
     }
 
-    private <T extends EventArgs> void invoke(Class<? extends Event> eventClass, T args) {
-        for (Event event : this.listeners.get(eventClass)) {
-            try {
-                if (event.isAsync()) {
-                    this.asyncEventExecutor.submit(() -> {
-                        event.consume(args);
-                    });
-                } else {
-                    event.consume(args);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+    @SuppressWarnings("unchecked") // Safe after Event.class assignability check.
+    private void registerListenerMethod(
+            final EventListenerContainer listenerContainer,
+            final Method method,
+            final EventSubscribe subscription) {
+        if (method.getParameterCount() != 1) {
+            throw new IllegalArgumentException("Event listener method must have exactly one event parameter: "
+                    + method.getName());
+        }
+
+        final Class<?> parameterType = method.getParameterTypes()[0];
+        if (!Event.class.isAssignableFrom(parameterType)) {
+            throw new IllegalArgumentException("Event listener parameter must extend Event: " + method.getName());
+        }
+
+        method.setAccessible(true);
+        final Class<? extends Event> eventClass = (Class<? extends Event>) parameterType;
+        this.listeners.computeIfAbsent(eventClass, ignored -> new CopyOnWriteArrayList<>())
+                .add(new RegisteredEventListener(listenerContainer, method, subscription.async()));
+
+        this.logger.debug("Registered event listener for {}#{}({})",
+                listenerContainer.getClass().getSimpleName(),
+                method.getName(),
+                eventClass.getSimpleName());
+    }
+
+    private void invoke(final Event event, final List<RegisteredEventListener> registeredListeners) {
+        for (RegisteredEventListener listener : registeredListeners) {
+            if (event.isAsync() || listener.async()) {
+                this.asyncEventExecutor.submit(() -> this.invoke(listener, event));
+            } else {
+                this.invoke(listener, event);
             }
         }
+    }
+
+    private void invoke(final RegisteredEventListener listener, final Event event) {
+        try {
+            listener.method().invoke(listener.container(), event);
+        } catch (IllegalAccessException exception) {
+            this.logger.warn("Failed to access event listener for {}", event.getClass().getSimpleName(), exception);
+        } catch (InvocationTargetException exception) {
+            this.logger.warn("Event listener failed for {}", event.getClass().getSimpleName(), exception.getCause());
+        }
+    }
+
+    private boolean cancelled(final Event event) {
+        return event instanceof Cancellable cancellable && cancellable.isCancelled();
+    }
+
+    private record RegisteredEventListener(EventListenerContainer container, Method method, boolean async) {
     }
 }

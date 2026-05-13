@@ -1,24 +1,26 @@
-package com.cometproject.api.events.currency.args;
+package com.cometproject.api.events.currency;
+
+import com.cometproject.api.events.Event;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Arguments for currency definition, alias, role-rule, and use-case configuration events.
+ * Base event for currency definition, alias, role-rule, and use-case changes.
  */
-public final class CurrencyConfigurationEventArgs extends CurrencyEventArgs {
+public class CurrencyConfigurationEvent extends Event {
     private final String action;
     private String currencyCode;
     private Map<String, String> metadata;
 
     /**
-     * Creates configuration event arguments.
+     * Creates a configuration event.
      *
      * @param action       the configuration action name.
      * @param currencyCode the affected currency code.
      * @param metadata     event metadata describing the changed resource.
      */
-    public CurrencyConfigurationEventArgs(
+    public CurrencyConfigurationEvent(
             final String action,
             final String currencyCode,
             final Map<String, String> metadata) {

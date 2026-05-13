@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.config.Configuration;
 import com.cometproject.api.events.players.OnPlayerLoginEvent;
-import com.cometproject.api.events.players.args.OnPlayerLoginEventArgs;
 import com.cometproject.api.game.achievements.types.AchievementType;
 import com.cometproject.api.game.sso.ISsoTicketService;
 import com.cometproject.api.game.sso.SsoTicket;
@@ -243,7 +242,7 @@ public class PlayerLoginRequest implements CometTask {
                 player.getData().save();
             }
 
-            if (ModuleManager.getInstance().getEventHandler().handleEvent(OnPlayerLoginEvent.class, new OnPlayerLoginEventArgs(client.getPlayer()))) {
+            if (ModuleManager.getInstance().getEventHandler().handleEvent(new OnPlayerLoginEvent(client.getPlayer()))) {
                 client.disconnect();
             }
 

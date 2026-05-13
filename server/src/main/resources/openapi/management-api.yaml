@@ -8,6 +8,25 @@ servers:
     description: Shared Javalin listener serving the management API and websocket upgrade endpoints.
 security:
   - authTokenHeader: []
+tags:
+  - name: Documentation
+    description: OpenAPI and Swagger UI endpoints.
+  - name: Health
+    description: Public server health probes.
+  - name: Transport
+    description: Client transport and websocket upgrade endpoints.
+  - name: Players
+    description: Player moderation and runtime management endpoints.
+  - name: Rooms
+    description: Active room inspection and management endpoints.
+  - name: System
+    description: Server-wide operational control endpoints.
+  - name: Authentication
+    description: Management endpoints for player authentication tokens.
+  - name: Camera
+    description: Camera and photo management endpoints.
+  - name: Currencies
+    description: Currency definitions, balances, movements, and role-scoped policies.
 components:
   securitySchemes:
     authTokenHeader:
@@ -167,8 +186,10 @@ components:
           type: string
           format: date-time
 paths:
+  # Documentation
   /openapi/spec:
     get:
+      tags: [Documentation]
       summary: Return the OpenAPI specification.
       security: []
       responses:
@@ -195,6 +216,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /swagger:
     get:
+      tags: [Documentation]
       summary: Render the Swagger UI for the management API.
       security: []
       responses:
@@ -209,8 +231,10 @@ paths:
             text/html:
               schema:
                 type: string
+  # Health
   /status:
     get:
+      tags: [Health]
       summary: Return a public server health snapshot.
       description: >-
         Returns uptime, online player count, and active room count. No
@@ -245,8 +269,10 @@ paths:
                       uptime:
                         type: string
                         example: "2d 4h 13m"
+  # Transport
   /ws:
     get:
+      tags: [Transport]
       summary: Upgrade to the browser WebSocket side-channel.
       description: >-
         Browser websocket endpoint hosted by the shared Javalin transport. Clients connect to this
@@ -260,8 +286,10 @@ paths:
           description: Request did not perform a valid WebSocket upgrade.
         '500':
           description: Server-side websocket initialisation error.
+  # Players
   /player/{id}/reload:
     get:
+      tags: [Players]
       summary: Reload a player's runtime data.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -301,6 +329,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /player/{id}/disconnect:
     get:
+      tags: [Players]
       summary: Disconnect an online player.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -340,6 +369,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /player/{id}/alert:
     post:
+      tags: [Players]
       summary: Send a management alert to an online player.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -385,6 +415,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /player/{id}/badge/{badge}:
     get:
+      tags: [Players]
       summary: Award a badge to a player.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -421,8 +452,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  # Rooms
   /rooms/active/all:
     get:
+      tags: [Rooms]
       summary: List all active rooms.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -445,6 +478,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /room/{id}/{action}:
     get:
+      tags: [Rooms]
       summary: Execute an action against an active room.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -495,8 +529,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  # System
   /system/status:
     get:
+      tags: [System]
       summary: Return current server status metrics.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -519,6 +555,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /system/shutdown:
     get:
+      tags: [System]
       summary: Trigger a server shutdown.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -541,6 +578,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /system/reload/{type}:
     get:
+      tags: [System]
       summary: Reload a runtime subsystem.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -573,8 +611,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  # Authentication
   /sso/ticket:
     post:
+      tags: [Authentication]
       summary: Issue an SSO ticket for a specific player.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -620,8 +660,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  # Camera
   /camera/purchase:
     get:
+      tags: [Camera]
       summary: Trigger photo purchase validation.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -657,6 +699,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
     post:
+      tags: [Camera]
       summary: Trigger photo purchase validation.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -691,8 +734,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  # Currencies
   /currencies:
     get:
+      tags: [Currencies]
       summary: List currency definitions.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -710,6 +755,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
     post:
+      tags: [Currencies]
       summary: Create or update a currency definition.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -769,6 +815,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /currencies/{code}:
     patch:
+      tags: [Currencies]
       summary: Update a currency definition.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -830,6 +877,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
     delete:
+      tags: [Currencies]
       summary: Soft-disable a currency definition.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -859,6 +907,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /currencies/{code}/roles:
     get:
+      tags: [Currencies]
       summary: List role rules for a currency.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -882,6 +931,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /currencies/{code}/roles/{rank_id}:
     put:
+      tags: [Currencies]
       summary: Create or replace one currency role rule.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -930,6 +980,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
     delete:
+      tags: [Currencies]
       summary: Delete one currency role rule.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -964,6 +1015,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /currencies/{code}/aliases:
     get:
+      tags: [Currencies]
       summary: List compatibility aliases for a currency.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -986,6 +1038,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
     post:
+      tags: [Currencies]
       summary: Create or replace one compatibility alias.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -1025,6 +1078,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /currencies/{code}/aliases/{alias}:
     delete:
+      tags: [Currencies]
       summary: Delete one compatibility alias.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -1053,6 +1107,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /player/{id}/currencies:
     get:
+      tags: [Currencies]
       summary: Return a player's currency balances.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -1082,6 +1137,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /player/{id}/currencies/{code}/add:
     post:
+      tags: [Currencies]
       summary: Add to a player currency balance.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -1128,6 +1184,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /player/{id}/currencies/{code}/remove:
     post:
+      tags: [Currencies]
       summary: Remove from a player currency balance.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -1174,6 +1231,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /player/{id}/currencies/{code}:
     put:
+      tags: [Currencies]
       summary: Set a player currency balance.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'
@@ -1220,6 +1278,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /player/{id}/currency-movements:
     get:
+      tags: [Currencies]
       summary: Return recent currency movements for a player.
       parameters:
         - $ref: '#/components/parameters/AuthTokenHeader'

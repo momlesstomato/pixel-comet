@@ -1,20 +1,22 @@
 package com.cometproject.api.events.currency;
 
-import com.cometproject.api.events.Event;
-import com.cometproject.api.events.currency.args.CurrencyConfigurationEventArgs;
-
-import java.util.function.Consumer;
+import java.util.Map;
 
 /**
  * Event fired after a currency definition is created or updated.
  */
-public final class CurrencyDefinitionUpsertedEvent extends Event<CurrencyConfigurationEventArgs> {
+public final class CurrencyDefinitionUpsertedEvent extends CurrencyConfigurationEvent {
     /**
-     * Creates a definition-upserted listener.
+     * Creates a definition-upserted event.
      *
-     * @param eventConsumer the listener callback.
+     * @param action       the configuration action name.
+     * @param currencyCode the affected currency code.
+     * @param metadata     event metadata describing the changed resource.
      */
-    public CurrencyDefinitionUpsertedEvent(final Consumer<CurrencyConfigurationEventArgs> eventConsumer) {
-        super(eventConsumer);
+    public CurrencyDefinitionUpsertedEvent(
+            final String action,
+            final String currencyCode,
+            final Map<String, String> metadata) {
+        super(action, currencyCode, metadata);
     }
 }

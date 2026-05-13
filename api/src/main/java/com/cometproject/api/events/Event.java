@@ -1,40 +1,37 @@
 package com.cometproject.api.events;
 
-import java.util.function.Consumer;
-
 /**
- * Base module event subscription.
+ * Base payload object for module events.
  *
- * @param <T> the argument type consumed by this event listener.
+ * <p>Events carry their own data and are dispatched by their concrete class,
+ * similar to Bukkit-style plugin events. This avoids pairing a separate event
+ * wrapper with an argument object at runtime.
  */
-public abstract class Event<T extends EventArgs> {
-
-    private final Consumer<T> callback;
+public abstract class Event {
+    private final boolean async;
 
     /**
-     * Creates an event listener wrapper.
-     *
-     * @param callback the listener callback to invoke when the event is published.
+     * Creates a synchronous event.
      */
-    public Event(Consumer<T> callback) {
-        this.callback = callback;
+    protected Event() {
+        this(false);
     }
 
     /**
-     * Invokes the registered listener callback.
+     * Creates an event with an explicit async dispatch hint.
      *
-     * @param args the event arguments.
+     * @param async true when listeners may be dispatched on the async event executor.
      */
-    public void consume(T args) {
-        this.callback.accept(args);
+    protected Event(final boolean async) {
+        this.async = async;
     }
 
     /**
-     * Indicates whether this listener should be invoked asynchronously.
+     * Indicates whether listeners may run asynchronously.
      *
-     * @return true when the listener should run on the async event executor.
+     * @return true when the event allows async listener dispatch.
      */
     public boolean isAsync() {
-        return false;
+        return this.async;
     }
 }

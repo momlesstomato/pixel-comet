@@ -1,6 +1,5 @@
 package com.cometproject.api.events;
 
-
 import com.cometproject.api.commands.CommandInfo;
 import com.cometproject.api.networking.sessions.ISession;
 
@@ -19,19 +18,17 @@ public interface EventHandler  {
    /**
     * Publishes an event to registered listeners.
     *
-    * @param eventClass the event listener class to publish.
-    * @param args       the event arguments.
-    * @param <T>        the event argument type.
+    * @param event the concrete event payload.
     * @return true when a synchronous listener cancelled the event.
     */
-   <T extends EventArgs> boolean handleEvent(Class<? extends Event> eventClass, T args);
+   boolean handleEvent(Event event);
 
    /**
-    * Registers a module event listener.
+    * Registers all annotated listener methods on the supplied container.
     *
-    * @param consumer the listener wrapper.
+    * @param listenerContainer the object containing {@link EventSubscribe} methods.
     */
-   void registerEvent(Event consumer);
+   void registerListeners(EventListenerContainer listenerContainer);
 
    /**
     * Registers a module chat command callback.

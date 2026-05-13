@@ -1,20 +1,22 @@
 package com.cometproject.api.events.currency;
 
-import com.cometproject.api.events.Event;
-import com.cometproject.api.events.currency.args.CurrencyConfigurationEventArgs;
-
-import java.util.function.Consumer;
+import java.util.Map;
 
 /**
  * Event fired after a currency alias is created, updated, or deleted.
  */
-public final class CurrencyAliasChangedEvent extends Event<CurrencyConfigurationEventArgs> {
+public final class CurrencyAliasChangedEvent extends CurrencyConfigurationEvent {
     /**
-     * Creates an alias-changed listener.
+     * Creates an alias-changed event.
      *
-     * @param eventConsumer the listener callback.
+     * @param action       the configuration action name.
+     * @param currencyCode the affected currency code.
+     * @param metadata     event metadata describing the changed resource.
      */
-    public CurrencyAliasChangedEvent(final Consumer<CurrencyConfigurationEventArgs> eventConsumer) {
-        super(eventConsumer);
+    public CurrencyAliasChangedEvent(
+            final String action,
+            final String currencyCode,
+            final Map<String, String> metadata) {
+        super(action, currencyCode, metadata);
     }
 }

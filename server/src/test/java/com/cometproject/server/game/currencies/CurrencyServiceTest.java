@@ -1,6 +1,8 @@
 package com.cometproject.server.game.currencies;
 
 import com.cometproject.api.events.EventHandler;
+import com.cometproject.api.events.EventListenerContainer;
+import com.cometproject.api.events.EventSubscribe;
 import com.cometproject.api.events.currency.CurrencyAdjustmentRequestedEvent;
 import com.cometproject.api.events.currency.CurrencyBalanceChangedEvent;
 import com.cometproject.server.game.players.PlayerManager;
@@ -41,8 +43,12 @@ class CurrencyServiceTest {
     void requestEventCancellationPreventsPersistence() {
         final InMemoryCurrencyRepository repository = new InMemoryCurrencyRepository();
         final EventHandlerService eventHandler = new EventHandlerService();
-        eventHandler.registerEvent(new CurrencyAdjustmentRequestedEvent(args ->
-                args.cancel("currency_adjustment_cancelled", "Blocked by plugin.")));
+        eventHandler.registerListeners(new EventListenerContainer() {
+            @EventSubscribe
+            public void onCurrencyAdjustmentRequested(final CurrencyAdjustmentRequestedEvent event) {
+                event.cancel("currency_adjustment_cancelled", "Blocked by plugin.");
+            }
+        });
         final CurrencyService service = service(repository, eventHandler);
 
         final CurrencyAdjustmentRequest request = request(CurrencyOperation.ADD, 10);
@@ -60,7 +66,12 @@ class CurrencyServiceTest {
     void requestEventCanModifyAmountBeforePersistence() {
         final InMemoryCurrencyRepository repository = new InMemoryCurrencyRepository();
         final EventHandlerService eventHandler = new EventHandlerService();
-        eventHandler.registerEvent(new CurrencyAdjustmentRequestedEvent(args -> args.setAmount(7)));
+        eventHandler.registerListeners(new EventListenerContainer() {
+            @EventSubscribe
+            public void onCurrencyAdjustmentRequested(final CurrencyAdjustmentRequestedEvent event) {
+                event.setAmount(7);
+            }
+        });
         final CurrencyService service = service(repository, eventHandler);
 
         final CurrencyOperationResult result = service.add(request(CurrencyOperation.ADD, 10));
@@ -75,10 +86,13 @@ class CurrencyServiceTest {
         final InMemoryCurrencyRepository repository = new InMemoryCurrencyRepository();
         final EventHandlerService eventHandler = new EventHandlerService();
         final AtomicInteger changedEvents = new AtomicInteger();
-        eventHandler.registerEvent(new CurrencyBalanceChangedEvent(args -> {
-            assertEquals(30, args.getMovement().getNewBalance());
-            changedEvents.incrementAndGet();
-        }));
+        eventHandler.registerListeners(new EventListenerContainer() {
+            @EventSubscribe
+            public void onCurrencyBalanceChanged(final CurrencyBalanceChangedEvent event) {
+                assertEquals(30, event.getMovement().getNewBalance());
+                changedEvents.incrementAndGet();
+            }
+        });
         final CurrencyService service = service(repository, eventHandler);
 
         service.add(request(CurrencyOperation.ADD, 5));

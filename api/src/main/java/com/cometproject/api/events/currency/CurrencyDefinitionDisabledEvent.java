@@ -1,20 +1,22 @@
 package com.cometproject.api.events.currency;
 
-import com.cometproject.api.events.Event;
-import com.cometproject.api.events.currency.args.CurrencyConfigurationEventArgs;
-
-import java.util.function.Consumer;
+import java.util.Map;
 
 /**
  * Event fired after a currency definition is disabled.
  */
-public final class CurrencyDefinitionDisabledEvent extends Event<CurrencyConfigurationEventArgs> {
+public final class CurrencyDefinitionDisabledEvent extends CurrencyConfigurationEvent {
     /**
-     * Creates a definition-disabled listener.
+     * Creates a definition-disabled event.
      *
-     * @param eventConsumer the listener callback.
+     * @param action       the configuration action name.
+     * @param currencyCode the affected currency code.
+     * @param metadata     event metadata describing the changed resource.
      */
-    public CurrencyDefinitionDisabledEvent(final Consumer<CurrencyConfigurationEventArgs> eventConsumer) {
-        super(eventConsumer);
+    public CurrencyDefinitionDisabledEvent(
+            final String action,
+            final String currencyCode,
+            final Map<String, String> metadata) {
+        super(action, currencyCode, metadata);
     }
 }

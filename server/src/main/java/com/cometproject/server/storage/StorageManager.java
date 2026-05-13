@@ -5,6 +5,7 @@ import com.cometproject.api.config.database.DatabaseConfiguration;
 import com.cometproject.api.utilities.Startable;
 import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.storage.cache.CacheManager;
+import com.cometproject.server.storage.migration.CurrencySchemaGuard;
 import com.cometproject.server.storage.migration.FlywayMigrationService;
 import com.cometproject.storage.api.migration.IMigrationService;
 import com.cometproject.storage.api.StorageContext;
@@ -50,6 +51,7 @@ public class StorageManager implements Startable {
             seedEnabled);
 
         migrationService.migrate();
+        new CurrencySchemaGuard(this.hikariConnectionProvider.getDataSource()).ensure();
 
         initializer.setup(storageContext);
 

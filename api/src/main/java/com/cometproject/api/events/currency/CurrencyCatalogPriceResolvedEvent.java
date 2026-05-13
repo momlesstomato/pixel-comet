@@ -1,20 +1,22 @@
 package com.cometproject.api.events.currency;
 
-import com.cometproject.api.events.Event;
-import com.cometproject.api.events.currency.args.CurrencyConfigurationEventArgs;
-
-import java.util.function.Consumer;
+import java.util.Map;
 
 /**
  * Event fired when catalog pricing resolves a configured currency boundary.
  */
-public final class CurrencyCatalogPriceResolvedEvent extends Event<CurrencyConfigurationEventArgs> {
+public final class CurrencyCatalogPriceResolvedEvent extends CurrencyConfigurationEvent {
     /**
-     * Creates a catalog-price-resolved listener.
+     * Creates a catalog-price-resolved event.
      *
-     * @param eventConsumer the listener callback.
+     * @param action       the configuration action name.
+     * @param currencyCode the affected currency code.
+     * @param metadata     event metadata describing the changed resource.
      */
-    public CurrencyCatalogPriceResolvedEvent(final Consumer<CurrencyConfigurationEventArgs> eventConsumer) {
-        super(eventConsumer);
+    public CurrencyCatalogPriceResolvedEvent(
+            final String action,
+            final String currencyCode,
+            final Map<String, String> metadata) {
+        super(action, currencyCode, metadata);
     }
 }

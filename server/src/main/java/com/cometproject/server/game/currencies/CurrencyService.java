@@ -1,17 +1,12 @@
 package com.cometproject.server.game.currencies;
 
 import com.cometproject.api.events.Event;
-import com.cometproject.api.events.EventArgs;
 import com.cometproject.api.events.EventHandler;
 import com.cometproject.api.events.currency.CurrencyAdjustmentRequestedEvent;
 import com.cometproject.api.events.currency.CurrencyBalanceChangedEvent;
 import com.cometproject.api.events.currency.CurrencyBalanceChangingEvent;
 import com.cometproject.api.events.currency.CurrencyBalanceSyncRequestedEvent;
 import com.cometproject.api.events.currency.CurrencyBalanceSyncedEvent;
-import com.cometproject.api.events.currency.args.CurrencyAdjustmentRequestedEventArgs;
-import com.cometproject.api.events.currency.args.CurrencyBalanceChangedEventArgs;
-import com.cometproject.api.events.currency.args.CurrencyBalanceChangingEventArgs;
-import com.cometproject.api.events.currency.args.CurrencyBalanceSyncEventArgs;
 import com.cometproject.server.game.players.PlayerManager;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.sessions.Session;
@@ -357,35 +352,35 @@ public final class CurrencyService implements ICurrencyService {
                 resolvedRequest.getSource()), result::set);
 
         final boolean onlinePlayerUpdated = this.applyRuntimeSnapshot(result.get());
-        this.publish(CurrencyBalanceChangedEvent.class, new CurrencyBalanceChangedEventArgs(resolvedRequest, result.get()));
+        this.publish(new CurrencyBalanceChangedEvent(resolvedRequest, result.get()));
         final boolean playerNotified = this.syncRuntimeBalance(resolvedRequest, result.get(), onlinePlayerUpdated);
 
         return new CurrencyOperationResult(result.get(), onlinePlayerUpdated, playerNotified);
     }
 
     private CurrencyAdjustmentRequest publishAdjustmentRequested(final CurrencyAdjustmentRequest request) {
-        final CurrencyAdjustmentRequestedEventArgs args = new CurrencyAdjustmentRequestedEventArgs(request);
-        if (this.publish(CurrencyAdjustmentRequestedEvent.class, args)) {
-            throw new CurrencyOperationCancelledException(args.getCancellationCode(), args.getCancellationMessage());
+        final CurrencyAdjustmentRequestedEvent event = new CurrencyAdjustmentRequestedEvent(request);
+        if (this.publish(event)) {
+            throw new CurrencyOperationCancelledException(event.getCancellationCode(), event.getCancellationMessage());
         }
 
-        return args.toRequest();
+        return event.toRequest();
     }
 
     private CurrencyAdjustmentRequest publishBalanceChanging(final CurrencyAdjustmentRequest request) {
         final long oldBalance = this.balance(request.getPlayerId(), request.getCurrencyCodeOrAlias());
         final long proposedNewBalance = this.proposedNewBalance(request, oldBalance);
-        final CurrencyBalanceChangingEventArgs args = new CurrencyBalanceChangingEventArgs(
+        final CurrencyBalanceChangingEvent event = new CurrencyBalanceChangingEvent(
                 request,
                 oldBalance,
                 proposedNewBalance);
 
-        if (this.publish(CurrencyBalanceChangingEvent.class, args)) {
-            throw new CurrencyOperationCancelledException(args.getCancellationCode(), args.getCancellationMessage());
+        if (this.publish(event)) {
+            throw new CurrencyOperationCancelledException(event.getCancellationCode(), event.getCancellationMessage());
         }
 
-        if (args.getNewBalance() != proposedNewBalance) {
-            return request.withOperation(CurrencyOperation.SET).withAmount(args.getNewBalance());
+        if (event.getNewBalance() != proposedNewBalance) {
+            return request.withOperation(CurrencyOperation.SET).withAmount(event.getNewBalance());
         }
 
         return request;
@@ -416,24 +411,24 @@ public final class CurrencyService implements ICurrencyService {
     private boolean syncRuntimeBalance(
             final CurrencyAdjustmentRequest request,
             final CurrencyMovementResult result,
-            final boolean playerOnline) {
+        final boolean playerOnline) {
         if (!request.shouldNotifyPlayer()) {
-            this.publish(CurrencyBalanceSyncRequestedEvent.class, new CurrencyBalanceSyncEventArgs(result, playerOnline, false));
-            this.publish(CurrencyBalanceSyncedEvent.class, new CurrencyBalanceSyncEventArgs(result, playerOnline, false));
+            this.publish(new CurrencyBalanceSyncRequestedEvent(result, playerOnline, false));
+            this.publish(new CurrencyBalanceSyncedEvent(result, playerOnline, false));
             return false;
         }
 
-        this.publish(CurrencyBalanceSyncRequestedEvent.class, new CurrencyBalanceSyncEventArgs(result, playerOnline, false));
+        this.publish(new CurrencyBalanceSyncRequestedEvent(result, playerOnline, false));
 
         if (!playerOnline || this.networkManager == null) {
-            this.publish(CurrencyBalanceSyncedEvent.class, new CurrencyBalanceSyncEventArgs(result, playerOnline, false));
+            this.publish(new CurrencyBalanceSyncedEvent(result, playerOnline, false));
             return false;
         }
 
         final Session session = this.networkManager.getSessions().getByPlayerId(result.getPlayerId());
         final boolean playerNotified = session != null && this.messageDispatcher.sendBalanceChange(session, result);
 
-        this.publish(CurrencyBalanceSyncedEvent.class, new CurrencyBalanceSyncEventArgs(result, playerOnline, playerNotified));
+        this.publish(new CurrencyBalanceSyncedEvent(result, playerOnline, playerNotified));
         return playerNotified;
     }
 
@@ -446,12 +441,12 @@ public final class CurrencyService implements ICurrencyService {
         return new CurrencyAdjustmentRequest(playerId, currencyCode, operation, amount, source, false, Map.of());
     }
 
-    private <T extends EventArgs> boolean publish(final Class<? extends Event> eventClass, final T args) {
+    private boolean publish(final Event event) {
         if (this.eventHandler == null) {
             return false;
         }
 
-        return this.eventHandler.handleEvent(eventClass, args);
+        return this.eventHandler.handleEvent(event);
     }
 
     private int playerRank(final int playerId) {

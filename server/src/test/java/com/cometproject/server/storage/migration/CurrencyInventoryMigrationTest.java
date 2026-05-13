@@ -56,7 +56,9 @@ class CurrencyInventoryMigrationTest {
         assertEquals(1, this.queryForInt(dataSource,
                 "SELECT COUNT(*) FROM currency_aliases ca JOIN currencies c ON c.id = ca.currency_id WHERE ca.alias = 'protocol_0' AND c.code = 'currency_0'"));
         assertEquals(1, this.queryForInt(dataSource,
-                "SELECT COUNT(*) FROM currencies WHERE code = 'currency_105' AND noun_plural = 'Currency 105'"));
+                "SELECT COUNT(*) FROM currency_aliases ca JOIN currencies c ON c.id = ca.currency_id WHERE ca.alias = 'pixels' AND c.code = 'currency_0'"));
+        assertEquals(1, this.queryForInt(dataSource,
+                "SELECT COUNT(*) FROM currencies WHERE code = 'currency_105' AND noun_plural = 'Tokens'"));
     }
 
     @Test

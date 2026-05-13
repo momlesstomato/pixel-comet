@@ -1,20 +1,22 @@
 package com.cometproject.api.events.currency;
 
-import com.cometproject.api.events.Event;
-import com.cometproject.api.events.currency.args.CurrencyConfigurationEventArgs;
-
-import java.util.function.Consumer;
+import java.util.Map;
 
 /**
  * Event fired before catalog pricing requests a currency debit.
  */
-public final class CurrencyCatalogDebitRequestedEvent extends Event<CurrencyConfigurationEventArgs> {
+public final class CurrencyCatalogDebitRequestedEvent extends CancellableCurrencyConfigurationEvent {
     /**
-     * Creates a catalog-debit-requested listener.
+     * Creates a catalog-debit-requested event.
      *
-     * @param eventConsumer the listener callback.
+     * @param action       the configuration action name.
+     * @param currencyCode the affected currency code.
+     * @param metadata     event metadata describing the changed resource.
      */
-    public CurrencyCatalogDebitRequestedEvent(final Consumer<CurrencyConfigurationEventArgs> eventConsumer) {
-        super(eventConsumer);
+    public CurrencyCatalogDebitRequestedEvent(
+            final String action,
+            final String currencyCode,
+            final Map<String, String> metadata) {
+        super(action, currencyCode, metadata);
     }
 }

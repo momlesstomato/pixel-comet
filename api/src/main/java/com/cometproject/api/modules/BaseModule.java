@@ -8,7 +8,6 @@ import com.cometproject.api.commands.CommandInfo;
 import com.cometproject.api.config.Configuration;
 import com.cometproject.api.config.ModuleConfig;
 import com.cometproject.api.config.modules.ModuleConfiguration;
-import com.cometproject.api.events.Event;
 import com.cometproject.api.events.EventListenerContainer;
 import com.cometproject.api.game.GameContext;
 import com.cometproject.api.networking.messages.IMessageEventHandler;
@@ -41,12 +40,19 @@ public abstract class BaseModule implements EventListenerContainer {
     }
 
     /**
-     * Register event with the event handler service
-     *
-     * @param event The event that will be called
+     * Registers annotated listener methods from this module.
      */
-    protected void registerEvent(Event event) {
-        this.getGameService().getEventHandler().registerEvent(event);
+    protected void registerListeners() {
+        this.registerListeners(this);
+    }
+
+    /**
+     * Registers annotated listener methods from a listener container.
+     *
+     * @param listenerContainer The container with event listener methods.
+     */
+    protected void registerListeners(final EventListenerContainer listenerContainer) {
+        this.getGameService().getEventHandler().registerListeners(listenerContainer);
     }
 
     public void registerMessage(IMessageEventHandler messageEventHandler) {
