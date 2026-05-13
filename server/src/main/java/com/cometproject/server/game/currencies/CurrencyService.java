@@ -1,15 +1,30 @@
 package com.cometproject.server.game.currencies;
 
+import com.cometproject.api.events.Event;
+import com.cometproject.api.events.EventArgs;
+import com.cometproject.api.events.EventHandler;
+import com.cometproject.api.events.currency.CurrencyAdjustmentRequestedEvent;
+import com.cometproject.api.events.currency.CurrencyBalanceChangedEvent;
+import com.cometproject.api.events.currency.CurrencyBalanceChangingEvent;
+import com.cometproject.api.events.currency.CurrencyBalanceSyncRequestedEvent;
+import com.cometproject.api.events.currency.CurrencyBalanceSyncedEvent;
+import com.cometproject.api.events.currency.args.CurrencyAdjustmentRequestedEventArgs;
+import com.cometproject.api.events.currency.args.CurrencyBalanceChangedEventArgs;
+import com.cometproject.api.events.currency.args.CurrencyBalanceChangingEventArgs;
+import com.cometproject.api.events.currency.args.CurrencyBalanceSyncEventArgs;
 import com.cometproject.server.game.players.PlayerManager;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.storage.api.data.currency.CurrencyAdjustment;
+import com.cometproject.storage.api.data.currency.CurrencyAdjustmentRequest;
 import com.cometproject.storage.api.data.currency.CurrencyMovementResult;
 import com.cometproject.storage.api.data.currency.CurrencyOperation;
+import com.cometproject.storage.api.data.currency.CurrencyOperationResult;
 import com.cometproject.storage.api.data.currency.CurrencyRolePolicy;
 import com.cometproject.storage.api.data.currency.CurrencySource;
 import com.cometproject.storage.api.data.currency.ICurrencyDefinition;
 import com.cometproject.storage.api.data.currency.ICurrencyRoleRule;
+import com.cometproject.storage.api.data.currency.exceptions.CurrencyOperationCancelledException;
 import com.cometproject.storage.api.repositories.ICurrencyRepository;
 import com.cometproject.storage.api.services.ICurrencyService;
 import com.google.inject.Inject;
@@ -28,16 +43,37 @@ import java.util.stream.Collectors;
 public final class CurrencyService implements ICurrencyService {
     private final ICurrencyRepository currencyRepository;
     private final CurrencyMessageDispatcher messageDispatcher;
+    private final EventHandler eventHandler;
+    private final PlayerManager playerManager;
+    private final NetworkManager networkManager;
 
     /**
      * Creates the currency service.
      *
      * @param currencyRepository the currency repository.
+     * @param eventHandler       the module event handler.
+     * @param playerManager      the player manager.
+     * @param networkManager     the network manager.
      */
     @Inject
-    public CurrencyService(final ICurrencyRepository currencyRepository) {
+    public CurrencyService(
+            final ICurrencyRepository currencyRepository,
+            final EventHandler eventHandler,
+            final PlayerManager playerManager,
+            final NetworkManager networkManager) {
         this.currencyRepository = currencyRepository;
+        this.eventHandler = eventHandler;
+        this.playerManager = playerManager;
+        this.networkManager = networkManager;
         this.messageDispatcher = new CurrencyMessageDispatcher(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CurrencyOperationResult add(final CurrencyAdjustmentRequest request) {
+        return this.adjust(request.withOperation(CurrencyOperation.ADD));
     }
 
     /**
@@ -49,7 +85,16 @@ public final class CurrencyService implements ICurrencyService {
             final String currencyCode,
             final long amount,
             final CurrencySource source) {
-        return this.adjust(playerId, this.resolveCurrencyCode(currencyCode), CurrencyOperation.ADD, amount, source);
+        return this.add(this.compatibilityRequest(playerId, currencyCode, CurrencyOperation.ADD, amount, source))
+                .getMovement();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CurrencyOperationResult remove(final CurrencyAdjustmentRequest request) {
+        return this.adjust(request.withOperation(CurrencyOperation.REMOVE));
     }
 
     /**
@@ -61,7 +106,16 @@ public final class CurrencyService implements ICurrencyService {
             final String currencyCode,
             final long amount,
             final CurrencySource source) {
-        return this.adjust(playerId, this.resolveCurrencyCode(currencyCode), CurrencyOperation.REMOVE, amount, source);
+        return this.remove(this.compatibilityRequest(playerId, currencyCode, CurrencyOperation.REMOVE, amount, source))
+                .getMovement();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CurrencyOperationResult set(final CurrencyAdjustmentRequest request) {
+        return this.adjust(request.withOperation(CurrencyOperation.SET));
     }
 
     /**
@@ -73,7 +127,8 @@ public final class CurrencyService implements ICurrencyService {
             final String currencyCode,
             final long amount,
             final CurrencySource source) {
-        return this.adjust(playerId, this.resolveCurrencyCode(currencyCode), CurrencyOperation.SET, amount, source);
+        return this.set(this.compatibilityRequest(playerId, currencyCode, CurrencyOperation.SET, amount, source))
+                .getMovement();
     }
 
     /**
@@ -277,36 +332,126 @@ public final class CurrencyService implements ICurrencyService {
         return this.messageDispatcher;
     }
 
-    private CurrencyMovementResult adjust(
+    private CurrencyOperationResult adjust(final CurrencyAdjustmentRequest request) {
+        final CurrencyAdjustmentRequest requested = this.publishAdjustmentRequested(request);
+        final String currencyCode = this.resolveCurrencyCode(requested.getCurrencyCodeOrAlias());
+        CurrencyAdjustmentRequest resolvedRequest = requested.withCurrencyCodeOrAlias(currencyCode);
+        final AtomicReference<CurrencyMovementResult> result = new AtomicReference<>();
+        final int rankId = this.playerRank(resolvedRequest.getPlayerId());
+        final ICurrencyDefinition definition = this.definitionByCode(currencyCode);
+
+        if (!this.sourceBypassesRoleRules(resolvedRequest.getSource())
+                && !this.allowedForOperation(definition, rankId, resolvedRequest.getOperation())) {
+            throw new IllegalStateException("Rank " + rankId + " cannot "
+                    + resolvedRequest.getOperation().name().toLowerCase() + " " + currencyCode);
+        }
+
+        resolvedRequest = this.publishBalanceChanging(resolvedRequest);
+
+        this.currencyRepository.adjust(new CurrencyAdjustment(
+                resolvedRequest.getPlayerId(),
+                definition.getId(),
+                currencyCode,
+                resolvedRequest.getOperation(),
+                resolvedRequest.getAmount(),
+                resolvedRequest.getSource()), result::set);
+
+        final boolean onlinePlayerUpdated = this.applyRuntimeSnapshot(result.get());
+        this.publish(CurrencyBalanceChangedEvent.class, new CurrencyBalanceChangedEventArgs(resolvedRequest, result.get()));
+        final boolean playerNotified = this.syncRuntimeBalance(resolvedRequest, result.get(), onlinePlayerUpdated);
+
+        return new CurrencyOperationResult(result.get(), onlinePlayerUpdated, playerNotified);
+    }
+
+    private CurrencyAdjustmentRequest publishAdjustmentRequested(final CurrencyAdjustmentRequest request) {
+        final CurrencyAdjustmentRequestedEventArgs args = new CurrencyAdjustmentRequestedEventArgs(request);
+        if (this.publish(CurrencyAdjustmentRequestedEvent.class, args)) {
+            throw new CurrencyOperationCancelledException(args.getCancellationCode(), args.getCancellationMessage());
+        }
+
+        return args.toRequest();
+    }
+
+    private CurrencyAdjustmentRequest publishBalanceChanging(final CurrencyAdjustmentRequest request) {
+        final long oldBalance = this.balance(request.getPlayerId(), request.getCurrencyCodeOrAlias());
+        final long proposedNewBalance = this.proposedNewBalance(request, oldBalance);
+        final CurrencyBalanceChangingEventArgs args = new CurrencyBalanceChangingEventArgs(
+                request,
+                oldBalance,
+                proposedNewBalance);
+
+        if (this.publish(CurrencyBalanceChangingEvent.class, args)) {
+            throw new CurrencyOperationCancelledException(args.getCancellationCode(), args.getCancellationMessage());
+        }
+
+        if (args.getNewBalance() != proposedNewBalance) {
+            return request.withOperation(CurrencyOperation.SET).withAmount(args.getNewBalance());
+        }
+
+        return request;
+    }
+
+    private long proposedNewBalance(final CurrencyAdjustmentRequest request, final long oldBalance) {
+        return switch (request.getOperation()) {
+            case ADD -> Math.addExact(oldBalance, request.getAmount());
+            case REMOVE -> oldBalance - request.getAmount();
+            case SET -> request.getAmount();
+        };
+    }
+
+    private boolean applyRuntimeSnapshot(final CurrencyMovementResult result) {
+        if (result == null || !this.playerManager.isOnline(result.getPlayerId())) {
+            return false;
+        }
+
+        final Session session = this.networkManager.getSessions().getByPlayerId(result.getPlayerId());
+        if (session == null || session.getPlayer() == null) {
+            return false;
+        }
+
+        this.messageDispatcher.applySnapshot(session.getPlayer().getData(), result);
+        return true;
+    }
+
+    private boolean syncRuntimeBalance(
+            final CurrencyAdjustmentRequest request,
+            final CurrencyMovementResult result,
+            final boolean playerOnline) {
+        if (!request.shouldNotifyPlayer()) {
+            this.publish(CurrencyBalanceSyncRequestedEvent.class, new CurrencyBalanceSyncEventArgs(result, playerOnline, false));
+            this.publish(CurrencyBalanceSyncedEvent.class, new CurrencyBalanceSyncEventArgs(result, playerOnline, false));
+            return false;
+        }
+
+        this.publish(CurrencyBalanceSyncRequestedEvent.class, new CurrencyBalanceSyncEventArgs(result, playerOnline, false));
+
+        if (!playerOnline || this.networkManager == null) {
+            this.publish(CurrencyBalanceSyncedEvent.class, new CurrencyBalanceSyncEventArgs(result, playerOnline, false));
+            return false;
+        }
+
+        final Session session = this.networkManager.getSessions().getByPlayerId(result.getPlayerId());
+        final boolean playerNotified = session != null && this.messageDispatcher.sendBalanceChange(session, result);
+
+        this.publish(CurrencyBalanceSyncedEvent.class, new CurrencyBalanceSyncEventArgs(result, playerOnline, playerNotified));
+        return playerNotified;
+    }
+
+    private CurrencyAdjustmentRequest compatibilityRequest(
             final int playerId,
             final String currencyCode,
             final CurrencyOperation operation,
             final long amount,
             final CurrencySource source) {
-        final AtomicReference<CurrencyMovementResult> result = new AtomicReference<>();
-        final int rankId = this.playerRank(playerId);
-        final ICurrencyDefinition definition = this.definitionByCode(currencyCode);
-
-        if (!this.sourceBypassesRoleRules(source) && !this.allowedForOperation(definition, rankId, operation)) {
-            throw new IllegalStateException("Rank " + rankId + " cannot " + operation.name().toLowerCase() + " " + currencyCode);
-        }
-
-        this.currencyRepository.adjust(new CurrencyAdjustment(playerId, definition.getId(), currencyCode, operation, amount, source), result::set);
-        this.applyRuntimeSnapshot(result.get());
-        return result.get();
+        return new CurrencyAdjustmentRequest(playerId, currencyCode, operation, amount, source, false, Map.of());
     }
 
-    private void applyRuntimeSnapshot(final CurrencyMovementResult result) {
-        if (result == null || !PlayerManager.getInstance().isOnline(result.getPlayerId())) {
-            return;
+    private <T extends EventArgs> boolean publish(final Class<? extends Event> eventClass, final T args) {
+        if (this.eventHandler == null) {
+            return false;
         }
 
-        final Session session = NetworkManager.getInstance().getSessions().getByPlayerId(result.getPlayerId());
-        if (session == null || session.getPlayer() == null) {
-            return;
-        }
-
-        this.messageDispatcher.applySnapshot(session.getPlayer().getData(), result);
+        return this.eventHandler.handleEvent(eventClass, args);
     }
 
     private int playerRank(final int playerId) {

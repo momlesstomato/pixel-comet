@@ -6,6 +6,9 @@ import com.google.gson.JsonParser;
 import io.javalin.http.Context;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * Provides helpers for reading mixed legacy and JSON-based management API inputs.
  */
@@ -125,5 +128,45 @@ public final class ApiRequestUtils {
         final String value = bodyField(context, key);
 
         return StringUtils.isBlank(value) ? fallback : Boolean.parseBoolean(value);
+    }
+
+    /**
+     * Reads a string map from a JSON object field.
+     *
+     * @param context The active request context.
+     * @param key     The JSON object property name.
+     * @return String metadata values keyed by their JSON property names.
+     */
+    public static Map<String, String> bodyStringMap(final Context context, final String key) {
+        final String body = context.body();
+
+        if (StringUtils.isBlank(body)) {
+            return Map.of();
+        }
+
+        try {
+            final JsonElement parsed = JsonParser.parseString(body);
+
+            if (!parsed.isJsonObject()) {
+                return Map.of();
+            }
+
+            final JsonObject json = parsed.getAsJsonObject();
+
+            if (!json.has(key) || !json.get(key).isJsonObject()) {
+                return Map.of();
+            }
+
+            final Map<String, String> values = new LinkedHashMap<>();
+            for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject(key).entrySet()) {
+                if (!entry.getValue().isJsonNull()) {
+                    values.put(entry.getKey(), entry.getValue().getAsString());
+                }
+            }
+
+            return values;
+        } catch (Exception ignored) {
+            return Map.of();
+        }
     }
 }

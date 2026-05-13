@@ -43,6 +43,65 @@ public final class CurrencySource {
     }
 
     /**
+     * Returns system source metadata with an explicit reference.
+     *
+     * @param sourceRef the source correlation reference.
+     * @param reason    the movement reason.
+     * @return a system source object.
+     */
+    public static CurrencySource system(final String sourceRef, final String reason) {
+        return new CurrencySource("system", "", "system", sourceRef, reason);
+    }
+
+    /**
+     * Returns plugin source metadata.
+     *
+     * @param pluginId  the plugin/module identifier.
+     * @param sourceRef the source correlation reference.
+     * @param reason    the movement reason.
+     * @return a plugin source object.
+     */
+    public static CurrencySource plugin(final String pluginId, final String sourceRef, final String reason) {
+        return new CurrencySource("plugin", pluginId, "plugin", sourceRef, reason);
+    }
+
+    /**
+     * Returns management API source metadata.
+     *
+     * @param apiClientId the API client identifier, or empty when not available.
+     * @param sourceRef   the source correlation reference.
+     * @param reason      the movement reason.
+     * @return an API source object.
+     */
+    public static CurrencySource api(final String apiClientId, final String sourceRef, final String reason) {
+        return new CurrencySource("api", apiClientId, "management_api", sourceRef, reason);
+    }
+
+    /**
+     * Returns staff source metadata.
+     *
+     * @param staffId   the staff player id.
+     * @param sourceRef the source correlation reference.
+     * @param reason    the movement reason.
+     * @return a staff source object.
+     */
+    public static CurrencySource staff(final int staffId, final String sourceRef, final String reason) {
+        return new CurrencySource("staff", Integer.toString(staffId), "staff_command", sourceRef, reason);
+    }
+
+    /**
+     * Returns gameplay source metadata.
+     *
+     * @param sourceType the gameplay subsystem.
+     * @param sourceRef  the source correlation reference.
+     * @param reason     the movement reason.
+     * @return a gameplay source object.
+     */
+    public static CurrencySource gameplay(final String sourceType, final String sourceRef, final String reason) {
+        return new CurrencySource("system", "", sourceType, sourceRef, reason);
+    }
+
+    /**
      * Returns the actor type.
      *
      * @return the actor type.

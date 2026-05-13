@@ -3,6 +3,7 @@ package com.cometproject.server.boot;
 import com.cometproject.api.game.GameContext;
 import com.cometproject.api.game.sso.ISsoTicketRepository;
 import com.cometproject.api.game.sso.ISsoTicketService;
+import com.cometproject.api.events.EventHandler;
 import com.cometproject.api.utilities.Startable;
 import com.cometproject.server.api.APIManager;
 import com.cometproject.server.game.GameCycle;
@@ -87,6 +88,7 @@ public final class CometCoreModule extends AbstractModule {
         bind(ISsoTicketRepository.class).to(RedisSsoTicketRepository.class).in(Scopes.SINGLETON);
         bind(ISsoTicketService.class).to(SsoTicketService.class).in(Scopes.SINGLETON);
         bind(ModuleManager.class).in(Scopes.SINGLETON);
+        bind(EventHandler.class).toProvider(() -> ModuleManager.getInstance().getEventHandler());
         bind(GameCycle.class).in(Scopes.SINGLETON);
         bind(GameContext.class).in(Scopes.SINGLETON);
 

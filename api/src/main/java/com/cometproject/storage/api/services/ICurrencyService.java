@@ -1,6 +1,8 @@
 package com.cometproject.storage.api.services;
 
 import com.cometproject.storage.api.data.currency.CurrencyMovementResult;
+import com.cometproject.storage.api.data.currency.CurrencyAdjustmentRequest;
+import com.cometproject.storage.api.data.currency.CurrencyOperationResult;
 import com.cometproject.storage.api.data.currency.CurrencySource;
 import com.cometproject.storage.api.data.currency.ICurrencyDefinition;
 
@@ -11,6 +13,14 @@ import java.util.Map;
  * Coordinates player currency inventory operations for gameplay, staff tooling, and management APIs.
  */
 public interface ICurrencyService {
+    /**
+     * Adds currency using a request object that carries source, metadata, and sync preferences.
+     *
+     * @param request the requested add operation.
+     * @return the persisted movement and runtime sync result.
+     */
+    CurrencyOperationResult add(CurrencyAdjustmentRequest request);
+
     /**
      * Adds a positive amount to a player balance.
      *
@@ -23,6 +33,14 @@ public interface ICurrencyService {
     CurrencyMovementResult add(int playerId, String currencyCode, long amount, CurrencySource source);
 
     /**
+     * Removes currency using a request object that carries source, metadata, and sync preferences.
+     *
+     * @param request the requested remove operation.
+     * @return the persisted movement and runtime sync result.
+     */
+    CurrencyOperationResult remove(CurrencyAdjustmentRequest request);
+
+    /**
      * Removes a positive amount from a player balance.
      *
      * @param playerId     the target player id.
@@ -32,6 +50,14 @@ public interface ICurrencyService {
      * @return the recorded movement result.
      */
     CurrencyMovementResult remove(int playerId, String currencyCode, long amount, CurrencySource source);
+
+    /**
+     * Sets currency using a request object that carries source, metadata, and sync preferences.
+     *
+     * @param request the requested set operation.
+     * @return the persisted movement and runtime sync result.
+     */
+    CurrencyOperationResult set(CurrencyAdjustmentRequest request);
 
     /**
      * Sets a player balance to an exact non-negative value.

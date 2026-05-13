@@ -64,6 +64,82 @@ components:
           const: true
         data:
           nullable: true
+    CurrencyAdjustmentRequest:
+      type: object
+      required: [amount]
+      properties:
+        amount:
+          type: integer
+          minimum: 0
+        reason:
+          type: string
+          description: Human-readable audit reason. Defaults to a management API reason when omitted.
+        source_ref:
+          type: string
+          description: Optional caller correlation id.
+        notify_player:
+          type: boolean
+          default: true
+          description: Whether the online player should receive an immediate purse update.
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: Optional string metadata copied into plugin event context.
+    CurrencyOperationEnvelope:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          const: true
+        data:
+          type: object
+          required:
+            - movement_id
+            - player_id
+            - currency_code
+            - operation
+            - old_balance
+            - delta
+            - new_balance
+            - actor_type
+            - source_type
+            - reason
+            - online_player_updated
+            - player_notified
+          properties:
+            movement_id:
+              type: integer
+            player_id:
+              type: integer
+            currency_code:
+              type: string
+            operation:
+              type: string
+              enum: [ADD, REMOVE, SET]
+            old_balance:
+              type: integer
+            delta:
+              type: integer
+            new_balance:
+              type: integer
+            actor_type:
+              type: string
+            actor_id:
+              type: string
+            source_type:
+              type: string
+            source_ref:
+              type: string
+            reason:
+              type: string
+            created_at:
+              type: string
+            online_player_updated:
+              type: boolean
+            player_notified:
+              type: boolean
     PlayerAlertRequest:
       type: object
       properties:
@@ -1024,25 +1100,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required: [amount, reason]
-              properties:
-                amount:
-                  type: integer
-                  minimum: 0
-                reason:
-                  type: string
-                source_ref:
-                  type: string
-                notify_player:
-                  type: boolean
+              $ref: '#/components/schemas/CurrencyAdjustmentRequest'
       responses:
         '200':
           description: Balance added and movement recorded.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessEnvelope'
+                $ref: '#/components/schemas/CurrencyOperationEnvelope'
         '400':
           description: Invalid amount, player id, or currency code.
           content:
@@ -1056,7 +1121,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '409':
-          description: Currency is disabled.
+          description: Currency is disabled or a plugin cancelled the adjustment.
           content:
             application/json:
               schema:
@@ -1081,25 +1146,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required: [amount, reason]
-              properties:
-                amount:
-                  type: integer
-                  minimum: 0
-                reason:
-                  type: string
-                source_ref:
-                  type: string
-                notify_player:
-                  type: boolean
+              $ref: '#/components/schemas/CurrencyAdjustmentRequest'
       responses:
         '200':
           description: Balance removed and movement recorded.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessEnvelope'
+                $ref: '#/components/schemas/CurrencyOperationEnvelope'
         '400':
           description: Invalid amount, currency, or negative balance.
           content:
@@ -1113,7 +1167,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '409':
-          description: Currency is disabled.
+          description: Currency is disabled or a plugin cancelled the adjustment.
           content:
             application/json:
               schema:
@@ -1138,25 +1192,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required: [amount, reason]
-              properties:
-                amount:
-                  type: integer
-                  minimum: 0
-                reason:
-                  type: string
-                source_ref:
-                  type: string
-                notify_player:
-                  type: boolean
+              $ref: '#/components/schemas/CurrencyAdjustmentRequest'
       responses:
         '200':
           description: Balance set and movement recorded.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessEnvelope'
+                $ref: '#/components/schemas/CurrencyOperationEnvelope'
         '400':
           description: Invalid amount, player id, or currency code.
           content:
@@ -1170,7 +1213,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '409':
-          description: Currency is disabled.
+          description: Currency is disabled or a plugin cancelled the adjustment.
           content:
             application/json:
               schema:

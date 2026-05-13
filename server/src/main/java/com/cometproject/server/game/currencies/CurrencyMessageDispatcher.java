@@ -29,16 +29,17 @@ public final class CurrencyMessageDispatcher {
      *
      * @param session the target session.
      * @param result  the recorded movement.
+     * @return true when a packet was sent.
      */
-    public void sendBalanceChange(final ISession session, final CurrencyMovementResult result) {
+    public boolean sendBalanceChange(final ISession session, final CurrencyMovementResult result) {
         if (session == null || result == null) {
-            return;
+            return false;
         }
 
         final ICurrencyDefinition movementDefinition = this.definition(result.getCurrencyCode());
         if (movementDefinition != null && movementDefinition.isCredits()) {
             session.send(new SendCreditsMessageComposer(Long.toString(result.getNewBalance())));
-            return;
+            return true;
         }
 
         for (ICurrencyDefinition definition : this.currencyService.definitions()) {
@@ -50,9 +51,11 @@ public final class CurrencyMessageDispatcher {
                         Math.toIntExact(result.getNewBalance()),
                         Math.toIntExact(result.getDelta()),
                         definition.getProtocolCurrencyId().getAsInt()));
-                return;
+                return true;
             }
         }
+
+        return false;
     }
 
     /**

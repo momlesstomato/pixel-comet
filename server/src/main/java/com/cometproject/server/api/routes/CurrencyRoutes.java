@@ -1,13 +1,21 @@
 package com.cometproject.server.api.routes;
 
+import com.cometproject.api.events.Event;
+import com.cometproject.api.events.EventArgs;
+import com.cometproject.api.events.EventHandler;
+import com.cometproject.api.events.currency.CurrencyAliasChangedEvent;
+import com.cometproject.api.events.currency.CurrencyDefinitionDisabledEvent;
+import com.cometproject.api.events.currency.CurrencyDefinitionUpsertedEvent;
+import com.cometproject.api.events.currency.CurrencyDefinitionUpsertRequestedEvent;
+import com.cometproject.api.events.currency.CurrencyRoleRuleChangedEvent;
+import com.cometproject.api.events.currency.args.CurrencyConfigurationEventArgs;
 import com.cometproject.server.api.ApiRequestUtils;
 import com.cometproject.server.api.ApiResponseUtils;
 import com.cometproject.server.boot.CometBootstrap;
-import com.cometproject.server.game.currencies.CurrencyService;
-import com.cometproject.server.network.NetworkManager;
-import com.cometproject.server.network.sessions.Session;
+import com.cometproject.storage.api.data.currency.CurrencyAdjustmentRequest;
 import com.cometproject.storage.api.data.currency.CurrencyDefinitionMutation;
-import com.cometproject.storage.api.data.currency.CurrencyMovementResult;
+import com.cometproject.storage.api.data.currency.CurrencyOperation;
+import com.cometproject.storage.api.data.currency.CurrencyOperationResult;
 import com.cometproject.storage.api.data.currency.CurrencyRolePolicy;
 import com.cometproject.storage.api.data.currency.CurrencyRoleRuleMutation;
 import com.cometproject.storage.api.data.currency.CurrencySource;
@@ -18,6 +26,7 @@ import com.cometproject.storage.api.data.currency.ICurrencyRoleRule;
 import com.cometproject.storage.api.data.currency.exceptions.CurrencyAdjustmentException;
 import com.cometproject.storage.api.data.currency.exceptions.CurrencyDisabledException;
 import com.cometproject.storage.api.data.currency.exceptions.CurrencyNotFoundException;
+import com.cometproject.storage.api.data.currency.exceptions.CurrencyOperationCancelledException;
 import com.cometproject.storage.api.data.currency.exceptions.InsufficientCurrencyBalanceException;
 import com.cometproject.storage.api.repositories.ICurrencyRepository;
 import com.cometproject.storage.api.services.ICurrencyService;
@@ -62,8 +71,21 @@ public final class CurrencyRoutes {
         }
 
         try {
+            final CurrencyConfigurationEventArgs eventArgs = new CurrencyConfigurationEventArgs(
+                    "definition_upsert_requested",
+                    mutation.getCode(),
+                    Map.of("source_type", "management_api"));
+            if (publish(CurrencyDefinitionUpsertRequestedEvent.class, eventArgs)) {
+                ApiResponseUtils.error(context, 409, eventArgs.getCancellationCode(), eventArgs.getCancellationMessage());
+                return;
+            }
+
             final AtomicReference<ICurrencyDefinition> definition = new AtomicReference<>();
             currencyRepository().upsertDefinition(mutation, definition::set);
+            publish(CurrencyDefinitionUpsertedEvent.class, new CurrencyConfigurationEventArgs(
+                    "definition_upserted",
+                    definition.get().getCode(),
+                    Map.of("source_type", "management_api")));
             ApiResponseUtils.success(context, definitionResponse(definition.get()));
         } catch (CurrencyAdjustmentException exception) {
             ApiResponseUtils.error(context, 400, "invalid_currency", exception.getMessage());
@@ -84,6 +106,10 @@ public final class CurrencyRoutes {
         }
 
         currencyRepository().disableDefinition(currencyCode);
+        publish(CurrencyDefinitionDisabledEvent.class, new CurrencyConfigurationEventArgs(
+                "definition_disabled",
+                currencyCode,
+                Map.of("source_type", "management_api")));
         ApiResponseUtils.success(context, Map.of("currency_code", currencyCode, "enabled", false));
     }
 
@@ -190,6 +216,10 @@ public final class CurrencyRoutes {
                     ApiRequestUtils.bodyBoolean(context, "can_earn", true),
                     ApiRequestUtils.bodyBoolean(context, "can_spend", true),
                     ApiRequestUtils.bodyBoolean(context, "can_manage", false)), roleRule::set);
+            publish(CurrencyRoleRuleChangedEvent.class, new CurrencyConfigurationEventArgs(
+                    "role_rule_upserted",
+                    context.pathParam("code"),
+                    Map.of("rank_id", Integer.toString(rankId), "source_type", "management_api")));
 
             ApiResponseUtils.success(context, roleRuleResponse(roleRule.get()));
         } catch (CurrencyAdjustmentException exception) {
@@ -211,6 +241,10 @@ public final class CurrencyRoutes {
         }
 
         currencyRepository().deleteRoleRule(context.pathParam("code"), rankId);
+        publish(CurrencyRoleRuleChangedEvent.class, new CurrencyConfigurationEventArgs(
+                "role_rule_deleted",
+                context.pathParam("code"),
+                Map.of("rank_id", Integer.toString(rankId), "source_type", "management_api")));
         ApiResponseUtils.success(context, Map.of(
                 "currency_code", context.pathParam("code"),
                 "rank_id", rankId,
@@ -246,6 +280,10 @@ public final class CurrencyRoutes {
 
         try {
             currencyRepository().upsertAlias(alias, context.pathParam("code"));
+            publish(CurrencyAliasChangedEvent.class, new CurrencyConfigurationEventArgs(
+                    "alias_upserted",
+                    context.pathParam("code"),
+                    Map.of("alias", alias, "source_type", "management_api")));
             ApiResponseUtils.success(context, aliasResponse(new CurrencyAlias(alias, context.pathParam("code"))));
         } catch (CurrencyAdjustmentException exception) {
             ApiResponseUtils.error(context, 400, "invalid_alias", exception.getMessage());
@@ -259,6 +297,10 @@ public final class CurrencyRoutes {
      */
     public static void deleteAlias(final Context context) {
         currencyRepository().deleteAlias(context.pathParam("alias"));
+        publish(CurrencyAliasChangedEvent.class, new CurrencyConfigurationEventArgs(
+                "alias_deleted",
+                "",
+                Map.of("alias", context.pathParam("alias"), "source_type", "management_api")));
         ApiResponseUtils.success(context, Map.of("alias", context.pathParam("alias"), "deleted", true));
     }
 
@@ -283,23 +325,32 @@ public final class CurrencyRoutes {
         }
 
         try {
-            final CurrencySource source = new CurrencySource(
-                    "api",
+            final CurrencySource source = CurrencySource.api(
                     "",
-                    "management_api",
                     ApiRequestUtils.bodyField(context, "source_ref"),
                     ApiRequestUtils.firstNonBlank(ApiRequestUtils.bodyField(context, "reason"), "Management API adjustment"));
-            final CurrencyMovementResult result = switch (operation) {
-                case "add" -> currencyService().add(playerId, currencyCode, amount, source);
-                case "remove" -> currencyService().remove(playerId, currencyCode, amount, source);
-                default -> currencyService().set(playerId, currencyCode, amount, source);
+            final CurrencyOperation currencyOperation = switch (operation) {
+                case "add" -> CurrencyOperation.ADD;
+                case "remove" -> CurrencyOperation.REMOVE;
+                default -> CurrencyOperation.SET;
+            };
+            final CurrencyAdjustmentRequest request = new CurrencyAdjustmentRequest(
+                    playerId,
+                    currencyCode,
+                    currencyOperation,
+                    amount,
+                    source,
+                    ApiRequestUtils.bodyBoolean(context, "notify_player", true),
+                    ApiRequestUtils.bodyStringMap(context, "metadata"));
+            final CurrencyOperationResult result = switch (currencyOperation) {
+                case ADD -> currencyService().add(request);
+                case REMOVE -> currencyService().remove(request);
+                case SET -> currencyService().set(request);
             };
 
-            if (ApiRequestUtils.bodyBoolean(context, "notify_player", true)) {
-                notifyOnlinePlayer(playerId, result);
-            }
-
-            ApiResponseUtils.success(context, movementResponse(result));
+            ApiResponseUtils.success(context, operationResponse(result));
+        } catch (CurrencyOperationCancelledException exception) {
+            ApiResponseUtils.error(context, 409, exception.getCancellationCode(), exception.getMessage());
         } catch (CurrencyDisabledException exception) {
             ApiResponseUtils.error(context, 409, "currency_disabled", exception.getMessage());
         } catch (CurrencyNotFoundException exception) {
@@ -366,14 +417,6 @@ public final class CurrencyRoutes {
         return definition.get();
     }
 
-    private static void notifyOnlinePlayer(final int playerId, final CurrencyMovementResult result) {
-        final Session session = NetworkManager.getInstance().getSessions().getByPlayerId(playerId);
-
-        if (session != null) {
-            CometBootstrap.resolve(CurrencyService.class).getMessageDispatcher().sendBalanceChange(session, result);
-        }
-    }
-
     private static Map<String, Object> definitionResponse(final ICurrencyDefinition definition) {
         final Map<String, Object> response = new LinkedHashMap<>();
         response.put("id", definition.getId());
@@ -427,6 +470,13 @@ public final class CurrencyRoutes {
         return response;
     }
 
+    private static Map<String, Object> operationResponse(final CurrencyOperationResult result) {
+        final Map<String, Object> response = movementResponse(result.getMovement());
+        response.put("online_player_updated", result.isOnlinePlayerUpdated());
+        response.put("player_notified", result.isPlayerNotified());
+        return response;
+    }
+
     private static int parseLimit(final String rawLimit) {
         if (!StringUtils.isNumeric(rawLimit)) {
             return 100;
@@ -441,6 +491,10 @@ public final class CurrencyRoutes {
 
     private static ICurrencyRepository currencyRepository() {
         return CometBootstrap.resolve(ICurrencyRepository.class);
+    }
+
+    private static <T extends EventArgs> boolean publish(final Class<? extends Event> eventClass, final T args) {
+        return CometBootstrap.resolve(EventHandler.class).handleEvent(eventClass, args);
     }
 
     private static CurrencyRolePolicy rolePolicy(
