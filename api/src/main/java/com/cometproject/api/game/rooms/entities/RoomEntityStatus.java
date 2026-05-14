@@ -1,5 +1,8 @@
 package com.cometproject.api.game.rooms.entities;
 
+/**
+ * Enumerates room entity status values used by the room subsystem.
+ */
 public enum RoomEntityStatus {
     SIT("sit"),
     MOVE("mv"),
@@ -35,10 +38,21 @@ public enum RoomEntityStatus {
         this.statusCode = statusCode;
     }
 
+    /**
+     * Returns the status code for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getStatusCode() {
         return this.statusCode;
     }
 
+    /**
+     * Executes the from string operation for this room contract.
+     *
+     * @param key Key value supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static RoomEntityStatus fromString(String key) {
         for (RoomEntityStatus status : values()) {
             if (status.statusCode.equals(key)) {

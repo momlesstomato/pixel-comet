@@ -14,6 +14,9 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 
 
+/**
+ * Serializes the catalog page message for the Pixel Protocol client.
+ */
 public class CatalogPageMessageComposer extends MessageComposer {
 
     private final String catalogType;
@@ -21,6 +24,14 @@ public class CatalogPageMessageComposer extends MessageComposer {
     private final IPlayer player;
     private final ICatalogService catalogService;
 
+    /**
+     * Creates a catalog page message composer instance for the catalog subsystem.
+     *
+     * @param catalogType Catalog type value supplied by the caller.
+     * @param catalogPage Catalog page value supplied by the caller.
+     * @param player Player value supplied by the caller.
+     * @param catalogService Catalog service value supplied by the caller.
+     */
     public CatalogPageMessageComposer(final String catalogType, final ICatalogPage catalogPage, final IPlayer player,
                                       ICatalogService catalogService) {
         this.catalogType = catalogType;
@@ -29,11 +40,21 @@ public class CatalogPageMessageComposer extends MessageComposer {
         this.catalogService = catalogService;
     }
 
+    /**
+     * Returns the outgoing Pixel Protocol message id.
+     *
+     * @return Outgoing message id registered in the protocol header table.
+     */
     @Override
     public short getId() {
         return Composers.CatalogPageMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(this.catalogPage.getId());

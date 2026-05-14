@@ -1,5 +1,8 @@
 package com.cometproject.api.game.quests;
 
+/**
+ * Enumerates quest reward values used by the quest subsystem.
+ */
 public enum QuestReward {
     ACHIEVEMENT_POINTS,
     VIP_POINTS,

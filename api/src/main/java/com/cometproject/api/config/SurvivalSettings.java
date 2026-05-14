@@ -1,5 +1,8 @@
 package com.cometproject.api.config;
 
+/**
+ * Describes survival settings behavior for the configuration subsystem.
+ */
 public class SurvivalSettings {
     public static int gunDamage = 0;
     public static int gunDistance = 3;

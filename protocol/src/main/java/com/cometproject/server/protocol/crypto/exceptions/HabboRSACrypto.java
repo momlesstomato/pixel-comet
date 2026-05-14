@@ -8,12 +8,21 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Describes habbo RSA crypto behavior for the protocol crypto subsystem.
+ */
 public class HabboRSACrypto {
     private final BigInteger e;
     private final BigInteger n;
     private final BigInteger d;
     private final int blockSize;
 
+    /**
+     * Creates a habbo rsa crypto instance for the protocol subsystem.
+     *
+     * @param e E value supplied by the caller.
+     * @param n N value supplied by the caller.
+     */
     public HabboRSACrypto(String e, String n) {
         this.e = new BigInteger(e, 16);
         this.n = new BigInteger(n, 16);
@@ -21,6 +30,13 @@ public class HabboRSACrypto {
         this.blockSize = (this.n.bitLength() + 7) / 8;
     }
 
+    /**
+     * Creates a habbo rsa crypto instance for the protocol subsystem.
+     *
+     * @param e E value supplied by the caller.
+     * @param n N value supplied by the caller.
+     * @param d D value supplied by the caller.
+     */
     public HabboRSACrypto(String e, String n, String d) {
         this.e = new BigInteger(e, 16);
         this.n = new BigInteger(n, 16);
@@ -28,18 +44,46 @@ public class HabboRSACrypto {
         this.blockSize = (this.n.bitLength() + 7) / 8;
     }
 
+    /**
+     * Executes the encrypt operation for this protocol contract.
+     *
+     * @param data Data value supplied by the caller.
+     * @return Result produced by the operation.
+     * @throws HabboCryptoException When the implementation cannot complete the operation.
+     */
     public byte[] Encrypt(byte[] data) throws HabboCryptoException {
         return DoEncrypt(data, true, 2);
     }
 
+    /**
+     * Executes the decrypt operation for this protocol contract.
+     *
+     * @param data Data value supplied by the caller.
+     * @return Result produced by the operation.
+     * @throws HabboCryptoException When the implementation cannot complete the operation.
+     */
     public byte[] Decrypt(byte[] data) throws HabboCryptoException {
         return DoDecrypt(data, false, 2);
     }
 
+    /**
+     * Executes the sign operation for this protocol contract.
+     *
+     * @param data Data value supplied by the caller.
+     * @return Result produced by the operation.
+     * @throws HabboCryptoException When the implementation cannot complete the operation.
+     */
     public byte[] Sign(byte[] data) throws HabboCryptoException {
         return DoEncrypt(data, false, 1);
     }
 
+    /**
+     * Executes the verify operation for this protocol contract.
+     *
+     * @param data Data value supplied by the caller.
+     * @return Result produced by the operation.
+     * @throws HabboCryptoException When the implementation cannot complete the operation.
+     */
     public byte[] Verify(byte[] data) throws HabboCryptoException {
         return DoDecrypt(data, true, 1);
     }

@@ -7,19 +7,37 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 import org.apache.commons.lang3.StringUtils;
 
 
+/**
+ * Serializes the manage group message for the Pixel Protocol client.
+ */
 public class ManageGroupMessageComposer extends MessageComposer {
 
     private final IGroup group;
 
+    /**
+     * Creates a manage group message composer instance for the protocol composer subsystem.
+     *
+     * @param group Group value supplied by the caller.
+     */
     public ManageGroupMessageComposer(final IGroup group) {
         this.group = group;
     }
 
+    /**
+     * Returns the outgoing Pixel Protocol message id.
+     *
+     * @return Outgoing message id registered in the protocol header table.
+     */
     @Override
     public short getId() {
         return Composers.ManageGroupMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(0); // Array for something related to rooms (int:roomId, String:roomName, Boolean:Unk)

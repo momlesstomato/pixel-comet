@@ -3,9 +3,18 @@ package com.cometproject.server.protocol.crypto.exceptions.utils;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Describes hex utils behavior for the protocol crypto subsystem.
+ */
 public class HexUtils {
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
+    /**
+     * Executes the to hex operation for this protocol contract.
+     *
+     * @param bytes Bytes value supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static String toHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
@@ -16,6 +25,12 @@ public class HexUtils {
         return new String(hexChars);
     }
 
+    /**
+     * Executes the to bytes operation for this protocol contract.
+     *
+     * @param hexString Hex string value supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static byte[] toBytes(String hexString) {
         int len = hexString.length();
         byte[] data = new byte[len / 2];
@@ -26,6 +41,12 @@ public class HexUtils {
         return data;
     }
 
+    /**
+     * Returns the random associated with this protocol contract.
+     *
+     * @param length Length value supplied by the caller.
+     * @return Requested value, or the implementation-defined missing value documented by the contract.
+     */
     public static String getRandom(int length){
         Random r = ThreadLocalRandom.current();
         StringBuilder sb = new StringBuilder();

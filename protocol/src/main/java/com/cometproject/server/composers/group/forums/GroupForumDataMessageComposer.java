@@ -7,20 +7,39 @@ import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
+/**
+ * Serializes the group forum data message for the Pixel Protocol client.
+ */
 public class GroupForumDataMessageComposer extends MessageComposer {
     private final IGroup group;
     private final int playerId;
 
+    /**
+     * Creates a group forum data message composer instance for the protocol composer subsystem.
+     *
+     * @param group Group value supplied by the caller.
+     * @param playerId Player id value supplied by the caller.
+     */
     public  GroupForumDataMessageComposer(final IGroup group, int playerId) {
         this.group = group;
         this.playerId = playerId;
     }
 
+    /**
+     * Returns the outgoing Pixel Protocol message id.
+     *
+     * @return Outgoing message id registered in the protocol header table.
+     */
     @Override
     public short getId() {
         return Composers.GroupForumDataMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         this.group.getForum().composeData(msg, group.getData());

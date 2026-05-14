@@ -22,7 +22,7 @@
             <property name="scope" value="public"/>
             <property name="excludeScope" value="private"/>
             <property name="allowMissingPropertyJavadoc" value="true"/>
-            <property name="allowedAnnotations" value="Override,Test,Before,After,BeforeEach,AfterEach,ParameterizedTest"/>
+            <property name="allowedAnnotations" value="Test,Before,After,BeforeEach,AfterEach,ParameterizedTest"/>
         </module>
     </module>
 </module>

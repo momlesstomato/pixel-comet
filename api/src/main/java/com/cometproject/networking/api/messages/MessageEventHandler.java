@@ -7,6 +7,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
 
+/**
+ * Describes message event handler behavior for the networking subsystem.
+ */
 public abstract class MessageEventHandler<T extends MessageParser> implements IMessageEventHandler {
 
     private static Logger LOGGER = LoggerFactory.getLogger(MessageEventHandler.class);
@@ -17,6 +20,12 @@ public abstract class MessageEventHandler<T extends MessageParser> implements IM
     private T parserTypeField;
     private Class<T> parserType;
 
+    /**
+     * Creates a message event handler instance for the networking subsystem.
+     *
+     * @param messageId Message id value supplied by the caller.
+     * @param parserConsumer Parser consumer value supplied by the caller.
+     */
     public MessageEventHandler(short messageId, Consumer<T> parserConsumer) {
         this.messageId = messageId;
         this.parserConsumer = parserConsumer;
@@ -31,6 +40,12 @@ public abstract class MessageEventHandler<T extends MessageParser> implements IM
         }
     }
 
+    /**
+     * Executes the handle operation for this networking contract.
+     *
+     * @param eventData Event data value supplied by the caller.
+     * @throws Exception When the implementation cannot complete the operation.
+     */
     public void handle(IMessageEvent eventData) throws Exception {
         final T parser = this.parserType.newInstance();
 
@@ -39,6 +54,11 @@ public abstract class MessageEventHandler<T extends MessageParser> implements IM
         this.parserConsumer.accept(parser);
     }
 
+    /**
+     * Returns the message id for this networking contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public short getMessageId() {
         return messageId;
     }

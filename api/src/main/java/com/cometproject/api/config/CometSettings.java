@@ -9,6 +9,9 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 
+/**
+ * Describes comet settings behavior for the configuration subsystem.
+ */
 public class CometSettings {
     public static boolean motdEnabled = false;
     public static String motdMessage = "";
@@ -150,41 +153,96 @@ public class CometSettings {
     public static String crypto_e = "3";
 
     /**
-     * Enable & set the Message Of The Day text
+     * Enables the Message Of The Day and stores the login text.
      *
-     * @param motd The message to display to the user on-login
+     * @param motd The message to display to the user on login.
      */
     public static void setMotd(String motd) {
         motdEnabled = true;
         motdMessage = motd;
     }
 
+    /**
+     * Updates the casino free rolls for this configuration contract.
+     *
+     * @param b B supplied by the caller.
+     */
     public static void setCasinoFreeRolls(boolean b){
         casinoFreeRolls = b;
     }
+    /**
+     * Updates the ween event for this configuration contract.
+     *
+     * @param b B supplied by the caller.
+     */
     public static void setWeenEvent(boolean b){ toggleWeenMode = b; }
+    /**
+     * Executes toggle snow storm for this configuration contract.
+     *
+     * @param b B supplied by the caller.
+     */
     public static void toggleSnowStorm(boolean b){ snowStormEnabled = b; }
+    /**
+     * Updates the survival enabled for this configuration contract.
+     *
+     * @param b B supplied by the caller.
+     */
     public static void setSurvivalEnabled(boolean b){ survivalEnabled = b; }
 
+    /**
+     * Executes the increment limited egg operation for this configuration contract.
+     *
+     * @return Result produced by the operation.
+     */
     public static int incrementLimitedEgg(){
         globalEggsCrafted++;
         return globalEggsCrafted;
     }
 
+    /**
+     * Returns the hospital room id for this configuration contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getHospitalRoomId() { return hospitalRoomId; }
 
+    /**
+     * Updates the lottery pool for this configuration contract.
+     *
+     * @param pool Pool supplied by the caller.
+     */
     public static void setLotteryPool(int pool){
         lotteryPool = pool;
     }
 
+    /**
+     * Updates the current event room for this configuration contract.
+     *
+     * @param r R supplied by the caller.
+     */
     public static void setCurrentEventRoom(int r){
         currentEventRoom = r;
     }
+    /**
+     * Updates the survival min queue for this configuration contract.
+     *
+     * @param r R supplied by the caller.
+     */
     public static void setSurvivalMinQueue(int r){
         survivalMinQueue = r;
     }
 
+    /**
+     * Returns the event id for this configuration contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getEventID() { return currentEventRoom; }
 
+    /**
+     * Executes toggle crypto for this configuration contract.
+     *
+     * @param t T supplied by the caller.
+     */
     public static void toggleCrypto(boolean t) { cryptoActive = t; }
 }

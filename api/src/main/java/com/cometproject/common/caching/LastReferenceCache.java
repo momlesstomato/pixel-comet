@@ -9,6 +9,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
+/**
+ * Describes last reference cache behavior for the Comet subsystem.
+ */
 public class LastReferenceCache<TKey, TObj> implements Cache<TKey, TObj> {
 
     private final Map<TKey, CacheEntry<TObj>> cache;
@@ -18,6 +21,14 @@ public class LastReferenceCache<TKey, TObj> implements Cache<TKey, TObj> {
 
     private final Future processFuture;
 
+    /**
+     * Creates a last reference cache instance for the Comet subsystem.
+     *
+     * @param objectLifetimeMillis Object lifetime millis value supplied by the caller.
+     * @param lifetimeCheckDelayMillis Lifetime check delay millis value supplied by the caller.
+     * @param expireConsumer Expire consumer value supplied by the caller.
+     * @param executorService Executor service value supplied by the caller.
+     */
     public LastReferenceCache(long objectLifetimeMillis, long lifetimeCheckDelayMillis,
                               BiConsumer<TKey, TObj> expireConsumer, ScheduledExecutorService executorService) {
         this.cache = new ConcurrentHashMap<>();
@@ -27,6 +38,11 @@ public class LastReferenceCache<TKey, TObj> implements Cache<TKey, TObj> {
         this.processFuture = executorService.schedule(this::processExpiredObjects, lifetimeCheckDelayMillis, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Executes for each for this Comet contract.
+     *
+     * @param consumer Consumer supplied by the caller.
+     */
     @Override
     public void forEach(BiConsumer<TKey, TObj> consumer) {
         for(Map.Entry<TKey, CacheEntry<TObj>> entry : cache.entrySet()) {
@@ -46,21 +62,44 @@ public class LastReferenceCache<TKey, TObj> implements Cache<TKey, TObj> {
         }
     }
 
+    /**
+     * Executes get for this Comet contract.
+     *
+     * @param tKey T key supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public TObj get(TKey tKey) {
         return this.cache.get(tKey).getObject();
     }
 
+    /**
+     * Executes remove for this Comet contract.
+     *
+     * @param key Key supplied by the caller.
+     */
     @Override
     public void remove(TKey key) {
         this.cache.remove(key);
     }
 
+    /**
+     * Executes add for this Comet contract.
+     *
+     * @param key Key supplied by the caller.
+     * @param obj Obj supplied by the caller.
+     */
     @Override
     public void add(TKey key, TObj obj) {
         this.cache.put(key, new CacheEntry<>(obj));
     }
 
+    /**
+     * Executes contains for this Comet contract.
+     *
+     * @param tKey T key supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean contains(TKey tKey) {
         return this.cache.containsKey(tKey);
@@ -70,16 +109,32 @@ public class LastReferenceCache<TKey, TObj> implements Cache<TKey, TObj> {
         private T obj;
         private long lastAccessed = System.currentTimeMillis();
 
+        /**
+         * Executes cache entry for this Comet contract.
+         *
+         * @param obj Obj supplied by the caller.
+         */
         public CacheEntry(T obj) {
             this.obj = obj;
         }
 
+        /**
+         * Returns the object for this Comet contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public T getObject() {
             this.lastAccessed = System.currentTimeMillis();
 
             return obj;
         }
 
+        /**
+         * Executes has expired for this Comet contract.
+         *
+         * @param objectLifetime Object lifetime supplied by the caller.
+         * @return True when the condition is satisfied; otherwise false.
+         */
         public boolean hasExpired(long objectLifetime) {
             return (System.currentTimeMillis() - objectLifetime) < lastAccessed;
         }

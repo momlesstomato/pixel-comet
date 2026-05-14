@@ -1,6 +1,15 @@
 package com.cometproject.api.utilities;
 
+/**
+ * Describes model utils behavior for the Comet subsystem.
+ */
 public class ModelUtils {
+    /**
+     * Returns the height associated with this utility contract.
+     *
+     * @param c C value supplied by the caller.
+     * @return Requested value, or the implementation-defined missing value documented by the contract.
+     */
     public static int getHeight(char c) {
         switch (String.valueOf(c)) {
             case "0":

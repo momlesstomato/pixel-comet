@@ -17,8 +17,18 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.util.CharsetUtil;
 
+/**
+ * Describes XML policy decoder behavior for the protocol codec subsystem.
+ */
 public class XMLPolicyDecoder extends ByteToMessageDecoder {
 
+    /**
+     * Decodes inbound bytes into the next protocol object.
+     *
+     * @param ctx Netty channel context for the current operation.
+     * @param in Inbound byte buffer being decoded.
+     * @param out Output collection receiving decoded protocol objects.
+     */
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
 
@@ -58,63 +68,124 @@ public class XMLPolicyDecoder extends ByteToMessageDecoder {
             this.context = context;
         }
 
+        /**
+         * Returns the outgoing Pixel Protocol message id.
+         *
+         * @return Outgoing message id registered in the protocol header table.
+         */
         @Override
         public String getId() {
             return this.context.channel().id().asLongText();
         }
 
+        /**
+         * Returns the connected at for this protocol codec contract.
+         *
+         * @return Value exposed by the contract.
+         */
         @Override
         public Instant getConnectedAt() {
             return Instant.now();
         }
 
+        /**
+         * Returns the state for this protocol codec contract.
+         *
+         * @return Value exposed by the contract.
+         */
         @Override
         public ConnectionState getState() {
             return ConnectionState.AUTHENTICATING;
         }
 
+        /**
+         * Updates the state for this protocol codec contract.
+         *
+         * @param state State supplied by the caller.
+         */
         @Override
         public void setState(final ConnectionState state) {
         }
 
+        /**
+         * Returns the transport type for this protocol codec contract.
+         *
+         * @return Value exposed by the contract.
+         */
         @Override
         public ConnectionTransportType getTransportType() {
             return ConnectionTransportType.TCP;
         }
 
+        /**
+         * Returns the remote address for this protocol codec contract.
+         *
+         * @return Value exposed by the contract.
+         */
         @Override
         public String getRemoteAddress() {
             return this.context.channel().remoteAddress().toString();
         }
 
+        /**
+         * Returns the cipher for this protocol codec contract.
+         *
+         * @return Value exposed by the contract.
+         */
         @Override
         public ConnectionCipher getCipher() {
             return null;
         }
 
+        /**
+         * Updates the cipher for this protocol codec contract.
+         *
+         * @param cipher Cipher supplied by the caller.
+         */
         @Override
         public void setCipher(final ConnectionCipher cipher) {
         }
 
+        /**
+         * Executes send for this protocol codec contract.
+         *
+         * @param composer Composer supplied by the caller.
+         */
         @Override
         public void send(final IMessageComposer composer) {
         }
 
+        /**
+         * Executes send raw for this protocol codec contract.
+         *
+         * @param payload Payload supplied by the caller.
+         */
         @Override
         public void sendRaw(final String payload) {
             this.context.channel().writeAndFlush(payload);
         }
 
+        /**
+         * Executes flush for this protocol codec contract.
+         */
         @Override
         public void flush() {
             this.context.flush();
         }
 
+        /**
+         * Executes close for this protocol codec contract.
+         *
+         * @param closeCode Close code supplied by the caller.
+         */
         @Override
         public void close(final ConnectionCloseCode closeCode) {
             this.context.close();
         }
 
+        /**
+         * Releases references held by this protocol message.
+         */
         @Override
         public void dispose() {
             this.context.close();

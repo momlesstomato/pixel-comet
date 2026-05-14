@@ -7,6 +7,9 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Describes habbo diffie hellman behavior for the protocol crypto subsystem.
+ */
 public class HabboDiffieHellman {
 
     private static final int DH_PRIMES_BIT_SIZE = 128;
@@ -19,16 +22,31 @@ public class HabboDiffieHellman {
     private BigInteger DHPrivate;
     private BigInteger DHPublic;
 
+    /**
+     * Creates a habbo diffie hellman instance for the protocol subsystem.
+     *
+     * @param crypto Crypto value supplied by the caller.
+     */
     public HabboDiffieHellman(HabboRSACrypto crypto) {
         this.crypto = crypto;
         this.generateDHPrimes();
         this.generateDHKeys();
     }
 
+    /**
+     * Returns the DH prime for this protocol crypto contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public BigInteger getDHPrime() {
         return DHPrime;
     }
 
+    /**
+     * Returns the DH generator for this protocol crypto contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public BigInteger getDHGenerator() {
         return DHGenerator;
     }
@@ -66,18 +84,43 @@ public class HabboDiffieHellman {
         return new BigInteger(intStr, 10);
     }
 
+    /**
+     * Returns the public key associated with this protocol contract.
+     *
+     * @return Requested value, or the implementation-defined missing value documented by the contract.
+     * @throws HabboCryptoException When the implementation cannot complete the operation.
+     */
     public String getPublicKey() throws HabboCryptoException {
         return encryptBigInteger(this.DHPublic);
     }
 
+    /**
+     * Returns the signed prime associated with this protocol contract.
+     *
+     * @return Requested value, or the implementation-defined missing value documented by the contract.
+     * @throws HabboCryptoException When the implementation cannot complete the operation.
+     */
     public String getSignedPrime() throws HabboCryptoException {
         return encryptBigInteger(this.DHPrime);
     }
 
+    /**
+     * Returns the signed generator associated with this protocol contract.
+     *
+     * @return Requested value, or the implementation-defined missing value documented by the contract.
+     * @throws HabboCryptoException When the implementation cannot complete the operation.
+     */
     public String getSignedGenerator() throws HabboCryptoException {
         return encryptBigInteger(this.DHGenerator);
     }
 
+    /**
+     * Executes the do handshake operation for this protocol contract.
+     *
+     * @param signedPrime Signed prime value supplied by the caller.
+     * @param signedGenerator Signed generator value supplied by the caller.
+     * @throws HabboCryptoException When the implementation cannot complete the operation.
+     */
     public void doHandshake(String signedPrime, String signedGenerator) throws HabboCryptoException {
         this.DHPrime = decryptBigInteger(signedPrime);
         this.DHGenerator = decryptBigInteger(signedGenerator);
@@ -97,6 +140,13 @@ public class HabboDiffieHellman {
         generateDHKeys();
     }
 
+    /**
+     * Returns the shared key associated with this protocol contract.
+     *
+     * @param publicKeyStr Public key str value supplied by the caller.
+     * @return Requested value, or the implementation-defined missing value documented by the contract.
+     * @throws HabboCryptoException When the implementation cannot complete the operation.
+     */
     public byte[] getSharedKey(String publicKeyStr) throws HabboCryptoException {
         BigInteger publicKey = this.decryptBigInteger(publicKeyStr);
         BigInteger sharedKey = publicKey.modPow(this.DHPrivate, this.DHPrime);

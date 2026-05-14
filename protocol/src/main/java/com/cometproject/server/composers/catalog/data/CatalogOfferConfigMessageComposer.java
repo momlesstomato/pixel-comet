@@ -5,17 +5,33 @@ import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
 
+/**
+ * Serializes the catalog offer config message for the Pixel Protocol client.
+ */
 public class CatalogOfferConfigMessageComposer extends MessageComposer {
 
+    /**
+     * Creates a catalog offer config message composer instance for the catalog subsystem.
+     */
     public CatalogOfferConfigMessageComposer() {
 
     }
 
+    /**
+     * Returns the outgoing Pixel Protocol message id.
+     *
+     * @return Outgoing message id registered in the protocol header table.
+     */
     @Override
     public short getId() {
         return Composers.CatalogItemDiscountMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(100);

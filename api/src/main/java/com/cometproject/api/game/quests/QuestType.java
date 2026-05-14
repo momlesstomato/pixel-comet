@@ -1,5 +1,8 @@
 package com.cometproject.api.game.quests;
 
+/**
+ * Enumerates quest type values used by the quest subsystem.
+ */
 public enum QuestType {
     FURNI_MOVE(0, "MOVE_ITEM"),
     FURNI_ROTATE(1, "ROTATE_ITEM"),
@@ -107,14 +110,30 @@ public enum QuestType {
         this.action = action;
     }
 
+    /**
+     * Returns the quest type for this quest contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getQuestType() {
         return this.questType;
     }
 
+    /**
+     * Returns the action for this quest contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getAction() {
         return this.action;
     }
 
+    /**
+     * Returns the by id associated with this quest contract.
+     *
+     * @param id Id value supplied by the caller.
+     * @return Requested value, or the implementation-defined missing value documented by the contract.
+     */
     public static QuestType getById(int id) {
         for (QuestType type : values()) {
             if (type.getQuestType() == id) {

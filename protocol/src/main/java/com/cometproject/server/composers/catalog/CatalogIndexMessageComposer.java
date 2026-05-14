@@ -11,6 +11,9 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 
 import java.util.List;
 
+/**
+ * Serializes the catalog index message for the Pixel Protocol client.
+ */
 public class CatalogIndexMessageComposer extends MessageComposer {
     private final IFurnitureService furnitureService;
     private final ICatalogService catalogService;
@@ -18,6 +21,14 @@ public class CatalogIndexMessageComposer extends MessageComposer {
     private final int playerRank;
     private final String mode;
 
+    /**
+     * Creates a catalog index message composer instance for the catalog subsystem.
+     *
+     * @param catalogService Catalog service value supplied by the caller.
+     * @param furnitureService Furniture service value supplied by the caller.
+     * @param playerRank Player rank value supplied by the caller.
+     * @param mode Mode value supplied by the caller.
+     */
     public CatalogIndexMessageComposer(final ICatalogService catalogService, final IFurnitureService furnitureService, final int playerRank, String mode) {
         this.catalogService = catalogService;
         this.furnitureService = furnitureService;
@@ -25,11 +36,21 @@ public class CatalogIndexMessageComposer extends MessageComposer {
         this.mode = mode;
     }
 
+    /**
+     * Returns the outgoing Pixel Protocol message id.
+     *
+     * @return Outgoing message id registered in the protocol header table.
+     */
     @Override
     public short getId() {
         return Composers.CatalogIndexMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(final IComposer msg) {
         msg.writeBoolean(true);

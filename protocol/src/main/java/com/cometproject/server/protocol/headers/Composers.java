@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * Describes composers behavior for the protocol header subsystem.
+ */
 public class Composers {
     // Handshake
     public static final short InitCryptoMessageComposer = 1347;// 3523
@@ -354,8 +357,7 @@ public class Composers {
     public static final short SnowStormGenericErrorComposer2 = 5028;
     public static final short SnowStormUserRematchedComposer = 5029;
 
-
-    /*** --------- UPDATED - PENDING TO BE PLACED  -------- ***/
+    // Updated composer IDs that still need to be relocated into bounded sections.
     public static final short GenericErrorMessageComposer = 3323;// 2856
     public static final short MutedMessageComposer = 826;// 1671;
     public static final short ModeratorTicketChatlogMessageComposer = 607;// 3492;//898
@@ -393,7 +395,7 @@ public class Composers {
     public static final short PetBreedingStartedMessageComposer = 1625;// 1692
     public static final short PetPackageMessageComposer = 2380;// 3781
     public static final short PetPackageOpenedMessageComposer = 546;// 1278
-    /*** --------- NOT UPDATED YET  -------- ***/
+    // Composer IDs that still need protocol verification.
 
     // NUX - SMS - EMAIL
     public static final short SMSVerificationWindowMessageComposer = 1542;
@@ -451,6 +453,12 @@ public class Composers {
         }
     }
 
+    /**
+     * Executes the value of id operation for this protocol contract.
+     *
+     * @param packetId Packet id value supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static String valueOfId(short packetId) {
         if (composerPacketNames.containsKey(packetId)) {
             return composerPacketNames.get(packetId);

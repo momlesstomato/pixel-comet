@@ -8,6 +8,9 @@ import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
 
+/**
+ * Serializes the bought item message for the Pixel Protocol client.
+ */
 public class BoughtItemMessageComposer extends MessageComposer {
     private final ICatalogItem catalogItem;
     private final FurnitureDefinition itemDefinition;
@@ -20,24 +23,48 @@ public class BoughtItemMessageComposer extends MessageComposer {
         this.isGroup = isGroup;
     }
 
+    /**
+     * Creates a bought item message composer instance for the catalog subsystem.
+     *
+     * @param catalogItem Catalog item value supplied by the caller.
+     * @param itemDefinition Item definition value supplied by the caller.
+     */
     public BoughtItemMessageComposer(final ICatalogItem catalogItem, final FurnitureDefinition itemDefinition) {
         this(catalogItem, itemDefinition, false);
     }
 
+    /**
+     * Creates a bought item message composer instance for the catalog subsystem.
+     *
+     * @param type Type value supplied by the caller.
+     */
     public BoughtItemMessageComposer(final PurchaseType type) {
         this(null, null, type == PurchaseType.GROUP);
     }
 
+    /**
+     * Enumerates purchase type values used by the protocol composer subsystem.
+     */
     public enum PurchaseType {
         GROUP,
         BADGE
     }
 
+    /**
+     * Returns the outgoing Pixel Protocol message id.
+     *
+     * @return Outgoing message id registered in the protocol header table.
+     */
     @Override
     public short getId() {
         return Composers.PurchaseOKMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         if (this.catalogItem != null && this.itemDefinition != null) {

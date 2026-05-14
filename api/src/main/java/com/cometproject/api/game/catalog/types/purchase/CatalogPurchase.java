@@ -1,30 +1,30 @@
 package com.cometproject.api.game.catalog.types.purchase;
 
 /**
- * Catalog purchase object used for batching multiple purchases together
+ * Represents a catalog purchase request used for batching item grants.
  */
 public class CatalogPurchase {
     /**
-     * The ID of the player who purchased the item
+     * The ID of the player who purchased the item.
      */
     private int playerId;
 
     /**
-     * The item definition ID of the item
+     * The item definition ID of the item.
      */
     private int itemBaseId;
 
     /**
-     * The data generated for items such as trophies etc
+     * The data generated for item types such as trophies.
      */
     private String data;
 
     /**
-     * Initialize the catalog purchase object
+     * Creates a catalog purchase record.
      *
-     * @param playerId   The ID of the player who purchased the item
-     * @param itemBaseId The item definition ID of the item
-     * @param data       The data generated for items such as trophies etc
+     * @param playerId The ID of the player who purchased the item.
+     * @param itemBaseId The item definition ID of the item.
+     * @param data The data generated for item types such as trophies.
      */
     public CatalogPurchase(int playerId, int itemBaseId, String data) {
         this.playerId = playerId;
@@ -33,27 +33,27 @@ public class CatalogPurchase {
     }
 
     /**
-     * Get the player ID of the player who purchased the item
+     * Returns the player ID for the buyer.
      *
-     * @return The ID of the player who purchased the item
+     * @return The ID of the player who purchased the item.
      */
     public int getPlayerId() {
         return playerId;
     }
 
     /**
-     * Get the item definition ID
+     * Returns the purchased item definition ID.
      *
-     * @return The item definition ID
+     * @return The item definition ID.
      */
     public int getItemBaseId() {
         return itemBaseId;
     }
 
     /**
-     * Get the data generated for items such as trophies etc
+     * Returns custom item data generated for the purchase.
      *
-     * @return The data generated for items such as trophies etc
+     * @return The data generated for item types such as trophies.
      */
     public String getData() {
         return data;

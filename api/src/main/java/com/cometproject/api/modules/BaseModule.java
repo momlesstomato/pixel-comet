@@ -14,10 +14,13 @@ import com.cometproject.api.networking.messages.IMessageEventHandler;
 import com.cometproject.api.networking.sessions.ISession;
 import com.cometproject.api.server.IGameService;
 
+/**
+ * Provides the base lifecycle and registration helpers for plugin modules.
+ */
 public abstract class BaseModule implements EventListenerContainer {
 
     /**
-     * Module configuration
+     * Module configuration.
      */
     private final ModuleConfig config;
 
@@ -33,6 +36,12 @@ public abstract class BaseModule implements EventListenerContainer {
      */
     private final IGameService gameService;
 
+    /**
+     * Creates a base module instance for the module subsystem.
+     *
+     * @param config Config value supplied by the caller.
+     * @param gameService Game service value supplied by the caller.
+     */
     public BaseModule(ModuleConfig config, IGameService gameService) {
         this.moduleId = UUID.randomUUID();
         this.gameService = gameService;
@@ -55,26 +64,36 @@ public abstract class BaseModule implements EventListenerContainer {
         this.getGameService().getEventHandler().registerListeners(listenerContainer);
     }
 
+    /**
+     * Executes the register message operation for this module contract.
+     *
+     * @param messageEventHandler Message event handler value supplied by the caller.
+     */
     public void registerMessage(IMessageEventHandler messageEventHandler) {
 
     }
 
     /**
-     * Registers a chat command with the event handler service
-     * @param commandExecutor The command name
-     * @param consumer The consumer of the command
+     * Registers a chat command with the event handler service.
+     *
+     * @param commandExecutor The command name.
+     * @param consumer The consumer of the command.
      */
     protected void registerChatCommand(String commandExecutor, BiConsumer<ISession, String[]> consumer) {
         this.getGameService().getEventHandler().registerChatCommand(commandExecutor, consumer);
     }
 
+    /**
+     * Updates the up value for this module contract.
+     */
     public void setup() {
 
     }
 
     /**
-     * Gets overridden if the module would like to register game services
-     * @param gameContext The game context to register the services to
+     * Allows modules to register game services during activation.
+     *
+     * @param gameContext The game context that receives module services.
      */
     public void initialiseServices(GameContext gameContext) {
 
@@ -137,32 +156,37 @@ public abstract class BaseModule implements EventListenerContainer {
     }
 
     /**
-     * The random Module ID
+     * Returns the unique runtime module identifier.
      *
-     * @return The random Module ID
+     * @return The random Module ID.
      */
     public UUID getModuleId() {
         return moduleId;
     }
 
     /**
-     * Get the main game service
+     * Returns the main game service bridge exposed to the module.
      *
-     * @return Main game service
+     * @return Main game service.
      */
     public IGameService getGameService() {
         return this.gameService;
     }
 
     /**
-     * Get the module configuration
+     * Returns the module configuration loaded from module metadata.
      *
-     * @return Module configuration
+     * @return Module configuration.
      */
     public ModuleConfig getConfig() {
         return config;
     }
 
+    /**
+     * Executes the main operation for this module contract.
+     *
+     * @param args Args value supplied by the caller.
+     */
     public static void main(String[] args) {
         // Hides all the "Unused class" stuff for modules, lol
     }

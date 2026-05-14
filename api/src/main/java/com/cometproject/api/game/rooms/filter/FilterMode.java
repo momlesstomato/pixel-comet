@@ -1,5 +1,8 @@
 package com.cometproject.api.game.rooms.filter;
 
+/**
+ * Enumerates filter mode values used by the room subsystem.
+ */
 public enum FilterMode {
     /*
         Smart filter mode will convert things such as accents in the text to a readable character by the filter,

@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * Describes events behavior for the protocol header subsystem.
+ */
 public class Events {
     // Handshake
     public static final short GetClientVersionMessageEvent = 4000;// 3210
@@ -352,7 +355,7 @@ public class Events {
     public static final short GameChatParser = 2502;
     public static final short SnowStormUserPickSnowballEvent = 6026;
 
-    /*** ---- UPDATED TO BE RELOCATED---- ***/
+    // Updated event IDs that still need to be relocated into bounded sections.
     public static final short RedeemVoucherMessageEvent = 339;// 1191
 
     public static final short EquipEffectMessageEvent = 2959;// 2255
@@ -371,8 +374,7 @@ public class Events {
     public static final short GuideInviteUserMessageEvent = 234;// 2156
     public static final short GuideCloseHelpRequestMessageEvent = 887;// 175
 
-
-    /*** --------- NOT UPDATED YET  -------- ***/
+    // Event IDs that still need protocol verification.
     //public static final short GroupConfirmRemoveMemberMessageEvent = 423;//3478
 
     public static final short YouTubeGetNextVideo = -1;// 1294
@@ -406,6 +408,12 @@ public class Events {
         }
     }
 
+    /**
+     * Executes the value of id operation for this protocol contract.
+     *
+     * @param packetId Packet id value supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static String valueOfId(short packetId) {
         if (eventPacketNames.containsKey(packetId)) {
             return eventPacketNames.get(packetId);

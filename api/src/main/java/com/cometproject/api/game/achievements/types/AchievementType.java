@@ -1,5 +1,8 @@
 package com.cometproject.api.game.achievements.types;
 
+/**
+ * Enumerates achievement type values used by the Comet subsystem.
+ */
 public enum AchievementType {
     /*AVATAR_LOOKS("ACH_AvatarLooks"),
     MOTTO("ACH_Motto"),
@@ -161,10 +164,21 @@ public enum AchievementType {
         this.groupName = groupName;
     }
 
+    /**
+     * Returns the group name for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getGroupName() {
         return groupName;
     }
 
+    /**
+     * Returns the type by name associated with this game domain contract.
+     *
+     * @param name Name value supplied by the caller.
+     * @return Requested value, or the implementation-defined missing value documented by the contract.
+     */
     public static AchievementType getTypeByName(String name) {
         for (AchievementType type : AchievementType.values()) {
             if (type.groupName.equals(name)) {

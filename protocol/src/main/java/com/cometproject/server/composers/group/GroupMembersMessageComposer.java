@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Serializes the group members message for the Pixel Protocol client.
+ */
 public class GroupMembersMessageComposer extends MessageComposer {
     private static final int MEMBERS_PER_PAGE = 10;
 
@@ -21,6 +24,16 @@ public class GroupMembersMessageComposer extends MessageComposer {
     private final String searchQuery;
     private final boolean isAdmin;
 
+    /**
+     * Creates a group members message composer instance for the protocol composer subsystem.
+     *
+     * @param group Group value supplied by the caller.
+     * @param page Page value supplied by the caller.
+     * @param groupMembers Group members value supplied by the caller.
+     * @param requestType Request type value supplied by the caller.
+     * @param searchQuery Search query value supplied by the caller.
+     * @param isAdmin Is admin value supplied by the caller.
+     */
     public GroupMembersMessageComposer(final IGroupData group, final int page, final List<PlayerAvatar> groupMembers,
                                        final int requestType, final String searchQuery, final boolean isAdmin) {
         this.group = group;
@@ -31,11 +44,21 @@ public class GroupMembersMessageComposer extends MessageComposer {
         this.isAdmin = isAdmin;
     }
 
+    /**
+     * Returns the outgoing Pixel Protocol message id.
+     *
+     * @return Outgoing message id registered in the protocol header table.
+     */
     @Override
     public short getId() {
         return Composers.GroupMembersMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(group.getId());

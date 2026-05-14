@@ -7,18 +7,36 @@ import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
 
+/**
+ * Serializes the group elements message for the Pixel Protocol client.
+ */
 public class GroupElementsMessageComposer extends MessageComposer {
     private final IGroupItemService groupItemService;
 
+    /**
+     * Creates a group elements message composer instance for the group subsystem.
+     *
+     * @param groupItemService Group item service value supplied by the caller.
+     */
     public GroupElementsMessageComposer(IGroupItemService groupItemService) {
         this.groupItemService = groupItemService;
     }
 
+    /**
+     * Returns the outgoing Pixel Protocol message id.
+     *
+     * @return Outgoing message id registered in the protocol header table.
+     */
     @Override
     public short getId() {
         return Composers.BadgeEditorPartsMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(this.groupItemService.getBases().size());
