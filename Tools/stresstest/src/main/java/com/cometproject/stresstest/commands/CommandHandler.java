@@ -13,7 +13,15 @@ import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Describes command handler behavior for the tooling subsystem.
+ */
 public class CommandHandler {
+    /**
+     * Executes init for this tooling contract.
+     *
+     * @param stressTest Stress test supplied by the caller.
+     */
     public static void init(CometStressTest stressTest) {
         Thread cmdThread = new Thread(() -> {
             while (CometStressTest.isRunning) {

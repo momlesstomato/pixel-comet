@@ -13,6 +13,9 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
+/**
+ * Describes survival player behavior for the room processing subsystem.
+ */
 public class SurvivalPlayer {
     private final Session session;
     private SurvivalPowerUp powerUp = SurvivalPowerUp.None;
@@ -24,14 +27,31 @@ public class SurvivalPlayer {
     private int speedTime = 0;
     private int lastShootTimer = 0;
 
+    /**
+     * Creates a survival player instance for the room processing subsystem.
+     *
+     * @param session Session participating in the operation.
+     */
     public SurvivalPlayer(Session session) {
         this.session = session;
     }
 
+    /**
+     * Returns the session for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Session getSession() {
         return session;
     }
 
+    /**
+     * Executes power up for this room processing contract.
+     *
+     * @param powerUp Power up supplied by the caller.
+     * @param oldPowerUp Old power up supplied by the caller.
+     * @param isSwap Is swap supplied by the caller.
+     */
     public void powerUp(SurvivalPowerUp powerUp, SurvivalPowerUp oldPowerUp, boolean isSwap) {
         boolean needsHold = false;
         int entityId = this.session.getPlayer().getEntity().getId();
@@ -114,67 +134,162 @@ public class SurvivalPlayer {
         this.session.send(new MassEventMessageComposer("habblet/open/survivalSync?figure=" + session.getPlayer().getData().getFigure() + "&kills=" + this.getKills() + "&bullets=" + this.getBullets()));
     }
 
+    /**
+     * Returns the entity for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public PlayerEntity getEntity() {
         return this.session.getPlayer().getEntity();
     }
+    /**
+     * Returns the power up for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public SurvivalPowerUp getPowerUp() {
         return powerUp;
     }
+    /**
+     * Returns the lives for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getLives() {
         return lives;
     }
+    /**
+     * Updates the lives for this room processing contract.
+     *
+     * @param lives Lives supplied by the caller.
+     */
     public void setLives(int lives) {
         this.lives = lives;
     }
+    /**
+     * Executes decrement lives for this room processing contract.
+     *
+     * @param lives Lives supplied by the caller.
+     */
     public void decrementLives(int lives) {
         this.lives -= lives;
     }
+    /**
+     * Returns the bullets for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getBullets() {
         return bullets;
     }
+    /**
+     * Returns the shield for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getShield() {
         return shield;
     }
+    /**
+     * Executes decrement shield for this room processing contract.
+     *
+     * @param shield Shield supplied by the caller.
+     */
     public void decrementShield(int shield) {
         this.shield -= shield;
     }
+    /**
+     * Returns the kills for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getKills() {
         return kills;
     }
+    /**
+     * Executes increment kills for this room processing contract.
+     */
     public void incrementKills() {
         this.kills++;
     }
+    /**
+     * Executes reset shield for this room processing contract.
+     */
     public void resetShield() { this.shield = 0; }
+    /**
+     * Executes increment bullets for this room processing contract.
+     */
     public void incrementBullets() {
         this.bullets += 1;
     }
+    /**
+     * Executes increment shield for this room processing contract.
+     */
     public void incrementShield(){
         if(this.shield > 51){
             this.shield = 100;
         } else this.shield = 50;
     }
+    /**
+     * Executes increment bullets for this room processing contract.
+     *
+     * @param bullets Bullets supplied by the caller.
+     */
     public void incrementBullets(int bullets) {
         this.bullets += bullets;
     }
+    /**
+     * Updates the bullets for this room processing contract.
+     *
+     * @param bullets Bullets supplied by the caller.
+     */
     public void setBullets(int bullets) {
         this.bullets = bullets;
     }
+    /**
+     * Returns the speed time for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getSpeedTime() {
         return speedTime;
     }
+    /**
+     * Returns the last shoot timer for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getLastShootTimer() {
         return lastShootTimer;
     }
+    /**
+     * Updates the last shoot timer for this room processing contract.
+     *
+     * @param time Time supplied by the caller.
+     */
     public void setLastShootTimer(int time) {
         this.lastShootTimer = time;
     }
+    /**
+     * Updates the speed time for this room processing contract.
+     *
+     * @param survivalTimer Survival timer supplied by the caller.
+     */
     public void setSpeedTime(int survivalTimer) {
         this.speedTime = survivalTimer;
     }
+    /**
+     * Executes decrement speed time for this room processing contract.
+     */
     public void decrementSpeedTime() {
         this.speedTime--;
     }
 
+    /**
+     * Returns the power up list for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<SurvivalPowerUp> getPowerUpList(){
         return this.powerUpList;
     }

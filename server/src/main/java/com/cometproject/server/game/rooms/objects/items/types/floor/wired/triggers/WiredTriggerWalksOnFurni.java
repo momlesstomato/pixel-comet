@@ -7,12 +7,28 @@ import com.cometproject.server.game.rooms.objects.items.types.floor.wired.base.W
 import com.cometproject.server.game.rooms.types.Room;
 
 
+/**
+ * Describes wired trigger walks on furni behavior for the room subsystem.
+ */
 public class WiredTriggerWalksOnFurni extends WiredTriggerItem {
 
+    /**
+     * Creates a wired trigger walks on furni instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public WiredTriggerWalksOnFurni(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Executes execute triggers for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param floorItem Floor item supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public static boolean executeTriggers(RoomEntity entity, RoomItemFloor floorItem) {
         boolean wasExecuted = false;
 
@@ -26,11 +42,21 @@ public class WiredTriggerWalksOnFurni extends WiredTriggerItem {
         return wasExecuted;
     }
 
+    /**
+     * Executes supplies player for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean suppliesPlayer() {
         return true;
     }
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 1;

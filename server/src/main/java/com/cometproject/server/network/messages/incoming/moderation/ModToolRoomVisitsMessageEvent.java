@@ -11,8 +11,18 @@ import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.google.common.collect.Lists;
 
 
+/**
+ * Represents the mod tool room visits message event published by the network message subsystem.
+ */
 public class ModToolRoomVisitsMessageEvent implements Event {
 
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @throws Exception When the operation cannot complete.
+     */
     @Override
     public void handle(Session client, MessageEvent msg) throws Exception {
         int playerId = msg.readInt();

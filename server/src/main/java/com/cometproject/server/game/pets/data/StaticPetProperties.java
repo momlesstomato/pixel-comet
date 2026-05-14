@@ -1,5 +1,8 @@
 package com.cometproject.server.game.pets.data;
 
+/**
+ * Describes static pet properties behavior for the pet subsystem.
+ */
 public class StaticPetProperties {
     public static final int DEFAULT_LEVEL = 1;
     public static final int DEFAULT_ENERGY = 100;

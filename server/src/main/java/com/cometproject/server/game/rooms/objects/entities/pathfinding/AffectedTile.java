@@ -4,15 +4,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Describes affected tile behavior for the room pathfinding subsystem.
+ */
 public class AffectedTile {
     public int x;
     public int y;
 
+    /**
+     * Creates a affected tile instance for the room pathfinding subsystem.
+     *
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     */
     public AffectedTile(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
+    /**
+     * Returns the affected both tiles at for this room pathfinding contract.
+     *
+     * @param length Length supplied by the caller.
+     * @param width Width supplied by the caller.
+     * @param posX Pos x supplied by the caller.
+     * @param posY Pos y supplied by the caller.
+     * @param rotation Rotation supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static List<AffectedTile> getAffectedBothTilesAt(int length, int width, int posX, int posY, int rotation) {
         List<AffectedTile> pointList = new ArrayList<>();
 
@@ -61,6 +80,16 @@ public class AffectedTile {
         return pointList;
     }
 
+    /**
+     * Returns the affected tiles at for this room pathfinding contract.
+     *
+     * @param length Length supplied by the caller.
+     * @param width Width supplied by the caller.
+     * @param posX Pos x supplied by the caller.
+     * @param posY Pos y supplied by the caller.
+     * @param rotation Rotation supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static List<AffectedTile> getAffectedTilesAt(int length, int width, int posX, int posY, int rotation) {
         List<AffectedTile> pointList = new ArrayList<>();
 

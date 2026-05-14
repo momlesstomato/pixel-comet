@@ -21,15 +21,28 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+/**
+ * Coordinates navigator search behavior for the navigator subsystem.
+ */
 public class NavigatorSearchService implements CometTask {
     private static NavigatorSearchService searchServiceInstance;
 
     private Executor searchExecutor = Executors.newFixedThreadPool(8);
 
+    /**
+     * Creates a navigator search service instance for the navigator subsystem.
+     */
     public NavigatorSearchService() {
 //        CometThreadManager.getInstance().executePeriodic(this, 0, 3000, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Executes order for this navigator contract.
+     *
+     * @param rooms Rooms supplied by the caller.
+     * @param limit Limit supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static List<IRoomData> order(List<IRoomData> rooms, int limit) {
         try {
             Collections.sort(rooms, (room1, room2) -> {
@@ -56,6 +69,11 @@ public class NavigatorSearchService implements CometTask {
         return returnRooms;
     }
 
+    /**
+     * Returns the instance for this navigator contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static NavigatorSearchService getInstance() {
         if (searchServiceInstance == null) {
             searchServiceInstance = new NavigatorSearchService();
@@ -64,11 +82,21 @@ public class NavigatorSearchService implements CometTask {
         return searchServiceInstance;
     }
 
+    /**
+     * Runs this navigator task.
+     */
     @Override
     public void run() {
         // TODO: Cache navigator search results.
     }
 
+    /**
+     * Executes submit request for this navigator contract.
+     *
+     * @param player Player participating in the operation.
+     * @param category Category supplied by the caller.
+     * @param data Data supplied by the caller.
+     */
     public void submitRequest(Player player, String category, String data) {
         this.searchExecutor.execute(() -> {
             if (data.isEmpty()) {
@@ -206,6 +234,13 @@ public class NavigatorSearchService implements CometTask {
         });
     }
 
+    /**
+     * Executes provide r prooms for this navigator contract.
+     *
+     * @param player Player participating in the operation.
+     * @param expanded Expanded supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public List<IRoomData> provideRProoms(Player player, boolean expanded){
         List<IRoomData> rooms = Lists.newCopyOnWriteArrayList();
         List<IRoomData> roleplayPicks = Lists.newArrayList();
@@ -226,6 +261,14 @@ public class NavigatorSearchService implements CometTask {
         return rooms;
     }
 
+    /**
+     * Executes search for this navigator contract.
+     *
+     * @param category Category supplied by the caller.
+     * @param player Player participating in the operation.
+     * @param expanded Expanded supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public List<IRoomData> search(Category category, Player player, boolean expanded) {
         List<IRoomData> rooms = Lists.newCopyOnWriteArrayList();
 

@@ -8,6 +8,9 @@ import com.google.gson.GsonBuilder;
 import spark.ResponseTransformer;
 
 
+/**
+ * Describes comet logger behavior for the tooling subsystem.
+ */
 public class CometLogger {
     public static JSONTransformer JSON_TRANSFORMER = new JSONTransformer();
 
@@ -16,6 +19,13 @@ public class CometLogger {
     private static final class JSONTransformer implements ResponseTransformer {
         private final Gson gson = new GsonBuilder().create();
 
+        /**
+         * Executes render for this tooling contract.
+         *
+         * @param model Model supplied by the caller.
+         * @return Result produced by the operation.
+         * @throws Exception When the operation cannot complete.
+         */
         @Override
         public String render(Object model) throws Exception {
             if (model instanceof ResponseBuilder) { // in case you forget to call .get() i'll handle it for you ;)
@@ -27,12 +37,22 @@ public class CometLogger {
         }
     }
 
+    /**
+     * Executes main for this tooling contract.
+     *
+     * @param args Args supplied by the caller.
+     */
     public static void main(String[] args) {
         threadManagement = new CometThreadManagement();
 
         Routes.init();
     }
 
+    /**
+     * Returns the thread management for this tooling contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static CometThreadManagement getThreadManagement() {
         return threadManagement;
     }

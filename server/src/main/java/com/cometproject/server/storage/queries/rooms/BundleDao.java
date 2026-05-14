@@ -17,7 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Describes bundle dao behavior for the storage subsystem.
+ */
 public class BundleDao {
+    /**
+     * Loads active bundles for this storage contract.
+     *
+     * @param bundles Bundles supplied by the caller.
+     */
     public static void loadActiveBundles(Map<String, RoomBundle> bundles) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -57,6 +65,11 @@ public class BundleDao {
         }
     }
 
+    /**
+     * Persists bundle for this storage contract.
+     *
+     * @param bundle Bundle supplied by the caller.
+     */
     public static void saveBundle(RoomBundle bundle) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

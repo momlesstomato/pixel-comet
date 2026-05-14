@@ -6,17 +6,36 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 /*    */ import java.util.List;
 /*    */ 
 /*    */ 
+/**
+ * Describes friends leaderboard composer packets for the Snow War protocol layer.
+ */
 /*    */ public class FriendsLeaderboardComposer
 /*    */   extends MessageComposer
 /*    */ {
 /*    */   private int gameId;
 /*    */   List<GamePlayer> data;
 /*    */   
+/**
+ * Creates a friends leaderboard composer instance for the Snow War game subsystem.
+ *
+ * @param gameId Game id supplied by the caller.
+ * @param playerId Player id supplied by the caller.
+ */
 /*    */   public FriendsLeaderboardComposer(int gameId, int playerId) {
 /* 17 */     this.gameId = gameId;
 /*    */   }
 /*    */ 
+/**
+ * Writes this message body using the Pixel Protocol field order.
+ *
+ * @param msg Composer buffer that receives serialized protocol fields.
+ */
 /*    */   @Override
+/**
+ * Writes this message body using the Pixel Protocol field order.
+ *
+ * @param msg Composer buffer that receives serialized protocol fields.
+ */
 /*    */   public void compose(IComposer msg) {
 /* 23 */     int i = 1;
 /*    */     
@@ -42,6 +61,11 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 /*    */   }
 /*    */ 
 /*    */   @Override
+/**
+ * Returns the id for this network message contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*    */   public short getId() {
 /* 48 */     return 1376;
 /*    */   }

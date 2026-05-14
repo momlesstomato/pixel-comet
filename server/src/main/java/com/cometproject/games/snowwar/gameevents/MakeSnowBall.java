@@ -2,17 +2,28 @@
 /*    */ 
 /*    */ import com.cometproject.games.snowwar.gameobjects.HumanGameObject;
 /*    */ 
+/**
+ * Describes make snow ball behavior for the Snow War game subsystem.
+ */
 /*    */ public class MakeSnowBall
 /*    */   extends Event
 /*    */ {
 /*    */   public HumanGameObject player;
 /*    */   
+/**
+ * Creates a make snow ball instance for the Snow War game subsystem.
+ *
+ * @param player Player supplied by the caller.
+ */
 /*    */   public MakeSnowBall(HumanGameObject player) {
 /* 11 */     this.EventType = 7;
 /* 12 */     this.player = player;
 /*    */   }
 /*    */ 
 /*    */   
+/**
+ * Executes apply for this Snow War game contract.
+ */
 /*    */   public void apply() {
 /* 17 */     this.player.makeSnowBall();
 /*    */   }

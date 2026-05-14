@@ -13,7 +13,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Describes example module behavior for the plugin subsystem.
+ */
 public class ExampleModule extends BaseModule {
+    /**
+     * Creates a example module instance for the plugin subsystem.
+     *
+     * @param config Config supplied by the caller.
+     * @param gameService Game service supplied by the caller.
+     */
     public ExampleModule(ModuleConfig config, IGameService gameService) {
         super(config, gameService);
 
@@ -25,14 +34,32 @@ public class ExampleModule extends BaseModule {
         this.registerChatCommand("!mathis", this::mathisCommand);
     }
 
+    /**
+     * Executes mathis command for this plugin contract.
+     *
+     * @param session Session participating in the operation.
+     * @param args Args supplied by the caller.
+     */
     public void mathisCommand(ISession session, String[] args) {
         session.getPlayer().sendMotd("Hi mathis, how are you????!!!!!");
     }
 
+    /**
+     * Executes about command for this plugin contract.
+     *
+     * @param session Session participating in the operation.
+     * @param args Args supplied by the caller.
+     */
     public void aboutCommand(ISession session, String[] args) {
         session.getPlayer().sendNotif("ExampleModule", "This is an example module.");
     }
 
+    /**
+     * Executes inventory command for this plugin contract.
+     *
+     * @param session Session participating in the operation.
+     * @param args Args supplied by the caller.
+     */
     public void inventoryCommand(ISession session, String[] args) {
         if (!session.getPlayer().getInventory().itemsLoaded()) {
             session.getPlayer().getInventory().loadItems(0);
@@ -81,6 +108,9 @@ public class ExampleModule extends BaseModule {
     @Override
     public PluginGuiceModule getGuiceModule() {
         return new PluginGuiceModule(this.getGameService()) {
+            /**
+             * Executes configure for this plugin contract.
+             */
             @Override
             protected void configure() {
                 bind(IGameService.class).toInstance(getGameService());

@@ -18,15 +18,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Describes room mapping behavior for the room subsystem.
+ */
 public class RoomMapping {
     private Room room;
 
     private RoomTile[][] tiles;
 
+    /**
+     * Creates a room mapping instance for the room subsystem.
+     *
+     * @param roomInstance Room instance supplied by the caller.
+     */
     public RoomMapping(Room roomInstance) {
         this.room = roomInstance;
     }
 
+    /**
+     * Executes init for this room contract.
+     */
     public void init() {
         if (this.getModel() == null) {
             return;
@@ -55,6 +66,9 @@ public class RoomMapping {
         }
     }
 
+    /**
+     * Releases resources owned by this room component.
+     */
     public void dispose() {
         for (int x = 0; x < tiles.length; x++) {
             for (int y = 0; y < tiles[x].length; y++) {
@@ -67,6 +81,9 @@ public class RoomMapping {
         }
     }
 
+    /**
+     * Executes tick for this room contract.
+     */
     public void tick() {
         // clear out the entity grid
         for (int x = 0; x < tiles.length; x++) {
@@ -96,6 +113,12 @@ public class RoomMapping {
         }
     }
 
+    /**
+     * Updates tile for this room contract.
+     *
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     */
     public void updateTile(int x, int y) {
         if (x < 0 || y < 0) {
             return;
@@ -107,12 +130,25 @@ public class RoomMapping {
         }
     }
 
+    /**
+     * Returns the tile for this room contract.
+     *
+     * @param position Position supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public RoomTile getTile(Position position) {
         if (position == null) return null;
 
         return this.getTile(position.getX(), position.getY());
     }
 
+    /**
+     * Returns the tile for this room contract.
+     *
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public RoomTile getTile(int x, int y) {
         if (x < 0 || y < 0) return null;
         if (x >= this.tiles.length || (this.tiles[x] == null || y >= this.tiles[x].length)) return null;
@@ -120,6 +156,12 @@ public class RoomMapping {
         return this.tiles[x][y];
     }
 
+    /**
+     * Returns the random reachable tile for this room contract.
+     *
+     * @param roomFloorObject Room floor object supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public RoomTile getRandomReachableTile(RoomFloorObject roomFloorObject) {
         for (int tries = 0; tries < this.getModel().getSizeX() * this.getModel().getSizeY(); tries++) {
             int randomX = RandomUtil.getRandomInt(0, this.getModel().getSizeX() - 1);
@@ -134,6 +176,13 @@ public class RoomMapping {
         return null;
     }
 
+    /**
+     * Executes position has user for this room contract.
+     *
+     * @param entityId Entity id supplied by the caller.
+     * @param position Position supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean positionHasUser(Integer entityId, Position position) {
         boolean hasMountedPet = false;
         int entitySize = 0;
@@ -179,10 +228,26 @@ public class RoomMapping {
         return !(hasMe && entitySize == 1) && entitySize > 0;
     }
 
+    /**
+     * Indicates whether this room contract can step upwards.
+     *
+     * @param height0 Height0 supplied by the caller.
+     * @param height1 Height1 supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean canStepUpwards(double height0, double height1) {
         return (height0 - height1) <= 1.5;
     }
 
+    /**
+     * Indicates whether valid entity step applies to this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param currentPosition Current position supplied by the caller.
+     * @param toPosition To position supplied by the caller.
+     * @param isFinalMove Is final move supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isValidEntityStep(RoomEntity entity, Position currentPosition, Position toPosition, boolean isFinalMove) {
 
         if (entity != null)
@@ -191,18 +256,59 @@ public class RoomMapping {
             return isValidStep(0, currentPosition, toPosition, isFinalMove, true, true);
     }
 
+    /**
+     * Indicates whether valid step applies to this room contract.
+     *
+     * @param from From supplied by the caller.
+     * @param to To supplied by the caller.
+     * @param lastStep Last step supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isValidStep(Position from, Position to, boolean lastStep) {
         return isValidStep(null, from, to, lastStep, false, false);
     }
 
+    /**
+     * Indicates whether valid step applies to this room contract.
+     *
+     * @param from From supplied by the caller.
+     * @param to To supplied by the caller.
+     * @param lastStep Last step supplied by the caller.
+     * @param isFloorItem Is floor item supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isValidStep(Position from, Position to, boolean lastStep, boolean isFloorItem) {
         return isValidStep(null, from, to, lastStep, isFloorItem, false);
     }
 
+    /**
+     * Indicates whether valid step applies to this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param from From supplied by the caller.
+     * @param to To supplied by the caller.
+     * @param lastStep Last step supplied by the caller.
+     * @param isFloorItem Is floor item supplied by the caller.
+     * @param isRetry Is retry supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isValidStep(Integer entity, Position from, Position to, boolean lastStep, boolean isFloorItem, boolean isRetry) {
         return isValidStep(entity, from, to, lastStep, isFloorItem, isRetry, false, false);
     }
 
+    /**
+     * Indicates whether valid step applies to this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param from From supplied by the caller.
+     * @param to To supplied by the caller.
+     * @param lastStep Last step supplied by the caller.
+     * @param isFloorItem Is floor item supplied by the caller.
+     * @param isRetry Is retry supplied by the caller.
+     * @param entity1 Entity1 supplied by the caller.
+     * @param ignoreHeight Ignore height supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isValidStep(Integer entity, Position from, Position to, boolean lastStep, boolean isFloorItem, boolean isRetry, RoomEntity entity1, boolean ignoreHeight) {
 
         if (from.getX() == to.getX() && from.getY() == to.getY()) {
@@ -339,6 +445,19 @@ public class RoomMapping {
 
     }
 
+    /**
+     * Indicates whether valid step applies to this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param from From supplied by the caller.
+     * @param to To supplied by the caller.
+     * @param lastStep Last step supplied by the caller.
+     * @param isFloorItem Is floor item supplied by the caller.
+     * @param isRetry Is retry supplied by the caller.
+     * @param ignoreHeight Ignore height supplied by the caller.
+     * @param isItemOnRoller Is item on roller supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isValidStep(Integer entity, Position from, Position to, boolean lastStep, boolean isFloorItem, boolean isRetry, boolean ignoreHeight, boolean isItemOnRoller) {
         if (from.getX() == to.getX() && from.getY() == to.getY()) {
             return true;
@@ -473,6 +592,12 @@ public class RoomMapping {
         return !(fromHeight < toHeight && (toHeight - fromHeight) > 1.5);
     }
 
+    /**
+     * Returns the step height for this room contract.
+     *
+     * @param position Position supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public double getStepHeight(Position position) {
         if (this.tiles.length <= position.getX() || this.tiles[position.getX()].length <= position.getY()) return 0.0;
 
@@ -492,6 +617,11 @@ public class RoomMapping {
         return height;
     }
 
+    /**
+     * Executes tiles with furniture for this room contract.
+     *
+     * @return Result produced by the operation.
+     */
     public List<Position> tilesWithFurniture() {
         List<Position> tilesWithFurniture = Lists.newArrayList();
 
@@ -504,18 +634,39 @@ public class RoomMapping {
         return tilesWithFurniture;
     }
 
+    /**
+     * Indicates whether valid position applies to this room contract.
+     *
+     * @param position Position supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isValidPosition(Position position) {
         return ((position.getX() >= 0) && (position.getY() >= 0) && (position.getX() < this.getModel().getSizeX()) && (position.getY() < this.getModel().getSizeY()));
     }
 
+    /**
+     * Returns the room for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public final Room getRoom() {
         return this.room;
     }
 
+    /**
+     * Returns the model for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public IRoomModel getModel() {
         return this.room.getModel();
     }
 
+    /**
+     * Executes to string for this room contract.
+     *
+     * @return Result produced by the operation.
+     */
     @Override
     public String toString() {
         String mapString = "";
@@ -535,6 +686,11 @@ public class RoomMapping {
         return mapString;
     }
 
+    /**
+     * Executes visualise entity grid for this room contract.
+     *
+     * @return Result produced by the operation.
+     */
     public String visualiseEntityGrid() {
         final StringBuilder builder = new StringBuilder();
 

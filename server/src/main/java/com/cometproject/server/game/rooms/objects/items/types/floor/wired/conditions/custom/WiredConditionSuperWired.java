@@ -8,18 +8,39 @@ import com.cometproject.server.game.rooms.types.components.games.GameTeam;
 import org.apache.commons.lang3.StringUtils;
 
 
+/**
+ * Describes wired condition super wired behavior for the room subsystem.
+ */
 public class WiredConditionSuperWired extends WiredConditionItem {
 
 
+    /**
+     * Creates a wired condition super wired instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public WiredConditionSuperWired(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 11;
     }
 
+    /**
+     * Executes evaluate for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param data Data supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean evaluate(RoomEntity entity, Object data) {
 

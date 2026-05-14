@@ -7,11 +7,20 @@ import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.game.rooms.types.components.games.GameType;
 
 
+/**
+ * Describes wired trigger start battle behavior for the room subsystem.
+ */
 public class WiredTriggerStartBattle extends WiredTriggerItem {
     private static final int PARAM_TICK_LENGTH = 0;
 
     private final WiredItemEvent event;
 
+    /**
+     * Creates a wired trigger start battle instance for the room subsystem.
+     *
+     * @param roomItemData Room item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public WiredTriggerStartBattle(RoomItemData roomItemData, Room room) {
         super(roomItemData, room);
 
@@ -23,11 +32,21 @@ public class WiredTriggerStartBattle extends WiredTriggerItem {
         this.queueEvent(event);
     }
 
+    /**
+     * Executes supplies player for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean suppliesPlayer() {
         return false;
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(WiredItemEvent event) {
         this.evaluate(null, null);
@@ -38,11 +57,19 @@ public class WiredTriggerStartBattle extends WiredTriggerItem {
         }
     }
 
+    /**
+     * Handles the data change callback for this room contract.
+     */
     @Override
     public void onDataChange() {
         this.event.setTotalTicks(this.getTickCount());
     }
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 6;

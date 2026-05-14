@@ -30,8 +30,17 @@ import com.cometproject.storage.api.services.ICurrencyService;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.math.NumberUtils;
 
+/**
+ * Describes crackable floor item behavior for the room subsystem.
+ */
 public class CrackableFloorItem extends RoomItemFloor {
 
+    /**
+     * Creates a crackable floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public CrackableFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
 
@@ -39,6 +48,14 @@ public class CrackableFloorItem extends RoomItemFloor {
             this.getItemData().setData("0");
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param state State supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int state, boolean isWiredTrigger) {
         final CrackableReward crackableReward = ItemManager.getInstance().getCrackableRewards().get(this.getItemData().getItemId());
@@ -186,6 +203,11 @@ public class CrackableFloorItem extends RoomItemFloor {
         return true;
     }
 
+    /**
+     * Executes compose item data for this room contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void composeItemData(IComposer msg) {
         msg.writeInt(0);

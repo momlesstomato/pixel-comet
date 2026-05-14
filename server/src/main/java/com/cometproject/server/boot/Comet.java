@@ -18,10 +18,13 @@ import com.cometproject.server.utilities.CometRuntime;
 import com.cometproject.server.utilities.TimeSpan;
 
 
+/**
+ * Describes comet behavior for the boot lifecycle subsystem.
+ */
 public class Comet {
     public static String instanceId = UUID.randomUUID().toString();
     /**
-     * The time the server was started
+     * The time the server was started.
      */
     public static long start;
     /**
@@ -33,19 +36,19 @@ public class Comet {
      */
     public static volatile boolean isRunning = true;
     /**
-     * Whether or not we want to show the GUI
+     * Whether or not we want to show the GUI.
      */
     public static boolean showGui = false;
     /**
-     * Whether we're running Comet in daemon mode or not
+     * Whether we're running Comet in daemon mode or not.
      */
     public static boolean daemon = false;
     /**
-     * Logging during start-up & console commands
+     * Logging during start-up & console commands.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(Comet.class);
     /**
-     * The main server instance
+     * The main server instance.
      */
     private static CometServer server;
 
@@ -77,7 +80,7 @@ public class Comet {
     }
 
     /**
-     * Exit the comet server
+     * Exit the comet server.
      *
      * @param message The message to display to the console
      */
@@ -87,7 +90,7 @@ public class Comet {
     }
 
     /**
-     * Get the instance time in seconds
+     * Get the instance time in seconds.
      *
      * @return The time in seconds
      */
@@ -96,7 +99,7 @@ public class Comet {
     }
 
     /**
-     * Get the instance date [HH:MM:SS]
+     * Get the instance date [HH:MM:SS].
      *
      * @return The date
      */
@@ -104,12 +107,17 @@ public class Comet {
         return new SimpleDateFormat("HH:mm:ss").format(new Date());
     }
 
+    /**
+     * Returns the random for this boot lifecycle contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Random getRandom() {
         return new Random();
     }
 
     /**
-     * Get the instance build of Comet
+     * Get the instance build of Comet.
      *
      * @return The instance build of Comet
      */
@@ -118,7 +126,7 @@ public class Comet {
     }
 
     /**
-     * Gets the instance server stats
+     * Gets the instance server stats.
      *
      * @return Server stats object
      */
@@ -139,7 +147,7 @@ public class Comet {
     }
 
     /**
-     * Get the main server instance
+     * Get the main server instance.
      *
      * @return The main server instance
      */

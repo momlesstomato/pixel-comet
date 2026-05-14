@@ -7,6 +7,9 @@
 /*    */ 
 /*    */ 
 /*    */ 
+/**
+ * Describes worker tasks behavior for the Snow War game subsystem.
+ */
 /*    */ public class WorkerTasks
 /*    */ {
 /*    */   public static int serverType;
@@ -18,10 +21,21 @@
 /*    */   public static final int SERVER_TURBO = 5;
 /*    */   public static ScheduledThreadPoolExecutor SnowWarTasks;
 /*    */   
+/**
+ * Executes init workers for this Snow War game contract.
+ */
 /*    */   public static void initWorkers() {
 /* 22 */     SnowWarTasks = new ScheduledThreadPoolExecutor(1);
 /*    */   }
 /*    */   
+/**
+ * Executes add task for this Snow War game contract.
+ *
+ * @param task Task supplied by the caller.
+ * @param initDelay Init delay supplied by the caller.
+ * @param repeatRate Repeat rate supplied by the caller.
+ * @param worker Worker supplied by the caller.
+ */
 /*    */   public static void addTask(GameTask task, int initDelay, int repeatRate, ScheduledThreadPoolExecutor worker) {
 /* 26 */     if (repeatRate > 0) {
 /* 27 */       task.future = worker.scheduleAtFixedRate(task, initDelay, repeatRate, TimeUnit.MILLISECONDS);

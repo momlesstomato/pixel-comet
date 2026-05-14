@@ -11,18 +11,29 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Describes low priority item processor behavior for the item subsystem.
+ */
 public class LowPriorityItemProcessor implements CometTask {
     private static final int processTime = 25;
     private static LowPriorityItemProcessor instance;
     private final Logger LOGGER = LoggerFactory.getLogger(LowPriorityItemProcessor.class.getName());
     private List<RoomItemFloor> itemsToProcess;
 
+    /**
+     * Creates a low priority item processor instance for the item subsystem.
+     */
     public LowPriorityItemProcessor() {
         this.itemsToProcess = new CopyOnWriteArrayList<>();
 
         CometThreadManager.getInstance().executePeriodic(this, processTime, processTime, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Returns the instance for this item contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static LowPriorityItemProcessor getInstance() {
         if (instance == null) {
             instance = new LowPriorityItemProcessor();
@@ -31,6 +42,12 @@ public class LowPriorityItemProcessor implements CometTask {
         return instance;
     }
 
+    /**
+     * Returns the process time for this item contract.
+     *
+     * @param time Time supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getProcessTime(double time) {
         long realTime = Math.round(time * 1000 / processTime);
 
@@ -41,6 +58,9 @@ public class LowPriorityItemProcessor implements CometTask {
         return (int) realTime;
     }
 
+    /**
+     * Runs this item task.
+     */
     @Override
     public void run() {
         List<RoomItemFloor> itemsToRemove = new ArrayList<>();
@@ -62,6 +82,11 @@ public class LowPriorityItemProcessor implements CometTask {
         itemsToRemove.clear();
     }
 
+    /**
+     * Executes submit for this item contract.
+     *
+     * @param floorItem Floor item supplied by the caller.
+     */
     public void submit(RoomItemFloor floorItem) {
         this.itemsToProcess.add(floorItem);
     }

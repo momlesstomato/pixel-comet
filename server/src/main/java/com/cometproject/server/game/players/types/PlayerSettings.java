@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Describes player settings behavior for the player subsystem.
+ */
 public class PlayerSettings implements IPlayerSettings {
     private VolumeData volumes;
 
@@ -61,6 +64,14 @@ public class PlayerSettings implements IPlayerSettings {
 
     private boolean sendLoginNotification;
 
+    /**
+     * Creates a player settings instance for the player subsystem.
+     *
+     * @param data Data supplied by the caller.
+     * @param isLogin Is login supplied by the caller.
+     * @param player Player participating in the operation.
+     * @throws SQLException When the operation cannot complete.
+     */
     public PlayerSettings(ResultSet data, boolean isLogin, Player player) throws SQLException {
         if (isLogin) {
             String volumeData = data.getString("playerSettings_volume");
@@ -185,6 +196,9 @@ public class PlayerSettings implements IPlayerSettings {
         flush();
     }
 
+    /**
+     * Creates a player settings instance for the player subsystem.
+     */
     public PlayerSettings() {
         this.volumes = new VolumeData(75, 75, 65);
         this.hideInRoom = false;
@@ -210,230 +224,504 @@ public class PlayerSettings implements IPlayerSettings {
         this.disableWhisper = false;
     }
 
+    /**
+     * Returns the volumes for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public IVolumeData getVolumes() {
         return this.volumes;
     }
 
+    /**
+     * Returns the hide online for this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean getHideOnline() {
         return this.hideOnline;
     }
 
+    /**
+     * Returns the hide in room for this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean getHideInRoom() {
         return this.hideInRoom;
     }
 
+    /**
+     * Returns the room tool state for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getRoomToolState() {
         return this.roomToolState;
     }
 
+    /**
+     * Updates the room tool state for this player contract.
+     *
+     * @param roomToolState Room tool state supplied by the caller.
+     */
     public void setRoomToolState(int roomToolState) {
         this.roomToolState = roomToolState;
     }
 
+    /**
+     * Returns the bubble id for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getBubbleId() {
         return this.bubbleId;
     }
 
+    /**
+     * Updates the bubble id for this player contract.
+     *
+     * @param bubbleId Bubble id supplied by the caller.
+     */
     public void setBubbleId(int bubbleId) {
         this.bubbleId = bubbleId;
     }
 
+    /**
+     * Executes verify goal for this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean verifyGoal() { return this.claimedGoal; }
 
+    /**
+     * Updates the claimed goal for this player contract.
+     *
+     * @param claimedGoal Claimed goal supplied by the caller.
+     */
     public void setClaimedGoal(boolean claimedGoal) {
         this.claimedGoal = claimedGoal;
     }
 
+    /**
+     * Returns the NUX status for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getNuxStatus() { return this.nuxStatus; }
 
+    /**
+     * Executes increment NUX status for this player contract.
+     */
     public void incrementNuxStatus() { this.nuxStatus++; }
 
+    /**
+     * Returns the allow friend requests for this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean getAllowFriendRequests() {
         return this.allowFriendRequests;
     }
 
+    /**
+     * Updates the allow friend requests for this player contract.
+     *
+     * @param allowFriendRequests Allow friend requests supplied by the caller.
+     */
     public void setAllowFriendRequests(boolean allowFriendRequests) {
         this.allowFriendRequests = allowFriendRequests;
 
         flush();
     }
 
+    /**
+     * Returns the event type for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getEventType() {
         return eventType;
     }
 
+    /**
+     * Updates the event type for this player contract.
+     *
+     * @param e E supplied by the caller.
+     */
     public void setEventType(String e) {
         this.eventType = e;
     }
 
+    /**
+     * Updates the personal staff for this player contract.
+     *
+     * @param b B supplied by the caller.
+     */
     public void setPersonalStaff(boolean b) {
         this.personalstaff = b;
     }
 
+    /**
+     * Indicates whether this player contract has personal staff.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasPersonalStaff() {
         return this.personalstaff;
     }
 
+    /**
+     * Returns the allow trade for this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean getAllowTrade() {
         return this.allowTrade;
     }
 
+    /**
+     * Returns the allow follow for this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean getAllowFollow() {
         return this.allowFollow;
     }
 
+    /**
+     * Returns the allow mimic for this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean getAllowMimic() {
         return this.allowMimic;
     }
 
+    /**
+     * Returns the home room for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getHomeRoom() {
         return this.homeRoom;
     }
 
+    /**
+     * Returns the personal pin for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getPersonalPin() {
         return personalPin;
     }
 
+    /**
+     * Indicates whether pin success applies to this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isPinSuccess() {
         return pinSuccess;
     }
 
+    /**
+     * Returns the pin tries for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getPinTries() {
         return pinTries;
     }
 
+    /**
+     * Executes increment pin tries for this player contract.
+     */
     public void incrementPinTries() {
         this.pinTries++;
     }
 
+    /**
+     * Updates the pin succes for this player contract.
+     */
     public void setPinSucces() {
         this.pinSuccess = true;
     }
 
+    /**
+     * Updates the home room for this player contract.
+     *
+     * @param homeRoom Home room supplied by the caller.
+     */
     public void setHomeRoom(int homeRoom) {
         this.homeRoom = homeRoom;
 
         flush();
     }
 
+    /**
+     * Returns the wardrobe for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<IWardrobeItem> getWardrobe() {
         return wardrobe;
     }
 
+    /**
+     * Updates the wardrobe for this player contract.
+     *
+     * @param wardrobe Wardrobe supplied by the caller.
+     */
     public void setWardrobe(List<IWardrobeItem> wardrobe) {
         this.wardrobe = wardrobe;
 
         flush();
     }
 
+    /**
+     * Returns the playlist for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<IPlaylistItem> getPlaylist() {
         return playlist;
     }
 
+    /**
+     * Indicates whether use old chat applies to this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isUseOldChat() {
         return this.useOldChat;
     }
 
+    /**
+     * Updates the use old chat for this player contract.
+     *
+     * @param useOldChat Use old chat supplied by the caller.
+     */
     public void setUseOldChat(boolean useOldChat) {
         this.useOldChat = useOldChat;
 
         flush();
     }
 
+    /**
+     * Executes room camera follow for this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean roomCameraFollow(){ return this.roomCameraFollow; }
 
+    /**
+     * Updates the room camera follow for this player contract.
+     *
+     * @param roomCameraFollow Room camera follow supplied by the caller.
+     */
     public void setRoomCameraFollow(boolean roomCameraFollow) {
         this.roomCameraFollow = roomCameraFollow;
     }
 
+    /**
+     * Executes ignore events for this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean ignoreEvents() {
         return ignoreInvites;
     }
 
+    /**
+     * Updates the ignore invites for this player contract.
+     *
+     * @param ignoreInvites Ignore invites supplied by the caller.
+     */
     public void setIgnoreInvites(boolean ignoreInvites) {
         this.ignoreInvites = ignoreInvites;
 
         flush();
     }
 
+    /**
+     * Returns the navigator x for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getNavigatorX() {
         return navigatorX;
     }
 
+    /**
+     * Updates the navigator x for this player contract.
+     *
+     * @param navigatorX Navigator x supplied by the caller.
+     */
     public void setNavigatorX(int navigatorX) {
         this.navigatorX = navigatorX;
     }
 
+    /**
+     * Returns the navigator y for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getNavigatorY() {
         return navigatorY;
     }
 
+    /**
+     * Returns the royale XP for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getRoyaleXP() {
         return royaleXP;
     }
 
+    /**
+     * Executes increment royale XP for this player contract.
+     *
+     * @param add Add supplied by the caller.
+     */
     public void incrementRoyaleXP(int add){
         this.royaleXP += add;
     }
 
+    /**
+     * Updates the navigator y for this player contract.
+     *
+     * @param navigatorY Navigator y supplied by the caller.
+     */
     public void setNavigatorY(int navigatorY) {
         this.navigatorY = navigatorY;
     }
 
+    /**
+     * Returns the navigator height for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getNavigatorHeight() {
         return navigatorHeight;
     }
 
+    /**
+     * Updates the navigator height for this player contract.
+     *
+     * @param navigatorHeight Navigator height supplied by the caller.
+     */
     public void setNavigatorHeight(int navigatorHeight) {
         this.navigatorHeight = navigatorHeight;
     }
 
+    /**
+     * Returns the navigator width for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getNavigatorWidth() {
         return navigatorWidth;
     }
 
+    /**
+     * Updates the navigator width for this player contract.
+     *
+     * @param navigatorWidth Navigator width supplied by the caller.
+     */
     public void setNavigatorWidth(int navigatorWidth) {
         this.navigatorWidth = navigatorWidth;
     }
 
+    /**
+     * Returns the navigator show searches for this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean getNavigatorShowSearches() {
         return navigatorShowSearches;
     }
 
+    /**
+     * Updates the navigator show searches for this player contract.
+     *
+     * @param navigatorShowSearches Navigator show searches supplied by the caller.
+     */
     public void setNavigatorShowSearches(boolean navigatorShowSearches) {
         this.navigatorShowSearches = navigatorShowSearches;
     }
 
+    /**
+     * Indicates whether ignore events applies to this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isIgnoreEvents() {
         return ignoreEvents;
     }
 
+    /**
+     * Updates the ignore events for this player contract.
+     *
+     * @param ignoreEvents Ignore events supplied by the caller.
+     */
     public void setIgnoreEvents(boolean ignoreEvents) {
         this.ignoreEvents = ignoreEvents;
     }
 
+    /**
+     * Updates the allow trade for this player contract.
+     *
+     * @param allowTrade Allow trade supplied by the caller.
+     */
     public void setAllowTrade(boolean allowTrade) {
         this.allowTrade = allowTrade;
     }
 
+    /**
+     * Executes disable whisper for this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean disableWhisper() {
         return disableWhisper;
     }
 
+    /**
+     * Updates the disable whisper for this player contract.
+     *
+     * @param disableWhisper Disable whisper supplied by the caller.
+     */
     public void setDisableWhisper(boolean disableWhisper) {
         this.disableWhisper = disableWhisper;
 
         flush();
     }
 
+    /**
+     * Executes send login notif for this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean sendLoginNotif() {
         return sendLoginNotification;
     }
 
+    /**
+     * Updates the send login notification for this player contract.
+     *
+     * @param sendLoginNotification Send login notification supplied by the caller.
+     */
     public void setSendLoginNotification(boolean sendLoginNotification) {
         this.sendLoginNotification = sendLoginNotification;
     }
 
+    /**
+     * Executes to JSON for this player contract.
+     *
+     * @return Result produced by the operation.
+     */
     public JsonObject toJson() {
         final JsonObject coreObject = new JsonObject();
         final JsonArray wardrobeArray = new JsonArray();
@@ -463,10 +751,18 @@ public class PlayerSettings implements IPlayerSettings {
         return coreObject;
     }
 
+    /**
+     * Returns the player for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * Releases resources owned by this player component.
+     */
     @Override
     public void dispose(){
         this.wardrobe.clear();
@@ -474,6 +770,9 @@ public class PlayerSettings implements IPlayerSettings {
         this.volumes = null;
         this.wardrobe = null;
     }
+    /**
+     * Executes flush for this player contract.
+     */
     public void flush() {
         if (player != null) {
             this.getPlayer().flush();

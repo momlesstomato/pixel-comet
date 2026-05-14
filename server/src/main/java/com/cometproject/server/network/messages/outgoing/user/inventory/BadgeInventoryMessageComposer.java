@@ -8,19 +8,37 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * Serializes the badge inventory message for the Pixel Protocol client.
+ */
 public class BadgeInventoryMessageComposer extends MessageComposer {
 
     private final Map<String, Integer> badges;
 
+    /**
+     * Creates a badge inventory message composer instance for the network message subsystem.
+     *
+     * @param badges Badges supplied by the caller.
+     */
     public BadgeInventoryMessageComposer(final Map<String, Integer> badges) {
         this.badges = badges;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.BadgesMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         Map<String, Integer> activeBadges = new HashMap<>();

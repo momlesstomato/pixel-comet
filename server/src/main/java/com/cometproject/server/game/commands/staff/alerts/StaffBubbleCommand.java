@@ -6,7 +6,16 @@ import com.cometproject.server.game.moderation.ModerationManager;
 import com.cometproject.server.network.messages.outgoing.notification.NotificationMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 
+/**
+ * Describes staff bubble command behavior for the Comet subsystem.
+ */
 public class StaffBubbleCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param message Message supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] message) {
         final NotificationMessageComposer msg = new NotificationMessageComposer(Locale.get("command.staffbubble.image"), this.merge(message) + "\n\n- " + client.getPlayer().getData().getUsername());
@@ -21,21 +30,41 @@ public class StaffBubbleCommand extends ChatCommand {
 
     }
 
+    /**
+     * Indicates whether async applies to this Comet contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isAsync() {
         return true;
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "staffbubble_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return Locale.getOrDefault("command.parameter.message", "%message%");
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.staffbubble.description");

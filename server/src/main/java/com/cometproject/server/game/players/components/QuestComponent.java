@@ -34,27 +34,50 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+/**
+ * Owns quest behavior inside the player subsystem.
+ */
 public class QuestComponent extends PlayerComponent implements PlayerQuests {
     private static final Logger LOGGER = LoggerFactory.getLogger(QuestComponent.class.getName());
 
     private Map<Integer, Integer> questProgression;
 
+    /**
+     * Creates a quest component instance for the player subsystem.
+     *
+     * @param player Player participating in the operation.
+     */
     public QuestComponent(IPlayer player) {
         super(player);
 
         this.loadQuestProgression();
     }
 
+    /**
+     * Loads quest progression for this player contract.
+     */
     @Override
     public void loadQuestProgression() {
         this.questProgression = PlayerQuestsDao.getQuestProgression(this.getPlayer().getId());
     }
 
+    /**
+     * Indicates whether this player contract has started quest.
+     *
+     * @param questId Quest id supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean hasStartedQuest(int questId) {
         return this.questProgression.containsKey(questId);
     }
 
+    /**
+     * Indicates whether this player contract has completed quest.
+     *
+     * @param questId Quest id supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean hasCompletedQuest(int questId) {
         final IQuest quest = QuestManager.getInstance().getById(questId);
@@ -72,6 +95,11 @@ public class QuestComponent extends PlayerComponent implements PlayerQuests {
         return false;
     }
 
+    /**
+     * Executes start quest for this player contract.
+     *
+     * @param quest Quest supplied by the caller.
+     */
     @Override
     public void startQuest(IQuest quest) {
         if (this.questProgression.containsKey(quest.getId())) {
@@ -91,17 +119,33 @@ public class QuestComponent extends PlayerComponent implements PlayerQuests {
         this.getPlayer().flush();
     }
 
+    /**
+     * Indicates whether this player contract can cel quest.
+     *
+     * @param questId Quest id supplied by the caller.
+     */
     @Override
     public void cancelQuest(int questId) {
         PlayerQuestsDao.cancelQuest(questId, this.getPlayer().getId());
         this.questProgression.remove(questId);
     }
 
+    /**
+     * Executes progress quest for this player contract.
+     *
+     * @param type Type supplied by the caller.
+     */
     @Override
     public void progressQuest(QuestType type) {
         this.progressQuest(type, 0);
     }
 
+    /**
+     * Executes progress quest for this player contract.
+     *
+     * @param type Type supplied by the caller.
+     * @param data Data supplied by the caller.
+     */
     @Override
     public void progressQuest(QuestType type, int data) {
         IQuest quest = this.canProgressQuest();
@@ -117,6 +161,12 @@ public class QuestComponent extends PlayerComponent implements PlayerQuests {
         this.deliverQuestPrize(quest, data);
     }
 
+    /**
+     * Executes progress quest by id for this player contract.
+     *
+     * @param id Id supplied by the caller.
+     * @param data Data supplied by the caller.
+     */
     @Override
     public void progressQuestById(int id, int data) {
         IQuest quest = this.canProgressQuest();
@@ -282,6 +332,12 @@ public class QuestComponent extends PlayerComponent implements PlayerQuests {
         return definition.getProtocolCurrencyId().orElse(0);
     }
 
+    /**
+     * Returns the progress for this player contract.
+     *
+     * @param quest Quest supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getProgress(int quest) {
         if (this.questProgression.containsKey(quest)) {
@@ -291,6 +347,9 @@ public class QuestComponent extends PlayerComponent implements PlayerQuests {
         return 0;
     }
 
+    /**
+     * Releases resources owned by this player component.
+     */
     @Override
     public void dispose() {
         super.dispose();

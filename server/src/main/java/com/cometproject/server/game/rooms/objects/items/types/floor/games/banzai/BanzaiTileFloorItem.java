@@ -14,12 +14,21 @@ import java.util.LinkedList;
 import java.util.List;
 
 
+/**
+ * Describes banzai tile floor item behavior for the room subsystem.
+ */
 public class BanzaiTileFloorItem extends RoomItemFloor {
     private GameTeam gameTeam = GameTeam.NONE;
     private int points = 0;
     private boolean needsChange = false;
     private int ticker = 0;
 
+    /**
+     * Creates a banzai tile floor item instance for the room subsystem.
+     *
+     * @param roomItemData Room item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public BanzaiTileFloorItem(RoomItemData roomItemData, Room room) {
         super(roomItemData, room);
 
@@ -102,6 +111,9 @@ public class BanzaiTileFloorItem extends RoomItemFloor {
         return null;
     }
 
+    /**
+     * Handles the pickup callback for this room contract.
+     */
     @Override
     public void onPickup() {
         if (!(this.getRoom().getGame().getInstance() instanceof BanzaiGame)) {
@@ -111,6 +123,9 @@ public class BanzaiTileFloorItem extends RoomItemFloor {
         ((BanzaiGame) this.getRoom().getGame().getInstance()).removeTile();
     }
 
+    /**
+     * Handles the placed callback for this room contract.
+     */
     @Override
     public void onPlaced() {
         if (!(this.getRoom().getGame().getInstance() instanceof BanzaiGame)) {
@@ -120,6 +135,11 @@ public class BanzaiTileFloorItem extends RoomItemFloor {
         ((BanzaiGame) this.getRoom().getGame().getInstance()).addTile();
     }
 
+    /**
+     * Handles the entity post step on callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityPostStepOn(RoomEntity entity) {
         if (!(entity instanceof PlayerEntity) || ((PlayerEntity) entity).getGameTeam() == GameTeam.NONE || !(this.getRoom().getGame().getInstance() instanceof BanzaiGame)) {
@@ -186,6 +206,11 @@ public class BanzaiTileFloorItem extends RoomItemFloor {
         this.updateTileData();
     }
 
+    /**
+     * Handles the item added to stack callback for this room contract.
+     *
+     * @param roomItemFloor Room item floor supplied by the caller.
+     */
     @Override
     public void onItemAddedToStack(RoomItemFloor roomItemFloor) {
         if (roomItemFloor instanceof BanzaiPuckFloorItem) {
@@ -195,6 +220,9 @@ public class BanzaiTileFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Handles the tick callback for this room contract.
+     */
     @Override
     public void onTick() {
         if (this.hasTicks() && this.ticker >= RoomItemFactory.getProcessTime(0.5)) {
@@ -213,11 +241,17 @@ public class BanzaiTileFloorItem extends RoomItemFloor {
         this.ticker++;
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
         this.updateTileData();
     }
 
+    /**
+     * Executes flash for this room contract.
+     */
     public void flash() {
         if (this.points == 3) {
             this.needsChange = true;
@@ -225,17 +259,26 @@ public class BanzaiTileFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Handles the game starts callback for this room contract.
+     */
     public void onGameStarts() {
         this.gameTeam = GameTeam.NONE;
         this.points = 0;
         this.updateTileData();
     }
 
+    /**
+     * Handles the game ends callback for this room contract.
+     */
     public void onGameEnds() {
         this.getItemData().setData("0");
         this.sendUpdate();
     }
 
+    /**
+     * Updates tile data for this room contract.
+     */
     public void updateTileData() {
         if (this.points != 0)
             this.getItemData().setData(((this.points + (gameTeam.getTeamId() * 3) - 1) + ""));
@@ -244,18 +287,38 @@ public class BanzaiTileFloorItem extends RoomItemFloor {
         this.sendUpdate();
     }
 
+    /**
+     * Returns the team for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public GameTeam getTeam() {
         return this.gameTeam;
     }
 
+    /**
+     * Updates the team for this room contract.
+     *
+     * @param gameTeam Game team supplied by the caller.
+     */
     public void setTeam(GameTeam gameTeam) {
         this.gameTeam = gameTeam;
     }
 
+    /**
+     * Returns the points for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getPoints() {
         return this.points;
     }
 
+    /**
+     * Updates the points for this room contract.
+     *
+     * @param points Points supplied by the caller.
+     */
     public void setPoints(int points) {
         this.points = points;
     }

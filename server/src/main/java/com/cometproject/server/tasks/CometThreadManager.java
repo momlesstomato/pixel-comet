@@ -17,19 +17,33 @@ import com.cometproject.server.game.rooms.types.components.ItemProcessComponent;
 import com.cometproject.server.game.rooms.types.components.ProcessComponent;
 
 
+/**
+ * Manages comet thread runtime state for the task scheduling subsystem.
+ */
 public class CometThreadManager implements Startable {
     public static int POOL_SIZE = 0;
     private ScheduledExecutorService coreExecutor;
     private ScheduledExecutorService roomProcessingExecutor;
 
+    /**
+     * Creates a comet thread manager instance for the task scheduling subsystem.
+     */
     public CometThreadManager() {
 
     }
 
+    /**
+     * Returns the instance for this task scheduling contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static CometThreadManager getInstance() {
         return CometBootstrap.resolve(CometThreadManager.class);
     }
 
+    /**
+     * Starts this task scheduling component.
+     */
     @Override
     public void start() {
         int poolSize = Integer.parseInt((String) Configuration.currentConfig().getOrDefault("comet.system.threads", "8"));
@@ -60,6 +74,9 @@ public class CometThreadManager implements Startable {
         });
     }
 
+    /**
+     * Stops this task scheduling component.
+     */
     @Override
     public void stop() {
         if (this.roomProcessingExecutor != null) {
@@ -71,10 +88,25 @@ public class CometThreadManager implements Startable {
         }
     }
 
+    /**
+     * Executes execute once for this task scheduling contract.
+     *
+     * @param task Task supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public Future executeOnce(CometTask task) {
         return this.coreExecutor.submit(task);
     }
 
+    /**
+     * Executes execute periodic for this task scheduling contract.
+     *
+     * @param task Task supplied by the caller.
+     * @param initialDelay Initial delay supplied by the caller.
+     * @param period Period supplied by the caller.
+     * @param unit Unit supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public ScheduledFuture executePeriodic(CometTask task, long initialDelay, long period, TimeUnit unit) {
         if (task instanceof ProcessComponent || task instanceof ItemProcessComponent) {
             // Handle room processing in a different pool, this should help against
@@ -84,6 +116,14 @@ public class CometThreadManager implements Startable {
         return this.coreExecutor.scheduleAtFixedRate(task, initialDelay, period, unit);
     }
 
+    /**
+     * Executes execute schedule for this task scheduling contract.
+     *
+     * @param task Task supplied by the caller.
+     * @param delay Delay supplied by the caller.
+     * @param unit Unit supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public ScheduledFuture executeSchedule(CometTask task, long delay, TimeUnit unit) {
         if (task instanceof ProcessComponent) {
             return this.roomProcessingExecutor.schedule(task, delay, unit);
@@ -92,6 +132,11 @@ public class CometThreadManager implements Startable {
         return this.coreExecutor.schedule(task, delay, unit);
     }
 
+    /**
+     * Returns the core executor for this task scheduling contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public ScheduledExecutorService getCoreExecutor() {
         return coreExecutor;
     }

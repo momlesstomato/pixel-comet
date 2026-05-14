@@ -6,9 +6,18 @@ import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.game.rooms.types.components.games.GameTeam;
 
 
+/**
+ * Describes football score floor item behavior for the room subsystem.
+ */
 public class FootballScoreFloorItem extends RoomItemFloor {
     private GameTeam gameTeam;
 
+    /**
+     * Creates a football score floor item instance for the room subsystem.
+     *
+     * @param roomItemData Room item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public FootballScoreFloorItem(RoomItemData roomItemData, Room room) {
         super(roomItemData, room);
 
@@ -30,12 +39,18 @@ public class FootballScoreFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Executes send update for this room contract.
+     */
     public void sendUpdate() {
         this.getItemData().setData(this.getRoom().getGame().getScore(this.gameTeam) + "");
 
         super.sendUpdate();
     }
 
+    /**
+     * Executes reset for this room contract.
+     */
     public void reset() {
         this.getItemData().setData(0 + "");
         this.sendUpdate();

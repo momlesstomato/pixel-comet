@@ -7,7 +7,16 @@ import com.cometproject.server.network.sessions.Session;
 
 import java.util.ArrayList;
 
+/**
+ * Describes process times command behavior for the Comet subsystem.
+ */
 public class ProcessTimesCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         final StringBuilder processTimesBuilder = new StringBuilder();
@@ -31,21 +40,41 @@ public class ProcessTimesCommand extends ChatCommand {
         room.getProcess().setProcessTimes(null);
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "debug";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return "";
     }
 
+    /**
+     * Indicates whether hidden applies to this Comet contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isHidden() {
         return true;

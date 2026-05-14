@@ -16,10 +16,19 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
+/**
+ * Describes inventory dao behavior for the storage subsystem.
+ */
 public class InventoryDao {
     public static String ITEMS_USERID_INDEX = "";
     private static Logger LOGGER = LoggerFactory.getLogger(InventoryDao.class.getName());
 
+    /**
+     * Returns the inventory by player id for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static Map<Long, PlayerItem> getInventoryByPlayerId(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -58,6 +67,12 @@ public class InventoryDao {
         return data;
     }
 
+    /**
+     * Returns the worn badges by player id for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static String[] getWornBadgesByPlayerId(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -89,6 +104,12 @@ public class InventoryDao {
         return data;
     }
 
+    /**
+     * Returns the badges by player id for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static Map<String, Integer> getBadgesByPlayerId(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -118,6 +139,12 @@ public class InventoryDao {
         return data;
     }
 
+    /**
+     * Adds badge to this storage contract.
+     *
+     * @param badge Badge supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     */
     public static void addBadge(String badge, int playerId) {
         Connection sqlConnection = null;
         ResultSet resultSet = null;
@@ -152,6 +179,12 @@ public class InventoryDao {
         }
     }
 
+    /**
+     * Adds badges to this storage contract.
+     *
+     * @param badge Badge supplied by the caller.
+     * @param playerIds Player ids supplied by the caller.
+     */
     public static void addBadges(String badge, List<Integer> playerIds) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -179,6 +212,12 @@ public class InventoryDao {
         }
     }
 
+    /**
+     * Removes badge from this storage contract.
+     *
+     * @param badge Badge supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     */
     public static void removeBadge(String badge, int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -199,6 +238,13 @@ public class InventoryDao {
         }
     }
 
+    /**
+     * Updates badge for this storage contract.
+     *
+     * @param badge Badge supplied by the caller.
+     * @param slot Slot supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     */
     public static void updateBadge(String badge, int slot, int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -220,6 +266,11 @@ public class InventoryDao {
         }
     }
 
+    /**
+     * Executes clear inventory for this storage contract.
+     *
+     * @param userId User id supplied by the caller.
+     */
     public static void clearInventory(int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

@@ -7,6 +7,9 @@ import com.cometproject.server.tasks.CometTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Describes message event task behavior for the network message subsystem.
+ */
 public class MessageEventTask implements CometTask {
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageEventTask.class);
 
@@ -16,6 +19,13 @@ public class MessageEventTask implements CometTask {
 
     private final long start;
 
+    /**
+     * Creates a message event task instance for the network message subsystem.
+     *
+     * @param messageEvent Message event supplied by the caller.
+     * @param session Session participating in the operation.
+     * @param messageEventData Message event data supplied by the caller.
+     */
     public MessageEventTask(Event messageEvent, Session session, MessageEvent messageEventData) {
         this.messageEvent = messageEvent;
         this.session = session;
@@ -24,6 +34,9 @@ public class MessageEventTask implements CometTask {
         this.start = System.currentTimeMillis();
     }
 
+    /**
+     * Runs this network message task.
+     */
     @Override
     public void run() {
         try {

@@ -13,7 +13,17 @@ import com.cometproject.server.protocol.messages.MessageEvent;
 import com.cometproject.storage.mysql.models.factories.GroupMemberFactory;
 
 
+/**
+ * Represents the accept membership message event published by the network message subsystem.
+ */
 public class AcceptMembershipMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @throws Exception When the operation cannot complete.
+     */
     @Override
     public void handle(Session client, MessageEvent msg) throws Exception {
         int groupId = msg.readInt();

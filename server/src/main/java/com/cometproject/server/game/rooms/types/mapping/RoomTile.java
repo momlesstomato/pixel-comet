@@ -26,6 +26,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 
+/**
+ * Describes room tile behavior for the room subsystem.
+ */
 public class RoomTile {
     public Set<RoomEntity> entities;
     private RoomMapping mappingInstance;
@@ -47,6 +50,12 @@ public class RoomTile {
     private List<RoomItemFloor> items;
     private Map<Integer, Consumer<RoomEntity>> pendingEvents = new ConcurrentHashMap<>();
 
+    /**
+     * Creates a room tile instance for the room subsystem.
+     *
+     * @param mappingInstance Mapping instance supplied by the caller.
+     * @param position Position supplied by the caller.
+     */
     public RoomTile(RoomMapping mappingInstance, Position position) {
         this.mappingInstance = mappingInstance;
         this.position = position;
@@ -56,6 +65,12 @@ public class RoomTile {
         this.reload();
     }
 
+    /**
+     * Returns the adjacent tiles for this room contract.
+     *
+     * @param from From supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public List<RoomTile> getAdjacentTiles(Position from) {
         final List<RoomTile> roomTiles = Lists.newArrayList();
 
@@ -77,6 +92,9 @@ public class RoomTile {
         return roomTiles;
     }
 
+    /**
+     * Executes reload for this room contract.
+     */
     public void reload() {
         // reset the tile data
         this.hasItems = false;
@@ -255,12 +273,20 @@ public class RoomTile {
             this.originalHeight = this.stackHeight;
     }
 
+    /**
+     * Releases resources owned by this room component.
+     */
     public void dispose() {
         this.pendingEvents.clear();
         this.items.clear();
         this.entities.clear();
     }
 
+    /**
+     * Handles the entity enters tile callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     public void onEntityEntersTile(RoomEntity entity) {
         if (this.pendingEvents.containsKey(entity.getId())) {
             this.pendingEvents.get(entity.getId()).accept(entity);
@@ -268,18 +294,40 @@ public class RoomTile {
         }
     }
 
+    /**
+     * Executes schedule event for this room contract.
+     *
+     * @param entityId Entity id supplied by the caller.
+     * @param event Event supplied by the caller.
+     */
     public void scheduleEvent(int entityId, Consumer<RoomEntity> event) {
         this.pendingEvents.put(entityId, event);
     }
 
+    /**
+     * Returns the movement node for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RoomEntityMovementNode getMovementNode() {
         return this.movementNode;
     }
 
+    /**
+     * Returns the stack height for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public double getStackHeight() {
         return this.getStackHeight(null);
     }
 
+    /**
+     * Returns the stack height for this room contract.
+     *
+     * @param itemToStack Item to stack supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public double getStackHeight(RoomItemFloor itemToStack) {
         double stackHeight;
 
@@ -293,6 +341,11 @@ public class RoomTile {
         return stackHeight;
     }
 
+    /**
+     * Returns the walk height for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public double getWalkHeight() {
         double height = this.stackHeight;
 
@@ -314,16 +367,33 @@ public class RoomTile {
         return height;
     }
 
+    /**
+     * Indicates whether reachable applies to this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isReachable(RoomEntity entity) {
         List<Square> path = EntityPathfinder.getInstance().makePath(entity, this.position);
         return path != null && path.size() > 0;
     }
 
+    /**
+     * Indicates whether reachable applies to this room contract.
+     *
+     * @param object Object supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isReachable(RoomObject object) {
         List<Square> path = ItemPathfinder.getInstance().makePath(object, this.position);
         return path != null && path.size() > 0;
     }
 
+    /**
+     * Returns the entity for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RoomEntity getEntity() {
         for (RoomEntity entity : this.getEntities()) {
             return entity;
@@ -332,78 +402,173 @@ public class RoomTile {
         return null;
     }
 
+    /**
+     * Returns the entities for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Set<RoomEntity> getEntities() {
         return this.entities;
     }
 
+    /**
+     * Returns the status for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RoomTileStatusType getStatus() {
         return this.status;
     }
 
+    /**
+     * Returns the position for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Position getPosition() {
         return this.position;
     }
 
+    /**
+     * Indicates whether this room contract can stack.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean canStack() {
         return this.canStack;
     }
 
+    /**
+     * Returns the top item for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public long getTopItem() {
         return this.topItem;
     }
 
+    /**
+     * Updates the top item for this room contract.
+     *
+     * @param topItem Top item supplied by the caller.
+     */
     public void setTopItem(int topItem) {
         this.topItem = topItem;
     }
 
+    /**
+     * Returns the top item instance for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RoomItemFloor getTopItemInstance() {
         return this.mappingInstance.getRoom().getItems().getFloorItem(this.getTopItem());
     }
 
+    /**
+     * Returns the redirect for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Position getRedirect() {
         return redirect;
     }
 
+    /**
+     * Updates the redirect for this room contract.
+     *
+     * @param redirect Redirect supplied by the caller.
+     */
     public void setRedirect(Position redirect) {
         this.redirect = redirect;
     }
 
+    /**
+     * Returns the original top item for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public long getOriginalTopItem() {
         return originalTopItem;
     }
 
+    /**
+     * Returns the original height for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public double getOriginalHeight() {
         return originalHeight;
     }
 
+    /**
+     * Indicates whether this room contract can place item here.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean canPlaceItemHere() {
         return canPlaceItemHere;
     }
 
+    /**
+     * Indicates whether this room contract has items.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasItems() {
         return hasItems;
     }
 
+    /**
+     * Returns the tile height for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public double getTileHeight() {
         return this.mappingInstance.getModel().getSquareHeight()[this.position.getX()][this.position.getY()];
     }
 
+    /**
+     * Indicates whether this room contract has magic tile.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasMagicTile() {
         return this.hasMagicTile;
     }
 
+    /**
+     * Returns the items for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<RoomItemFloor> getItems() {
         return items;
     }
 
+    /**
+     * Indicates whether this room contract has adjustable height.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasAdjustableHeight() {
         return hasAdjustableHeight;
     }
 
+    /**
+     * Returns the state for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RoomTileState getState() {
         return state;
     }
 
+    /**
+     * Indicates whether this room contract has gate.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasGate() {
         return this.hasGate;
     }

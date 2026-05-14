@@ -11,16 +11,28 @@ import com.cometproject.server.game.rooms.objects.items.types.DefaultFloorItem;
 import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.utilities.RandomUtil;
 
+/**
+ * Describes horse jump floor item behavior for the room subsystem.
+ */
 public class HorseJumpFloorItem extends DefaultFloorItem {
     private boolean restore = false;
     private PetEntity petEntity;
 
+    /**
+     * Creates a horse jump floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public HorseJumpFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
 
         this.getItemData().setData("0");
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
         if (this.restore) {
@@ -73,6 +85,11 @@ public class HorseJumpFloorItem extends DefaultFloorItem {
         this.setTicks(RoomItemFactory.getProcessTime(1.5));
     }
 
+    /**
+     * Handles the entity step on callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOn(RoomEntity entity) {
         if (!(entity instanceof PetEntity)) {
@@ -119,6 +136,11 @@ public class HorseJumpFloorItem extends DefaultFloorItem {
         }
     }
 
+    /**
+     * Handles the entity step off callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOff(RoomEntity entity) {
         if (entity instanceof PetEntity && ((PetEntity) entity).getData().getTypeId() == PetType.HORSE) {
@@ -128,11 +150,21 @@ public class HorseJumpFloorItem extends DefaultFloorItem {
         }
     }
 
+    /**
+     * Handles the unload callback for this room contract.
+     */
     @Override
     public void onUnload() {
         this.petEntity = null;
     }
 
+    /**
+     * Indicates whether movement cancelled applies to this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param position Position supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isMovementCancelled(RoomEntity entity, Position position) {
         final Position[] barPos = this.getBarPositions();

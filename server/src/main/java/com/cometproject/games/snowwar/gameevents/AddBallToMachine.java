@@ -2,17 +2,28 @@
 /*    */ 
 /*    */ import com.cometproject.games.snowwar.gameobjects.MachineGameObject;
 /*    */ 
+/**
+ * Describes add ball to machine behavior for the Snow War game subsystem.
+ */
 /*    */ public class AddBallToMachine
 /*    */   extends Event
 /*    */ {
 /*    */   public MachineGameObject gameItem;
 /*    */   
+/**
+ * Creates a add ball to machine instance for the Snow War game subsystem.
+ *
+ * @param gameItem Game item supplied by the caller.
+ */
 /*    */   public AddBallToMachine(MachineGameObject gameItem) {
 /* 11 */     this.EventType = 11;
 /* 12 */     this.gameItem = gameItem;
 /*    */   }
 /*    */ 
 /*    */   
+/**
+ * Executes apply for this Snow War game contract.
+ */
 /*    */   public void apply() {
 /* 17 */     this.gameItem.addSnowBall();
 /*    */   }

@@ -17,7 +17,16 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 
+/**
+ * Represents the apply decoration message event published by the network message subsystem.
+ */
 public class ApplyDecorationMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void handle(Session client, MessageEvent msg) {
         long itemId = ItemManager.getInstance().getItemIdByVirtualId(msg.readInt());

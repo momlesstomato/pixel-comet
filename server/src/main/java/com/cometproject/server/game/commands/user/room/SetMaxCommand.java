@@ -8,7 +8,16 @@ import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.network.messages.outgoing.room.engine.RoomDataMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 
+/**
+ * Describes set max command behavior for the Comet subsystem.
+ */
 public class SetMaxCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         if (params.length != 1) {
@@ -40,16 +49,31 @@ public class SetMaxCommand extends ChatCommand {
         }
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "setmax_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return Locale.getOrDefault("command.parameter.amount", "%amount%");
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.setmax.description");

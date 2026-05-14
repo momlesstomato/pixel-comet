@@ -14,21 +14,45 @@ import java.util.List;
 import java.util.Random;
 
 
+/**
+ * Describes wired custom toggle state random behavior for the room subsystem.
+ */
 public class WiredCustomToggleStateRandom extends WiredActionItem {
+    /**
+     * Creates a wired custom toggle state random instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public WiredCustomToggleStateRandom(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Executes requires player for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean requiresPlayer() {
         return false;
     }
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 0;
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(WiredItemEvent event) {
         Random random = new Random();

@@ -3,12 +3,21 @@
 /*    */ import com.cometproject.games.snowwar.gameobjects.HumanGameObject;
 /*    */ import com.cometproject.games.snowwar.gameobjects.PickBallsGameItemObject;
 /*    */ 
+/**
+ * Describes pick ball from game item behavior for the Snow War game subsystem.
+ */
 /*    */ public class PickBallFromGameItem
 /*    */   extends Event
 /*    */ {
 /*    */   public HumanGameObject player;
 /*    */   public PickBallsGameItemObject gameItem;
 /*    */   
+/**
+ * Creates a pick ball from game item instance for the Snow War game subsystem.
+ *
+ * @param player Player supplied by the caller.
+ * @param gameItem Game item supplied by the caller.
+ */
 /*    */   public PickBallFromGameItem(HumanGameObject player, PickBallsGameItemObject gameItem) {
 /* 13 */     this.EventType = 12;
 /* 14 */     this.player = player;
@@ -17,6 +26,9 @@
 /*    */ 
 /*    */ 
 /*    */   
+/**
+ * Executes apply for this Snow War game contract.
+ */
 /*    */   public void apply() {
 /* 21 */     int local1 = this.player.availableSnowBallSlots();
 /* 22 */     if (local1 > 0) {

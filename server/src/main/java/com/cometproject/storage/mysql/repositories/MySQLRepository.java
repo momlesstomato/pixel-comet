@@ -14,17 +14,28 @@ import org.slf4j.LoggerFactory;
 import javax.validation.UnexpectedTypeException;
 import java.sql.*;
 
+/**
+ * Persists and loads my SQL data for the MySQL storage subsystem.
+ */
 public abstract class MySQLRepository {
+    /**
+     * Persists and loads my SQL data for the MySQL storage subsystem.
+     */
     protected final Logger LOGGER = LoggerFactory.getLogger(MySQLRepository.class);
 
     private final MySQLConnectionProvider connectionProvider;
 
+    /**
+     * Creates a my SQL repository instance for the MySQL storage subsystem.
+     *
+     * @param connectionProvider Connection provider supplied by the caller.
+     */
     public MySQLRepository(MySQLConnectionProvider connectionProvider) {
         this.connectionProvider = connectionProvider;
     }
 
     /**
-     * Executes a query and then for every result, resultConsumer is invoked with the provided ResultSet
+     * Executes a query and then for every result, resultConsumer is invoked with the provided ResultSet.
      *
      * @param query          The query you'd like to run
      * @param resultConsumer Callback to be executed for every row returned by the query
@@ -58,7 +69,7 @@ public abstract class MySQLRepository {
     }
 
     /**
-     * Runs the update query with any parameters
+     * Runs the update query with any parameters.
      *
      * @param query      The query to run
      * @param parameters The parameters to bind in the query
@@ -68,7 +79,7 @@ public abstract class MySQLRepository {
     }
 
     /**
-     * Runs the update query with any parameters
+     * Runs the update query with any parameters.
      *
      * @param query       The query to run
      * @param transaction The transaction in which to execute the query within
@@ -99,7 +110,7 @@ public abstract class MySQLRepository {
     }
 
     /**
-     * Runs update query as a batch (allows you to update multiple rows in 1 command)
+     * Runs update query as a batch (allows you to update multiple rows in 1 command).
      *
      * @param query       Query to run
      * @param transaction transaction (will run via this if provided)
@@ -131,7 +142,7 @@ public abstract class MySQLRepository {
     }
 
     /**
-     * Runs update query as a batch (allows you to update multiple rows in 1 command)
+     * Runs update query as a batch (allows you to update multiple rows in 1 command).
      *
      * @param query  Query to run
      * @param params Consumer to provide the statement with the params of the multiple rows
@@ -142,7 +153,7 @@ public abstract class MySQLRepository {
     }
 
     /**
-     * Runs insert query as a batch (allows you to insert multiple rows in 1 command) and retrieve their primary key
+     * Runs insert query as a batch (allows you to insert multiple rows in 1 command) and retrieve their primary key.
      *
      * @param query       Query to run
      * @param params      Consumer to provide the statement with the params of the multiple rows
@@ -183,7 +194,7 @@ public abstract class MySQLRepository {
     }
 
     /**
-     * Runs insert query as a batch (allows you to insert multiple rows in 1 command) and retrieve their primary key
+     * Runs insert query as a batch (allows you to insert multiple rows in 1 command) and retrieve their primary key.
      *
      * @param query       Query to run
      * @param params      Consumer to provide the statement with the params of the multiple rows
@@ -195,7 +206,7 @@ public abstract class MySQLRepository {
     }
 
     /**
-     * Runs the insert query and accepts a consumer for the new generated keys (if any)
+     * Runs the insert query and accepts a consumer for the new generated keys (if any).
      *
      * @param query       The query to execute
      * @param keyConsumer The consumer to accept the newly generated keys
@@ -206,7 +217,7 @@ public abstract class MySQLRepository {
     }
 
     /**
-     * Runs the insert query with a provided transaction object (which allows rollback etc.)
+     * Runs the insert query with a provided transaction object (which allows rollback etc.).
      *
      * @param query       The query to execute
      * @param transaction The transaction in which to execute the query within;
@@ -248,7 +259,7 @@ public abstract class MySQLRepository {
     }
 
     /**
-     * Allows a MySQL connection to be shared throughout multiple queries and also support rollback etc
+     * Allows a MySQL connection to be shared throughout multiple queries and also support rollback etc.
      *
      * @param transactionConsumer The consumer in which the transaction will be used
      */
@@ -286,7 +297,7 @@ public abstract class MySQLRepository {
     }
 
     /**
-     * Dynamically sets parameters to the prepared statement
+     * Dynamically sets parameters to the prepared statement.
      *
      * @param preparedStatement The statement of which to set the parameters
      * @param parameters        List of parameters defined as objects

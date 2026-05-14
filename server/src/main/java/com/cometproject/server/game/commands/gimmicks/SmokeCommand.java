@@ -10,7 +10,16 @@ import com.cometproject.storage.api.data.rooms.RoomData;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Describes smoke command behavior for the Comet subsystem.
+ */
 public class SmokeCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         RoomData data = (RoomData)client.getPlayer().getEntity().getRoom().getData();
@@ -24,6 +33,9 @@ public class SmokeCommand extends ChatCommand {
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
+            /**
+             * Runs this Comet task.
+             */
             @Override
             public void run() {
                 String messagePlayer2 = "* Se siente en jamaica *";
@@ -33,16 +45,31 @@ public class SmokeCommand extends ChatCommand {
         }, 6000);
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "smoke_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "%yes%";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.smoke.description");

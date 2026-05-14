@@ -8,11 +8,26 @@ import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.game.items.inventory.InventoryItem;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Describes group inventory item behavior for the item subsystem.
+ */
 public class GroupInventoryItem extends InventoryItem {
+    /**
+     * Creates a group inventory item instance for the item subsystem.
+     *
+     * @param inventoryItemData Inventory item data supplied by the caller.
+     * @param furnitureDefinition Furniture definition supplied by the caller.
+     */
     public GroupInventoryItem(InventoryItemData inventoryItemData, FurnitureDefinition furnitureDefinition) {
         super(inventoryItemData, furnitureDefinition);
     }
 
+    /**
+     * Executes compose data for this item contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean composeData(IComposer msg) {
         int groupId = 0;

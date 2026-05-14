@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Describes survival queue behavior for the room processing subsystem.
+ */
 public class SurvivalQueue {
 
     private static SurvivalQueue instance;
@@ -21,6 +24,9 @@ public class SurvivalQueue {
     private final Map<Integer, ArrayList<QueueData>> figures;
     private final List<SurvivalScenario> availableScenarios;
 
+    /**
+     * Creates a survival queue instance for the room processing subsystem.
+     */
     public SurvivalQueue() {
         this.roomQueues = Maps.newConcurrentMap();
         this.figures = Maps.newConcurrentMap();
@@ -40,6 +46,11 @@ public class SurvivalQueue {
         this.availableScenarios.add(new SurvivalScenario(1410, true));
     }
 
+    /**
+     * Returns the available scenario for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getAvailableScenario() {
         for (SurvivalScenario scenario : this.availableScenarios) {
             if (scenario.availability) {
@@ -62,6 +73,11 @@ public class SurvivalQueue {
         }
     }
 
+    /**
+     * Returns the instance for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static SurvivalQueue getInstance() {
         if (instance == null) {
             instance = new SurvivalQueue();
@@ -70,10 +86,22 @@ public class SurvivalQueue {
         return instance;
     }
 
+    /**
+     * Indicates whether this room processing contract has queue.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasQueue(int roomId) {
         return this.roomQueues.containsKey(roomId);
     }
 
+    /**
+     * Returns the queue for this room processing contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public List<Integer> getQueue(int roomId) {
         return this.roomQueues.get(roomId);
     }
@@ -87,19 +115,44 @@ public class SurvivalQueue {
         return null;
     }
 
+    /**
+     * Returns the figures for this room processing contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public ArrayList<QueueData> getFigures(int roomId) {
         return this.figures.get(roomId);
     }
 
+    /**
+     * Adds queue to this room processing contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param startingPlayer Starting player supplied by the caller.
+     * @param figure Figure supplied by the caller.
+     */
     public void addQueue(int roomId, int startingPlayer, ArrayList<String> figure) {
         this.roomQueues.put(roomId, startingPlayer == 0 ? new ArrayList<>() : new ArrayList<>(startingPlayer));
         this.figures.put(roomId, new ArrayList<>());
     }
 
+    /**
+     * Removes queue from this room processing contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     */
     public void removeQueue(int roomId) {
         this.roomQueues.remove(roomId);
     }
 
+    /**
+     * Removes player from queue from this room processing contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param playerId Player identifier used by the operation.
+     * @param data Data supplied by the caller.
+     */
     public void removePlayerFromQueue(int roomId, Integer playerId, QueueData data) {
         if (this.hasQueue(roomId)) {
             this.roomQueues.get(roomId).remove(playerId);
@@ -128,6 +181,13 @@ public class SurvivalQueue {
         }
     }
 
+    /**
+     * Executes player has queue for this room processing contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param playerId Player identifier used by the operation.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean playerHasQueue(int roomId, int playerId) {
         if (!this.hasQueue(roomId))
             return false;
@@ -139,6 +199,11 @@ public class SurvivalQueue {
         return false;
     }
 
+    /**
+     * Executes start game for this room processing contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     */
     public void startGame(int roomId){
         for (int player : this.roomQueues.get(roomId)) {
             Session session = NetworkManager.getInstance().getSessions().getByPlayerId(player);
@@ -158,6 +223,13 @@ public class SurvivalQueue {
         this.figures.get(roomId).clear();
     }
 
+    /**
+     * Adds player to queue to this room processing contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param playerId Player identifier used by the operation.
+     * @param data Data supplied by the caller.
+     */
     public void addPlayerToQueue(int roomId, int playerId, QueueData data) {
         if (!this.hasQueue(roomId)) {
             return;
@@ -175,6 +247,12 @@ public class SurvivalQueue {
         }
     }
 
+    /**
+     * Returns the next player for this room processing contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public int getNextPlayer(int roomId) {
         if (!this.hasQueue(roomId)) {
             return 0;
@@ -183,6 +261,13 @@ public class SurvivalQueue {
         return this.getQueue(roomId).get(0);
     }
 
+    /**
+     * Returns the queue count for this room processing contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public int getQueueCount(int roomId, int playerId) {
         if (!this.hasQueue(roomId)) {
             return 0;

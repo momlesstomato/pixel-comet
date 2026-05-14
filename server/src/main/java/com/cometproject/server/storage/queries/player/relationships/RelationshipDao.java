@@ -11,7 +11,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
+/**
+ * Describes relationship dao behavior for the storage subsystem.
+ */
 public class RelationshipDao {
+    /**
+     * Returns the relationships by player id for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, RelationshipLevel> getRelationshipsByPlayerId(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -41,6 +50,12 @@ public class RelationshipDao {
         return data;
     }
 
+    /**
+     * Deletes relationship for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param partner Partner supplied by the caller.
+     */
     public static void deleteRelationship(int playerId, int partner) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -61,6 +76,13 @@ public class RelationshipDao {
         }
     }
 
+    /**
+     * Updates relationship for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param partner Partner supplied by the caller.
+     * @param level Level supplied by the caller.
+     */
     public static void updateRelationship(int playerId, int partner, String level) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -83,6 +105,11 @@ public class RelationshipDao {
         }
     }
 
+    /**
+     * Executes empty relationship for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     */
     public static void emptyRelationship(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -102,6 +129,13 @@ public class RelationshipDao {
         }
     }
 
+    /**
+     * Creates relationship for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param partner Partner supplied by the caller.
+     * @param status Status supplied by the caller.
+     */
     public static void createRelationship(int playerId, int partner, String status) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

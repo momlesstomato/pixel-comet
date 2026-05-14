@@ -8,11 +8,27 @@ import com.cometproject.server.game.rooms.objects.items.types.floor.wired.base.W
 import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.game.rooms.types.components.games.GameTeam;
 
+/**
+ * Describes wired condition triggerer on furni green behavior for the room subsystem.
+ */
 public class WiredConditionTriggererOnFurniGreen extends WiredConditionItem {
+    /**
+     * Creates a wired condition triggerer on furni green instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public WiredConditionTriggererOnFurniGreen(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Executes evaluate for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param data Data supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean evaluate(RoomEntity entity, Object data) {
         PlayerEntity playerEntity = (PlayerEntity)entity;
@@ -34,6 +50,11 @@ public class WiredConditionTriggererOnFurniGreen extends WiredConditionItem {
         return this.isNegative != isOnFurni;
     }
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 8;

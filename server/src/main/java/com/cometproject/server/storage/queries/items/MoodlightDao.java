@@ -14,7 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Describes moodlight dao behavior for the storage subsystem.
+ */
 public class MoodlightDao {
+    /**
+     * Returns the moodlight data for this storage contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static MoodlightData getMoodlightData(long itemId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -77,6 +86,11 @@ public class MoodlightDao {
         return data;
     }
 
+    /**
+     * Updates moodlight for this storage contract.
+     *
+     * @param item Item supplied by the caller.
+     */
     public static void updateMoodlight(MoodlightWallItem item) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

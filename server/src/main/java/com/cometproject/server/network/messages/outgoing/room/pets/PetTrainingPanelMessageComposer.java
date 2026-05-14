@@ -5,19 +5,37 @@ import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
+/**
+ * Serializes the pet training panel message for the Pixel Protocol client.
+ */
 public class PetTrainingPanelMessageComposer extends MessageComposer {
 
     private final IPetData petData;
 
+    /**
+     * Creates a pet training panel message composer instance for the network message subsystem.
+     *
+     * @param petData Pet data supplied by the caller.
+     */
     public PetTrainingPanelMessageComposer(final IPetData petData) {
         this.petData = petData;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.PetTrainingPanelMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(this.petData.getId());

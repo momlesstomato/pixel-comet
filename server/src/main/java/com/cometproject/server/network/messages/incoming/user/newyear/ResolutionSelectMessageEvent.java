@@ -17,7 +17,16 @@ import com.cometproject.storage.api.data.currency.CurrencyUseCases;
 import com.cometproject.storage.api.data.currency.ICurrencyDefinition;
 import com.cometproject.storage.api.services.ICurrencyService;
 
+/**
+ * Represents the resolution select message event published by the network message subsystem.
+ */
 public class ResolutionSelectMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void handle(Session client, MessageEvent msg) {
         if(client == null || client.getPlayer() == null || client.getPlayer().getEntity() == null || client.getPlayer().getStats() == null)
             return;

@@ -17,6 +17,9 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
+/**
+ * Creates netty networking server instances for the networking subsystem.
+ */
 public class NettyNetworkingServerFactory implements INetworkingServerFactory {
     private static final String CFG_EPOLL = "comet.network.epoll";
 
@@ -33,6 +36,11 @@ public class NettyNetworkingServerFactory implements INetworkingServerFactory {
 
     private boolean epollEnabled = false;
 
+    /**
+     * Creates a netty networking server factory instance for the networking subsystem.
+     *
+     * @param configuration Configuration supplied by the caller.
+     */
     public NettyNetworkingServerFactory(ConfigurationSource configuration) {
         final boolean epoll = Boolean.parseBoolean((String) configuration.getOrDefault(CFG_EPOLL, "false"));
         final int ioGroupCount = Integer.parseInt((String) configuration.getOrDefault(CFG_IO_LOOP_COUNT, "4"));
@@ -52,6 +60,13 @@ public class NettyNetworkingServerFactory implements INetworkingServerFactory {
         this.acceptLoopGroup = epoll ? new EpollEventLoopGroup(acceptGroupCount) : new NioEventLoopGroup(acceptGroupCount);
     }
 
+    /**
+     * Creates server for this networking contract.
+     *
+     * @param serverConfig Server config supplied by the caller.
+     * @param sessionFactory Session factory supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public INetworkingServer createServer(NetworkingServerConfig serverConfig, INetSessionFactory sessionFactory) {
         ServerBootstrap bootstrap = new ServerBootstrap()

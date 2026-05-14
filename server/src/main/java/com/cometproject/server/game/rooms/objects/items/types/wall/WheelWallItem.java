@@ -23,15 +23,32 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
+/**
+ * Describes wheel wall item behavior for the room subsystem.
+ */
 public class WheelWallItem extends RoomItemWall {
     private final Random r = new Random();
     private boolean isInUse = false;
     public Session client = null;
 
+    /**
+     * Creates a wheel wall item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public WheelWallItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (this.isInUse) {
@@ -62,6 +79,9 @@ public class WheelWallItem extends RoomItemWall {
         return true;
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
         int wheelPos = r.nextInt(10) + 1;
@@ -73,11 +93,17 @@ public class WheelWallItem extends RoomItemWall {
         if(Arrays.asList(this.getRoom().getData().getTags()).contains("69")) wheelWallCasino(wheelPos);
     }
 
+    /**
+     * Handles the pickup callback for this room contract.
+     */
     @Override
     public void onPickup() {
         cancelTicks();
     }
 
+    /**
+     * Handles the placed callback for this room contract.
+     */
     @Override
     public void onPlaced() {
         if (!"0".equals(getItemData().getData())) {
@@ -85,9 +111,17 @@ public class WheelWallItem extends RoomItemWall {
         }
     }
 
+    /**
+     * Executes wheel wall casino for this room contract.
+     *
+     * @param num Num supplied by the caller.
+     */
     public void wheelWallCasino(int num){
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
+            /**
+             * Runs this room task.
+             */
             @Override
             public void run() {
                 if(client != null){

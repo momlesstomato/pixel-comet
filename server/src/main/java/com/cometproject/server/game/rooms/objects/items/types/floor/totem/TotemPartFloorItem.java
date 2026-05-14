@@ -7,7 +7,16 @@ import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
 import com.cometproject.server.game.rooms.types.Room;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Describes totem part floor item behavior for the room subsystem.
+ */
 public abstract class TotemPartFloorItem extends RoomItemFloor {
+    /**
+     * Creates a totem part floor item instance for the room subsystem.
+     *
+     * @param roomItemData Room item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public TotemPartFloorItem(RoomItemData roomItemData, Room room) {
         super(roomItemData, room);
 
@@ -16,6 +25,12 @@ public abstract class TotemPartFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Returns the dark head for this room contract.
+     *
+     * @param lightHead Light head supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getDarkHead(int lightHead) {
         switch (lightHead) {
 
@@ -24,6 +39,14 @@ public abstract class TotemPartFloorItem extends RoomItemFloor {
         return 0;
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (this.isComplete()) {
@@ -45,6 +68,11 @@ public abstract class TotemPartFloorItem extends RoomItemFloor {
         return true;
     }
 
+    /**
+     * Handles the item added to stack callback for this room contract.
+     *
+     * @param floorItem Floor item supplied by the caller.
+     */
     @Override
     public void onItemAddedToStack(RoomItemFloor floorItem) {
         if (floorItem instanceof TotemHeadFloorItem && this instanceof TotemBodyFloorItem) {
@@ -59,6 +87,11 @@ public abstract class TotemPartFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Indicates whether complete applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     protected boolean isComplete() {
         boolean hasHead = (this instanceof TotemHeadFloorItem);
         boolean hasBody = (this instanceof TotemBodyFloorItem);
@@ -73,6 +106,11 @@ public abstract class TotemPartFloorItem extends RoomItemFloor {
         return hasHead && hasBody && hasPlanet;
     }
 
+    /**
+     * Handles the position changed callback for this room contract.
+     *
+     * @param newPosition New position supplied by the caller.
+     */
     @Override
     public void onPositionChanged(Position newPosition) {
         int totemState = Integer.parseInt(this.getItemData().getData());

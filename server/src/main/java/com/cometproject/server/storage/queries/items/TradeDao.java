@@ -8,8 +8,17 @@ import java.sql.SQLException;
 import java.util.Map;
 
 
+/**
+ * Describes trade dao behavior for the storage subsystem.
+ */
 public class TradeDao {
 
+    /**
+     * Updates trade items for this storage contract.
+     *
+     * @param userId User id supplied by the caller.
+     * @param itemId Item id supplied by the caller.
+     */
     public static void updateTradeItems(int userId, long itemId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -31,6 +40,11 @@ public class TradeDao {
         }
     }
 
+    /**
+     * Updates trade items for this storage contract.
+     *
+     * @param itemsToUpdate Items to update supplied by the caller.
+     */
     public static void updateTradeItems(Map<Long, Integer> itemsToUpdate) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

@@ -36,6 +36,9 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * Describes abstract room process behavior for the room processing subsystem.
+ */
 public abstract class AbstractRoomProcess implements CometTask {
     private Room room;
 
@@ -57,6 +60,12 @@ public abstract class AbstractRoomProcess implements CometTask {
 
     private long delay;
 
+    /**
+     * Creates a abstract room process instance for the room processing subsystem.
+     *
+     * @param room Room participating in the operation.
+     * @param delay Delay supplied by the caller.
+     */
     public AbstractRoomProcess(Room room, long delay) {
         this.room = room;
         this.delay = delay;
@@ -65,6 +74,9 @@ public abstract class AbstractRoomProcess implements CometTask {
         this.adaptiveProcessTimes = CometSettings.adaptiveEntityProcessDelay;
     }
 
+    /**
+     * Executes tick for this room processing contract.
+     */
     public void tick() {
         if (!this.active) {
             return;
@@ -145,6 +157,9 @@ public abstract class AbstractRoomProcess implements CometTask {
         this.isProcessing = false;
     }
 
+    /**
+     * Starts this room processing component.
+     */
     public void start() {
         if (Room.useCycleForEntities) {
             this.active = true;
@@ -166,6 +181,9 @@ public abstract class AbstractRoomProcess implements CometTask {
         LOGGER.debug("Processing started");
     }
 
+    /**
+     * Stops this room processing component.
+     */
     public void stop() {
         if (Room.useCycleForEntities) {
             this.active = false;
@@ -186,11 +204,19 @@ public abstract class AbstractRoomProcess implements CometTask {
         }
     }
 
+    /**
+     * Runs this room processing task.
+     */
     @Override
     public void run() {
         this.tick();
     }
 
+    /**
+     * Updates the delay for this room processing contract.
+     *
+     * @param time Time supplied by the caller.
+     */
     public void setDelay(int time) {
         this.processFuture.cancel(false);
         this.processFuture = CometThreadManager.getInstance().executePeriodic(this, 0, time, TimeUnit.MILLISECONDS);
@@ -572,21 +598,47 @@ public abstract class AbstractRoomProcess implements CometTask {
         return false;
     }
 
+    /**
+     * Indicates whether active applies to this room processing contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isActive() {
         return this.active;
     }
 
+    /**
+     * Returns the room for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Room getRoom() {
         return this.room;
     }
 
+    /**
+     * Returns the process times for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<Long> getProcessTimes() {
         return processTimes;
     }
 
+    /**
+     * Updates the process times for this room processing contract.
+     *
+     * @param processTimes Process times supplied by the caller.
+     */
     public void setProcessTimes(List<Long> processTimes) {
         this.processTimes = processTimes;
     }
 
+    /**
+     * Executes needs processing for this room processing contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     protected abstract boolean needsProcessing(RoomEntity entity);
 }

@@ -13,6 +13,9 @@ import com.cometproject.games.snowwar.gameevents.AddBallToMachine;
 
 /*    */
 /*    */ 
+/**
+ * Describes machine game object behavior for the Snow War game subsystem.
+ */
 /*    */ public class MachineGameObject
 /*    */   extends PickBallsGameItemObject
 /*    */ {
@@ -26,6 +29,18 @@ import com.cometproject.games.snowwar.gameevents.AddBallToMachine;
 /*    */   
 /*    */   public SnowWarRoom currentSnowWar;
 /*    */   
+/**
+ * Creates a machine game object instance for the Snow War game subsystem.
+ *
+ * @param x X supplied by the caller.
+ * @param y Y supplied by the caller.
+ * @param rot Rot supplied by the caller.
+ * @param a A supplied by the caller.
+ * @param b B supplied by the caller.
+ * @param c C supplied by the caller.
+ * @param _arg2 Arg2 supplied by the caller.
+ * @param room Room supplied by the caller.
+ */
 /*    */   public MachineGameObject(int x, int y, int rot, int a, int b, int c, SnowWarGameStage _arg2, SnowWarRoom room) {
 /* 25 */     super(8, _arg2.getTile(x, y), b, c);
 /* 26 */     this.snowBallsCapacity = a;
@@ -39,12 +54,23 @@ import com.cometproject.games.snowwar.gameevents.AddBallToMachine;
 /*    */     }
 /*    */   }
 /*    */   
+/**
+ * Updates the snow balls for this Snow War game contract.
+ *
+ * @param val Val supplied by the caller.
+ */
 /*    */   public void setSnowBalls(int val) {
 /* 38 */     this.currentSnowWar.checksum += val * 7 - getVariable(6) * 7;
 /* 39 */     this.snowBalls = val;
 /*    */   }
 /*    */ 
 /*    */   
+/**
+ * Returns the variable for this Snow War game contract.
+ *
+ * @param val Val supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 /*    */   public int getVariable(int val) {
 /* 44 */     if (val == 0) {
 /* 45 */       return 4;
@@ -73,6 +99,11 @@ import com.cometproject.games.snowwar.gameevents.AddBallToMachine;
 /*    */ 
 /*    */ 
 /*    */   
+/**
+ * Executes subturn for this Snow War game contract.
+ *
+ * @param unused Unused supplied by the caller.
+ */
 /*    */   public void subturn(SynchronizedGameStage unused) {
 /* 72 */     if (this.snowBallGeneratorTimer > 0) {
 /* 73 */       this.snowBallGeneratorTimer--;
@@ -85,10 +116,18 @@ import com.cometproject.games.snowwar.gameevents.AddBallToMachine;
 /*    */   }
 /*    */ 
 /*    */   
+/**
+ * Executes bounding data for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*    */   public int[] boundingData() {
 /* 84 */     return boundingData;
 /*    */   }
 /*    */   
+/**
+ * Executes add snow ball for this Snow War game contract.
+ */
 /*    */   public void addSnowBall() {
 /* 88 */     if (this.snowBalls < this.snowBallsCapacity) {
 /* 89 */       setSnowBalls(this.snowBalls + 1);
@@ -96,6 +135,11 @@ import com.cometproject.games.snowwar.gameevents.AddBallToMachine;
 /*    */   }
 /*    */ 
 /*    */   
+/**
+ * Handles the snowball pickup callback for this Snow War game contract.
+ *
+ * @param ammount Ammount supplied by the caller.
+ */
 /*    */   public void onSnowballPickup(int ammount) {
 /* 95 */     setSnowBalls(this.snowBalls - ammount);
 /*    */   }

@@ -16,6 +16,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Describes blocking my SQL storage queue behavior for the MySQL storage subsystem.
+ */
 public abstract class BlockingMySQLStorageQueue<T, O> extends Thread {
     private static final Logger LOGGER = LoggerFactory.getLogger(BlockingMySQLStorageQueue.class);
 
@@ -27,6 +30,13 @@ public abstract class BlockingMySQLStorageQueue<T, O> extends Thread {
     private final Map<T, O> mapping;
     private final BlockingQueue<Pair<T, O>> queue;
 
+    /**
+     * Creates a blocking my SQL storage queue instance for the MySQL storage subsystem.
+     *
+     * @param connectionProvider Connection provider supplied by the caller.
+     * @param batchQuery Batch query supplied by the caller.
+     * @param batchThreshold Batch threshold supplied by the caller.
+     */
     public BlockingMySQLStorageQueue(final MySQLConnectionProvider connectionProvider, final String batchQuery,
                                      final int batchThreshold) {
         this.batchQuery = batchQuery;
@@ -36,6 +46,9 @@ public abstract class BlockingMySQLStorageQueue<T, O> extends Thread {
         this.mapping = Maps.newConcurrentMap();
     }
 
+    /**
+     * Runs this MySQL storage task.
+     */
     @Override
     public void run() {
         try {
@@ -70,6 +83,12 @@ public abstract class BlockingMySQLStorageQueue<T, O> extends Thread {
         }
     }
 
+    /**
+     * Returns the queued for this MySQL storage contract.
+     *
+     * @param key Key supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public O getQueued(T key) {
         return this.mapping.get(key);
     }
@@ -102,16 +121,35 @@ public abstract class BlockingMySQLStorageQueue<T, O> extends Thread {
         }
     }
 
+    /**
+     * Executes add for this MySQL storage contract.
+     *
+     * @param key Key supplied by the caller.
+     * @param obj Obj supplied by the caller.
+     */
     public void add(T key, O obj) {
         this.mapping.put(key, obj);
         this.queue.add(new Pair<>(key, obj));
     }
 
+    /**
+     * Adds all to this MySQL storage contract.
+     *
+     * @param all All supplied by the caller.
+     */
     public void addAll(Collection<Pair<T, O>> all) {
         for (Pair<T, O> obj : all) {
             this.add(obj.getLeft(), obj.getRight());
         }
     }
 
+    /**
+     * Processes batch for this MySQL storage contract.
+     *
+     * @param preparedStatement Prepared statement supplied by the caller.
+     * @param id Id supplied by the caller.
+     * @param object Object supplied by the caller.
+     * @throws Exception When the operation cannot complete.
+     */
     protected abstract void processBatch(PreparedStatement preparedStatement, T id, O object) throws Exception;
 }

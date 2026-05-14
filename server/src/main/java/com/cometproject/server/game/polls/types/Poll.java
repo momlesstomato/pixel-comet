@@ -12,6 +12,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Describes poll behavior for the Comet subsystem.
+ */
 public class Poll {
     private final int pollId;
     private final int roomId;
@@ -29,6 +32,19 @@ public class Poll {
 
     private final Set<Integer> playersAnswered;
 
+    /**
+     * Creates a poll instance for the Comet subsystem.
+     *
+     * @param pollId Poll id supplied by the caller.
+     * @param roomId Room identifier used by the operation.
+     * @param pollTitle Poll title supplied by the caller.
+     * @param thanksMessage Thanks message supplied by the caller.
+     * @param rewardBadge Reward badge supplied by the caller.
+     * @param rewardCredits Reward credits supplied by the caller.
+     * @param rewardVipPoints Reward vip points supplied by the caller.
+     * @param rewardActivityPoints Reward activity points supplied by the caller.
+     * @param rewardAchievementPoints Reward achievement points supplied by the caller.
+     */
     public Poll(int pollId, int roomId, String pollTitle, String thanksMessage, String rewardBadge, int rewardCredits, int rewardVipPoints, int rewardActivityPoints, int rewardAchievementPoints) {
         this.pollId = pollId;
         this.roomId = roomId;
@@ -45,6 +61,11 @@ public class Poll {
         this.playersAnswered = new HashSet<>();
     }
 
+    /**
+     * Handles the player finished poll callback for this Comet contract.
+     *
+     * @param player Player participating in the operation.
+     */
     public void onPlayerFinishedPoll(Player player) {
         this.getPlayersAnswered().add(player.getId());
 
@@ -99,10 +120,22 @@ public class Poll {
         return CometBootstrap.resolve(ICurrencyService.class).currencyCodeForUseCase(useCase);
     }
 
+    /**
+     * Adds question to this Comet contract.
+     *
+     * @param questionId Question id supplied by the caller.
+     * @param pollQuestion Poll question supplied by the caller.
+     */
     public void addQuestion(int questionId, PollQuestion pollQuestion) {
         this.pollQuestions.put(questionId, pollQuestion);
     }
 
+    /**
+     * Indicates whether final question applies to this Comet contract.
+     *
+     * @param questionId Question id supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isFinalQuestion(final int questionId) {
         int index = 0;
         int count = this.pollQuestions.size();
@@ -118,30 +151,65 @@ public class Poll {
         return false;
     }
 
+    /**
+     * Returns the poll id for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getPollId() {
         return pollId;
     }
 
+    /**
+     * Returns the room id for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getRoomId() {
         return roomId;
     }
 
+    /**
+     * Returns the poll title for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getPollTitle() {
         return pollTitle;
     }
 
+    /**
+     * Returns the poll questions for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<Integer, PollQuestion> getPollQuestions() {
         return pollQuestions;
     }
 
+    /**
+     * Returns the thanks message for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getThanksMessage() {
         return thanksMessage;
     }
 
+    /**
+     * Returns the players answered for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Set<Integer> getPlayersAnswered() {
         return playersAnswered;
     }
 
+    /**
+     * Returns the reward badge for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getRewardBadge() {
         return rewardBadge;
     }

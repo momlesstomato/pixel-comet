@@ -5,11 +5,25 @@ import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.server.game.rooms.objects.items.types.DefaultFloorItem;
 import com.cometproject.server.game.rooms.types.Room;
 
+/**
+ * Describes ads floor item behavior for the room subsystem.
+ */
 public class AdsFloorItem extends DefaultFloorItem {
+    /**
+     * Creates a ads floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public AdsFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Executes compose item data for this room contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void composeItemData(IComposer msg) {
         msg.writeInt(0);

@@ -8,6 +8,9 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 
 import java.util.List;
 
+/**
+ * Serializes the mod tool ticket chatlog message for the Pixel Protocol client.
+ */
 public class ModToolTicketChatlogMessageComposer extends MessageComposer {
 
     private final static String ROOM_ID = "roomId";
@@ -19,6 +22,14 @@ public class ModToolTicketChatlogMessageComposer extends MessageComposer {
     private final List<RoomChatLogEntry> roomChatLogEntries;
     private final HelpTicket helpTicket;
 
+    /**
+     * Creates a mod tool ticket chatlog message composer instance for the network message subsystem.
+     *
+     * @param helpTicket Help ticket supplied by the caller.
+     * @param roomId Room identifier used by the operation.
+     * @param roomName Room name supplied by the caller.
+     * @param chatLogs Chat logs supplied by the caller.
+     */
     public ModToolTicketChatlogMessageComposer(HelpTicket helpTicket, final int roomId, final String roomName, final List<RoomChatLogEntry> chatLogs) {
         this.helpTicket = helpTicket;
         this.roomId = roomId;
@@ -27,11 +38,21 @@ public class ModToolTicketChatlogMessageComposer extends MessageComposer {
         this.roomChatLogEntries = chatLogs;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.ModeratorTicketChatlogMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(this.helpTicket.getId());

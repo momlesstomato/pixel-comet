@@ -22,7 +22,16 @@ import com.google.common.collect.Maps;
 import java.util.Map;
 
 
+/**
+ * Represents the place item message event published by the network message subsystem.
+ */
 public class PlaceItemMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void handle(Session client, MessageEvent msg) {
         if (client.getPlayer() == null || client.getPlayer().getEntity() == null) {

@@ -5,7 +5,16 @@ import com.cometproject.server.game.commands.ChatCommand;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.sessions.Session;
 
+/**
+ * Describes listen command behavior for the Comet subsystem.
+ */
 public class ListenCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         if (params.length != 1) {
@@ -30,16 +39,31 @@ public class ListenCommand extends ChatCommand {
         }
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "listen_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "%user%";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.listen.description");

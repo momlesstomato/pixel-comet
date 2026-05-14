@@ -13,14 +13,26 @@ import com.cometproject.common.caching.LastReferenceCache;
 import com.cometproject.game.groups.services.GroupService;
 import com.cometproject.storage.api.StorageContext;
 
+/**
+ * Describes groups module behavior for the group subsystem.
+ */
 public class GroupsModule extends BaseModule {
 
     private GroupService groupService;
 
+    /**
+     * Creates a groups module instance for the group subsystem.
+     *
+     * @param config Config supplied by the caller.
+     * @param gameService Game service supplied by the caller.
+     */
     public GroupsModule(ModuleConfig config, IGameService gameService) {
         super(config, gameService);
     }
 
+    /**
+     * Updates the up for this group contract.
+     */
     @Override
     public void setup() {
         final Cache<Integer, IGroupData> groupDataCache = new LastReferenceCache<>(
@@ -40,6 +52,11 @@ public class GroupsModule extends BaseModule {
 //        this.registerMessage(new JoinGroupMessageEvent(this.messageHandler::joinGroup));
     }
 
+    /**
+     * Executes initialise services for this group contract.
+     *
+     * @param gameContext Game context supplied by the caller.
+     */
     @Override
     public void initialiseServices(GameContext gameContext) {
         gameContext.setGroupService(this.groupService);
@@ -53,6 +70,9 @@ public class GroupsModule extends BaseModule {
     @Override
     public PluginGuiceModule getGuiceModule() {
         return new PluginGuiceModule(this.getGameService()) {
+            /**
+             * Executes configure for this group contract.
+             */
             @Override
             protected void configure() {
                 bind(IGroupService.class).toInstance(GroupsModule.this.groupService);

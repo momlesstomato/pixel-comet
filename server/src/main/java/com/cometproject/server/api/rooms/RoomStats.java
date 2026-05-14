@@ -4,34 +4,37 @@ import com.cometproject.api.game.rooms.IRoomData;
 import com.cometproject.server.game.rooms.types.Room;
 
 
+/**
+ * Describes room stats behavior for the HTTP API subsystem.
+ */
 public class RoomStats {
     /**
-     * The data of the room
+     * The data of the room.
      */
     private IRoomData data;
 
     /**
-     * The amount of players in the room
+     * The amount of players in the room.
      */
     private int players;
 
     /**
-     * The amount of bots in the room
+     * The amount of bots in the room.
      */
     private int bots;
 
     /**
-     * The amount of pets in the room
+     * The amount of pets in the room.
      */
     private int pets;
 
     /**
-     * The time the room was initially loaded
+     * The time the room was initially loaded.
      */
     private long loadTime;
 
     /**
-     * Initialize the RoomStats object
+     * Initialize the RoomStats object.
      *
      * @param room The room
      */
@@ -45,7 +48,7 @@ public class RoomStats {
     }
 
     /**
-     * Get the data of the room
+     * Get the data of the room.
      *
      * @return The data of the room
      */
@@ -54,7 +57,7 @@ public class RoomStats {
     }
 
     /**
-     * Set the data of the room
+     * Set the data of the room.
      *
      * @param data The data of the room
      */
@@ -63,7 +66,7 @@ public class RoomStats {
     }
 
     /**
-     * Get the amount of players in the room
+     * Get the amount of players in the room.
      *
      * @return The amount of players in the room
      */
@@ -72,7 +75,7 @@ public class RoomStats {
     }
 
     /**
-     * Set the amount of players in the room
+     * Set the amount of players in the room.
      *
      * @param players The amount of players in the room
      */
@@ -81,7 +84,7 @@ public class RoomStats {
     }
 
     /**
-     * Get the amount of bots in the room
+     * Get the amount of bots in the room.
      *
      * @return The amount of bots in the room
      */
@@ -90,7 +93,7 @@ public class RoomStats {
     }
 
     /**
-     * Set the amount of bots in the room
+     * Set the amount of bots in the room.
      *
      * @param bots The amount of bots in the room
      */
@@ -99,7 +102,7 @@ public class RoomStats {
     }
 
     /**
-     * Get the amount of pets in the room
+     * Get the amount of pets in the room.
      *
      * @return The amount of pets in the room
      */
@@ -108,7 +111,7 @@ public class RoomStats {
     }
 
     /**
-     * Set the amount of pets in the room
+     * Set the amount of pets in the room.
      *
      * @param pets The amount of pets in the room
      */
@@ -117,7 +120,7 @@ public class RoomStats {
     }
 
     /**
-     * Get the time the room was loaded
+     * Get the time the room was loaded.
      *
      * @return The time the room was loaded
      */
@@ -126,7 +129,7 @@ public class RoomStats {
     }
 
     /**
-     * Set the time the room was loaded
+     * Set the time the room was loaded.
      *
      * @param loadTime The time the room was loaded
      */

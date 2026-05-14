@@ -7,8 +7,17 @@ import com.cometproject.server.network.messages.outgoing.notification.Notificati
 import com.cometproject.server.network.sessions.Session;
 
 
+/**
+ * Describes alert noti command behavior for the Comet subsystem.
+ */
 public class AlertNotiCommand extends ChatCommand {
 
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         if (params.length < 1) {
@@ -34,16 +43,31 @@ public class AlertNotiCommand extends ChatCommand {
         }
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "alertnoti_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.alertnoti.description");

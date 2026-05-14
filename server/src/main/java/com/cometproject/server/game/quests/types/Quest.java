@@ -11,6 +11,9 @@ import com.cometproject.server.game.quests.QuestManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Describes quest behavior for the quest subsystem.
+ */
 public class Quest implements IQuest {
     private final int id;
     private final String name;
@@ -29,6 +32,12 @@ public class Quest implements IQuest {
     private final QuestType questType;
     private final String badgeId;
 
+    /**
+     * Creates a quest instance for the quest subsystem.
+     *
+     * @param data Data supplied by the caller.
+     * @throws SQLException When the operation cannot complete.
+     */
     public Quest(ResultSet data) throws SQLException {
         this.id = data.getInt("id");
         this.name = data.getString("name");
@@ -46,6 +55,22 @@ public class Quest implements IQuest {
         this.timestamp = data.getInt("timestamp");
     }
 
+    /**
+     * Creates a quest instance for the quest subsystem.
+     *
+     * @param id Id supplied by the caller.
+     * @param name Name supplied by the caller.
+     * @param category Category supplied by the caller.
+     * @param seriesNumber Series number supplied by the caller.
+     * @param goalType Goal type supplied by the caller.
+     * @param goalData Goal data supplied by the caller.
+     * @param reward Reward supplied by the caller.
+     * @param rewardType Reward type supplied by the caller.
+     * @param dataBit Data bit supplied by the caller.
+     * @param questType Quest type supplied by the caller.
+     * @param badgeId Badge id supplied by the caller.
+     * @param timestamp Timestamp supplied by the caller.
+     */
     public Quest(int id, String name, String category, int seriesNumber, int goalType, int goalData, int reward, QuestReward rewardType, String dataBit, QuestType questType, String badgeId, int timestamp) {
         this.id = id;
         this.name = name;
@@ -61,6 +86,12 @@ public class Quest implements IQuest {
         this.timestamp = timestamp;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param player Player participating in the operation.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IPlayer player, IComposer msg) {
         boolean startedQuest = player.getData().getQuestId() == this.getId();
@@ -85,61 +116,121 @@ public class Quest implements IQuest {
         msg.writeInt(this.getTimestamp() != 0 ? (int)(this.getTimestamp() - Comet.getTime()) : 0);
     }
 
+    /**
+     * Returns the type for this quest contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public QuestType getType() {
         return this.questType;
     }
 
+    /**
+     * Returns the id for this quest contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getId() {
         return id;
     }
 
+    /**
+     * Returns the name for this quest contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the category for this quest contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getCategory() {
         return category;
     }
 
+    /**
+     * Returns the series number for this quest contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getSeriesNumber() {
         return seriesNumber;
     }
 
+    /**
+     * Returns the goal type for this quest contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getGoalType() {
         return goalType;
     }
 
+    /**
+     * Returns the goal data for this quest contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getGoalData() {
         return goalData;
     }
 
+    /**
+     * Returns the reward for this quest contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getReward() {
         return reward;
     }
 
+    /**
+     * Returns the timestamp for this quest contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getTimestamp() {
         return timestamp;
     }
 
+    /**
+     * Returns the reward type for this quest contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public QuestReward getRewardType() {
         return rewardType;
     }
 
+    /**
+     * Returns the data bit for this quest contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDataBit() {
         return dataBit;
     }
 
+    /**
+     * Returns the badge id for this quest contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getBadgeId() {
         return badgeId;

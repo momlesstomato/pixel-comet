@@ -11,18 +11,36 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 import com.cometproject.server.storage.queries.player.PlayerDao;
 
 
+/**
+ * Serializes the wall items message for the Pixel Protocol client.
+ */
 public class WallItemsMessageComposer extends MessageComposer {
     private final Room room;
 
+    /**
+     * Creates a wall items message composer instance for the network message subsystem.
+     *
+     * @param room Room participating in the operation.
+     */
     public WallItemsMessageComposer(Room room) {
         this.room = room;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.ItemsMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         int size = room.getItems().getWallItems().size();

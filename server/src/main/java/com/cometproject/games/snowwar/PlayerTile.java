@@ -1,47 +1,96 @@
 /*     */ package com.cometproject.games.snowwar;
 /*     */ 
 /*     */ 
+/**
+ * Describes player tile behavior for the Snow War game subsystem.
+ */
 /*     */ public class PlayerTile
 /*     */ {
 /*     */   private int x;
 /*     */   private int y;
 /*     */   private int z;
 /*     */   
+/**
+ * Creates a player tile instance for the Snow War game subsystem.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ * @param _arg2 Arg2 supplied by the caller.
+ * @param _arg3 Arg3 supplied by the caller.
+ */
 /*     */   public PlayerTile(int _arg1, int _arg2, int _arg3) {
 /*  11 */     this.x = _arg1;
 /*  12 */     this.y = _arg2;
 /*  13 */     this.z = _arg3;
 /*     */   }
 /*     */   
+/**
+ * Executes x for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public int x() {
 /*  17 */     return this.x;
 /*     */   }
 /*     */   
+/**
+ * Executes y for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public int y() {
 /*  21 */     return this.y;
 /*     */   }
 /*     */   
+/**
+ * Executes z for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public int z() {
 /*  25 */     return this.z;
 /*     */   }
 /*     */   
+/**
+ * Updates the xyz for this Snow War game contract.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ * @param _arg2 Arg2 supplied by the caller.
+ * @param _arg3 Arg3 supplied by the caller.
+ */
 /*     */   public void setXYZ(int _arg1, int _arg2, int _arg3) {
 /*  29 */     this.x = _arg1;
 /*  30 */     this.y = _arg2;
 /*  31 */     this.z = _arg3;
 /*     */   }
 /*     */   
+/**
+ * Updates the xy for this Snow War game contract.
+ *
+ * @param x X supplied by the caller.
+ * @param y Y supplied by the caller.
+ */
 /*     */   public void setXY(int x, int y) {
 /*  35 */     this.x = x;
 /*  36 */     this.y = y;
 /*     */   }
 /*     */   
+/**
+ * Updates the xyz for this Snow War game contract.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ */
 /*     */   public void setXYZ(PlayerTile _arg1) {
 /*  40 */     this.x = _arg1.x;
 /*  41 */     this.y = _arg1.y;
 /*  42 */     this.z = _arg1.z;
 /*     */   }
 /*     */   
+/**
+ * Executes distance to for this Snow War game contract.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 /*     */   public int distanceTo(PlayerTile _arg1) {
 /*  46 */     int local1 = _arg1.x - this.x;
 /*  47 */     int local2 = _arg1.y - this.y;
@@ -50,6 +99,12 @@
 /*  50 */     return local4;
 /*     */   }
 /*     */   
+/**
+ * Executes direction to for this Snow War game contract.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 /*     */   public Direction8 directionTo(PlayerTile _arg1) {
 /*  54 */     if (_arg1.x == this.x && _arg1.y == this.y) {
 /*  55 */       return null;
@@ -60,6 +115,12 @@
 /*  60 */     return Direction360.direction360ValueToDirection8(local3);
 /*     */   }
 /*     */   
+/**
+ * Indicates whether same position applies to this Snow War game contract.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 /*     */   public boolean isSamePosition(Object _arg1) {
 /*  64 */     if (this == _arg1) {
 /*  65 */       return true;
@@ -81,14 +142,36 @@
 /*     */   }
 /*     */ 
 /*     */   
+/**
+ * Executes to string for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public String toString() {
 /*  85 */     return "_x:" + this.x + "yy:" + this.y + "_zz:" + this.z;
 /*     */   }
 /*     */   
+/**
+ * Executes 0 dk for this Snow War game contract.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ * @param _arg2 Arg2 supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 /*     */   public boolean _0Dk(PlayerTile _arg1, int _arg2) {
 /*  89 */     return _4D8(this.x, this.y, _arg1.x, _arg1.y, _arg2);
 /*     */   }
 /*     */   
+/**
+ * Executes 4 d8 for this Snow War game contract.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ * @param _arg2 Arg2 supplied by the caller.
+ * @param _arg3 Arg3 supplied by the caller.
+ * @param _arg4 Arg4 supplied by the caller.
+ * @param _arg5 Arg5 supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 /*     */   public static boolean _4D8(int _arg1, int _arg2, int _arg3, int _arg4, int _arg5) {
 /*  93 */     int local5 = _arg3 - _arg1;
 /*  94 */     if (local5 < 0) {

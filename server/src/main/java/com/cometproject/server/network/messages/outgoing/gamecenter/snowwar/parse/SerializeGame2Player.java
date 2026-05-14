@@ -3,7 +3,16 @@ package com.cometproject.server.network.messages.outgoing.gamecenter.snowwar.par
 import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.server.network.sessions.Session;
 
+/**
+ * Describes serialize game2 player behavior for the network message subsystem.
+ */
 public class SerializeGame2Player {
+    /**
+     * Executes parse for this network message contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @param cn Cn supplied by the caller.
+     */
     public static void parse(IComposer msg, Session cn) {
         if(cn == null || cn.getPlayer() == null || cn.getPlayer().getData() == null || cn.getPlayer().getStats() == null || cn.snowWarPlayerData == null){
             msg.writeInt(0);

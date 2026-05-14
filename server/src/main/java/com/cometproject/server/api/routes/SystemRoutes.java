@@ -22,11 +22,24 @@ import com.cometproject.server.storage.queries.config.ConfigDao;
 
 import io.javalin.http.Context;
 
+/**
+ * Registers system routes endpoints for the HTTP route subsystem.
+ */
 public class SystemRoutes {
+    /**
+     * Executes status for this HTTP route contract.
+     *
+     * @param context Context supplied by the caller.
+     */
     public static void status(final Context context) {
         ApiResponseUtils.success(context, Map.of("status", Comet.getStats()));
     }
 
+    /**
+     * Executes shutdown for this HTTP route contract.
+     *
+     * @param context Context supplied by the caller.
+     */
     public static void shutdown(final Context context) {
         try {
             ApiResponseUtils.success(context, Map.of("shutdown", true));
@@ -35,6 +48,11 @@ public class SystemRoutes {
         }
     }
 
+    /**
+     * Executes reload for this HTTP route contract.
+     *
+     * @param context Context supplied by the caller.
+     */
     public static void reload(final Context context) {
         String type = context.pathParam("type");
 

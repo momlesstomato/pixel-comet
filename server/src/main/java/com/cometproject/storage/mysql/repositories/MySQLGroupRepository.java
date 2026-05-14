@@ -13,15 +13,30 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * Persists and loads my SQL group data for the MySQL storage subsystem.
+ */
 public class MySQLGroupRepository extends MySQLRepository implements IGroupRepository {
     private final GroupDataFactory groupDataFactory;
 
+    /**
+     * Creates a my SQL group repository instance for the MySQL storage subsystem.
+     *
+     * @param groupDataFactory Group data factory supplied by the caller.
+     * @param connectionProvider Connection provider supplied by the caller.
+     */
     public MySQLGroupRepository(GroupDataFactory groupDataFactory, MySQLConnectionProvider connectionProvider) {
         super(connectionProvider);
 
         this.groupDataFactory = groupDataFactory;
     }
 
+    /**
+     * Returns the data by id for this MySQL storage contract.
+     *
+     * @param groupId Group id supplied by the caller.
+     * @param consumer Consumer supplied by the caller.
+     */
     @Override
     public void getDataById(int groupId, Consumer<IGroupData> consumer) {
         select("SELECT g.id, g.name, g.description, g.badge, g.owner_id, g.room_id, g.created, g.`type`, g.colour1, " +
@@ -29,6 +44,11 @@ public class MySQLGroupRepository extends MySQLRepository implements IGroupRepos
                 "RIGHT JOIN players AS p ON p.id = g.owner_id where g.id = ?", (data -> consumer.accept(this.readGroup(data))), groupId);
     }
 
+    /**
+     * Persists group data for this MySQL storage contract.
+     *
+     * @param groupData Group data supplied by the caller.
+     */
     @Override
     public void saveGroupData(IGroupData groupData) {
         update("UPDATE groups SET name = ?, description = ?, badge = ?, owner_id = ?, room_id = ?, type = ?, " +
@@ -39,6 +59,11 @@ public class MySQLGroupRepository extends MySQLRepository implements IGroupRepos
                 groupData.hasForum() ? "1" : "0", groupData.getId());
     }
 
+    /**
+     * Executes create for this MySQL storage contract.
+     *
+     * @param groupData Group data supplied by the caller.
+     */
     @Override
     public void create(IGroupData groupData) {
         insert("INSERT into groups (`name`, `description`, `badge`, `owner_id`, `room_id`, `created`, `type`, `colour1`, `colour2`, `members_deco`, `has_forum`) " +
@@ -51,6 +76,11 @@ public class MySQLGroupRepository extends MySQLRepository implements IGroupRepos
                 groupData.getColourB(), groupData.canMembersDecorate() ? "1" : "0");
     }
 
+    /**
+     * Creates forum settings for this MySQL storage contract.
+     *
+     * @param forumComponent Forum component supplied by the caller.
+     */
     @Override
     public void createForumSettings(IForumComponent forumComponent) {
         insert("INSERT into group_forum_settings (`group_id`, `read_permission`, `post_permission`, `thread_permission`, `moderate_permission`) " +
@@ -58,11 +88,22 @@ public class MySQLGroupRepository extends MySQLRepository implements IGroupRepos
         }, forumComponent.getForumSettings().getGroupId(), forumComponent.getForumSettings().getReadPermission().name(), forumComponent.getForumSettings().getPostPermission().name(), forumComponent.getForumSettings().getStartThreadsPermission().name(), forumComponent.getForumSettings().getModeratePermission().name());
     }
 
+    /**
+     * Returns the group id by room id for this MySQL storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param consumer Consumer supplied by the caller.
+     */
     @Override
     public void getGroupIdByRoomId(int roomId, Consumer<Integer> consumer) {
         select("SELECT g.id FROM groups g where g.room_id = ?", (data -> consumer.accept(data.readInteger(1))));
     }
 
+    /**
+     * Deletes group for this MySQL storage contract.
+     *
+     * @param groupId Group id supplied by the caller.
+     */
     @Override
     public void deleteGroup(int groupId) {
         transaction((transaction -> {
@@ -75,6 +116,12 @@ public class MySQLGroupRepository extends MySQLRepository implements IGroupRepos
         }));
     }
 
+    /**
+     * Returns the group ids by player id for this MySQL storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param consumer Consumer supplied by the caller.
+     */
     @Override
     public void getGroupIdsByPlayerId(final int playerId, Consumer<List<Integer>> consumer) {
         final List<Integer> groups = Lists.newArrayList();

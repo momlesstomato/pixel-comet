@@ -13,45 +13,48 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Describes catalog item behavior for the catalog subsystem.
+ */
 public class CatalogItem implements ICatalogItem {
     /**
-     * The ID of the catalog item
+     * The ID of the catalog item.
      */
     private int id;
 
     /**
-     * The ID of the item definition
+     * The ID of the item definition.
      */
     private String itemId;
 
     /**
-     * The name of item which will be displayed in the catalog
+     * The name of item which will be displayed in the catalog.
      */
     private String displayName;
 
     /**
-     * The coin cost of the item
+     * The coin cost of the item.
      */
     private int costCredits;
 
     /**
-     * The duckets cost of the item
+     * The duckets cost of the item.
      */
     private int costActivityPoints;
 
     /**
-     * The diamonds cost of the item
+     * The diamonds cost of the item.
      */
     private int costDiamonds;
 
     /**
-     * The seasonal currency cost of the item
+     * The seasonal currency cost of the item.
      */
     private int costSeasonal;
     private int costTokens;
 
     /**
-     * The amount of items you get if you purchase this
+     * The amount of items you get if you purchase this.
      */
     private int amount;
 
@@ -61,44 +64,85 @@ public class CatalogItem implements ICatalogItem {
     private boolean vip;
 
     /**
-     * The items (if this is a bundle)
+     * The items (if this is a bundle).
      */
     private List<ICatalogBundledItem> items;
 
     /**
-     * If this item is limited edition, how many items are available
+     * If this item is limited edition, how many items are available.
      */
     private int limitedTotal;
 
     /**
-     * If this item is limited edition, how many items have been sold
+     * If this item is limited edition, how many items have been sold.
      */
     private int limitedSells;
 
     /**
-     * Allow this item to be sold
+     * Allow this item to be sold.
      */
     private boolean allowOffer;
 
     /**
-     * Badge ID that's bundled with this item (if any)
+     * Badge ID that's bundled with this item (if any).
      */
     private String badgeId;
 
     /**
-     * Item extra-data presets (once purchased, this preset will be applied to the item)
+     * Item extra-data presets (once purchased, this preset will be applied to the item).
      */
     private String presetData;
 
     /**
-     * The catalog page ID
+     * The catalog page ID.
      */
     private int pageId;
 
+    /**
+     * Creates a catalog item instance for the catalog subsystem.
+     *
+     * @param id Id supplied by the caller.
+     * @param itemId Item id supplied by the caller.
+     * @param displayName Display name supplied by the caller.
+     * @param costCredits Cost credits supplied by the caller.
+     * @param costActivityPoints Cost activity points supplied by the caller.
+     * @param costDiamonds Cost diamonds supplied by the caller.
+     * @param costSeasonal Cost seasonal supplied by the caller.
+     * @param costTokens Cost tokens supplied by the caller.
+     * @param amount Amount supplied by the caller.
+     * @param vip Vip supplied by the caller.
+     * @param limitedTotal Limited total supplied by the caller.
+     * @param limitedSells Limited sells supplied by the caller.
+     * @param allowOffer Allow offer supplied by the caller.
+     * @param badgeId Badge id supplied by the caller.
+     * @param presetData Preset data supplied by the caller.
+     * @param pageId Page id supplied by the caller.
+     */
     public CatalogItem(int id, String itemId, String displayName, int costCredits, int costActivityPoints, int costDiamonds, int costSeasonal, int costTokens, int amount, boolean vip, int limitedTotal, int limitedSells, boolean allowOffer, String badgeId, String presetData, int pageId) {
         this(id, itemId, null, displayName, costCredits, costActivityPoints, costDiamonds, costSeasonal, costTokens, amount, vip, limitedTotal, limitedSells, allowOffer, badgeId, presetData, pageId);
     }
 
+    /**
+     * Creates a catalog item instance for the catalog subsystem.
+     *
+     * @param id Id supplied by the caller.
+     * @param itemId Item id supplied by the caller.
+     * @param bundledItems Bundled items supplied by the caller.
+     * @param displayName Display name supplied by the caller.
+     * @param costCredits Cost credits supplied by the caller.
+     * @param costActivityPoints Cost activity points supplied by the caller.
+     * @param costDiamonds Cost diamonds supplied by the caller.
+     * @param costSeasonal Cost seasonal supplied by the caller.
+     * @param costTokens Cost tokens supplied by the caller.
+     * @param amount Amount supplied by the caller.
+     * @param vip Vip supplied by the caller.
+     * @param limitedTotal Limited total supplied by the caller.
+     * @param limitedSells Limited sells supplied by the caller.
+     * @param allowOffer Allow offer supplied by the caller.
+     * @param badgeId Badge id supplied by the caller.
+     * @param presetData Preset data supplied by the caller.
+     * @param pageId Page id supplied by the caller.
+     */
     public CatalogItem(int id, String itemId, List<ICatalogBundledItem> bundledItems, String displayName, int costCredits, int costActivityPoints, int costDiamonds, int costSeasonal, int costTokens, int amount, boolean vip, int limitedTotal, int limitedSells, boolean allowOffer, String badgeId, String presetData, int pageId) {
         this.id = id;
         this.itemId = itemId;
@@ -190,6 +234,11 @@ public class CatalogItem implements ICatalogItem {
         }
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         final FurnitureDefinition firstItem = this.itemId.equals("-1") ? null : ItemManager.getInstance().getDefinition(this.getItems().get(0).getItemId());
@@ -262,6 +311,11 @@ public class CatalogItem implements ICatalogItem {
         msg.writeString("");
     }
 
+    /**
+     * Executes compose club presents for this catalog contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void composeClubPresents(IComposer msg) {
         final FurnitureDefinition firstItem = this.itemId.equals("-1") ? null : ItemManager.getInstance().getDefinition(this.getItems().get(0).getItemId());
@@ -286,6 +340,11 @@ public class CatalogItem implements ICatalogItem {
         msg.writeString("");
     }
 
+    /**
+     * Executes serialize availability for this catalog contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void serializeAvailability(IComposer msg) {
         final FurnitureDefinition firstItem = this.itemId.equals("-1") ? null : ItemManager.getInstance().getDefinition(this.getItems().get(0).getItemId());
@@ -295,101 +354,201 @@ public class CatalogItem implements ICatalogItem {
         msg.writeBoolean(true);
     }
 
+    /**
+     * Returns the id for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getId() {
         return this.id;
     }
 
+    /**
+     * Returns the item id for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getItemId() {
         return itemId;
     }
 
+    /**
+     * Returns the items for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public List<ICatalogBundledItem> getItems() {
         return this.items;
     }
 
+    /**
+     * Returns the display name for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDisplayName() {
         return displayName;
     }
 
+    /**
+     * Returns the cost credits for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getCostCredits() {
         return costCredits;
     }
 
+    /**
+     * Returns the cost activity points for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getCostActivityPoints() {
         return costActivityPoints;
     }
 
+    /**
+     * Returns the cost diamonds for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getCostDiamonds() {
         return costDiamonds;
     }
 
+    /**
+     * Returns the cost seasonal for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getCostSeasonal() {
         return costSeasonal;
     }
 
+    /**
+     * Returns the cost tokens for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getCostTokens() {
         return costTokens;
     }
 
+    /**
+     * Returns the amount for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getAmount() {
         return amount;
     }
 
+    /**
+     * Indicates whether VIP applies to this catalog contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isVip() {
         return vip;
     }
 
+    /**
+     * Returns the limited total for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getLimitedTotal() {
         return this.limitedTotal;
     }
 
+    /**
+     * Returns the limited sells for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getLimitedSells() {
         return this.limitedSells;
     }
 
+    /**
+     * Executes allow offer for this catalog contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean allowOffer() {
         return this.allowOffer;
     }
 
+    /**
+     * Executes increase limited sells for this catalog contract.
+     *
+     * @param amount Amount supplied by the caller.
+     */
     @Override
     public void increaseLimitedSells(int amount) {
         this.limitedSells += amount;
     }
 
+    /**
+     * Indicates whether this catalog contract has badge.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean hasBadge() {
         return this.badgeId != null && !this.badgeId.isEmpty();
     }
 
+    /**
+     * Indicates whether badge only applies to this catalog contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isBadgeOnly() {
         return this.items.size() == 0 && this.hasBadge();
     }
 
+    /**
+     * Returns the badge id for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getBadgeId() {
         return this.badgeId;
     }
 
+    /**
+     * Returns the preset data for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPresetData() {
         return presetData;
     }
 
+    /**
+     * Returns the page id for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getPageId() {
         return pageId;

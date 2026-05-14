@@ -7,14 +7,28 @@ import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.objects.entities.types.ai.AbstractBotAI;
 import com.cometproject.server.game.rooms.objects.entities.types.data.types.SpyBotData;
 
+/**
+ * Describes spy ai behavior for the room subsystem.
+ */
 public class SpyAI extends AbstractBotAI {
 
     private boolean hasSaidYes = false;
 
+    /**
+     * Creates a spy ai instance for the room subsystem.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     public SpyAI(RoomEntity entity) {
         super(entity);
     }
 
+    /**
+     * Handles the player enter callback for this room contract.
+     *
+     * @param playerEntity Player entity supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onPlayerEnter(PlayerEntity playerEntity) {
         if (playerEntity.getPlayerId() != this.getBotEntity().getData().getOwnerId()) {
@@ -36,6 +50,13 @@ public class SpyAI extends AbstractBotAI {
         return false;
     }
 
+    /**
+     * Handles the talk callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param message Message supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onTalk(PlayerEntity entity, String message) {
         if (this.hasSaidYes) {
@@ -81,6 +102,12 @@ public class SpyAI extends AbstractBotAI {
         return false;
     }
 
+    /**
+     * Handles the player leave callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onPlayerLeave(PlayerEntity entity) {
         if (entity.getPlayerId() == this.getBotEntity().getData().getOwnerId()) {
@@ -90,6 +117,11 @@ public class SpyAI extends AbstractBotAI {
         return false;
     }
 
+    /**
+     * Handles the added to room callback for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onAddedToRoom() {
         this.getBotEntity().say(Locale.getOrDefault("comet.game.bot.spy.addedToRoom", "Hi! Next time you enter the room, I'll let you know who visited while you were away.."));

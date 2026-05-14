@@ -7,7 +7,17 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.crypto.exceptions.HabboCryptoException;
 import com.cometproject.server.protocol.messages.MessageEvent;
 
+/**
+ * Represents the generate secret key message event published by the network message subsystem.
+ */
 public class GenerateSecretKeyMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @throws HabboCryptoException When the operation cannot complete.
+     */
     @Override
     public void handle(Session client, MessageEvent msg) throws HabboCryptoException {
         // encryption is disabled, so no idea what this client is trying to do

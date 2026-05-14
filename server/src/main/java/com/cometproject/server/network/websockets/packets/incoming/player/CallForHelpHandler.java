@@ -8,12 +8,24 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.network.websockets.WebSocketClientConnection;
 import com.cometproject.server.network.websockets.packets.incoming.AbstractWebSocketHandler;
 
+/**
+ * Describes call for help handler behavior for the networking subsystem.
+ */
 public class CallForHelpHandler extends AbstractWebSocketHandler<CallForHelpHandler.CFHData> {
 
+    /**
+     * Creates a call for help handler instance for the networking subsystem.
+     */
     public CallForHelpHandler() {
         super(CFHData.class);
     }
 
+    /**
+     * Executes handle for this networking contract.
+     *
+     * @param ctx Netty channel context for the current operation.
+     * @param eventData Event data supplied by the caller.
+     */
     @Override
     public void handle(WebSocketClientConnection ctx, CFHData eventData) {
         Session s = NetworkManager.getInstance().getSessions().getByPlayerId(Integer.parseInt(eventData.session));

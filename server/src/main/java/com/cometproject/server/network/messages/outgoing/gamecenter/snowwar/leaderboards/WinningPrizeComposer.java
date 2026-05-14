@@ -4,15 +4,33 @@
 import com.cometproject.server.protocol.messages.MessageComposer;
 
 /*    */
+/**
+ * Describes winning prize composer packets for the Snow War protocol layer.
+ */
 /*    */ public class WinningPrizeComposer
 /*    */   extends MessageComposer {
 /*    */   private int gameId;
 /*    */   
+/**
+ * Creates a winning prize composer instance for the Snow War game subsystem.
+ *
+ * @param gameId Game id supplied by the caller.
+ */
 /*    */   public WinningPrizeComposer(int gameId) {
 /* 11 */     this.gameId = gameId;
 /*    */   }
 /*    */ 
+/**
+ * Writes this message body using the Pixel Protocol field order.
+ *
+ * @param msg Composer buffer that receives serialized protocol fields.
+ */
 /*    */   @Override
+/**
+ * Writes this message body using the Pixel Protocol field order.
+ *
+ * @param msg Composer buffer that receives serialized protocol fields.
+ */
 /*    */   public void compose(IComposer msg) {
 /* 16 */     msg.writeInt(this.gameId);
 /* 17 */     msg.writeInt(1);
@@ -26,6 +44,11 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 /* 26 */     msg.writeInt(0);
 /* 27 */     msg.writeBoolean(true);
 /*    */   }
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
 /*    */   public short getId() {
 /* 45 */     return 1653;

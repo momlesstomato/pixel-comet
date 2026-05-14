@@ -10,14 +10,31 @@ import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.utilities.RandomUtil;
 
 
+/**
+ * Describes vending machine floor item behavior for the room subsystem.
+ */
 public class VendingMachineFloorItem extends RoomItemFloor {
     private RoomEntity vendingEntity;
     private int state = -1;
 
+    /**
+     * Creates a vending machine floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public VendingMachineFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (isWiredTrigger || entity == null) return false;
@@ -51,6 +68,9 @@ public class VendingMachineFloorItem extends RoomItemFloor {
         return true;
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
         switch (this.state) {
@@ -85,6 +105,9 @@ public class VendingMachineFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Handles the placed callback for this room contract.
+     */
     @Override
     public void onPlaced() {
         this.getItemData().setData("0");

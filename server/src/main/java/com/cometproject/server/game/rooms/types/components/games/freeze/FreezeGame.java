@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Describes freeze game behavior for the room processing subsystem.
+ */
 public class FreezeGame extends RoomGame {
 
     private static final Direction[] EXPLODE_NORMAL = new Direction[]{null, Direction.North, Direction.East, Direction.South, Direction.West};
@@ -36,10 +39,18 @@ public class FreezeGame extends RoomGame {
     private final Map<Integer, FreezePlayer> players = Maps.newConcurrentMap();
     private final Set<FreezeBall> activeBalls = Sets.newConcurrentHashSet();
 
+    /**
+     * Creates a freeze game instance for the room processing subsystem.
+     *
+     * @param room Room participating in the operation.
+     */
     public FreezeGame(Room room) {
         super(room, GameType.FREEZE);
     }
 
+    /**
+     * Executes tick for this room processing contract.
+     */
     @Override
     public void tick() {
         for (RoomItemFloor item : room.getItems().getByClass(FreezeTimerFloorItem.class)) {
@@ -213,6 +224,12 @@ public class FreezeGame extends RoomGame {
         return best;
     }
 
+    /**
+     * Executes launch ball for this room processing contract.
+     *
+     * @param freezeTile Freeze tile supplied by the caller.
+     * @param freezePlayer Freeze player supplied by the caller.
+     */
     public void launchBall(FreezeTileFloorItem freezeTile, FreezePlayer freezePlayer) {
         int range = freezePlayer != null ? 2 : (RandomUtil.getRandomBool(0.10) ? 999 : RandomUtil.getRandomInt(1, 3));
         boolean diagonal = freezePlayer == null && (RandomUtil.getRandomBool(0.5));
@@ -239,6 +256,9 @@ public class FreezeGame extends RoomGame {
         this.activeBalls.add(freezeBall);
     }
 
+    /**
+     * Handles the game starts callback for this room processing contract.
+     */
     @Override
     public void onGameStarts() {
         this.activeBalls.clear();
@@ -261,10 +281,19 @@ public class FreezeGame extends RoomGame {
         }
     }
 
+    /**
+     * Executes freeze player for this room processing contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Result produced by the operation.
+     */
     public FreezePlayer freezePlayer(final int playerId) {
         return this.players.get(playerId);
     }
 
+    /**
+     * Handles the game ends callback for this room processing contract.
+     */
     @Override
     public void onGameEnds() {
         for (FreezeBlockFloorItem blockItem : this.room.getItems().getByClass(FreezeBlockFloorItem.class)) {

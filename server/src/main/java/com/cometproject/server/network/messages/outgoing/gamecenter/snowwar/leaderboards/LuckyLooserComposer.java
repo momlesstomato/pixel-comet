@@ -4,15 +4,33 @@
 import com.cometproject.server.protocol.messages.MessageComposer;
 
 /*    */
+/**
+ * Describes lucky looser composer packets for the Snow War protocol layer.
+ */
 /*    */ public class LuckyLooserComposer
 /*    */   extends MessageComposer {
 /*    */   private int gameId;
 /*    */   
+/**
+ * Creates a lucky looser composer instance for the Snow War game subsystem.
+ *
+ * @param gameId Game id supplied by the caller.
+ */
 /*    */   public LuckyLooserComposer(int gameId) {
 /* 11 */     this.gameId = gameId;
 /*    */   }
 /*    */ 
+/**
+ * Writes this message body using the Pixel Protocol field order.
+ *
+ * @param msg Composer buffer that receives serialized protocol fields.
+ */
 /*    */   @Override
+/**
+ * Writes this message body using the Pixel Protocol field order.
+ *
+ * @param msg Composer buffer that receives serialized protocol fields.
+ */
 /*    */   public void compose(IComposer msg) {
 /* 16 */     msg.writeInt(2012);
 /* 17 */     msg.writeInt(1);
@@ -28,6 +46,11 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 /*    */   }
 /*    */ 
 /*    */   @Override
+/**
+ * Returns the id for this network message contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*    */   public short getId() {
 /* 31 */     return 3824;
 /*    */   }

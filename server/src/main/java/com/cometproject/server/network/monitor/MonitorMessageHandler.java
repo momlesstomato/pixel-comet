@@ -10,10 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Describes monitor message handler behavior for the networking subsystem.
+ */
 public class MonitorMessageHandler {
     private List<String> messageRegistry;
     private Logger LOGGER = LoggerFactory.getLogger(MonitorMessageHandler.class.getName());
 
+    /**
+     * Creates a monitor message handler instance for the networking subsystem.
+     */
     public MonitorMessageHandler() {
         this.messageRegistry = new ArrayList<>();
 
@@ -21,6 +27,13 @@ public class MonitorMessageHandler {
         this.messageRegistry.add("heartbeat");
     }
 
+    /**
+     * Executes handle for this networking contract.
+     *
+     * @param message Message supplied by the caller.
+     * @param ctx Netty channel context for the current operation.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean handle(MonitorPacket message, ChannelHandlerContext ctx) {
         String messageHeader = message.getName();
 

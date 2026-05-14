@@ -27,15 +27,26 @@ import com.google.common.collect.Maps;
 
 import java.util.Map;
 
+/**
+ * Describes survival game behavior for the room processing subsystem.
+ */
 public class SurvivalGame extends RoomGame {
     private int variableDamage = 0;
     private int lastSize;
     private final Map<Integer, SurvivalPlayer> players = Maps.newConcurrentMap();
 
+    /**
+     * Creates a survival game instance for the room processing subsystem.
+     *
+     * @param room Room participating in the operation.
+     */
     public SurvivalGame(Room room) {
         super(room, GameType.SURVIVAL);
     }
 
+    /**
+     * Executes tick for this room processing contract.
+     */
     @Override
     public void tick() {
         boolean needsRecheck = false;
@@ -64,6 +75,11 @@ public class SurvivalGame extends RoomGame {
         }
     }
 
+    /**
+     * Executes player lost for this room processing contract.
+     *
+     * @param survivalPlayer Survival player supplied by the caller.
+     */
     public void playerLost(SurvivalPlayer survivalPlayer) {
         final SurvivalExitFloorItem exitItem = this.getExitTile();
         if(exitItem != null) {
@@ -81,6 +97,12 @@ public class SurvivalGame extends RoomGame {
         }
     }
 
+    /**
+     * Executes player leaves for this room processing contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param isDisconnect Is disconnect supplied by the caller.
+     */
     public void playerLeaves(int playerId, boolean isDisconnect) {
         Session session = NetworkManager.getInstance().getSessions().getByPlayerId(playerId);
 
@@ -110,6 +132,9 @@ public class SurvivalGame extends RoomGame {
         return null;
     }
 
+    /**
+     * Executes game complete for this room processing contract.
+     */
     public void gameComplete() {
         for (PlayerEntity playerEntity : this.room.getEntities().getPlayerEntities()) {
             if(playerEntity == null || playerEntity.getPlayer() == null || playerEntity.getPlayer().getSession() == null)
@@ -127,6 +152,12 @@ public class SurvivalGame extends RoomGame {
     }
 
 
+    /**
+     * Executes player shots for this room processing contract.
+     *
+     * @param player Player participating in the operation.
+     * @param enemy Enemy supplied by the caller.
+     */
     public void playerShots(SurvivalPlayer player, SurvivalPlayer enemy) {
         if(player == null || enemy == null || player == enemy)
             return;
@@ -251,6 +282,9 @@ public class SurvivalGame extends RoomGame {
             enemy.resetShield();
     }
 
+    /**
+     * Handles the game starts callback for this room processing contract.
+     */
     @Override
     public void onGameStarts() {
         for (PlayerEntity playerEntity : this.room.getEntities().getPlayerEntities()) {
@@ -325,10 +359,19 @@ public class SurvivalGame extends RoomGame {
         session.send(new MassEventMessageComposer("habblet/open/" + packet));
     }
 
+    /**
+     * Executes survival player for this room processing contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Result produced by the operation.
+     */
     public SurvivalPlayer survivalPlayer(final int playerId) {
         return this.players.get(playerId);
     }
 
+    /**
+     * Handles the game ends callback for this room processing contract.
+     */
     @Override
     public void onGameEnds() {
         for (SurvivalBlockFloorItem blockItem : this.room.getItems().getByClass(SurvivalBlockFloorItem.class)) {

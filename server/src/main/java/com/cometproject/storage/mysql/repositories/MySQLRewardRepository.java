@@ -9,11 +9,26 @@ import com.google.common.collect.Maps;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**
+ * Persists and loads my SQL reward data for the MySQL storage subsystem.
+ */
 public class MySQLRewardRepository extends MySQLRepository implements IRewardRepository {
+    /**
+     * Creates a my SQL reward repository instance for the MySQL storage subsystem.
+     *
+     * @param connectionProvider Connection provider supplied by the caller.
+     */
     public MySQLRewardRepository(MySQLConnectionProvider connectionProvider) {
         super(connectionProvider);
     }
 
+    /**
+     * Executes player received reward for this MySQL storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param badgeCode Badge code supplied by the caller.
+     * @param consumer Consumer supplied by the caller.
+     */
     @Override
     public void playerReceivedReward(int playerId, String badgeCode, Consumer<Boolean> consumer) {
         select("SELECT COUNT(0) FROM player_badges WHERE player_id = ? AND badge_code = ?", (data) -> {
@@ -23,6 +38,14 @@ public class MySQLRewardRepository extends MySQLRepository implements IRewardRep
         }, playerId, badgeCode);
     }
 
+    /**
+     * Executes give reward for this MySQL storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param badgeCode Badge code supplied by the caller.
+     * @param primaryCurrencyAmount Primary currency amount supplied by the caller.
+     * @param secondaryCurrencyAmount Secondary currency amount supplied by the caller.
+     */
     @Override
     public void giveReward(int playerId, String badgeCode, int primaryCurrencyAmount, int secondaryCurrencyAmount) {
         transaction(transaction -> {
@@ -35,6 +58,11 @@ public class MySQLRewardRepository extends MySQLRepository implements IRewardRep
         });
     }
 
+    /**
+     * Returns the active rewards for this MySQL storage contract.
+     *
+     * @param consumer Consumer supplied by the caller.
+     */
     @Override
     public void getActiveRewards(Consumer<Map<String, RewardData>> consumer) {
         final Map<String, RewardData> rewards = Maps.newConcurrentMap();
@@ -46,6 +74,13 @@ public class MySQLRewardRepository extends MySQLRepository implements IRewardRep
         consumer.accept(rewards);
     }
 
+    /**
+     * Executes player redeemed reward for this MySQL storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param code Code supplied by the caller.
+     * @param consumer Consumer supplied by the caller.
+     */
     @Override
     public void playerRedeemedReward(int playerId, String code, Consumer<Boolean> consumer) {
         select("SELECT COUNT(0) FROM player_rewards_redeemed WHERE player_id = ? AND reward_code = ?;", (data) -> {
@@ -55,6 +90,12 @@ public class MySQLRewardRepository extends MySQLRepository implements IRewardRep
         }, playerId, code);
     }
 
+    /**
+     * Executes redeem reward for this MySQL storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param data Data supplied by the caller.
+     */
     @Override
     public void redeemReward(int playerId, RewardData data) {
         transaction(transaction -> {

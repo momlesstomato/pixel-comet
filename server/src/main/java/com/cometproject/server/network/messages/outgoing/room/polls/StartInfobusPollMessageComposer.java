@@ -9,17 +9,35 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 
 import java.util.Map;
 
+/**
+ * Serializes the start infobus poll message for the Pixel Protocol client.
+ */
 public class StartInfobusPollMessageComposer extends MessageComposer {
     final private Poll poll;
+    /**
+     * Creates a start infobus poll message composer instance for the network message subsystem.
+     *
+     * @param poll Poll supplied by the caller.
+     */
     public StartInfobusPollMessageComposer(Poll poll) {
         this.poll = poll;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.StartInfobusPollMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
 

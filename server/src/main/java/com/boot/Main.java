@@ -3,6 +3,9 @@ package com.boot;
 import com.cometproject.server.boot.Comet;
 
 
+/**
+ * Describes main behavior for the boot lifecycle subsystem.
+ */
 public class Main {
     /**
      * Boot the server from a separate package so if one day we decide to obfuscate the source,

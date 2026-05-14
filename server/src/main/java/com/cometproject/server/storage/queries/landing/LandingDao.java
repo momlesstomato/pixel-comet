@@ -15,7 +15,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 
+/**
+ * Describes landing dao behavior for the storage subsystem.
+ */
 public class LandingDao {
+    /**
+     * Returns the articles for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, PromoArticle> getArticles() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -44,6 +52,12 @@ public class LandingDao {
         return data;
     }
 
+    /**
+     * Persists calendar day for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param day Day supplied by the caller.
+     */
     public static void saveCalendarDay(int playerId, int day) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -65,6 +79,13 @@ public class LandingDao {
         }
     }
 
+    /**
+     * Executes calendar days for this storage contract.
+     *
+     * @param p P supplied by the caller.
+     * @param d D supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static boolean[] calendarDays(int p, int d){
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -94,6 +115,11 @@ public class LandingDao {
         return days;
     }
 
+    /**
+     * Returns the calendar days for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, CalendarDay> getCalendarDays() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -122,6 +148,13 @@ public class LandingDao {
         return data;
     }
 
+    /**
+     * Returns the hall of fame for this storage contract.
+     *
+     * @param currency Currency supplied by the caller.
+     * @param limit Limit supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static Map<PlayerAvatar, Integer> getHallOfFame(String currency, int limit) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

@@ -14,25 +14,49 @@ import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.network.messages.outgoing.room.items.SlideObjectBundleMessageComposer;
 
 
+/**
+ * Carries wired action match to snapshot data for the room subsystem.
+ */
 public class WiredActionMatchToSnapshot extends WiredActionItem {
     private static final int PARAM_MATCH_STATE = 0;
     private static final int PARAM_MATCH_ROTATION = 1;
     private static final int PARAM_MATCH_POSITION = 2;
 
+    /**
+     * Creates a wired action match to snapshot instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public WiredActionMatchToSnapshot(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Executes requires player for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean requiresPlayer() {
         return false;
     }
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 3;
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(WiredItemEvent event) {
         if (this.getWiredData().getSnapshots().size() == 0) {

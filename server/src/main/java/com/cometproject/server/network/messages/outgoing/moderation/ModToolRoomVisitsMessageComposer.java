@@ -13,22 +13,42 @@ import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
 
+/**
+ * Serializes the mod tool room visits message for the Pixel Protocol client.
+ */
 public class ModToolRoomVisitsMessageComposer extends MessageComposer {
     private final int playerId;
     private final String playerUsername;
     private final List<RoomVisitLogEntry> roomVisitLogEntries;
 
+    /**
+     * Creates a mod tool room visits message composer instance for the network message subsystem.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param playerUsername Player username supplied by the caller.
+     * @param roomVisits Room visits supplied by the caller.
+     */
     public ModToolRoomVisitsMessageComposer(final int playerId, final String playerUsername, final List<RoomVisitLogEntry> roomVisits) {
         this.playerId = playerId;
         this.playerUsername = playerUsername;
         this.roomVisitLogEntries = roomVisits;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.ModeratorUserRoomVisitsMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(playerId);
@@ -48,6 +68,9 @@ public class ModToolRoomVisitsMessageComposer extends MessageComposer {
         }
     }
 
+    /**
+     * Releases resources owned by this network message component.
+     */
     @Override
     public void dispose() {
         this.roomVisitLogEntries.clear();

@@ -6,9 +6,18 @@ import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.game.rooms.types.components.games.GameTeam;
 import com.cometproject.server.game.rooms.types.components.games.GameType;
 
+/**
+ * Describes freeze gate floor item behavior for the room subsystem.
+ */
 public class FreezeGateFloorItem extends AbstractGameGateFloorItem {
     private final GameTeam gameTeam;
 
+    /**
+     * Creates a freeze gate floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public FreezeGateFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
 
@@ -27,11 +36,21 @@ public class FreezeGateFloorItem extends AbstractGameGateFloorItem {
         }
     }
 
+    /**
+     * Executes game type for this room contract.
+     *
+     * @return Result produced by the operation.
+     */
     @Override
     public GameType gameType() {
         return GameType.FREEZE;
     }
 
+    /**
+     * Returns the team for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public GameTeam getTeam() {
         return this.gameTeam;

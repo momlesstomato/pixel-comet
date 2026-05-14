@@ -12,6 +12,9 @@ import com.cometproject.games.snowwar.*;
 
 /*     */
 /*     */ 
+/**
+ * Describes tree game object behavior for the Snow War game subsystem.
+ */
 /*     */ public class TreeGameObject
 /*     */   extends GameItemObject
 /*     */ {
@@ -28,6 +31,19 @@ import com.cometproject.games.snowwar.*;
 /*     */   private int currentDamage;
 /*     */   public SnowWarRoom currentSnowWar;
 /*     */   
+/**
+ * Creates a tree game object instance for the Snow War game subsystem.
+ *
+ * @param x X supplied by the caller.
+ * @param y Y supplied by the caller.
+ * @param rot Rot supplied by the caller.
+ * @param height Height supplied by the caller.
+ * @param a A supplied by the caller.
+ * @param b B supplied by the caller.
+ * @param c C supplied by the caller.
+ * @param _arg2 Arg2 supplied by the caller.
+ * @param room Room supplied by the caller.
+ */
 /*     */   public TreeGameObject(int x, int y, int rot, int height, int a, int b, int c, SnowWarGameStage _arg2, SnowWarRoom room) {
 /*  28 */     super(9);
 /*     */     
@@ -47,12 +63,23 @@ import com.cometproject.games.snowwar.*;
 /*  43 */     this._0QF.setBlocked(true);
 /*     */   }
 /*     */   
+/**
+ * Updates the damage for this Snow War game contract.
+ *
+ * @param val Val supplied by the caller.
+ */
 /*     */   public void setDamage(int val) {
 /*  47 */     this.currentSnowWar.checksum += val * 9 - getVariable(8) * 9;
 /*  48 */     this.currentDamage = val;
 /*     */   }
 /*     */ 
 /*     */   
+/**
+ * Returns the variable for this Snow War game contract.
+ *
+ * @param val Val supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 /*     */   public int getVariable(int val) {
 /*  53 */     if (val == 0) {
 /*  54 */       return 2;
@@ -84,6 +111,11 @@ import com.cometproject.games.snowwar.*;
 /*     */ 
 /*     */ 
 /*     */   
+/**
+ * Executes bounding data for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public int[] boundingData() {
 /*  84 */     if (this.currentDamage < this._ws) {
 /*  85 */       return _2Kl;
@@ -92,16 +124,31 @@ import com.cometproject.games.snowwar.*;
 /*     */   }
 /*     */ 
 /*     */   
+/**
+ * Executes location3 d for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public PlayerTile location3D() {
 /*  92 */     return this._0QF.location();
 /*     */   }
 /*     */ 
 /*     */   
+/**
+ * Executes direction360 for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public Direction360 direction360() {
 /*  97 */     return this._direction360;
 /*     */   }
 /*     */ 
 /*     */   
+/**
+ * Handles the snow ball hit callback for this Snow War game contract.
+ *
+ * @param _arg2 Arg2 supplied by the caller.
+ */
 /*     */   public void onSnowBallHit(SnowBallGameObject _arg2) {
 /* 102 */     if (this.currentDamage < this._ws) {
 /* 103 */       setDamage(this.currentDamage + 1);
@@ -110,19 +157,39 @@ import com.cometproject.games.snowwar.*;
 /*     */     } 
 /*     */   }
 /*     */   
+/**
+ * Executes 4 zu for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public int _4ZU() {
 /* 110 */     return this._ws;
 /*     */   }
 /*     */   
+/**
+ * Executes 2 ti for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public int _2Ti() {
 /* 114 */     return this.currentDamage;
 /*     */   }
 /*     */   
+/**
+ * Executes 4rk for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public int _4rk() {
 /* 118 */     return this.parentFuseId;
 /*     */   }
 /*     */ 
 /*     */   
+/**
+ * Executes collision height for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public int collisionHeight() {
 /* 123 */     return this._height;
 /*     */   }

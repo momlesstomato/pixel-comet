@@ -28,6 +28,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
+/**
+ * Owns entity behavior inside the room processing subsystem.
+ */
 public class EntityComponent {
     private final Map<Integer, RoomEntity> entities = new ConcurrentHashMap<>();
     private final Map<Integer, Integer> playerIdToEntity = new ConcurrentHashMap<>();
@@ -38,10 +41,21 @@ public class EntityComponent {
     private Room room;
     private AtomicInteger entityIdGenerator = new AtomicInteger();
 
+    /**
+     * Creates a entity component instance for the room processing subsystem.
+     *
+     * @param room Room participating in the operation.
+     */
     public EntityComponent(Room room) {
         this.room = room;
     }
 
+    /**
+     * Returns the entities at for this room processing contract.
+     *
+     * @param position Position supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public List<RoomEntity> getEntitiesAt(Position position) {
         RoomTile tile = this.getRoom().getMapping().getTile(position.getX(), position.getY());
 
@@ -52,6 +66,12 @@ public class EntityComponent {
         return new ArrayList<>();
     }
 
+    /**
+     * Executes position has entity for this room processing contract.
+     *
+     * @param position Position supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean positionHasEntity(Position position) {
         RoomTile tile = this.getRoom().getMapping().getTile(position.getX(), position.getY());
 
@@ -62,6 +82,13 @@ public class EntityComponent {
         return false;
     }
 
+    /**
+     * Executes position has entity for this room processing contract.
+     *
+     * @param position Position supplied by the caller.
+     * @param ignoredEntities Ignored entities supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean positionHasEntity(Position position, final Set<RoomEntity> ignoredEntities) {
         RoomTile tile = this.getRoom().getMapping().getTile(position.getX(), position.getY());
 
@@ -74,6 +101,12 @@ public class EntityComponent {
         return false;
     }
 
+    /**
+     * Creates entity for this room processing contract.
+     *
+     * @param player Player participating in the operation.
+     * @return Value exposed by the contract.
+     */
     public PlayerEntity createEntity(Player player) {
         Position startPosition = new Position(this.getRoom().getModel().getRoomModelData().getDoorX(), this.getRoom().getModel().getRoomModelData().getDoorY(), this.getRoom().getModel().getDoorZ());
 
@@ -100,6 +133,11 @@ public class EntityComponent {
         return entity;
     }
 
+    /**
+     * Adds entity to this room processing contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     public void addEntity(RoomEntity entity) {
         if (entity.getEntityType() == RoomEntityType.PLAYER) {
             PlayerEntity playerEntity = (PlayerEntity) entity;
@@ -119,6 +157,11 @@ public class EntityComponent {
         this.entities.put(entity.getId(), entity);
     }
 
+    /**
+     * Executes broadcast message mode build for this room processing contract.
+     *
+     * @param tile Tile supplied by the caller.
+     */
     public void broadcastMessageModeBuild(RoomTile tile) {
 
         for (RoomEntity entity : this.entities.values()) {
@@ -136,6 +179,11 @@ public class EntityComponent {
         }
     }
 
+    /**
+     * Removes entity from this room processing contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     public void removeEntity(RoomEntity entity) {
         final RoomTile tile = this.getRoom().getMapping().getTile(entity.getPosition());
 
@@ -162,6 +210,12 @@ public class EntityComponent {
         this.entities.remove(entity.getId());
     }
 
+    /**
+     * Executes broadcast socket for this room processing contract.
+     *
+     * @param obj Obj supplied by the caller.
+     * @param usersWithRightsOnly Users with rights only supplied by the caller.
+     */
     public void broadcastSocket(Object obj, boolean usersWithRightsOnly) {
         if (obj == null) return;
 
@@ -183,10 +237,23 @@ public class EntityComponent {
         }
     }
 
+    /**
+     * Executes broadcast message for this room processing contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @param usersWithRightsOnly Users with rights only supplied by the caller.
+     */
     public void broadcastMessage(MessageComposer msg, boolean usersWithRightsOnly) {
         broadcastMessage(msg, usersWithRightsOnly, RoomMessageType.GENERIC_COMPOSER);
     }
 
+    /**
+     * Executes broadcast message for this room processing contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @param usersWithRightsOnly Users with rights only supplied by the caller.
+     * @param type Type supplied by the caller.
+     */
     public void broadcastMessage(MessageComposer msg, boolean usersWithRightsOnly, RoomMessageType type) {
         if (msg == null) return;
 
@@ -214,6 +281,12 @@ public class EntityComponent {
         }
     }
 
+    /**
+     * Executes broadcast chat message for this room processing contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @param sender Sender supplied by the caller.
+     */
     public void broadcastChatMessage(MessageComposer msg, PlayerEntity sender) {
         for (RoomEntity entity : this.entities.values()) {
             if (entity.getEntityType() == RoomEntityType.PLAYER) {
@@ -231,14 +304,31 @@ public class EntityComponent {
         }
     }
 
+    /**
+     * Executes broadcast message for this room processing contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void broadcastMessage(MessageComposer msg) {
         broadcastMessage(msg, false);
     }
 
+    /**
+     * Returns the entity for this room processing contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public RoomEntity getEntity(int id) {
         return this.entities.get(id);
     }
 
+    /**
+     * Returns the entity by player id for this room processing contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public PlayerEntity getEntityByPlayerId(int id) {
         if (!this.playerIdToEntity.containsKey(id)) {
             return null;
@@ -254,6 +344,12 @@ public class EntityComponent {
         return (PlayerEntity) roomEntity;
     }
 
+    /**
+     * Returns the player entity by name for this room processing contract.
+     *
+     * @param username Username supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public PlayerEntity getPlayerEntityByName(final String username) {
         final Integer playerId = this.nameToPlayerEntity.get(username);
 
@@ -264,6 +360,13 @@ public class EntityComponent {
         return null;
     }
 
+    /**
+     * Returns the entity by name for this room processing contract.
+     *
+     * @param name Name supplied by the caller.
+     * @param type Type supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public RoomEntity getEntityByName(String name, RoomEntityType type) {
         for (RoomEntity entity : this.getAllEntities().values()) {
             if (entity.getUsername() == null) continue;
@@ -276,6 +379,12 @@ public class EntityComponent {
         return null;
     }
 
+    /**
+     * Returns the entity by bot id for this room processing contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public BotEntity getEntityByBotId(int id) {
         if (!this.botIdToEntity.containsKey(id)) {
             return null;
@@ -291,6 +400,12 @@ public class EntityComponent {
         return (BotEntity) roomEntity;
     }
 
+    /**
+     * Returns the entity by pet id for this room processing contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public PetEntity getEntityByPetId(int id) {
         if (!this.petIdToEntity.containsKey(id)) {
             return null;
@@ -306,6 +421,12 @@ public class EntityComponent {
         return (PetEntity) roomEntity;
     }
 
+    /**
+     * Returns the entity by plant id for this room processing contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public MonsterPlantEntity getEntityByPlantId(int id) {
         if (!this.petIdToEntity.containsKey(id)) {
             return null;
@@ -321,6 +442,11 @@ public class EntityComponent {
         return (MonsterPlantEntity) roomEntity;
     }
 
+    /**
+     * Returns the bot entities for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<BotEntity> getBotEntities() {
         List<BotEntity> entities = new ArrayList<>();
 
@@ -333,6 +459,11 @@ public class EntityComponent {
         return entities;
     }
 
+    /**
+     * Returns the pet entities for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<PetEntity> getPetEntities() {
         List<PetEntity> entities = new ArrayList<>();
 
@@ -345,6 +476,11 @@ public class EntityComponent {
         return entities;
     }
 
+    /**
+     * Returns the player entities for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<PlayerEntity> getPlayerEntities() {
         List<PlayerEntity> entities = new ArrayList<>();
 
@@ -361,6 +497,11 @@ public class EntityComponent {
         return entities;
     }
 
+    /**
+     * Returns the monsterplants for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<MonsterPlantEntity> getMonsterplants() {
         List<MonsterPlantEntity> entities = new ArrayList<>();
 
@@ -378,6 +519,11 @@ public class EntityComponent {
         return entities;
     }
 
+    /**
+     * Returns the whisper seers for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<PlayerEntity> getWhisperSeers() {
         List<PlayerEntity> entities = new ArrayList<>();
 
@@ -395,6 +541,12 @@ public class EntityComponent {
         return entities;
     }
 
+    /**
+     * Returns the casino players for this room processing contract.
+     *
+     * @param pos Pos supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public List<PlayerEntity> getCasinoPlayers(Position pos) {
         List<PlayerEntity> entities = new ArrayList<>();
 
@@ -412,16 +564,29 @@ public class EntityComponent {
         return entities;
     }
 
+    /**
+     * Executes refresh score for this room processing contract.
+     */
     public void refreshScore() {
         for (PlayerEntity entity : getPlayerEntities()) {
             entity.getPlayer().getSession().send(new RoomRatingMessageComposer(room.getData().getScore(), entity.canRateRoom()));
         }
     }
 
+    /**
+     * Returns the free id for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     protected int getFreeId() {
         return this.entityIdGenerator.incrementAndGet();
     }
 
+    /**
+     * Executes count for this room processing contract.
+     *
+     * @return Result produced by the operation.
+     */
     public int count() {
         int count = 0;
 
@@ -432,6 +597,11 @@ public class EntityComponent {
         return count;
     }
 
+    /**
+     * Executes player count for this room processing contract.
+     *
+     * @return Result produced by the operation.
+     */
     public int playerCount() {
         List<Integer> countedEntities = Lists.newArrayList();
 
@@ -452,18 +622,36 @@ public class EntityComponent {
         }
     }
 
+    /**
+     * Executes real player count for this room processing contract.
+     *
+     * @return Result produced by the operation.
+     */
     public int realPlayerCount() {
         return this.playerIdToEntity.size();
     }
 
+    /**
+     * Returns the all entities for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<Integer, RoomEntity> getAllEntities() {
         return this.entities;
     }
 
+    /**
+     * Returns the room for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Room getRoom() {
         return this.room;
     }
 
+    /**
+     * Releases resources owned by this room processing component.
+     */
     public void dispose() {
         for (Map.Entry<Integer, RoomEntity> entity : this.entities.entrySet()) {
             entity.getValue().onRoomDispose();

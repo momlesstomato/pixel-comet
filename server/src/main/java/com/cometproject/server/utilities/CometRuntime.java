@@ -4,6 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+/**
+ * Describes comet runtime behavior for the Comet subsystem.
+ */
 public class CometRuntime {
     public static final String operatingSystem = System.getProperty("os.name");
     public static final String operatingSystemArchitecture = System.getProperty("os.arch");

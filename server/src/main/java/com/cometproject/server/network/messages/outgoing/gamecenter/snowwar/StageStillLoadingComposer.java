@@ -19,16 +19,34 @@ import java.util.Collection;
 /*    */ 
 /*    */ 
 /*    */ 
+/**
+ * Describes stage still loading composer packets for the Snow War protocol layer.
+ */
 /*    */ public class StageStillLoadingComposer
 /*    */   extends MessageComposer
 /*    */ {
 /*    */   private final Collection<HumanGameObject> playersLoaded;
 /*    */   
+/**
+ * Creates a stage still loading composer instance for the Snow War game subsystem.
+ *
+ * @param playersLoaded Players loaded supplied by the caller.
+ */
 /*    */   public StageStillLoadingComposer(Collection<HumanGameObject> playersLoaded) {
 /* 21 */     this.playersLoaded = playersLoaded;
 /*    */   }
 /*    */ 
+/**
+ * Writes this message body using the Pixel Protocol field order.
+ *
+ * @param msg Composer buffer that receives serialized protocol fields.
+ */
 /*    */       @Override
+/**
+ * Writes this message body using the Pixel Protocol field order.
+ *
+ * @param msg Composer buffer that receives serialized protocol fields.
+ */
 /*    */   public void compose(IComposer msg) {
 /* 26 */     msg.writeInt(0);
 /* 27 */     msg.writeInt(this.playersLoaded.size());
@@ -38,6 +56,11 @@ import java.util.Collection;
 /*    */   }
 /*    */ 
 /*    */       @Override
+/**
+ * Returns the id for this network message contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*    */   public short getId() {
 /* 35 */     return 0;
 /*    */   }

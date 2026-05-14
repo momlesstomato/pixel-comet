@@ -54,32 +54,62 @@ final class PlayerManagerTest {
     private static final class DirectExecutorService extends AbstractExecutorService {
         private boolean shutdown;
 
+        /**
+         * Executes shutdown for this player contract.
+         */
         @Override
         public void shutdown() {
             this.shutdown = true;
         }
 
+        /**
+         * Executes shutdown now for this player contract.
+         *
+         * @return Result produced by the operation.
+         */
         @Override
         public List<Runnable> shutdownNow() {
             this.shutdown = true;
             return List.of();
         }
 
+        /**
+         * Indicates whether shutdown applies to this player contract.
+         *
+         * @return True when the condition is satisfied; otherwise false.
+         */
         @Override
         public boolean isShutdown() {
             return this.shutdown;
         }
 
+        /**
+         * Indicates whether terminated applies to this player contract.
+         *
+         * @return True when the condition is satisfied; otherwise false.
+         */
         @Override
         public boolean isTerminated() {
             return this.shutdown;
         }
 
+        /**
+         * Executes await termination for this player contract.
+         *
+         * @param timeout Timeout supplied by the caller.
+         * @param unit Unit supplied by the caller.
+         * @return True when the condition is satisfied; otherwise false.
+         */
         @Override
         public boolean awaitTermination(final long timeout, final TimeUnit unit) {
             return this.shutdown;
         }
 
+        /**
+         * Executes execute for this player contract.
+         *
+         * @param command Command supplied by the caller.
+         */
         @Override
         public void execute(final Runnable command) {
             command.run();

@@ -16,17 +16,38 @@ import com.google.common.collect.Lists;
 import java.util.List;
 
 
+/**
+ * Describes wired action item behavior for the room subsystem.
+ */
 public abstract class WiredActionItem extends WiredFloorItem {
 
+    /**
+     * Creates a wired action item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public WiredActionItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Returns the dialog for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public MessageComposer getDialog() {
         return new WiredActionMessageComposer(this);
     }
 
+    /**
+     * Executes evaluate for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param data Data supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public final boolean evaluate(RoomEntity entity, Object data) {
         if (this.hasTicks() && !(data instanceof WiredActionCheckIdle)) return false;
@@ -47,11 +68,21 @@ public abstract class WiredActionItem extends WiredFloorItem {
         return true;
     }
 
+    /**
+     * Returns the wired data for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public WiredActionItemData getWiredData() {
         return (WiredActionItemData) super.getWiredData();
     }
 
+    /**
+     * Returns the incompatible triggers for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<WiredTriggerItem> getIncompatibleTriggers() {
         List<WiredTriggerItem> incompatibleTriggers = Lists.newArrayList();
 
@@ -68,5 +99,10 @@ public abstract class WiredActionItem extends WiredFloorItem {
         return incompatibleTriggers;
     }
 
+    /**
+     * Executes requires player for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public abstract boolean requiresPlayer();
 }

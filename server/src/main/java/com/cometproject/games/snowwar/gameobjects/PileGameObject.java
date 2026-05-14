@@ -5,6 +5,9 @@
 /*    */ import com.cometproject.games.snowwar.SnowWarRoom;
 /*    */ import com.cometproject.games.snowwar.Tile;
 /*    */ 
+/**
+ * Describes pile game object behavior for the Snow War game subsystem.
+ */
 /*    */ public class PileGameObject
 /*    */   extends PickBallsGameItemObject
 /*    */ {
@@ -15,6 +18,17 @@
 /*    */   private int[] boudngingData;
 /*    */   private final int snowBallsCapacity;
 /*    */   
+/**
+ * Creates a pile game object instance for the Snow War game subsystem.
+ *
+ * @param x X supplied by the caller.
+ * @param y Y supplied by the caller.
+ * @param a A supplied by the caller.
+ * @param snowBalls Snow balls supplied by the caller.
+ * @param parentFuseId Parent fuse id supplied by the caller.
+ * @param _arg2 Arg2 supplied by the caller.
+ * @param room Room supplied by the caller.
+ */
 /*    */   public PileGameObject(int x, int y, int a, int snowBalls, int parentFuseId, SnowWarGameStage _arg2, SnowWarRoom room) {
 /* 19 */     super(7, _arg2.getTile(x, y), snowBalls, parentFuseId);
 /* 20 */     this.snowBallsCapacity = a;
@@ -45,12 +59,23 @@
 /*    */   }
 /*    */ 
 /*    */   
+/**
+ * Updates the snow balls for this Snow War game contract.
+ *
+ * @param val Val supplied by the caller.
+ */
 /*    */   public void setSnowBalls(int val) {
 /* 49 */     this.currentSnowWar.checksum += val * 6 - getVariable(5) * 6;
 /* 50 */     this.snowBalls = val;
 /*    */   }
 /*    */ 
 /*    */   
+/**
+ * Returns the variable for this Snow War game contract.
+ *
+ * @param val Val supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 /*    */   public int getVariable(int val) {
 /* 55 */     if (val == 0) {
 /* 56 */       return 3;
@@ -76,15 +101,30 @@
 /*    */ 
 /*    */ 
 /*    */   
+/**
+ * Executes bounding data for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*    */   public int[] boundingData() {
 /* 80 */     return this.boudngingData;
 /*    */   }
 /*    */   
+/**
+ * Executes 4b8 for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*    */   public int _4b8() {
 /* 84 */     return this.snowBallsCapacity;
 /*    */   }
 /*    */ 
 /*    */   
+/**
+ * Handles the snowball pickup callback for this Snow War game contract.
+ *
+ * @param ammount Ammount supplied by the caller.
+ */
 /*    */   public void onSnowballPickup(int ammount) {
 /* 89 */     setSnowBalls(this.snowBalls - ammount);
 /*    */     

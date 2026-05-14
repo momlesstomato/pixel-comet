@@ -1,6 +1,9 @@
 /*     */ package com.cometproject.games.snowwar;
 /*     */ 
 /*     */ 
+/**
+ * Describes direction360 behavior for the Snow War game subsystem.
+ */
 /*     */ public class Direction360
 /*     */ {
 /*   6 */   public static int N = 0;
@@ -19,9 +22,20 @@
 /*     */   
 /*     */   private boolean _3zG = false;
 /*     */   
+/**
+ * Creates a direction360 instance for the Snow War game subsystem.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ */
 /*     */   public Direction360(int _arg1) {
 /*  23 */     this._4XG = _arg1;
 /*     */   }
+/**
+ * Executes validate direction360 value for this Snow War game contract.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ * @return Result produced by the operation.
+ */
 /*     */   public static int validateDirection360Value(int _arg1) {
 /*  26 */     if (_arg1 > 359) {
 /*  27 */       _arg1 %= 360;
@@ -32,9 +46,21 @@
 /*     */     
 /*  33 */     return _arg1;
 /*     */   }
+/**
+ * Executes direction360 value to direction8 for this Snow War game contract.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ * @return Result produced by the operation.
+ */
 /*     */   public static Direction8 direction360ValueToDirection8(int _arg1) {
 /*  36 */     return Direction8.getDirection(Direction8.validateDirection8Value(MathUtil._43Z((validateDirection360Value(_arg1 - 22) / 45)) + 1));
 /*     */   }
+/**
+ * Executes direction8 to direction360 value for this Snow War game contract.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ * @return Result produced by the operation.
+ */
 /*     */   public static int direction8ToDirection360Value(Direction8 _arg1) {
 /*  39 */     switch (_arg1.getRot()) {
 /*     */       case 0:
@@ -56,15 +82,34 @@
 /*     */     } 
 /*  57 */     return -1;
 /*     */   }
+/**
+ * Executes 0uc for this Snow War game contract.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ * @return Result produced by the operation.
+ */
 /*     */   public static int _0uc(int _arg1) {
 /*  60 */     _arg1 = validateDirection360Value(_arg1);
 /*  61 */     return _4G[0][_arg1];
 /*     */   }
+/**
+ * Executes 17x for this Snow War game contract.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ * @return Result produced by the operation.
+ */
 /*     */   public static int _17x(int _arg1) {
 /*  64 */     _arg1 = validateDirection360Value(_arg1);
 /*  65 */     return _4G[1][_arg1];
 /*     */   }
 /*     */   
+/**
+ * Returns the rot for this Snow War game contract.
+ *
+ * @param deltaX Delta x supplied by the caller.
+ * @param deltaY Delta y supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 /*     */   public static int getRot(int deltaX, int deltaY) {
 /*  69 */     if (_1xd(deltaX) <= _1xd(deltaY)) {
 /*  70 */       if (deltaY == 0) {
@@ -111,6 +156,12 @@
 /*     */     }
 /* 112 */     return 270 - _1MD[local2];
 /*     */   }
+/**
+ * Executes 1xd for this Snow War game contract.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ * @return Result produced by the operation.
+ */
 /*     */   public static int _1xd(int _arg1) {
 /* 115 */     if (_arg1 < 0) {
 /* 116 */       return -_arg1;
@@ -118,32 +169,75 @@
 /* 118 */     return _arg1;
 /*     */   }
 /*     */   
+/**
+ * Executes dispose for this Snow War game contract.
+ */
 /*     */   public void dispose() {
 /* 122 */     this._3zG = true;
 /*     */   }
+/**
+ * Executes disposed for this Snow War game contract.
+ *
+ * @return True when the condition is satisfied; otherwise false.
+ */
 /*     */   public boolean disposed() {
 /* 125 */     return this._3zG;
 /*     */   }
+/**
+ * Executes 2 hq for this Snow War game contract.
+ *
+ * @return Result produced by the operation.
+ */
 /*     */   public int _2Hq() {
 /* 128 */     return this._4XG;
 /*     */   }
+/**
+ * Executes 1ji for this Snow War game contract.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ */
 /*     */   public void _1ji(int _arg1) {
 /* 131 */     this._4XG = validateDirection360Value(_arg1);
 /*     */   }
+/**
+ * Executes 0 jv for this Snow War game contract.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ */
 /*     */   public void _0JV(int _arg1) {
 /* 134 */     this._4XG += _arg1;
 /* 135 */     this._4XG = validateDirection360Value(this._4XG);
 /*     */   }
 /*     */   
+/**
+ * Executes to string for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public String toString() {
 /* 139 */     return "[" + this._4XG + "]";
 /*     */   }
+/**
+ * Executes direction8 value for this Snow War game contract.
+ *
+ * @return Result produced by the operation.
+ */
 /*     */   public Direction8 direction8Value() {
 /* 142 */     return direction360ValueToDirection8(this._4XG);
 /*     */   }
+/**
+ * Executes 0uc for this Snow War game contract.
+ *
+ * @return Result produced by the operation.
+ */
 /*     */   public int _0uc() {
 /* 145 */     return _4G[0][this._4XG];
 /*     */   }
+/**
+ * Executes 17x for this Snow War game contract.
+ *
+ * @return Result produced by the operation.
+ */
 /*     */   public int _17x() {
 /* 148 */     return _4G[1][this._4XG];
 /*     */   }

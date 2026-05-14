@@ -14,9 +14,17 @@ import com.cometproject.server.game.rooms.objects.items.types.floor.wired.action
 import com.cometproject.server.game.rooms.types.mapping.RoomEntityMovementNode;
 import com.cometproject.server.game.rooms.types.mapping.RoomTile;
 
+/**
+ * Describes item pathfinder behavior for the room pathfinding subsystem.
+ */
 public class ItemPathfinder extends Pathfinder {
     private static ItemPathfinder pathfinderInstance;
 
+    /**
+     * Returns the instance for this room pathfinding contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static ItemPathfinder getInstance() {
         if (pathfinderInstance == null) {
             pathfinderInstance = new ItemPathfinder();
@@ -25,6 +33,16 @@ public class ItemPathfinder extends Pathfinder {
         return pathfinderInstance;
     }
 
+    /**
+     * Indicates whether valid step applies to this room pathfinding contract.
+     *
+     * @param roomFloorObject Room floor object supplied by the caller.
+     * @param from From supplied by the caller.
+     * @param to To supplied by the caller.
+     * @param lastStep Last step supplied by the caller.
+     * @param isRetry Is retry supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isValidStep(RoomObject roomFloorObject, Position from, Position to, boolean lastStep, boolean isRetry) {
         if (from.getX() == to.getX() && from.getY() == to.getY()) {

@@ -13,14 +13,31 @@ import com.cometproject.server.network.messages.outgoing.user.mistery.MisteryBox
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.queries.player.PlayerDao;
 
+/**
+ * Describes mistery box floor item behavior for the room subsystem.
+ */
 public class MisteryBoxFloorItem extends RoomItemFloor {
     private boolean isInUse = false;
     private RoomEntity interactingEntity;
 
+    /**
+     * Creates a mistery box floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public MisteryBoxFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (this.isInUse || isWiredTrigger) {
@@ -66,6 +83,9 @@ public class MisteryBoxFloorItem extends RoomItemFloor {
         return true;
     }
 
+    /**
+     * Handles the placed callback for this room contract.
+     */
     @Override
     public void onPlaced() {
       Session s = NetworkManager.getInstance().getSessions().getByPlayerId(this.getItemData().getOwnerId());
@@ -73,6 +93,9 @@ public class MisteryBoxFloorItem extends RoomItemFloor {
       this.sendUpdate();
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
         if (this.isInUse) {

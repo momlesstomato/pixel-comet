@@ -25,7 +25,7 @@ import java.util.List;
  */
 public abstract class WiredFloorItem extends AdvancedFloorItem<WiredItemEvent> implements WiredItemSnapshot.Refreshable, Stateable {
     /**
-     * The data associated with this wired item
+     * The data associated with this wired item.
      */
     private WiredItemData wiredItemData = null;
     private boolean state;
@@ -33,7 +33,7 @@ public abstract class WiredFloorItem extends AdvancedFloorItem<WiredItemEvent> i
     private boolean isFlashing = false;
 
     /**
-     * The default constructor
+     * The default constructor.
      *
      * @param id       The ID of the item
      * @param itemId   The ID of the item definition
@@ -56,7 +56,7 @@ public abstract class WiredFloorItem extends AdvancedFloorItem<WiredItemEvent> i
     }
 
     /**
-     * Turn the wired item data into a JSON object, and then save it to the database
+     * Turn the wired item data into a JSON object, and then save it to the database.
      */
     @Override
     public void save() {
@@ -66,7 +66,7 @@ public abstract class WiredFloorItem extends AdvancedFloorItem<WiredItemEvent> i
     }
 
     /**
-     * Turn the JSON object into a usable WiredItemData object
+     * Turn the JSON object into a usable WiredItemData object.
      */
     public void load() {
         try {
@@ -82,11 +82,22 @@ public abstract class WiredFloorItem extends AdvancedFloorItem<WiredItemEvent> i
         }
     }
 
+    /**
+     * Handles the pickup callback for this room contract.
+     */
     @Override
     public void onPickup() {
         this.getItemData().setData("{}");
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (!(entity instanceof PlayerEntity)) {
@@ -104,6 +115,9 @@ public abstract class WiredFloorItem extends AdvancedFloorItem<WiredItemEvent> i
         return true;
     }
 
+    /**
+     * Executes refresh snapshots for this room contract.
+     */
     @Override
     public void refreshSnapshots() {
         List<Long> toRemove = Lists.newArrayList();
@@ -127,6 +141,9 @@ public abstract class WiredFloorItem extends AdvancedFloorItem<WiredItemEvent> i
         this.save();
     }
 
+    /**
+     * Executes flash for this room contract.
+     */
     public void flash() {
         if (this.isFlashing) {
             return;
@@ -140,6 +157,9 @@ public abstract class WiredFloorItem extends AdvancedFloorItem<WiredItemEvent> i
         this.queueEvent(flashEvent);
     }
 
+    /**
+     * Executes switch state for this room contract.
+     */
     public void switchState() {
         if (this.isFlashing) {
             this.isFlashing = false;
@@ -149,6 +169,9 @@ public abstract class WiredFloorItem extends AdvancedFloorItem<WiredItemEvent> i
         this.sendUpdate();
     }
 
+    /**
+     * Handles the tick callback for this room contract.
+     */
     @Override
     public void onTick() {
         super.onTick();
@@ -156,13 +179,18 @@ public abstract class WiredFloorItem extends AdvancedFloorItem<WiredItemEvent> i
         // any wired-only ontick stuff here?
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(WiredItemEvent event) {
 
     }
 
     /**
-     * Get the wired item data object
+     * Get the wired item data object.
      *
      * @return The wired item data object
      */
@@ -171,21 +199,21 @@ public abstract class WiredFloorItem extends AdvancedFloorItem<WiredItemEvent> i
     }
 
     /**
-     * Get the ID of the interface of the item which will tell the client which input fields to display
+     * Get the ID of the interface of the item which will tell the client which input fields to display.
      *
      * @return The ID of the interface
      */
     public abstract int getInterface();
 
     /**
-     * Get the packet to display the full dialog to the player
+     * Get the packet to display the full dialog to the player.
      *
      * @return The dialog message composer
      */
     public abstract MessageComposer getDialog();
 
     /**
-     * Evaluate the wired trigger/action/condition
+     * Evaluate the wired trigger/action/condition.
      *
      * @param entity The entity that's involved with this event
      * @param data   The data passed by the trigger
@@ -194,21 +222,21 @@ public abstract class WiredFloorItem extends AdvancedFloorItem<WiredItemEvent> i
     public abstract boolean evaluate(RoomEntity entity, Object data);
 
     /**
-     * Will be executed when the data has been refreshed
+     * Will be executed when the data has been refreshed.
      */
     public void onDataRefresh() {
 
     }
 
     /**
-     * Will be executed when the data has been changed (different to the "onDataRefresh" event)
+     * Will be executed when the data has been changed (different to the "onDataRefresh" event).
      */
     public void onDataChange() {
 
     }
 
     /**
-     * If Wired uses Delay
+     * If Wired uses Delay.
      * @return boolean
      */
     public boolean usesDelay() {
@@ -216,13 +244,18 @@ public abstract class WiredFloorItem extends AdvancedFloorItem<WiredItemEvent> i
     }
 
     /**
-     * Custom Furni selection
+     * Custom Furni selection.
      * @return
      */
     public int getFurniSelection() {
         return WiredUtil.MAX_FURNI_SELECTION;
     }
 
+    /**
+     * Returns the state for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean getState() {
         return this.state;

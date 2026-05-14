@@ -20,10 +20,13 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Describes wired action flee behavior for the room subsystem.
+ */
 public class WiredActionFlee extends WiredActionItem {
 
     /**
-     * The default constructor
+     * The default constructor.
      *
      * @param id       The ID of the item
      * @param itemId   The ID of the item definition
@@ -39,16 +42,31 @@ public class WiredActionFlee extends WiredActionItem {
         super(itemData, room);
     }
 
+    /**
+     * Executes requires player for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean requiresPlayer() {
         return false;
     }
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 12;
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(WiredItemEvent event) {
         if (getWiredData().getSelectedIds().size() == 0) {
@@ -82,6 +100,13 @@ public class WiredActionFlee extends WiredActionItem {
         }
     }
 
+    /**
+     * Indicates whether collided applies to this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param floorItem Floor item supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isCollided(PlayerEntity entity, RoomItemFloor floorItem) {
         boolean tilesTouching = entity.getPosition().touching(floorItem.getPosition());
 

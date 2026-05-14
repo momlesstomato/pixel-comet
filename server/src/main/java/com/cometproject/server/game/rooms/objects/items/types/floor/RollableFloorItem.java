@@ -19,6 +19,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * Describes rollable floor item behavior for the room subsystem.
+ */
 public abstract class RollableFloorItem extends RoomItemFloor {
     private static int KICK_POWER = 1;
 
@@ -27,6 +30,12 @@ public abstract class RollableFloorItem extends RoomItemFloor {
     private boolean skipNext = false;
     private int rollStage = -1;
 
+    /**
+     * Creates a rollable floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public RollableFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
@@ -44,6 +53,11 @@ public abstract class RollableFloorItem extends RoomItemFloor {
         return Position.calculatePosition(x, y, playerRotation, false, 1);
     }
 
+    /**
+     * Handles the entity step on callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOn(RoomEntity entity) {
         if (this.skipNext && (this.kickerEntity != null && entity.getId() == this.kickerEntity.getId())) {
@@ -73,6 +87,11 @@ public abstract class RollableFloorItem extends RoomItemFloor {
 
     }
 
+    /**
+     * Handles the entity step off callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOff(RoomEntity entity) {
         if (!this.skipNext) {
@@ -94,6 +113,9 @@ public abstract class RollableFloorItem extends RoomItemFloor {
         this.onTickComplete();
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
         if (!this.isRolling || this.rollStage == -1 || this.rollStage >= KICK_POWER) {
@@ -189,6 +211,11 @@ public abstract class RollableFloorItem extends RoomItemFloor {
         return false;
     }
 
+    /**
+     * Returns the next position for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Position getNextPosition() {
         return this.getNextPosition(this.getRotation(), this.getPosition().squareInFront(this.getRotation()));
     }
@@ -298,6 +325,14 @@ public abstract class RollableFloorItem extends RoomItemFloor {
         this.isRolling = false;
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTriggered Is wired triggered supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTriggered) {
         if (isWiredTriggered) return false;
@@ -311,6 +346,11 @@ public abstract class RollableFloorItem extends RoomItemFloor {
         return true;
     }
 
+    /**
+     * Handles the position changed callback for this room contract.
+     *
+     * @param newPosition New position supplied by the caller.
+     */
     @Override
     public void onPositionChanged(Position newPosition) {
         this.isRolling = false;
@@ -363,6 +403,11 @@ public abstract class RollableFloorItem extends RoomItemFloor {
         return 0.5;
     }
 
+    /**
+     * Returns the pusher for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RoomEntity getPusher() {
         return kickerEntity;
     }

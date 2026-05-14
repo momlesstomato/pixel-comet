@@ -10,6 +10,9 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Owns forum behavior inside the group subsystem.
+ */
 public class ForumComponent implements IForumComponent {
 
     public static final int MAX_MESSAGES_PER_PAGE = 20;
@@ -18,6 +21,13 @@ public class ForumComponent implements IForumComponent {
     private final Map<Integer, IForumThread> forumThreads;
     private final List<Integer> pinnedThreads;
 
+    /**
+     * Creates a forum component instance for the group subsystem.
+     *
+     * @param forumSettings Forum settings supplied by the caller.
+     * @param pinnedThreads Pinned threads supplied by the caller.
+     * @param forumThreads Forum threads supplied by the caller.
+     */
     public ForumComponent(IForumSettings forumSettings, List<Integer> pinnedThreads,
                           Map<Integer, IForumThread> forumThreads) {
         this.forumSettings = forumSettings;
@@ -25,6 +35,9 @@ public class ForumComponent implements IForumComponent {
         this.forumThreads = forumThreads;
     }
 
+    /**
+     * Releases resources owned by this group component.
+     */
     @Override
     public void dispose() {
         for(IForumThread forumThread : this.forumThreads.values()) {
@@ -36,6 +49,12 @@ public class ForumComponent implements IForumComponent {
         this.pinnedThreads.clear();
     }
 
+    /**
+     * Executes compose data for this group contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @param groupData Group data supplied by the caller.
+     */
     @Override
     public void composeData(IComposer msg, IGroupData groupData) {
         msg.writeInt(groupData.getId());
@@ -54,6 +73,12 @@ public class ForumComponent implements IForumComponent {
         msg.writeInt(0);//last message time
     }
 
+    /**
+     * Returns the forum threads for this group contract.
+     *
+     * @param start Start supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public List<IForumThread> getForumThreads(int start) {
         List<IForumThread> threads = Lists.newArrayList();
@@ -89,16 +114,31 @@ public class ForumComponent implements IForumComponent {
         return threads;
     }
 
+    /**
+     * Returns the forum settings for this group contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public IForumSettings getForumSettings() {
         return this.forumSettings;
     }
 
+    /**
+     * Returns the forum threads for this group contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Map<Integer, IForumThread> getForumThreads() {
         return this.forumThreads;
     }
 
+    /**
+     * Returns the pinned threads for this group contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public List<Integer> getPinnedThreads() {
         return this.pinnedThreads;

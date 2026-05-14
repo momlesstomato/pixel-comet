@@ -11,7 +11,15 @@ import io.netty.channel.ChannelHandlerContext;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Describes snow arena run behavior for the task scheduling subsystem.
+ */
 public class SnowArenaRun {
+    /**
+     * Executes exec for this task scheduling contract.
+     *
+     * @param room Room participating in the operation.
+     */
     public static void exec(SnowWarRoom room) {
         List<ChannelHandlerContext> filter;
         MessageWriter writer;

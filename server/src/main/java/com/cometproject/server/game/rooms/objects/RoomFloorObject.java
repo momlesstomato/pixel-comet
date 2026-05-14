@@ -5,14 +5,17 @@ import com.cometproject.api.game.utilities.Positionable;
 import com.cometproject.server.game.rooms.types.Room;
 
 
+/**
+ * Describes room floor object behavior for the room subsystem.
+ */
 public abstract class RoomFloorObject extends RoomObject implements Positionable {
     /**
-     * The unique identifier of this object
+     * The unique identifier of this object.
      */
     private int id;
 
     /**
-     * Create the room object instance
+     * Create the room object instance.
      *
      * @param position The position in the room where this object is
      * @param room     The room where this object is
@@ -24,7 +27,7 @@ public abstract class RoomFloorObject extends RoomObject implements Positionable
     }
 
     /**
-     * Get the ID of this object
+     * Get the ID of this object.
      *
      * @return The ID of this object
      */

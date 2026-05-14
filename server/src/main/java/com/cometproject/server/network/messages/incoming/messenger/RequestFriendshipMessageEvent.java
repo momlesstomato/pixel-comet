@@ -12,7 +12,16 @@ import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.cometproject.server.storage.queries.player.messenger.MessengerDao;
 
 
+/**
+ * Represents the request friendship message event published by the network message subsystem.
+ */
 public class RequestFriendshipMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void handle(Session client, MessageEvent msg) {
         String username = msg.readString();
 

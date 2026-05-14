@@ -1,5 +1,8 @@
 package com.cometproject.games.snowwar.gameevents;
 
+/**
+ * Represents the value event published by the Snow War game subsystem.
+ */
 public abstract class Event {
   public static final int PLAYERLEFT = 1;
   
@@ -19,6 +22,9 @@ public abstract class Event {
   
   public int EventType;
   
+  /**
+   * Executes apply for this Snow War game contract.
+   */
   public abstract void apply();
 }
 

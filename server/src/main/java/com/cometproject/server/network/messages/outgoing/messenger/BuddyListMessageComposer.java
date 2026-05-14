@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Serializes the buddy list message for the Pixel Protocol client.
+ */
 public class BuddyListMessageComposer extends MessageComposer {
     private final Player player;
     private final Map<Integer, IMessengerFriend> friends;
@@ -30,6 +33,17 @@ public class BuddyListMessageComposer extends MessageComposer {
     private final boolean hasAlfaChat;
     private final boolean hasLogChat;
 
+    /**
+     * Creates a buddy list message composer instance for the network message subsystem.
+     *
+     * @param player Player participating in the operation.
+     * @param friends Friends supplied by the caller.
+     * @param hasStaffChat Has staff chat supplied by the caller.
+     * @param hasModChat Has mod chat supplied by the caller.
+     * @param hasLogChat Has log chat supplied by the caller.
+     * @param hasAlfaChat Has alfa chat supplied by the caller.
+     * @param groups Groups supplied by the caller.
+     */
     public BuddyListMessageComposer(final Player player, Map<Integer, IMessengerFriend> friends, final boolean hasStaffChat, final boolean hasModChat, final boolean hasLogChat, final boolean hasAlfaChat, final Set<Integer> groups) {
         this.hasStaffChat = hasStaffChat;
         this.hasModChat = hasModChat;
@@ -53,11 +67,21 @@ public class BuddyListMessageComposer extends MessageComposer {
         this.groups = groups;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.BuddyListMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(1);//?
@@ -200,6 +224,9 @@ public class BuddyListMessageComposer extends MessageComposer {
         }
     }
 
+    /**
+     * Releases resources owned by this network message component.
+     */
     @Override
     public void dispose() {
         this.avatars.clear();

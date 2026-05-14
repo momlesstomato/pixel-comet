@@ -18,11 +18,25 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
+/**
+ * Persists and loads my SQL room item data for the MySQL storage subsystem.
+ */
 public class MySQLRoomItemRepository extends MySQLRepository implements IRoomItemRepository {
+    /**
+     * Creates a my SQL room item repository instance for the MySQL storage subsystem.
+     *
+     * @param connectionProvider Connection provider supplied by the caller.
+     */
     public MySQLRoomItemRepository(MySQLConnectionProvider connectionProvider) {
         super(connectionProvider);
     }
 
+    /**
+     * Returns the items by room id for this MySQL storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param itemConsumer Item consumer supplied by the caller.
+     */
     @Override
     public void getItemsByRoomId(int roomId, Consumer<List<RoomItemData>> itemConsumer) {
         final List<RoomItemData> itemData = Lists.newArrayList();
@@ -35,22 +49,46 @@ public class MySQLRoomItemRepository extends MySQLRepository implements IRoomIte
         itemConsumer.accept(itemData);
     }
 
+    /**
+     * Removes item from room from this MySQL storage contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     * @param finalState Final state supplied by the caller.
+     */
     @Override
     public void removeItemFromRoom(long itemId, int playerId, String finalState) {
         update("UPDATE items SET room_id = 0, user_id = ?, x = 0, " +
                 "y = 0, z = 0, wall_pos = '', extra_data = ? WHERE id = ?", playerId, finalState, itemId);
     }
 
+    /**
+     * Deletes item for this MySQL storage contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     */
     @Override
     public void deleteItem(long itemId) {
         update("DELETE FROM items WHERE id = ?;", itemId);
     }
 
+    /**
+     * Persists data for this MySQL storage contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @param data Data supplied by the caller.
+     */
     @Override
     public void saveData(long itemId, String data) {
         update("UPDATE items SET extra_data = ? WHERE id = ?;", data, itemId);
     }
 
+    /**
+     * Returns the room id by item id for this MySQL storage contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @param idConsumer Id consumer supplied by the caller.
+     */
     @Override
     public void getRoomIdByItemId(long itemId, Consumer<Integer> idConsumer) {
         select("SELECT `room_id` FROM items WHERE id = ? LIMIT 1;", (data) -> {
@@ -58,34 +96,82 @@ public class MySQLRoomItemRepository extends MySQLRepository implements IRoomIte
         }, itemId);
     }
 
+    /**
+     * Persists item position for this MySQL storage contract.
+     *
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     * @param height Height supplied by the caller.
+     * @param rotation Rotation supplied by the caller.
+     * @param id Id supplied by the caller.
+     */
     @Override
     public void saveItemPosition(int x, int y, double height, int rotation, long id) {
         update("UPDATE `items` SET x = ?, y = ?, z = ?, rot = ? WHERE id = ?;", x, y, height, rotation, id);
     }
 
+    /**
+     * Executes place floor item for this MySQL storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     * @param height Height supplied by the caller.
+     * @param rot Rot supplied by the caller.
+     * @param data Data supplied by the caller.
+     * @param baseItem Base item supplied by the caller.
+     * @param itemId Item id supplied by the caller.
+     */
     @Override
     public void placeFloorItem(long roomId, int x, int y, double height, int rot, String data, int baseItem, long itemId) {
         update("UPDATE items SET x = ?, y = ?, z = ?, rot = ?, room_id = ?, extra_data = ?, base_item = ? WHERE id = ?;",
                 x, y, height, rot, roomId, data, baseItem, itemId);
     }
 
+    /**
+     * Executes place wall item for this MySQL storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param wallPosition Wall position supplied by the caller.
+     * @param data Data supplied by the caller.
+     * @param itemId Item id supplied by the caller.
+     */
     @Override
     public void placeWallItem(int roomId, String wallPosition, String data, long itemId) {
         update("UPDATE items SET room_id = ?, wall_pos = ?, extra_data = ? WHERE id = ?;",
                 roomId, wallPosition, data, itemId);
     }
 
+    /**
+     * Updates the base item for this MySQL storage contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @param baseId Base id supplied by the caller.
+     */
     @Override
     public void setBaseItem(long itemId, int baseId) {
         update("UPDATE items SET base_item = ? WHERE id = ?;", baseId, itemId);
     }
 
+    /**
+     * Persists reward for this MySQL storage contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     * @param rewardData Reward data supplied by the caller.
+     */
     @Override
     public void saveReward(long itemId, int playerId, String rewardData) {
         update("INSERT into items_wired_rewards (item_id, player_id, reward_data) VALUES(?, ?, ?);",
                 itemId, playerId, rewardData);
     }
 
+    /**
+     * Returns the given rewards for this MySQL storage contract.
+     *
+     * @param id Id supplied by the caller.
+     * @param rewardsConsumer Rewards consumer supplied by the caller.
+     */
     @Override
     public void getGivenRewards(long id, Consumer<Map<Integer, Set<String>>> rewardsConsumer) {
         Map<Integer, Set<String>> data = new ConcurrentHashMap<>();
@@ -104,6 +190,11 @@ public class MySQLRoomItemRepository extends MySQLRepository implements IRoomIte
         rewardsConsumer.accept(data);
     }
 
+    /**
+     * Persists item for this MySQL storage contract.
+     *
+     * @param roomItemData Room item data supplied by the caller.
+     */
     @Override
     public void saveItem(IRoomItemData roomItemData) {
         update("UPDATE items SET x = ?, y = ?, z = ?, rot = ?, extra_data = ? WHERE id = ?;",
@@ -112,6 +203,14 @@ public class MySQLRoomItemRepository extends MySQLRepository implements IRoomIte
                 roomItemData.getData(), roomItemData.getId());
     }
 
+    /**
+     * Creates item for this MySQL storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param itemId Item id supplied by the caller.
+     * @param data Data supplied by the caller.
+     * @param idConsumer Id consumer supplied by the caller.
+     */
     @Override
     public void createItem(int playerId, int itemId, String data, Consumer<Long> idConsumer) {
         insert("INSERT into items (`user_id`, `room_id`, `base_item`, `extra_data`, `x`, `y`, `z`, `rot`, `wall_pos`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);", (key) -> {
@@ -119,6 +218,13 @@ public class MySQLRoomItemRepository extends MySQLRepository implements IRoomIte
         }, playerId, 0, itemId, data, 0, 0, 0, 0, "");
     }
 
+    /**
+     * Executes purchase items for this MySQL storage contract.
+     *
+     * @param purchases Purchases supplied by the caller.
+     * @param idConsumer Id consumer supplied by the caller.
+     * @param viewingUserId Viewing user id supplied by the caller.
+     */
     @Override
     public void purchaseItems(List<CatalogPurchase> purchases, Consumer<List<Long>> idConsumer, int viewingUserId) {
         final List<Long> itemIds = Lists.newArrayList();
@@ -144,6 +250,11 @@ public class MySQLRoomItemRepository extends MySQLRepository implements IRoomIte
         idConsumer.accept(itemIds);
     }
 
+    /**
+     * Persists item batch for this MySQL storage contract.
+     *
+     * @param data Data supplied by the caller.
+     */
     @Override
     public void saveItemBatch(final Set<IRoomItemData> data) {
         updateBatch("UPDATE items SET x = ?, y = ?, z = ?, rot = ?, extra_data = ? WHERE id = ?;", (stmt) -> {
@@ -160,6 +271,12 @@ public class MySQLRoomItemRepository extends MySQLRepository implements IRoomIte
         });
     }
 
+    /**
+     * Executes place bundle for this MySQL storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param bundle Bundle supplied by the caller.
+     */
     @Override
     public void placeBundle(int roomId, Set<IRoomItemData> bundle) {
         updateBatch("INSERT into items (`user_id`, `room_id`, `base_item`, `extra_data`, `x`, `y`, `z`, `rot`, `wall_pos`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);", (stmt) -> {
@@ -179,6 +296,13 @@ public class MySQLRoomItemRepository extends MySQLRepository implements IRoomIte
         });
     }
 
+    /**
+     * Executes build item for this MySQL storage contract.
+     *
+     * @param data Data supplied by the caller.
+     * @return Result produced by the operation.
+     * @throws Exception When the operation cannot complete.
+     */
     protected RoomItemData buildItem(IResultReader data) throws Exception {
         LimitedEditionItem limitedEditionItemData = null;
 

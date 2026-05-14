@@ -11,11 +11,28 @@ import com.cometproject.server.network.messages.outgoing.room.avatar.AvatarUpdat
 import org.apache.commons.lang3.StringUtils;
 
 
+/**
+ * Describes adjustable height floor item behavior for the room subsystem.
+ */
 public class AdjustableHeightFloorItem extends RoomItemFloor {
+    /**
+     * Creates a adjustable height floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public AdjustableHeightFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (!isWiredTrigger) {
@@ -58,6 +75,11 @@ public class AdjustableHeightFloorItem extends RoomItemFloor {
         return true;
     }
 
+    /**
+     * Returns the override height for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public double getOverrideHeight() {
         if (this.getDefinition().getVariableHeights() != null && !this.getItemData().getData().isEmpty()) {

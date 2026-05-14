@@ -22,6 +22,12 @@ public final class CompositeConfigurationSource implements ConfigurationSource {
         this.sources = List.copyOf(sources);
     }
 
+    /**
+     * Executes get for this configuration contract.
+     *
+     * @param key Key supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public String get(final String key) {
         final String propertyKey = ConfigurationKeys.toPropertyKey(key).equals(key) ? key : ConfigurationKeys.toPropertyKey(key);
@@ -44,6 +50,12 @@ public final class CompositeConfigurationSource implements ConfigurationSource {
         return null;
     }
 
+    /**
+     * Executes has for this configuration contract.
+     *
+     * @param key Key supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean has(final String key) {
         for (ConfigurationSource source : this.sources) {
@@ -55,6 +67,11 @@ public final class CompositeConfigurationSource implements ConfigurationSource {
         return false;
     }
 
+    /**
+     * Returns the all for this configuration contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Map<String, String> getAll() {
         final Map<String, String> merged = new LinkedHashMap<>();

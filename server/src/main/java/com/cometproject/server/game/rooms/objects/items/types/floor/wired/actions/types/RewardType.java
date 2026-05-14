@@ -3,6 +3,9 @@ package com.cometproject.server.game.rooms.objects.items.types.floor.wired.actio
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Enumerates reward type values used by the room subsystem.
+ */
 public enum RewardType {
     CREDITS("credits"),
     CURRENCY("currency"),
@@ -24,10 +27,21 @@ public enum RewardType {
         }
     }
 
+    /**
+     * Returns the currency type by key for this room contract.
+     *
+     * @param str Str supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static RewardType getCurrencyTypeByKey(String str) {
         return map.getOrDefault(str, CURRENCY);
     }
 
+    /**
+     * Returns the currency for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getCurrency() {
         return this.currency;
     }

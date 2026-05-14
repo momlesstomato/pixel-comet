@@ -19,7 +19,15 @@ import com.cometproject.storage.api.services.ICurrencyService;
 import io.javalin.http.Context;
 
 
+/**
+ * Registers player routes endpoints for the HTTP route subsystem.
+ */
 public class PlayerRoutes {
+    /**
+     * Executes reload player data for this HTTP route contract.
+     *
+     * @param context Context supplied by the caller.
+     */
     public static void reloadPlayerData(final Context context) {
         final Integer playerId = ApiRequestUtils.pathInt(context, "id");
 
@@ -79,6 +87,11 @@ public class PlayerRoutes {
         ));
     }
 
+    /**
+     * Executes disconnect for this HTTP route contract.
+     *
+     * @param context Context supplied by the caller.
+     */
     public static void disconnect(final Context context) {
         final Integer playerId = ApiRequestUtils.pathInt(context, "id");
 
@@ -107,6 +120,11 @@ public class PlayerRoutes {
         ));
     }
 
+    /**
+     * Executes alert for this HTTP route contract.
+     *
+     * @param context Context supplied by the caller.
+     */
     public static void alert(final Context context) {
         final Integer playerId = ApiRequestUtils.pathInt(context, "id");
 
@@ -152,6 +170,11 @@ public class PlayerRoutes {
         ));
     }
 
+    /**
+     * Executes give badge for this HTTP route contract.
+     *
+     * @param context Context supplied by the caller.
+     */
     public static void giveBadge(final Context context) {
         final Integer playerId = ApiRequestUtils.pathInt(context, "id");
 

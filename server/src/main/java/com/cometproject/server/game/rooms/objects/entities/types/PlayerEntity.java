@@ -78,6 +78,9 @@ import java.util.Map;
 import java.util.Set;
 
 
+/**
+ * Describes player entity behavior for the room subsystem.
+ */
 public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attributable, PlayerRoomEntity {
     private static final Logger LOGGER = LoggerFactory.getLogger(PlayerEntity.class.getName());
     private Player player;
@@ -115,6 +118,16 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
 
     public boolean setzok = false;
 
+    /**
+     * Creates a player entity instance for the room subsystem.
+     *
+     * @param player Player participating in the operation.
+     * @param identifier Identifier supplied by the caller.
+     * @param startPosition Start position supplied by the caller.
+     * @param startBodyRotation Start body rotation supplied by the caller.
+     * @param startHeadRotation Start head rotation supplied by the caller.
+     * @param roomInstance Room instance supplied by the caller.
+     */
     public PlayerEntity(Player player, int identifier, Position startPosition, int startBodyRotation, int startHeadRotation, Room roomInstance) {
         super(identifier, startPosition, startBodyRotation, startHeadRotation, roomInstance);
 
@@ -135,6 +148,13 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
             this.visitLogEntry = LogManager.getInstance().getStore().getRoomVisitContainer().put(player.getId(), roomInstance.getId(), Comet.getTime());
     }
 
+    /**
+     * Executes join room for this room contract.
+     *
+     * @param room Room participating in the operation.
+     * @param password Password supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean joinRoom(Room room, String password) {
         if (this.isFinalized()) return this.getRoom().getId() == room.getId();
@@ -224,6 +244,9 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
         return true;
     }
 
+    /**
+     * Executes finalize join room for this room contract.
+     */
     @Override
     protected void finalizeJoinRoom() {
         Session session = this.player.getSession();
@@ -296,10 +319,20 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
     }
 
 
+    /**
+     * Indicates whether this room contract can rate room.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean canRateRoom() {
         return !this.getRoom().getRatings().contains(this.getPlayerId());
     }
 
+    /**
+     * Handles the reached tile callback for this room contract.
+     *
+     * @param tile Tile supplied by the caller.
+     */
     public void onReachedTile(RoomTile tile) {
 
         final PlayerEntity closestEntity = this.nearestPlayerEntity(this);
@@ -314,6 +347,13 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
         }
     }
 
+    /**
+     * Executes leave room for this room contract.
+     *
+     * @param isOffline Is offline supplied by the caller.
+     * @param isKick Is kick supplied by the caller.
+     * @param toHotelView To hotel view supplied by the caller.
+     */
     @Override
     public void leaveRoom(boolean isOffline, boolean isKick, boolean toHotelView) {
         if (this.isQueueing) {
@@ -448,6 +488,9 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
         this.playerData = null;
     }
 
+    /**
+     * Executes kick for this room contract.
+     */
     @Override
     public void kick() {
         this.isKicked = true;
@@ -456,6 +499,12 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
         this.moveTo(this.getRoom().getModel().getDoorX(), this.getRoom().getModel().getDoorY());
     }
 
+    /**
+     * Handles the chat callback for this room contract.
+     *
+     * @param message Message supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onChat(String message) {
         final long time = System.currentTimeMillis();
@@ -597,6 +646,11 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
         }
     }
 
+    /**
+     * Executes post chat for this room contract.
+     *
+     * @param message Message supplied by the caller.
+     */
     public void postChat(String message) {
         String triggerMessage = message.toLowerCase();
 
@@ -632,6 +686,11 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
         }
     }
 
+    /**
+     * Handles the room dispose callback for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onRoomDispose() {
         // Clear all  statuses
@@ -659,6 +718,9 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
         return false;
     }
 
+    /**
+     * Updates the idle for this room contract.
+     */
     @Override
     public void setIdle() {
         super.setIdle();
@@ -666,34 +728,69 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
         this.getRoom().getEntities().broadcastMessage(new IdleStatusMessageComposer(this, true));
     }
 
+    /**
+     * Returns the player id for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getPlayerId() {
         return this.playerId;
     }
 
+    /**
+     * Updates the player id for this room contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     */
     public void setPlayerId(int playerId) {
         this.playerId = playerId;
     }
 
+    /**
+     * Returns the username for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getUsername() {
         return this.playerData == null ? "UnknownPlayer" + this.playerId : this.playerData.getUsername();
     }
 
+    /**
+     * Returns the motto for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getMotto() {
         return this.playerData == null ? "" : this.playerData.getMotto();
     }
 
+    /**
+     * Returns the figure for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getFigure() {
         return this.playerData == null ? "" : this.playerData.getFigure();
     }
 
+    /**
+     * Returns the gender for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getGender() {
         return this.playerData == null ? "M" : this.playerData.getGender();
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         if (this.hasAttribute("transformation")) {
@@ -744,11 +841,19 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
         msg.writeBoolean(false);
     }
 
+    /**
+     * Returns the player for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Player getPlayer() {
         return this.player;
     }
 
+    /**
+     * Releases resources owned by this room component.
+     */
     @Deprecated
     public void dispose() {
         this.leaveRoom(true, false, false);
@@ -757,6 +862,12 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
         this.user2Items.clear();
     }
 
+    /**
+     * Updates the attribute for this room contract.
+     *
+     * @param attributeKey Attribute key supplied by the caller.
+     * @param attributeValue Attribute value supplied by the caller.
+     */
     @Override
     public void setAttribute(String attributeKey, Object attributeValue) {
         if (this.attributes.containsKey(attributeKey)) {
@@ -766,33 +877,70 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
         }
     }
 
+    /**
+     * Returns the attribute for this room contract.
+     *
+     * @param attributeKey Attribute key supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public Object getAttribute(String attributeKey) {
         return this.attributes.get(attributeKey);
     }
 
+    /**
+     * Indicates whether this room contract has attribute.
+     *
+     * @param attributeKey Attribute key supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean hasAttribute(String attributeKey) {
         return this.attributes.containsKey(attributeKey);
     }
 
+    /**
+     * Removes attribute from this room contract.
+     *
+     * @param attributeKey Attribute key supplied by the caller.
+     */
     @Override
     public void removeAttribute(String attributeKey) {
         this.attributes.remove(attributeKey);
     }
 
+    /**
+     * Indicates whether finalized applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isFinalized() {
         return isFinalized;
     }
 
+    /**
+     * Updates the finalized for this room contract.
+     *
+     * @param finalized Finalized supplied by the caller.
+     */
     public void setFinalized(boolean finalized) {
         isFinalized = finalized;
     }
 
+    /**
+     * Returns the game team for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public GameTeam getGameTeam() {
         return gameTeam;
     }
 
+    /**
+     * Updates the game team for this room contract.
+     *
+     * @param gameTeam Game team supplied by the caller.
+     */
     public void setGameTeam(GameTeam gameTeam) {
         if (gameTeam == null) {
             this.gameTeam = GameTeam.NONE;
@@ -801,38 +949,79 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
         }
     }
 
+    /**
+     * Indicates whether kicked applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isKicked() {
         return isKicked;
     }
 
+    /**
+     * Returns the kick walk stage for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getKickWalkStage() {
         return kickWalkStage;
     }
 
+    /**
+     * Executes increase kick walk stage for this room contract.
+     */
     public void increaseKickWalkStage() {
         this.kickWalkStage++;
     }
 
+    /**
+     * Returns the banzai player achievement for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getBanzaiPlayerAchievement() {
         return banzaiPlayerAchievement;
     }
 
+    /**
+     * Updates the banzai player achievement for this room contract.
+     *
+     * @param banzaiPlayerAchievement Banzai player achievement supplied by the caller.
+     */
     public void setBanzaiPlayerAchievement(int banzaiPlayerAchievement) {
         this.banzaiPlayerAchievement = banzaiPlayerAchievement;
     }
 
+    /**
+     * Executes increment banzai player achievement for this room contract.
+     */
     public void incrementBanzaiPlayerAchievement() {
         this.banzaiPlayerAchievement++;
     }
 
+    /**
+     * Updates the placed pet for this room contract.
+     *
+     * @param hasPlacedPet Has placed pet supplied by the caller.
+     */
     public void setPlacedPet(boolean hasPlacedPet) {
         this.hasPlacedPet = hasPlacedPet;
     }
 
+    /**
+     * Indicates whether this room contract has rights.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasRights() {
         return this.getRoom().getRights().hasRights(this.playerId);
     }
 
+    /**
+     * Returns the controller level for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RoomControllerLevel getControllerLevel() {
         if (this.getPlayer().getPermissions().getRank().roomFullControl()) {
             return RoomControllerLevel.MODERATOR;
@@ -848,60 +1037,151 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
         return RoomControllerLevel.NONE;
     }
 
+    /**
+     * Indicates whether builder fill floor applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isBuilderFillFloor() {
         return builderFillFloor;
     }
 
+    /**
+     * Updates the builder fill floor for this room contract.
+     *
+     * @param builderFillFloor Builder fill floor supplied by the caller.
+     */
     public void setBuilderFillFloor(boolean builderFillFloor) {
         this.builderFillFloor = builderFillFloor;
     }
 
+    /**
+     * Updates the bet amount for this room contract.
+     *
+     * @param a A supplied by the caller.
+     */
     public void setBetAmount (int a ){ this.betAmount = a; }
 
+    /**
+     * Returns the bet amount for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getBetAmount() { return betAmount; }
 
+    /**
+     * Updates the bet row for this room contract.
+     *
+     * @param betRow Bet row supplied by the caller.
+     */
     public void setBetRow(int betRow) { this.betRow = betRow; }
 
+    /**
+     * Executes increment bet row for this room contract.
+     */
     public void incrementBetRow() { this.betRow++; }
 
+    /**
+     * Returns the bet row for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getBetRow() { return betRow; }
 
+    /**
+     * Returns the user1 items for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Set<PlayerItem> getUser1Items() {
         return user1Items;
     }
 
+    /**
+     * Returns the user2 items for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Set<PlayerItem> getUser2Items() {
         return user2Items;
     }
 
+    /**
+     * Updates the user1 items for this room contract.
+     *
+     * @param user1Items User1 items supplied by the caller.
+     */
     public void setUser1Items(Set<PlayerItem> user1Items) {
         this.user1Items = user1Items;
     }
 
+    /**
+     * Updates the user2 items for this room contract.
+     *
+     * @param user2Items User2 items supplied by the caller.
+     */
     public void setUser2Items(Set<PlayerItem> user2Items) {
         this.user2Items = user2Items;
     }
 
+    /**
+     * Returns the bank sent for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getBankSent() { return bankSent; }
 
+    /**
+     * Returns the bank type for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getBankType() { return bankType; }
 
+    /**
+     * Updates the bank sent for this room contract.
+     *
+     * @param bankSent Bank sent supplied by the caller.
+     */
     public void setBankSent(String bankSent) { this.bankSent = bankSent; }
 
+    /**
+     * Updates the bank type for this room contract.
+     *
+     * @param bankType Bank type supplied by the caller.
+     */
     public void setBankType(String bankType) { this.bankType = bankType; }
 
+    /**
+     * Returns the lifes for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getLifes() {
         return lifes;
     }
 
+    /**
+     * Executes decrement lifes for this room contract.
+     */
     public void decrementLifes() {
         this.lifes--;
     }
 
+    /**
+     * Indicates whether survival mode applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isSurvivalMode() {
         return survivalMode;
     }
 
+    /**
+     * Updates the survival mode for this room contract.
+     *
+     * @param survivalMode Survival mode supplied by the caller.
+     */
     public void setSurvivalMode(boolean survivalMode) {
         this.survivalMode = survivalMode;
     }

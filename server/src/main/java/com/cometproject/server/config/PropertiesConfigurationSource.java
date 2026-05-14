@@ -42,11 +42,22 @@ public final class PropertiesConfigurationSource implements ConfigurationSource 
         this.values = Map.copyOf(resolvedValues);
     }
 
+    /**
+     * Executes get for this configuration contract.
+     *
+     * @param key Key supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public String get(final String key) {
         return this.values.get(key);
     }
 
+    /**
+     * Returns the all for this configuration contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Map<String, String> getAll() {
         return this.values;

@@ -9,18 +9,36 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 import java.util.Map;
 
 
+/**
+ * Serializes the pet inventory message for the Pixel Protocol client.
+ */
 public class PetInventoryMessageComposer extends MessageComposer {
     private final Map<Integer, IPetData> pets;
 
+    /**
+     * Creates a pet inventory message composer instance for the network message subsystem.
+     *
+     * @param pets Pets supplied by the caller.
+     */
     public PetInventoryMessageComposer(final Map<Integer, IPetData> pets) {
         this.pets = pets;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.PetInventoryMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(1);

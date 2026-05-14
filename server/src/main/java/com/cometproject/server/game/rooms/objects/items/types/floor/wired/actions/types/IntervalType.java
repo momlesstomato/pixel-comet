@@ -3,6 +3,9 @@ package com.cometproject.server.game.rooms.objects.items.types.floor.wired.actio
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Enumerates interval type values used by the room subsystem.
+ */
 public enum IntervalType {
     ONCE(0),
     DAYS(1),
@@ -24,10 +27,21 @@ public enum IntervalType {
         }
     }
 
+    /**
+     * Returns the interval by int for this room contract.
+     *
+     * @param integer Integer supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static IntervalType getIntervalByInt(Integer integer) {
         return map.get(integer);
     }
 
+    /**
+     * Returns the integer for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getInteger() {
         return this.type;
     }

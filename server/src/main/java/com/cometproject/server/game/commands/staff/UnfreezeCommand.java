@@ -6,10 +6,19 @@ import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.sessions.Session;
 
 
+/**
+ * Describes unfreeze command behavior for the Comet subsystem.
+ */
 public class UnfreezeCommand extends ChatCommand {
 
     private String logDesc = "";
 
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
 
@@ -43,31 +52,61 @@ public class UnfreezeCommand extends ChatCommand {
                 .replace("%b", client.getPlayer().getEntity().getRoom().getData().getName());
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "unfreeze_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return Locale.getOrDefault("command.parameter.username", "%username%");
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.unfreeze.description");
     }
 
+    /**
+     * Executes bypass filter for this Comet contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean bypassFilter() {
         return true;
     }
 
+    /**
+     * Returns the loggable description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getLoggableDescription(){
         return this.logDesc;
     }
 
+    /**
+     * Executes loggable for this Comet contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean Loggable(){
         return true;

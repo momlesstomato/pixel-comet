@@ -5,7 +5,13 @@ import com.cometproject.games.snowwar.items.BaseItem;
 import com.cometproject.games.snowwar.items.MapStuffData;
 import java.util.Map;
 
+/**
+ * Describes snow war arena9 behavior for the Snow War game subsystem.
+ */
 public class SnowWarArena9 extends SnowWarArenaBase {
+    /**
+     * Creates a snow war arena9 instance for the Snow War game subsystem.
+     */
     public SnowWarArena9() {
 
         ArenaType = 9;
@@ -525,6 +531,12 @@ public class SnowWarArena9 extends SnowWarArenaBase {
         spawnsRED.add(new SpawnPoint(11, 11));
     }
 
+    /**
+     * Executes game objects for this Snow War game contract.
+     *
+     * @param gameObjects Game objects supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public void gameObjects(Map<Integer, GameItemObject> gameObjects, SnowWarRoom room) {
         gameObjects.put(0, new PileGameObject(22, 27, 12, 12, 1, room.map, room));
         gameObjects.put(1, new PileGameObject(8, 20, 12, 12, 2, room.map, room));

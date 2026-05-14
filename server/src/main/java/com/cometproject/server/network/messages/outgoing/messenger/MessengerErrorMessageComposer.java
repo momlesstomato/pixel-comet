@@ -5,20 +5,39 @@ import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
 
+/**
+ * Serializes the messenger error message for the Pixel Protocol client.
+ */
 public class MessengerErrorMessageComposer extends MessageComposer {
     private final int type;
     private final int toId;
 
+    /**
+     * Creates a messenger error message composer instance for the network message subsystem.
+     *
+     * @param type Type supplied by the caller.
+     * @param toId To id supplied by the caller.
+     */
     public MessengerErrorMessageComposer(final int type, final int toId) {
         this.type = type;
         this.toId = toId;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.MessengerErrorMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(this.type);

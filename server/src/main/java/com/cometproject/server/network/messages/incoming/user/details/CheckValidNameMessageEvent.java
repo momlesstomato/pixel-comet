@@ -12,7 +12,16 @@ import com.cometproject.server.storage.queries.player.PlayerDao;
 import java.util.LinkedList;
 
 
+/**
+ * Represents the check valid name message event published by the network message subsystem.
+ */
 public class CheckValidNameMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void handle(Session client, MessageEvent msg) {
         String name = msg.readString();
 

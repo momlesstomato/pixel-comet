@@ -6,7 +6,16 @@ import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.network.messages.outgoing.room.engine.RoomActionMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 
+/**
+ * Describes room option command behavior for the Comet subsystem.
+ */
 public class RoomOptionCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     public void execute(Session client, String[] params) {
         final PlayerEntity playerEntity = client.getPlayer().getEntity();
 
@@ -38,14 +47,29 @@ public class RoomOptionCommand extends ChatCommand {
         }
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getPermission() {
         return "roomoption_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getParameter() {
         return "%option%";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getDescription() {
         return Locale.get("command.roomoption.description");
     }

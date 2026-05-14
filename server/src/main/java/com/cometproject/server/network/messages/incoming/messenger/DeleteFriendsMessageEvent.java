@@ -9,7 +9,17 @@ import com.cometproject.server.storage.queries.player.messenger.MessengerDao;
 import com.cometproject.server.storage.queries.player.relationships.RelationshipDao;
 
 
+/**
+ * Represents the delete friends message event published by the network message subsystem.
+ */
 public class DeleteFriendsMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @throws Exception When the operation cannot complete.
+     */
     @Override
     public void handle(Session client, MessageEvent msg) throws Exception {
         int friendCount = msg.readInt();

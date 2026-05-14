@@ -3,6 +3,9 @@ package com.cometproject.server.game.rooms.types.components.games;
 import com.cometproject.server.game.rooms.objects.entities.effects.UserEffectType;
 
 
+/**
+ * Enumerates game team values used by the room processing subsystem.
+ */
 public enum GameTeam {
     NONE(0),
     RED(1),
@@ -16,10 +19,21 @@ public enum GameTeam {
         this.teamId = team;
     }
 
+    /**
+     * Returns the team id for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getTeamId() {
         return this.teamId;
     }
 
+    /**
+     * Returns the effect for this room processing contract.
+     *
+     * @param gameType Game type supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public int getEffect(GameType gameType) {
         switch (gameType) {
             case FREEZE:
@@ -32,6 +46,11 @@ public enum GameTeam {
         return 0;
     }
 
+    /**
+     * Returns the banzai effect for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getBanzaiEffect() {
         switch (teamId) {
             case 1:
@@ -50,6 +69,11 @@ public enum GameTeam {
         return 0;
     }
 
+    /**
+     * Returns the team letter for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public char getTeamLetter() {
         switch (teamId) {
             case 1:
@@ -69,6 +93,11 @@ public enum GameTeam {
     }
 
 
+    /**
+     * Returns the freeze effect for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getFreezeEffect() {
         switch (teamId) {
             case 1:

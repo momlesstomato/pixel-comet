@@ -11,6 +11,9 @@ import java.time.temporal.ChronoField;
 import java.util.Calendar;
 
 
+/**
+ * Serializes the catalog gifts page message for the Pixel Protocol client.
+ */
 public class CatalogGiftsPageMessageComposer extends MessageComposer {
 
     private final ICatalogPage catalogPage;
@@ -19,16 +22,32 @@ public class CatalogGiftsPageMessageComposer extends MessageComposer {
     private int dayOfMonth;
     private int timeLeft;
 
+    /**
+     * Creates a catalog gifts page message composer instance for the network message subsystem.
+     *
+     * @param catalogPage Catalog page supplied by the caller.
+     * @param subscriptionComponent Subscription component supplied by the caller.
+     */
     public CatalogGiftsPageMessageComposer(final ICatalogPage catalogPage, final SubscriptionComponent subscriptionComponent) {
         this.catalogPage = catalogPage;
         this.subscriptionComponent = subscriptionComponent;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.CatalogGiftsPageMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         flushData();

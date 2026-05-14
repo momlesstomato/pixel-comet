@@ -14,7 +14,16 @@
 //import java.util.TreeMap;
 //
 //
+/**
+ * Represents the load search room message event published by the network message subsystem.
+ */
 //public class LoadSearchRoomMessageEvent implements Event {
+/**
+ * Executes handle for this Snow War game contract.
+ *
+ * @param client Client supplied by the caller.
+ * @param msg Msg supplied by the caller.
+ */
 //    public void handle(Session client, MessageEvent msg) {
 //        Map<String, Integer> tagsPlayerCount = Maps.newHashMap();
 //

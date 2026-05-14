@@ -6,8 +6,17 @@ import com.cometproject.server.network.messages.outgoing.notification.MassEventM
 import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 
+/**
+ * Describes build command behavior for the Comet subsystem.
+ */
 public class BuildCommand extends ChatCommand {
 
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param message Message supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] message) {
         if (!client.getPlayer().getEntity().getRoom().getRights().hasRights(client.getPlayer().getId())
@@ -34,16 +43,31 @@ public class BuildCommand extends ChatCommand {
         }
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "build_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.build.description");

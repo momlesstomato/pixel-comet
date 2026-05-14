@@ -21,6 +21,9 @@ import com.cometproject.server.utilities.RandomUtil;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Describes abstract bot ai behavior for the room subsystem.
+ */
 public abstract class AbstractBotAI implements BotAI {
     private static final ExecutorService botPathCalculator = Executors.newFixedThreadPool(2);
     protected PlayerEntity followingPlayer;
@@ -28,10 +31,18 @@ public abstract class AbstractBotAI implements BotAI {
     private long ticksUntilComplete = 0;
     private boolean walkNow = false;
 
+    /**
+     * Creates a abstract bot ai instance for the room subsystem.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     public AbstractBotAI(RoomEntity entity) {
         this.entity = entity;
     }
 
+    /**
+     * Handles the tick callback for this room contract.
+     */
     @Override
     public void onTick() {
         if (this.ticksUntilComplete != 0) {
@@ -98,11 +109,19 @@ public abstract class AbstractBotAI implements BotAI {
         }
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
 
     }
 
+    /**
+     * Handles the reached tile callback for this room contract.
+     *
+     * @param tile Tile supplied by the caller.
+     */
     @Override
     public void onReachedTile(RoomTile tile) {
         final PlayerEntity closestEntity = this.entity.nearestPlayerEntity();
@@ -117,10 +136,18 @@ public abstract class AbstractBotAI implements BotAI {
         }
     }
 
+    /**
+     * Executes walk now for this room contract.
+     */
     protected void walkNow() {
         this.walkNow = true;
     }
 
+    /**
+     * Updates the ticks until complete in seconds for this room contract.
+     *
+     * @param seconds Seconds supplied by the caller.
+     */
     @Override
     public void setTicksUntilCompleteInSeconds(double seconds) {
         long realTime = Math.round(seconds * 1000 / 500);
@@ -132,11 +159,22 @@ public abstract class AbstractBotAI implements BotAI {
         this.ticksUntilComplete = realTime;
     }
 
+    /**
+     * Executes say for this room contract.
+     *
+     * @param message Message supplied by the caller.
+     */
     @Override
     public void say(String message) {
         this.say(message, ChatEmotion.NONE);
     }
 
+    /**
+     * Executes say for this room contract.
+     *
+     * @param message Message supplied by the caller.
+     * @param emotion Emotion supplied by the caller.
+     */
     @Override
     public void say(String message, ChatEmotion emotion) {
         if (message == null) {
@@ -146,6 +184,11 @@ public abstract class AbstractBotAI implements BotAI {
         this.getEntity().getRoom().getEntities().broadcastMessage(new TalkMessageComposer(this.getEntity().getId(), message, emotion, 0), false, this instanceof PetAI ? RoomMessageType.PET_CHAT : RoomMessageType.BOT_CHAT);
     }
 
+    /**
+     * Executes move to for this room contract.
+     *
+     * @param position Position supplied by the caller.
+     */
     protected void moveTo(Position position) {
         if(this.getPetEntity().getData().getTypeId() == 16)
             return;
@@ -153,36 +196,71 @@ public abstract class AbstractBotAI implements BotAI {
         this.getEntity().moveTo(position.getX(), position.getY());
     }
 
+    /**
+     * Executes sit for this room contract.
+     */
     public void sit() {
         this.getEntity().addStatus(RoomEntityStatus.SIT, "" + this.getPetEntity().getRoom().getModel().getSquareHeight()[this.getEntity().getPosition().getX()][this.getEntity().getPosition().getY()]);
         this.getEntity().markNeedsUpdate();
     }
 
+    /**
+     * Executes lay for this room contract.
+     */
     public void lay() {
         this.getEntity().addStatus(RoomEntityStatus.LAY, "" + this.getPetEntity().getRoom().getModel().getSquareHeight()[this.getEntity().getPosition().getX()][this.getEntity().getPosition().getY()]);
         this.getEntity().markNeedsUpdate();
     }
 
+    /**
+     * Handles the talk callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param message Message supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onTalk(PlayerEntity entity, String message) {
         return false;
     }
 
+    /**
+     * Handles the player leave callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onPlayerLeave(PlayerEntity entity) {
         return false;
     }
 
+    /**
+     * Handles the player enter callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onPlayerEnter(PlayerEntity entity) {
         return false;
     }
 
+    /**
+     * Handles the added to room callback for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onAddedToRoom() {
         return false;
     }
 
+    /**
+     * Handles the removed from room callback for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onRemovedFromRoom() {
         if (this.followingPlayer != null) {
@@ -193,19 +271,39 @@ public abstract class AbstractBotAI implements BotAI {
         return false;
     }
 
+    /**
+     * Indicates whether this room contract can move.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean canMove() {
         return true;
     }
 
+    /**
+     * Returns the entity for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RoomEntity getEntity() {
         return entity;
     }
 
+    /**
+     * Returns the bot entity for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public BotEntity getBotEntity() {
         return (BotEntity) entity;
     }
 
+    /**
+     * Returns the pet entity for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public PetEntity getPetEntity() {
         return (PetEntity) entity;
     }

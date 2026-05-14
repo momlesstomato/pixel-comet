@@ -7,11 +7,14 @@ import com.cometproject.server.game.rooms.objects.items.types.floor.wired.events
 import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.network.messages.outgoing.room.avatar.UpdateInfoMessageComposer;
 
+/**
+ * Describes wired action bot clothes behavior for the room subsystem.
+ */
 public class WiredActionBotClothes extends WiredActionItem {
     private final static int PARAM_HANDITEM = 0;
 
     /**
-     * The default constructor
+     * The default constructor.
      *
      * @param id        The ID of the item
      * @param itemId    The ID of the item definition
@@ -28,16 +31,31 @@ public class WiredActionBotClothes extends WiredActionItem {
         super(itemData, room);
     }
 
+    /**
+     * Executes requires player for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean requiresPlayer() {
         return false;
     }
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 26;
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(WiredItemEvent event) {
         if (!this.getWiredData().getText().contains("\t")) {

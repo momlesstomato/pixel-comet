@@ -13,14 +13,31 @@ import com.cometproject.server.game.rooms.types.components.games.survival.types.
 import com.cometproject.server.network.websockets.WebSocketSessionManager;
 import com.cometproject.server.network.websockets.packets.outgoing.SurvivalSoundEffectWebPacket;
 
+/**
+ * Describes munition box floor item behavior for the room subsystem.
+ */
 public class MunitionBoxFloorItem extends RoomItemFloor {
 
     private boolean destroyed = false;
 
+    /**
+     * Creates a munition box floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public MunitionBoxFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (!(entity instanceof PlayerEntity) || !this.getItemData().getData().equals("1")) {
@@ -63,10 +80,18 @@ public class MunitionBoxFloorItem extends RoomItemFloor {
         return true;
     }
 
+    /**
+     * Handles the entity step on callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOn(RoomEntity entity) {
     }
 
+    /**
+     * Executes reset for this room contract.
+     */
     public void reset() {
         this.destroyed = false;
 
@@ -89,11 +114,19 @@ public class MunitionBoxFloorItem extends RoomItemFloor {
         this.sendUpdate();
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
         this.updateState(1);
     }
 
+    /**
+     * Indicates whether destroyed applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isDestroyed() {
         return destroyed;
     }

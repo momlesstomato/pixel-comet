@@ -9,25 +9,49 @@ import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 
 
+/**
+ * Describes wired action show message behavior for the room subsystem.
+ */
 public class WiredActionShowMessage extends WiredActionItem {
 
     protected boolean isWhisperBubble = false;
 
 
+    /**
+     * Creates a wired action show message instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public WiredActionShowMessage(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Executes requires player for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean requiresPlayer() {
         return true;
     }
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 7;
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(WiredItemEvent event) {
         if (!(event.entity instanceof PlayerEntity)) {

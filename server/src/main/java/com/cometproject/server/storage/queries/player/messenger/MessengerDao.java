@@ -15,7 +15,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
+/**
+ * Describes messenger dao behavior for the storage subsystem.
+ */
 public class MessengerDao {
+    /**
+     * Returns the friends by player id for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, IMessengerFriend> getFriendsByPlayerId(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -45,6 +54,12 @@ public class MessengerDao {
         return data;
     }
 
+    /**
+     * Returns the offline messages for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static List<OfflineChatLogEntry> getOfflineMessages(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -80,6 +95,13 @@ public class MessengerDao {
         return data;
     }
 
+    /**
+     * Returns the request count for this storage contract.
+     *
+     * @param userId User id supplied by the caller.
+     * @param userTwoId User two id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getRequestCount(int userId, int userTwoId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -111,6 +133,12 @@ public class MessengerDao {
     }
 
 
+    /**
+     * Returns the requests by player id for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static List<Integer> getRequestsByPlayerId(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -140,6 +168,12 @@ public class MessengerDao {
         return data;
     }
 
+    /**
+     * Deletes friendship for this storage contract.
+     *
+     * @param userId User id supplied by the caller.
+     * @param userTwoId User two id supplied by the caller.
+     */
     public static void deleteFriendship(int userId, int userTwoId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -160,6 +194,11 @@ public class MessengerDao {
         }
     }
 
+    /**
+     * Deletes offline messages for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     */
     public static void deleteOfflineMessages(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -179,6 +218,11 @@ public class MessengerDao {
         }
     }
 
+    /**
+     * Deletes all friendships for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     */
     public static void deleteAllFriendships(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -199,6 +243,11 @@ public class MessengerDao {
         }
     }
 
+    /**
+     * Deletes request data by reciever id for this storage contract.
+     *
+     * @param userId User id supplied by the caller.
+     */
     public static void deleteRequestDataByRecieverId(int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -219,6 +268,12 @@ public class MessengerDao {
         }
     }
 
+    /**
+     * Deletes request data for this storage contract.
+     *
+     * @param userId User id supplied by the caller.
+     * @param userTwoId User two id supplied by the caller.
+     */
     public static void deleteRequestData(int userId, int userTwoId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -245,6 +300,12 @@ public class MessengerDao {
         }
     }
 
+    /**
+     * Creates friendship for this storage contract.
+     *
+     * @param userId User id supplied by the caller.
+     * @param userTwoId User two id supplied by the caller.
+     */
     public static void createFriendship(int userId, int userTwoId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -271,6 +332,12 @@ public class MessengerDao {
         }
     }
 
+    /**
+     * Creates request for this storage contract.
+     *
+     * @param userId User id supplied by the caller.
+     * @param userTwoId User two id supplied by the caller.
+     */
     public static void createRequest(int userId, int userTwoId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -292,6 +359,12 @@ public class MessengerDao {
         }
     }
 
+    /**
+     * Returns the friend count for this storage contract.
+     *
+     * @param userId User id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getFriendCount(int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

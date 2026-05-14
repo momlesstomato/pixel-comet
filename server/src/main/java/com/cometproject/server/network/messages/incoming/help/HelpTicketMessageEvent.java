@@ -14,7 +14,16 @@ import com.google.common.collect.Lists;
 import java.util.List;
 
 
+/**
+ * Represents the help ticket message event published by the network message subsystem.
+ */
 public class HelpTicketMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void handle(Session client, MessageEvent msg) {
         boolean hasActiveTicket = ModerationManager.getInstance().getActiveTicketByPlayerId(client.getPlayer().getId()) != null;
 

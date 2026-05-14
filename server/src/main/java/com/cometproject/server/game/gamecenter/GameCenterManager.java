@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * Manages game center runtime state for the Comet subsystem.
+ */
 public class GameCenterManager implements Startable {
     private static int gameId;
     private List<GamePlayer> currentWeek;
@@ -21,9 +24,15 @@ public class GameCenterManager implements Startable {
 
     private List<GameCenterInfo> gamesList;
 
+    /**
+     * Creates a game center manager instance for the Comet subsystem.
+     */
     public GameCenterManager() {
     }
 
+    /**
+     * Starts this Comet component.
+     */
     @Override
     public void start() {
         this.gamesList = new ArrayList<>();
@@ -50,16 +59,30 @@ public class GameCenterManager implements Startable {
         CometThreadManager.getInstance().executeSchedule(this::loadLeaderboards,1, TimeUnit.MINUTES);
     }
 
+    /**
+     * Returns the leaderboard by week for this Comet contract.
+     *
+     * @param isCurrent Is current supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public List<GamePlayer> getLeaderboardByWeek(boolean isCurrent){
         if(isCurrent)
         return this.currentWeek;
         else return lastWeek;
     }
 
+    /**
+     * Returns the instance for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static GameCenterManager getInstance() {
         return CometBootstrap.resolve(GameCenterManager.class);
     }
 
+    /**
+     * Loads game center list for this Comet contract.
+     */
     public void loadGameCenterList() {
         if(!this.gamesList.isEmpty()) {
             this.gamesList.clear();
@@ -68,6 +91,12 @@ public class GameCenterManager implements Startable {
         this.gamesList = BetDao.getGames();
     }
 
+    /**
+     * Returns the game by id for this Comet contract.
+     *
+     * @param gameId Game id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public GameCenterInfo getGameById(int gameId){
 
         GameCenterInfo gameInfo = null;
@@ -80,6 +109,11 @@ public class GameCenterManager implements Startable {
         return gameInfo;
     }
 
+    /**
+     * Returns the games list for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<GameCenterInfo> getGamesList() {
         return this.gamesList;
     }

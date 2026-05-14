@@ -8,12 +8,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Describes comet gui behavior for the boot lifecycle subsystem.
+ */
 public class CometGui extends JFrame {
     private JPanel mainPanel;
     private JLabel playersOnline;
     private JLabel roomsLoaded;
     private JLabel uptime;
 
+    /**
+     * Creates a comet gui instance for the boot lifecycle subsystem.
+     */
     public CometGui() {
         super("Comet Server - " + Comet.getBuild());
 
@@ -31,6 +37,9 @@ public class CometGui extends JFrame {
         CometThreadManager.getInstance().executePeriodic(this::update, 0, 500, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Executes update for this boot lifecycle contract.
+     */
     public void update() {
         final CometStats stats = Comet.getStats();
 

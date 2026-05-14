@@ -8,14 +8,31 @@ import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
 import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.network.messages.outgoing.room.items.FireworkDataChargesMessageComposer;
 
+/**
+ * Describes firework floor item behavior for the room subsystem.
+ */
 public class FireworkFloorItem extends RoomItemFloor {
 
+    /**
+     * Creates a firework floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public FireworkFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
     private boolean inUse = false;
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (isWiredTrigger)
@@ -49,6 +66,9 @@ public class FireworkFloorItem extends RoomItemFloor {
         return true;
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
         this.getItemData().setData(1);

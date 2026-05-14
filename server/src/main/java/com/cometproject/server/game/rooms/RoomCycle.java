@@ -13,27 +13,47 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * Describes room cycle behavior for the room subsystem.
+ */
 public class RoomCycle implements CometTask {
     private final static int PERIOD = 500;
     private final static int FLAG = 2000;
     private Logger LOGGER = LoggerFactory.getLogger(RoomCycle.class.getName());
     private ScheduledFuture myFuture;
 
+    /**
+     * Creates a room cycle instance for the room subsystem.
+     */
     public RoomCycle() {
     }
 
+    /**
+     * Starts this room component.
+     */
     public void start() {
         this.myFuture = CometThreadManager.getInstance().executePeriodic(this, PERIOD, PERIOD, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Stops this room component.
+     */
     public void stop() {
         this.myFuture.cancel(false);
     }
 
+    /**
+     * Indicates whether active applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isActive() {
         return (!this.myFuture.isCancelled());
     }
 
+    /**
+     * Runs this room task.
+     */
     @Override
     public void run() {
         try {

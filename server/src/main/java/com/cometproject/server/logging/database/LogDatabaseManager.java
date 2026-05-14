@@ -6,10 +6,16 @@
 //import org.apache.log4j.Logger;
 //
 //
+/**
+ * Manages log database runtime state for the logging subsystem.
+ */
 //public class LogDatabaseManager {
 //    private static Logger log = Logger.getLogger(LogDatabaseHelper.class.getName());
 //    private BoneCP connections = null;
 //
+/**
+ * Creates a log database manager instance for the Snow War game subsystem.
+ */
 //    public LogDatabaseManager() {
 //        boolean isConnectionFailed = false;
 //
@@ -36,6 +42,11 @@
 //        }
 //    }
 //
+/**
+ * Returns the connections for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 //    public BoneCP getConnections() {
 //        return this.connections;
 //    }

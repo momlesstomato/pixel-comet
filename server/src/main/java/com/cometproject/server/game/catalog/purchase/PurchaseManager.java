@@ -15,11 +15,17 @@ import com.cometproject.server.storage.queries.player.PlayerDao;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Manages purchase runtime state for the catalog subsystem.
+ */
 public class PurchaseManager {
     private static PurchaseManager purchaseManager;
 
     private final Map<String, PurchaseHandler> handlers;
 
+    /**
+     * Creates a purchase manager instance for the catalog subsystem.
+     */
     public PurchaseManager() {
         this.handlers = new HashMap<>();
 
@@ -29,6 +35,16 @@ public class PurchaseManager {
         this.handlers.put("bot", new BotPurchaseHandler());
     }
 
+    /**
+     * Handles purchase for this catalog contract.
+     *
+     * @param session Session participating in the operation.
+     * @param pageId Page id supplied by the caller.
+     * @param itemId Item id supplied by the caller.
+     * @param data Data supplied by the caller.
+     * @param amount Amount supplied by the caller.
+     * @param giftData Gift data supplied by the caller.
+     */
     public void handlePurchase(Session session, int pageId, int itemId, String data, int amount, GiftData giftData) {
         if (amount > 100) {
             session.send(new AlertMessageComposer(Locale.get("catalog.error.toomany")));
@@ -48,6 +64,11 @@ public class PurchaseManager {
 
     }
 
+    /**
+     * Returns the instance for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public PurchaseManager getInstance() {
         return purchaseManager;
     }

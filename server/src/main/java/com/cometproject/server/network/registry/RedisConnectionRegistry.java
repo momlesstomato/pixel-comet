@@ -58,6 +58,11 @@ public final class RedisConnectionRegistry implements ConnectionRegistry, Dispos
         );
     }
 
+    /**
+     * Executes register for this networking contract.
+     *
+     * @param connection Connection supplied by the caller.
+     */
     @Override
     public void register(final Connection connection) {
         final ConnectionRegistryEntry entry = ConnectionRegistrySupport.toEntry(connection);
@@ -73,6 +78,11 @@ public final class RedisConnectionRegistry implements ConnectionRegistry, Dispos
         }
     }
 
+    /**
+     * Executes unregister for this networking contract.
+     *
+     * @param connectionId Connection id supplied by the caller.
+     */
     @Override
     public void unregister(final String connectionId) {
         try (Jedis jedis = this.jedisPool.getResource()) {
@@ -80,6 +90,12 @@ public final class RedisConnectionRegistry implements ConnectionRegistry, Dispos
         }
     }
 
+    /**
+     * Finds by id for this networking contract.
+     *
+     * @param connectionId Connection id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public Optional<ConnectionRegistryEntry> findById(final String connectionId) {
         try (Jedis jedis = this.jedisPool.getResource()) {
@@ -93,6 +109,11 @@ public final class RedisConnectionRegistry implements ConnectionRegistry, Dispos
         }
     }
 
+    /**
+     * Returns the all for this networking contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Map<String, ConnectionRegistryEntry> getAll() {
         final Map<String, ConnectionRegistryEntry> entries = new HashMap<>();
@@ -107,6 +128,11 @@ public final class RedisConnectionRegistry implements ConnectionRegistry, Dispos
         return Map.copyOf(entries);
     }
 
+    /**
+     * Executes count for this networking contract.
+     *
+     * @return Result produced by the operation.
+     */
     @Override
     public int count() {
         try (Jedis jedis = this.jedisPool.getResource()) {
@@ -114,6 +140,9 @@ public final class RedisConnectionRegistry implements ConnectionRegistry, Dispos
         }
     }
 
+    /**
+     * Releases resources owned by this networking component.
+     */
     @Override
     public void dispose() {
         this.jedisPool.close();

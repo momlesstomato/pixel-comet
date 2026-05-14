@@ -39,6 +39,9 @@ import static com.cometproject.server.game.rooms.objects.items.types.floor.wired
 import static com.cometproject.server.game.rooms.objects.items.types.floor.wired.actions.types.RewardType.ALERT;
 
 
+/**
+ * Describes wired action give reward behavior for the room subsystem.
+ */
 public class WiredActionGiveReward extends WiredActionItem {
     private static final Map<Long, Map<Integer, Long>> rewardTimings = Maps.newConcurrentMap();
 
@@ -62,6 +65,12 @@ public class WiredActionGiveReward extends WiredActionItem {
     private List<Reward> rewards;
     private Map<Integer, Set<String>> givenRewards;
 
+    /**
+     * Creates a wired action give reward instance for the room subsystem.
+     *
+     * @param roomItemData Room item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public WiredActionGiveReward(RoomItemData roomItemData, Room room) {
         super(roomItemData, room);
 
@@ -88,16 +97,31 @@ public class WiredActionGiveReward extends WiredActionItem {
         }
     }
 
+    /**
+     * Executes requires player for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean requiresPlayer() {
         return true;
     }
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 17;
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(WiredItemEvent event) {
 //        PlayerEntity playerEntity = ((PlayerEntity) event.entity);
@@ -345,6 +369,9 @@ public class WiredActionGiveReward extends WiredActionItem {
         return CometBootstrap.resolve(ICurrencyService.class);
     }
 
+    /**
+     * Handles the data refresh callback for this room contract.
+     */
     @Override
     public void onDataRefresh() {
         if (this.rewards == null)
@@ -362,11 +389,17 @@ public class WiredActionGiveReward extends WiredActionItem {
         }
     }
 
+    /**
+     * Handles the unload callback for this room contract.
+     */
     @Override
     public void onUnload() {
         this.givenRewards.clear();
     }
 
+    /**
+     * Handles the pickup callback for this room contract.
+     */
     @Override
     public void onPickup() {
         super.onPickup();

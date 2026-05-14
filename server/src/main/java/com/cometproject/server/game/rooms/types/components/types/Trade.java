@@ -26,19 +26,22 @@ import java.util.Map;
 import java.util.Set;
 
 
+/**
+ * Describes trade behavior for the room processing subsystem.
+ */
 public class Trade {
     /**
-     * The entities which are trading
+     * The entities which are trading.
      */
     private PlayerEntity user1, user2;
 
     /**
-     * The stage the trade is currently at
+     * The stage the trade is currently at.
      */
     private int stage = 1;
 
     /**
-     * The items which the entities are trading
+     * The items which the entities are trading.
      */
     private Set<PlayerItem> user1Items, user2Items;
 
@@ -48,12 +51,12 @@ public class Trade {
     private boolean user1Accepted = false, user2Accepted = false;
 
     /**
-     * The component instance which stores the trades
+     * The component instance which stores the trades.
      */
     private TradeComponent tradeComponent;
 
     /**
-     * Initialize the trade
+     * Initialize the trade.
      *
      * @param user1 The user who initialized the trade
      * @param user2 The user who is participating in the trade
@@ -88,7 +91,7 @@ public class Trade {
     }
 
     /**
-     * Cancel the trade
+     * Cancel the trade.
      *
      * @param userId The user which is cancelling the trade
      */
@@ -97,7 +100,7 @@ public class Trade {
     }
 
     /**
-     * Cancel the trade
+     * Cancel the trade.
      *
      * @param userId  The user which is cancelling the trade
      * @param isLeave Is the user leaving the room?
@@ -132,7 +135,7 @@ public class Trade {
     }
 
     /**
-     * Add an item to the trade
+     * Add an item to the trade.
      *
      * @param user The user which is adding an item
      * @param item The chosen item
@@ -166,12 +169,18 @@ public class Trade {
         }
     }
 
+    /**
+     * Indicates whether offered applies to this room processing contract.
+     *
+     * @param item Item supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isOffered(PlayerItem item) {
         return this.user1Items.contains(item) || this.user2Items.contains(item);
     }
 
     /**
-     * Get the participant id
+     * Get the participant id.
      *
      * @param user The user who is trading
      * @return participant ID
@@ -181,7 +190,7 @@ public class Trade {
     }
 
     /**
-     * Remove an item from the trade
+     * Remove an item from the trade.
      *
      * @param user The user which is removing an item
      * @param item The chosen item
@@ -201,7 +210,7 @@ public class Trade {
     }
 
     /**
-     * Accept the trade
+     * Accept the trade.
      *
      * @param user The user which is accepting the trade
      */
@@ -221,6 +230,11 @@ public class Trade {
         }
     }
 
+    /**
+     * Executes unaccept for this room processing contract.
+     *
+     * @param user User supplied by the caller.
+     */
     public void unaccept(int user) {
         if (this.user1Accepted && user2Accepted) {
             this.stage--;
@@ -235,7 +249,7 @@ public class Trade {
     }
 
     /**
-     * Confirm the trade
+     * Confirm the trade.
      *
      * @param user The user which is confirming the trade
      */
@@ -277,7 +291,7 @@ public class Trade {
     }
 
     /**
-     * Complete the trade, provide each of the items within the trade to the users
+     * Complete the trade, provide each of the items within the trade to the users.
      */
     public void complete() {
         // confirm the items still exist before making any permanent changes.
@@ -361,7 +375,7 @@ public class Trade {
     }
 
     /**
-     * Send the packet which updates the trade window
+     * Send the packet which updates the trade window.
      */
     public void updateWindow() {
         this.sendToUsers(new TradeUpdateMessageComposer(
@@ -373,7 +387,7 @@ public class Trade {
     }
 
     /**
-     * Send a packet to each player participating in the trade
+     * Send a packet to each player participating in the trade.
      *
      * @param msg The packet
      */
@@ -388,7 +402,7 @@ public class Trade {
     }
 
     /**
-     * Get the user 1 participating in the trade
+     * Get the user 1 participating in the trade.
      *
      * @return user 1
      */
@@ -397,7 +411,7 @@ public class Trade {
     }
 
     /**
-     * Get the user 2 participating in the trade
+     * Get the user 2 participating in the trade.
      *
      * @return user 2
      */
@@ -406,7 +420,7 @@ public class Trade {
     }
 
     /**
-     * The component instance which stores the trades
+     * The component instance which stores the trades.
      *
      * @return The instance
      */
@@ -415,7 +429,7 @@ public class Trade {
     }
 
     /**
-     * Set the trade component instance
+     * Set the trade component instance.
      *
      * @param tradeComponent The trade instance
      */

@@ -26,6 +26,9 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 
+/**
+ * Manages API runtime state for the HTTP API subsystem.
+ */
 public class APIManager implements Startable {
     private static final String OPENAPI_SPEC_PATH = "/openapi/spec";
     private static final String SWAGGER_PATH = "/swagger";
@@ -44,11 +47,11 @@ public class APIManager implements Startable {
     );
 
     /**
-     * Logger
+     * Logger.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(APIManager.class.getName());
     /**
-     * Create an array of config properties that are required before enabling the API
+     * Create an array of config properties that are required before enabling the API.
      * If none of these properties exist, the API will be automatically disabled
      */
         private static final String[] configProperties = new String[]{
@@ -65,25 +68,30 @@ public class APIManager implements Startable {
     private boolean enabled;
 
     /**
-     * The token used for authentication
+     * The token used for authentication.
      */
     private String authToken;
     private String authHeader;
     private boolean documentationEnabled;
 
     /**
-     * Construct the API manager
+     * Construct the API manager.
      */
     public APIManager() {
 
     }
 
+    /**
+     * Returns the instance for this HTTP API contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static APIManager getInstance() {
         return CometBootstrap.resolve(APIManager.class);
     }
 
     /**
-     * Initialize the API
+     * Initialize the API.
      */
     @Override
     public void start() {
@@ -96,12 +104,15 @@ public class APIManager implements Startable {
         this.validateAuthenticationConfiguration();
     }
 
+    /**
+     * Stops this HTTP API component.
+     */
     @Override
     public void stop() {
     }
 
     /**
-     * Initialize the configuration
+     * Initialize the configuration.
      */
     private void initializeConfiguration() {
         for (String configProperty : configProperties) {

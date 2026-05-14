@@ -5,7 +5,17 @@ import com.cometproject.games.snowwar.MessageWriter;
 import com.cometproject.games.snowwar.SnowWarRoom;
 import com.cometproject.games.snowwar.gameevents.*;
 
+/**
+ * Describes serialize game status behavior for the network message subsystem.
+ */
 public class SerializeGameStatus {
+    /**
+     * Executes parse for this network message contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @param arena Arena supplied by the caller.
+     * @param isFull Is full supplied by the caller.
+     */
     public static void parse(IComposer msg, SnowWarRoom arena, boolean isFull) {
         msg.writeInt(arena.Turn);
         msg.writeInt(seed(arena.Turn) + arena.checksum);
@@ -38,6 +48,13 @@ public class SerializeGameStatus {
         }
     }
 
+    /**
+     * Executes parse new for this network message contract.
+     *
+     * @param ClientMessage Client message supplied by the caller.
+     * @param arena Arena supplied by the caller.
+     * @param isFull Is full supplied by the caller.
+     */
     public static void parseNew(MessageWriter ClientMessage, SnowWarRoom arena, boolean isFull) {
         int i = 0;
 
@@ -77,6 +94,12 @@ public class SerializeGameStatus {
         ClientMessage.writeSaved(i);
     }
 
+    /**
+     * Executes seed for this network message contract.
+     *
+     * @param Turn Turn supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static int seed(int Turn) {
         if (Turn == 0) {
             Turn = -1;

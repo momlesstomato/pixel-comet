@@ -6,12 +6,24 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.network.websockets.WebSocketClientConnection;
 import com.cometproject.server.network.websockets.packets.incoming.AbstractWebSocketHandler;
 
+/**
+ * Describes accept minigame suggestion handler behavior for the networking subsystem.
+ */
 public class AcceptMinigameSuggestionHandler extends AbstractWebSocketHandler<AcceptMinigameSuggestionHandler.ASMData> {
 
+    /**
+     * Creates a accept minigame suggestion handler instance for the networking subsystem.
+     */
     public AcceptMinigameSuggestionHandler() {
         super(ASMData.class);
     }
 
+    /**
+     * Executes handle for this networking contract.
+     *
+     * @param ctx Netty channel context for the current operation.
+     * @param eventData Event data supplied by the caller.
+     */
     @Override
     public void handle(WebSocketClientConnection ctx, ASMData eventData) {
         Session s = NetworkManager.getInstance().getSessions().getByPlayerId(Integer.parseInt(eventData.session));

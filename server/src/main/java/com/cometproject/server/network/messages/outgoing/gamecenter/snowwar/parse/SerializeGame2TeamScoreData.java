@@ -7,8 +7,19 @@
 /*    */ 
 /*    */ 
 /*    */ 
+/**
+ * Describes serialize game2 team score data behavior for the Snow War game subsystem.
+ */
 /*    */ public class SerializeGame2TeamScoreData
 /*    */ {
+/**
+ * Executes parse for this network message contract.
+ *
+ * @param msg Composer buffer that receives serialized protocol fields.
+ * @param TeamId Team id supplied by the caller.
+ * @param TeamScore Team score supplied by the caller.
+ * @param Players Players supplied by the caller.
+ */
 /*    */   public static void parse(IComposer msg, int TeamId, int TeamScore, Collection<HumanGameObject> Players) {
 /* 13 */     msg.writeInt(TeamId);
 /* 14 */     msg.writeInt(TeamScore);

@@ -9,19 +9,37 @@ import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
 
+/**
+ * Serializes the wired condition message for the Pixel Protocol client.
+ */
 public class WiredConditionMessageComposer extends MessageComposer {
 
     private final WiredConditionItem wiredConditionItem;
 
+    /**
+     * Creates a wired condition message composer instance for the network message subsystem.
+     *
+     * @param wiredConditionItem Wired condition item supplied by the caller.
+     */
     public WiredConditionMessageComposer(final WiredConditionItem wiredConditionItem) {
         this.wiredConditionItem = wiredConditionItem;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.WiredConditionConfigMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeBoolean(false); // advanced

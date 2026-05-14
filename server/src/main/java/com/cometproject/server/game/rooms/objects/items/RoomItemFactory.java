@@ -55,6 +55,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
+/**
+ * Creates room item instances for the room subsystem.
+ */
 public class RoomItemFactory {
     public static final String STACK_TOOL = "tile_stackmagic";
     public static final String TELEPORT_PAD = "teleport_pad";
@@ -320,6 +323,14 @@ public class RoomItemFactory {
         }};
     }
 
+    /**
+     * Creates floor for this room contract.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     * @param def Def supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static RoomItemFloor createFloor(RoomItemData itemData, Room room, FurnitureDefinition def) {
         RoomItemFloor floorItem = null;
 
@@ -380,6 +391,14 @@ public class RoomItemFactory {
         return floorItem;
     }
 
+    /**
+     * Creates wall for this room contract.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     * @param def Def supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static RoomItemWall createWall(RoomItemData itemData, Room room, FurnitureDefinition def) {
         if (def == null) {
             return null;
@@ -413,6 +432,12 @@ public class RoomItemFactory {
         return wallItem;
     }
 
+    /**
+     * Returns the process time for this room contract.
+     *
+     * @param time Time supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getProcessTime(double time) {
         long realTime = Math.round(time * 1000 / processMs);
 

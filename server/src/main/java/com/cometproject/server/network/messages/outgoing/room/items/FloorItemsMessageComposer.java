@@ -14,18 +14,36 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Serializes the floor items message for the Pixel Protocol client.
+ */
 public class FloorItemsMessageComposer extends MessageComposer {
     private final Room room;
 
+    /**
+     * Creates a floor items message composer instance for the network message subsystem.
+     *
+     * @param room Room participating in the operation.
+     */
     public FloorItemsMessageComposer(final Room room) {
         this.room = room;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.ObjectsMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         if (room.getItems().getFloorItems().size() > 0) {

@@ -8,15 +8,26 @@ import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Manages pet command runtime state for the pet subsystem.
+ */
 public class PetCommandManager {
     private static PetCommandManager petCommandManager;
 
     private Map<String, PetCommand> petCommands;
 
+    /**
+     * Creates a pet command manager instance for the pet subsystem.
+     */
     public PetCommandManager() {
         this.initialize();
     }
 
+    /**
+     * Returns the instance for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static PetCommandManager getInstance() {
         if (petCommandManager == null)
             petCommandManager = new PetCommandManager();
@@ -24,6 +35,9 @@ public class PetCommandManager {
         return petCommandManager;
     }
 
+    /**
+     * Executes initialize for this pet contract.
+     */
     public void initialize() {
         if (this.petCommands != null) {
             this.petCommands.clear();
@@ -42,6 +56,14 @@ public class PetCommandManager {
         }};
     }
 
+    /**
+     * Executes execute command for this pet contract.
+     *
+     * @param commandKey Command key supplied by the caller.
+     * @param executor Executor supplied by the caller.
+     * @param petEntity Pet entity supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean executeCommand(String commandKey, PlayerEntity executor, PetEntity petEntity) {
         if (!this.petCommands.containsKey(commandKey)) {
             return false;

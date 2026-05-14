@@ -13,8 +13,17 @@ import com.cometproject.server.network.messages.outgoing.room.items.SlideObjectB
 import java.util.List;
 
 
+/**
+ * Describes wired puzzle box behavior for the room subsystem.
+ */
 public class WiredPuzzleBox extends RoomItemFloor
 {
+    /**
+     * Creates a wired puzzle box instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public WiredPuzzleBox(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
@@ -72,6 +81,14 @@ public class WiredPuzzleBox extends RoomItemFloor
 
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (isWiredTrigger || entity == null) return false;
@@ -115,6 +132,9 @@ public class WiredPuzzleBox extends RoomItemFloor
         return true;
     }
 
+    /**
+     * Handles the placed callback for this room contract.
+     */
     @Override
     public void onPlaced() {
         this.getItemData().setData("0");

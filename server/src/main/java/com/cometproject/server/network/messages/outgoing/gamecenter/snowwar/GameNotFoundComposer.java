@@ -13,12 +13,25 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 /*    */ 
 /*    */ 
 /*    */ 
+/**
+ * Describes game not found composer packets for the Snow War protocol layer.
+ */
 /*    */ public class GameNotFoundComposer
 /*    */   extends MessageComposer
 /*    */ {
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
 /*    */   public void compose(IComposer msg) {}
 /*    */   @Override
+/**
+ * Returns the id for this network message contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*    */   public short getId() {
 /* 21 */     return 0;
 /*    */   }

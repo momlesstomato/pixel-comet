@@ -18,16 +18,33 @@ import java.util.Arrays;
 import java.util.Random;
 
 
+/**
+ * Describes dice floor item behavior for the room subsystem.
+ */
 public class DiceFloorItem extends RoomItemFloor {
     private boolean isInUse = false;
     private RoomEntity r = null;
     private int rigNumber = -1;
 
     public Session client = null;
+    /**
+     * Creates a dice floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public DiceFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (!isWiredTrigger) {
@@ -83,6 +100,9 @@ public class DiceFloorItem extends RoomItemFloor {
         return true;
     }
 
+    /**
+     * Handles the placed callback for this room contract.
+     */
     @Override
     public void onPlaced() {
         if (!"0".equals(this.getItemData().getData())) {
@@ -90,11 +110,17 @@ public class DiceFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Handles the pickup callback for this room contract.
+     */
     @Override
     public void onPickup() {
         this.cancelTicks();
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
         int num = new Random().nextInt(6) + 1;
@@ -113,6 +139,11 @@ public class DiceFloorItem extends RoomItemFloor {
         this.r = null;
     }
 
+    /**
+     * Executes verify count for this room contract.
+     *
+     * @param c C supplied by the caller.
+     */
     public void verifyCount(int c){
         this.r.addDiceCount(c);
 
@@ -131,6 +162,11 @@ public class DiceFloorItem extends RoomItemFloor {
         this.getRoom().getEntities().broadcastMessage(new TalkMessageComposer(this.r.getId(), messInfo, ChatEmotion.NONE, 26));
     }
 
+    /**
+     * Executes contador casino for this room contract.
+     *
+     * @param num Num supplied by the caller.
+     */
     public void contadorCasino(int num){
         if(this.client != null){
             PlayerEntity pEntity = client.getPlayer().getEntity();

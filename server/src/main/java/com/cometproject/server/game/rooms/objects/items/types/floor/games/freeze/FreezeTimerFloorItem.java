@@ -11,14 +11,26 @@ import com.cometproject.server.game.rooms.types.components.games.GameType;
 
 import java.util.List;
 
+/**
+ * Describes freeze timer floor item behavior for the room subsystem.
+ */
 public class FreezeTimerFloorItem extends AbstractGameTimerFloorItem {
     private int time = 0;
     public static boolean running = false;
 
+    /**
+     * Creates a freeze timer floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public FreezeTimerFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Executes send update for this room contract.
+     */
     @Override
     public void sendUpdate() {
         this.time = Integer.parseInt(this.getItemData().getData());
@@ -26,6 +38,14 @@ public class FreezeTimerFloorItem extends AbstractGameTimerFloorItem {
         super.sendUpdate();
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTriggered Is wired triggered supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTriggered) {
         if (!isWiredTriggered) {
@@ -83,6 +103,9 @@ public class FreezeTimerFloorItem extends AbstractGameTimerFloorItem {
         return true;
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
         running = this.time > 0;
@@ -110,6 +133,11 @@ public class FreezeTimerFloorItem extends AbstractGameTimerFloorItem {
         }
     }
 
+    /**
+     * Returns the game type for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public GameType getGameType() {
         return GameType.FREEZE;

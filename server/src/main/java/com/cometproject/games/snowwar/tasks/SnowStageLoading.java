@@ -16,8 +16,16 @@ import java.util.Collection;
 /*    */
 /*    */ 
 /*    */ 
+/**
+ * Describes snow stage loading behavior for the Snow War game subsystem.
+ */
 /*    */ public class SnowStageLoading
 /*    */ {
+/**
+ * Executes exec for this task scheduling contract.
+ *
+ * @param room Room participating in the operation.
+ */
 /*    */   public static void exec(SnowWarRoom room) {
 /* 14 */     Collection<HumanGameObject> playersLoaded = room.getStageLoadedPlayers();
 /*    */     

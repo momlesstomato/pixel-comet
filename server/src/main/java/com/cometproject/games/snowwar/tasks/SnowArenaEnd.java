@@ -6,7 +6,15 @@ import com.cometproject.games.snowwar.gameobjects.HumanGameObject;
 import com.cometproject.server.network.messages.outgoing.gamecenter.snowwar.AccountGameStatusComposer;
 import com.cometproject.server.network.messages.outgoing.gamecenter.snowwar.GameEndingComposer;
 
+/**
+ * Describes snow arena end behavior for the task scheduling subsystem.
+ */
 public class SnowArenaEnd {
+    /**
+     * Executes exec for this task scheduling contract.
+     *
+     * @param room Room participating in the operation.
+     */
     public static void exec(SnowWarRoom room) {
         room.Winner = 0;
         int blueScore = 0;

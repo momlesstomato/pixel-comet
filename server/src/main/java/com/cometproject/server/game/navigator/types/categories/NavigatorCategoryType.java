@@ -1,5 +1,8 @@
 package com.cometproject.server.game.navigator.types.categories;
 
+/**
+ * Enumerates navigator category type values used by the navigator subsystem.
+ */
 public enum NavigatorCategoryType {
     CATEGORY,
     PUBLIC,

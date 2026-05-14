@@ -5,8 +5,17 @@
 /*    */ 
 /*    */ 
 /*    */ 
+/**
+ * Describes serialize game2 game result behavior for the Snow War game subsystem.
+ */
 /*    */ public class SerializeGame2GameResult
 /*    */ {
+/**
+ * Executes parse for this network message contract.
+ *
+ * @param msg Composer buffer that receives serialized protocol fields.
+ * @param arena Arena supplied by the caller.
+ */
 /*    */   public static void parse(IComposer msg, SnowWarRoom arena) {
 /* 11 */     msg.writeBoolean(true);
 /* 12 */     msg.writeInt(arena.Result);

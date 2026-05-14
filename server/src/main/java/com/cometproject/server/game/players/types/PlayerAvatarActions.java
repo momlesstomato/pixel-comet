@@ -1,5 +1,8 @@
 package com.cometproject.server.game.players.types;
 
+/**
+ * Enumerates player avatar actions values used by the player subsystem.
+ */
 public enum PlayerAvatarActions {
     EXPRESSION_WAVE(1),
     EXPRESSION_BLOW_A_KISS(2),
@@ -18,6 +21,11 @@ public enum PlayerAvatarActions {
         this.id = id;
     }
 
+    /**
+     * Returns the value for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getValue() {
         return this.id;
     }

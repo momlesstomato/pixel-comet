@@ -11,7 +11,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * Describes notification commands dao behavior for the storage subsystem.
+ */
 public class NotificationCommandsDao {
+    /**
+     * Returns the all for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<String, Notification> getAll() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

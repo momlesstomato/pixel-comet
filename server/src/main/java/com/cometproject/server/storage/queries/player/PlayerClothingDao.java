@@ -8,8 +8,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Set;
 
+/**
+ * Describes player clothing dao behavior for the storage subsystem.
+ */
 public class PlayerClothingDao {
 
+    /**
+     * Returns the clothing for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param clothingItems Clothing items supplied by the caller.
+     */
     public static void getClothing(final int playerId, Set<String> clothingItems) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -34,6 +43,12 @@ public class PlayerClothingDao {
         }
     }
 
+    /**
+     * Executes redeem clothing for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param clothingItem Clothing item supplied by the caller.
+     */
     public static void redeemClothing(final int playerId, String clothingItem) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

@@ -12,7 +12,13 @@ import com.cometproject.api.game.rooms.filter.FilterMode;
 import com.cometproject.server.storage.SqlHelper;
 
 
+/**
+ * Describes config dao behavior for the storage subsystem.
+ */
 public class ConfigDao {
+    /**
+     * Returns the all for this storage contract.
+     */
     public static void getAll() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -134,6 +140,9 @@ public class ConfigDao {
         }
     }
 
+    /**
+     * Returns the survival settings for this storage contract.
+     */
     public static void getSurvivalSettings() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

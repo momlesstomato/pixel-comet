@@ -16,6 +16,9 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 
 import java.util.List;
 
+/**
+ * Serializes the navigator search result set message for the Pixel Protocol client.
+ */
 public class NavigatorSearchResultSetMessageComposer extends MessageComposer {
 
     private final String category;
@@ -24,6 +27,14 @@ public class NavigatorSearchResultSetMessageComposer extends MessageComposer {
     private final Player player;
     private int invisibleRooms;
 
+    /**
+     * Creates a navigator search result set message composer instance for the network message subsystem.
+     *
+     * @param category Category supplied by the caller.
+     * @param data Data supplied by the caller.
+     * @param categories Categories supplied by the caller.
+     * @param player Player participating in the operation.
+     */
     public NavigatorSearchResultSetMessageComposer(String category, String data, List<Category> categories, Player player) {
         this.category = category;
         this.data = data;
@@ -32,11 +43,21 @@ public class NavigatorSearchResultSetMessageComposer extends MessageComposer {
         this.invisibleRooms = 0;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.NavigatorSearchResultSetMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeString(this.category);
@@ -116,6 +137,9 @@ public class NavigatorSearchResultSetMessageComposer extends MessageComposer {
         }
     }
 
+    /**
+     * Releases resources owned by this network message component.
+     */
     @Override
     public void dispose() {
         if (this.categories != null)

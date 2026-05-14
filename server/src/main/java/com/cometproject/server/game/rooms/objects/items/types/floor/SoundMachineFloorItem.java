@@ -19,6 +19,9 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Describes sound machine floor item behavior for the room subsystem.
+ */
 public class SoundMachineFloorItem extends RoomItemFloor implements Stateable {
     public static final int MAX_CAPACITY = 20;
 
@@ -30,6 +33,12 @@ public class SoundMachineFloorItem extends RoomItemFloor implements Stateable {
 
     private boolean pendingPlay = false;
 
+    /**
+     * Creates a sound machine floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public SoundMachineFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
 
@@ -52,6 +61,14 @@ public class SoundMachineFloorItem extends RoomItemFloor implements Stateable {
         }
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (entity instanceof PlayerEntity) {
@@ -72,6 +89,9 @@ public class SoundMachineFloorItem extends RoomItemFloor implements Stateable {
         return true;
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
         if (this.pendingPlay) {
@@ -113,11 +133,17 @@ public class SoundMachineFloorItem extends RoomItemFloor implements Stateable {
         }
     }
 
+    /**
+     * Handles the pickup callback for this room contract.
+     */
     @Override
     public void onPickup() {
         this.getItemData().setData(this.getDataObject());
     }
 
+    /**
+     * Handles the placed callback for this room contract.
+     */
     @Override
     public void onPlaced() {
         if (this.isPlaying) {
@@ -125,10 +151,21 @@ public class SoundMachineFloorItem extends RoomItemFloor implements Stateable {
         }
     }
 
+    /**
+     * Adds song to this room contract.
+     *
+     * @param songItemData Song item data supplied by the caller.
+     */
     public void addSong(SongItemData songItemData) {
         this.songs.add(songItemData);
     }
 
+    /**
+     * Removes song from this room contract.
+     *
+     * @param index Index supplied by the caller.
+     * @return Result produced by the mutation.
+     */
     public SongItemData removeSong(int index) {
         if (index == this.currentPlayingIndex) {
             this.playNextSong();
@@ -140,6 +177,9 @@ public class SoundMachineFloorItem extends RoomItemFloor implements Stateable {
         return songItemData;
     }
 
+    /**
+     * Executes play for this room contract.
+     */
     public void play() {
         if (this.songs.size() == 0) return;
 
@@ -150,6 +190,9 @@ public class SoundMachineFloorItem extends RoomItemFloor implements Stateable {
         this.setTicks(RoomItemFactory.getProcessTime(1.0));
     }
 
+    /**
+     * Stops this room component.
+     */
     public void stop() {
         this.isPlaying = false;
         this.currentPlayingIndex = -1;
@@ -157,6 +200,9 @@ public class SoundMachineFloorItem extends RoomItemFloor implements Stateable {
         this.broadcastSong();
     }
 
+    /**
+     * Executes play next song for this room contract.
+     */
     public void playNextSong() {
         this.startTimestamp = Comet.getTime();
         this.currentPlayingIndex++;
@@ -168,6 +214,9 @@ public class SoundMachineFloorItem extends RoomItemFloor implements Stateable {
         this.broadcastSong();
     }
 
+    /**
+     * Executes broadcast song for this room contract.
+     */
     public void broadcastSong() {
         if (!this.isPlaying || this.currentPlayingIndex >= this.songs.size()) {
             this.getRoom().getEntities().broadcastMessage(new PlayMusicMessageComposer());
@@ -187,6 +236,11 @@ public class SoundMachineFloorItem extends RoomItemFloor implements Stateable {
         }
     }
 
+    /**
+     * Returns the composer for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public MessageComposer getComposer() {
         if (this.currentPlayingIndex == -1) return null;
 
@@ -204,6 +258,11 @@ public class SoundMachineFloorItem extends RoomItemFloor implements Stateable {
         return (int) (Comet.getTime() - this.startTimestamp);
     }
 
+    /**
+     * Executes song time sync for this room contract.
+     *
+     * @return Result produced by the operation.
+     */
     public int songTimeSync() {
         if (!this.isPlaying || this.currentPlayingIndex < 0 || this.currentPlayingIndex >= this.getSongs().size()) {
             return 0;
@@ -223,20 +282,38 @@ public class SoundMachineFloorItem extends RoomItemFloor implements Stateable {
         return this.timePlaying() * 1000;
     }
 
+    /**
+     * Returns the data object for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDataObject() {
         return (this.isPlaying ? "##jukeboxOn" : "##jukeboxOff") + JsonUtil.getInstance().toJson(this.songs);
     }
 
+    /**
+     * Handles the unload callback for this room contract.
+     */
     @Override
     public void onUnload() {
         this.getSongs().clear();
     }
 
+    /**
+     * Returns the songs for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<SongItemData> getSongs() {
         return this.songs;
     }
 
+    /**
+     * Returns the state for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean getState() {
         return this.isPlaying;

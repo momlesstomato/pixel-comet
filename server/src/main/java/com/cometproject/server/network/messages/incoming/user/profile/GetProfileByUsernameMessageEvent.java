@@ -15,7 +15,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 
+/**
+ * Represents the get profile by username message event published by the network message subsystem.
+ */
 public class GetProfileByUsernameMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @throws Exception When the operation cannot complete.
+     */
     @Override
     public void handle(Session client, MessageEvent msg) throws Exception {
         String username = msg.readString();

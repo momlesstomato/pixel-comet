@@ -18,66 +18,77 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 
+/**
+ * Manages catalog runtime state for the catalog subsystem.
+ */
 public class CatalogManager implements ICatalogService {
     /**
      * Maps the offer ID of an item to the page ID.
      */
     private final Map<Integer, ICatalogOffer> catalogOffers = new HashMap<>();
     /**
-     * The new style of gift boxes
+     * The new style of gift boxes.
      */
     private final List<Integer> giftBoxesNew = Lists.newArrayList();
     /**
-     * The old style of gift boxes
+     * The old style of gift boxes.
      */
     private final List<Integer> giftBoxesOld = Lists.newArrayList();
     /**
-     * Featured catalog pages (they are displayed on the front page)
+     * Featured catalog pages (they are displayed on the front page).
      */
     private final List<ICatalogFrontPageEntry> frontPageEntries = new ArrayList<>();
     /**
-     * Redeemable clothing items
+     * Redeemable clothing items.
      */
     private final Map<String, IClothingItem> clothingItems = Maps.newConcurrentMap();
     /**
-     * The pages within the catalog
+     * The pages within the catalog.
      */
     private Map<Integer, ICatalogPage> pages;
     /**
-     * The items within the catalog
+     * The items within the catalog.
      */
     private Map<Integer, ICatalogItem> items;
     /**
-     * The catalog item IDs to page IDs map
+     * The catalog item IDs to page IDs map.
      */
     private Map<Integer, Integer> catalogItemIdToPageId;
     private Map<Integer, Integer> limitedIdExisting;
     /**
-     * The handler of everything catalog-purchase related
+     * The handler of everything catalog-purchase related.
      */
     private ICatalogPurchaseHandler purchaseHandler;
 
     /**
-     * The logger for the catalog manager
+     * The logger for the catalog manager.
      */
     private final Logger LOGGER = LoggerFactory.getLogger(CatalogManager.class);
 
     /**
-     * Parent pages
+     * Parent pages.
      */
     private List<ICatalogPage> parentPages = Lists.newCopyOnWriteArrayList();
 
     /**
-     * Initialize the catalog
+     * Initialize the catalog.
      */
     public CatalogManager() {
 
     }
 
+    /**
+     * Returns the instance for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static CatalogManager getInstance() {
         return CometBootstrap.resolve(CatalogManager.class);
     }
 
+    /**
+     * Starts this catalog component.
+     */
     @Override
     public void start() {
         this.pages = new ListOrderedMap<>();
@@ -100,7 +111,7 @@ public class CatalogManager implements ICatalogService {
     }
 
     /**
-     * Load all catalog pages
+     * Load all catalog pages.
      */
     @Override
     public void loadItemsAndPages() {
@@ -147,6 +158,9 @@ public class CatalogManager implements ICatalogService {
         LOGGER.info("Loaded " + this.getPages().size() + " catalog pages and " + this.items.size() + " catalog items");
     }
 
+    /**
+     * Loads gift boxes for this catalog contract.
+     */
     @Override
     public void loadGiftBoxes() {
         if (this.giftBoxesNew.size() >= 1) {
@@ -161,6 +175,9 @@ public class CatalogManager implements ICatalogService {
         LOGGER.info("Loaded " + (this.giftBoxesNew.size() + this.giftBoxesOld.size()) + " gift wrappings");
     }
 
+    /**
+     * Loads clothing items for this catalog contract.
+     */
     @Override
     public void loadClothingItems() {
         if (this.clothingItems.size() >= 1) {
@@ -172,7 +189,7 @@ public class CatalogManager implements ICatalogService {
     }
 
     /**
-     * Get pages for a specific player rank
+     * Get pages for a specific player rank.
      *
      * @param rank Player rank
      * @return A list of pages that are accessible by the specified rank
@@ -190,6 +207,9 @@ public class CatalogManager implements ICatalogService {
         return pages;
     }
 
+    /**
+     * Executes sort catalog children for this catalog contract.
+     */
     public void sortCatalogChildren() {
         this.parentPages.clear();
 
@@ -210,6 +230,12 @@ public class CatalogManager implements ICatalogService {
         this.parentPages.sort(Comparator.comparing(ICatalogPage::getOrder));
     }
 
+    /**
+     * Returns the catalog item by offer id for this catalog contract.
+     *
+     * @param offerId Offer id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public ICatalogItem getCatalogItemByOfferId(int offerId) {
         ICatalogOffer offer = getCatalogOffers().get(offerId);
@@ -224,6 +250,12 @@ public class CatalogManager implements ICatalogService {
         return page.getItems().get(offer.getCatalogItemId());
     }
 
+    /**
+     * Returns the catalog page by catalog item id for this catalog contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public ICatalogPage getCatalogPageByCatalogItemId(int id) {
         if (!this.catalogItemIdToPageId.containsKey(id)) {
@@ -233,6 +265,12 @@ public class CatalogManager implements ICatalogService {
         return this.pages.get(this.catalogItemIdToPageId.get(id));
     }
 
+    /**
+     * Returns the catalog item by item id for this catalog contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public ICatalogItem getCatalogItemByItemId(int itemId) {
         if (!this.items.containsKey(itemId)) {
@@ -242,6 +280,12 @@ public class CatalogManager implements ICatalogService {
         return this.items.get(itemId);
     }
 
+    /**
+     * Returns the items for page for this catalog contract.
+     *
+     * @param pageId Page id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public Map<Integer, ICatalogItem> getItemsForPage(int pageId) {
         Map<Integer, ICatalogItem> items = Maps.newHashMap();
@@ -256,7 +300,7 @@ public class CatalogManager implements ICatalogService {
     }
 
     /**
-     * Get a catalog page by its ID
+     * Get a catalog page by its ID.
      *
      * @param id Catalog Page ID
      * @return Catalog Page object with the specified ID
@@ -271,7 +315,7 @@ public class CatalogManager implements ICatalogService {
     }
 
     /**
-     * Get a catalog item by its ID
+     * Get a catalog item by its ID.
      *
      * @param catalogItemId The ID of the catalog item
      * @return CatalogItem object with specified ID
@@ -293,7 +337,7 @@ public class CatalogManager implements ICatalogService {
     }
 
     /**
-     * Get all catalog pages
+     * Get all catalog pages.
      *
      * @return All catalog pages in-memory
      */
@@ -303,7 +347,7 @@ public class CatalogManager implements ICatalogService {
     }
 
     /**
-     * Get the catalog page handler
+     * Get the catalog page handler.
      *
      * @return The catalog page handler
      */
@@ -313,7 +357,7 @@ public class CatalogManager implements ICatalogService {
     }
 
     /**
-     * Gift wrappings new
+     * Gift wrappings new.
      *
      * @return The new style of gift wrapping boxes
      */
@@ -323,7 +367,7 @@ public class CatalogManager implements ICatalogService {
     }
 
     /**
-     * Gift wrappings old
+     * Gift wrappings old.
      *
      * @return The old style of gift wrapping boxes
      */
@@ -333,7 +377,7 @@ public class CatalogManager implements ICatalogService {
     }
 
     /**
-     * List all front page entries
+     * List all front page entries.
      *
      * @return List of all front page entries
      */
@@ -342,16 +386,31 @@ public class CatalogManager implements ICatalogService {
         return this.frontPageEntries;
     }
 
+    /**
+     * Returns the clothing items for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Map<String, IClothingItem> getClothingItems() {
         return this.clothingItems;
     }
 
+    /**
+     * Returns the catalog offers for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Map<Integer, ICatalogOffer> getCatalogOffers() {
         return catalogOffers;
     }
 
+    /**
+     * Returns the parent pages for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public List<ICatalogPage> getParentPages() {
         return parentPages;
@@ -361,15 +420,38 @@ public class CatalogManager implements ICatalogService {
     private Map<Integer, RolePlayChart> roleplayProducts = new ListOrderedMap<>();
     private Map<Integer, ShopOffer> cmsOffers = new ListOrderedMap<>();
 
+    /**
+     * Returns the rp product for this catalog contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public RolePlayChart getRPProduct(int id){
         return this.roleplayProducts.get(id);
     }
 
+    /**
+     * Returns the website offer for this catalog contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public ShopOffer getWebsiteOffer(int id){
         return this.cmsOffers.get(id);
     }
 
+    /**
+     * Returns the NUX gifts for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<NuxGift> getNuxGifts() { return this.nuxGiftsData; }
+    /**
+     * Returns the NUX gifts selection view for this catalog contract.
+     *
+     * @param type Type supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public List<NuxGift> getNuxGiftsSelectionView(int type) {
         List<NuxGift> nuxTypeGifts = new ArrayList<>();
 
@@ -383,6 +465,9 @@ public class CatalogManager implements ICatalogService {
         return nuxTypeGifts;
     }
 
+    /**
+     * Loads NUX gifts for this catalog contract.
+     */
     public void loadNuxGifts() {
         if(this.nuxGiftsData != null) {
             this.nuxGiftsData.clear();
@@ -391,6 +476,9 @@ public class CatalogManager implements ICatalogService {
         this.nuxGiftsData = CatalogDao.getNuxGiftsSelectionView();
     }
 
+    /**
+     * Loads rp products for this catalog contract.
+     */
     public void loadRPProducts() {
         if(this.roleplayProducts != null) {
             this.roleplayProducts.clear();
@@ -400,6 +488,9 @@ public class CatalogManager implements ICatalogService {
         LOGGER.info("Loaded " + this.roleplayProducts.size() + " RP products.");
     }
 
+    /**
+     * Loads offers for this catalog contract.
+     */
     public void loadOffers(){
         if(this.cmsOffers != null) {
             this.cmsOffers.clear();

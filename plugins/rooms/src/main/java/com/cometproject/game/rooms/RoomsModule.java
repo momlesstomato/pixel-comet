@@ -16,14 +16,26 @@ import com.cometproject.game.rooms.services.RoomModelService;
 import com.cometproject.game.rooms.services.RoomService;
 import com.cometproject.storage.api.StorageContext;
 
+/**
+ * Describes rooms module behavior for the room subsystem.
+ */
 public class RoomsModule extends BaseModule {
     private IRoomModelService roomModelService;
     private IRoomService roomService;
 
+    /**
+     * Creates a rooms module instance for the room subsystem.
+     *
+     * @param config Config supplied by the caller.
+     * @param gameService Game service supplied by the caller.
+     */
     public RoomsModule(ModuleConfig config, IGameService gameService) {
         super(config, gameService);
     }
 
+    /**
+     * Updates the up for this room contract.
+     */
     @Override
     public void setup() {
         final IRoomModelFactory roomModelFactory = new RoomModelFactory();
@@ -38,6 +50,11 @@ public class RoomsModule extends BaseModule {
                 StorageContext.getCurrentContext().getRoomRepository());
     }
 
+    /**
+     * Executes initialise services for this room contract.
+     *
+     * @param gameContext Game context supplied by the caller.
+     */
     @Override
     public void initialiseServices(GameContext gameContext) {
         this.roomModelService.loadModels();
@@ -54,6 +71,9 @@ public class RoomsModule extends BaseModule {
     @Override
     public PluginGuiceModule getGuiceModule() {
         return new PluginGuiceModule(this.getGameService()) {
+            /**
+             * Executes configure for this room contract.
+             */
             @Override
             protected void configure() {
                 bind(IRoomService.class).toInstance(RoomsModule.this.roomService);

@@ -15,6 +15,9 @@ import com.cometproject.server.game.rooms.types.mapping.RoomTile;
 import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.engine.RoomForwardMessageComposer;
 
+/**
+ * Describes teleporter floor item behavior for the room subsystem.
+ */
 public class TeleporterFloorItem extends AdvancedFloorItem<TeleporterFloorItem.TeleporterItemEvent> {
     class TeleporterItemEvent extends FloorItemEvent {
 
@@ -22,6 +25,11 @@ public class TeleporterFloorItem extends AdvancedFloorItem<TeleporterFloorItem.T
         public PlayerEntity outgoingEntity;
         public PlayerEntity incomingEntity;
 
+        /**
+         * Executes teleporter item event for this room contract.
+         *
+         * @param delay Delay supplied by the caller.
+         */
         protected TeleporterItemEvent(int delay) {
             super(delay);
         }
@@ -32,6 +40,12 @@ public class TeleporterFloorItem extends AdvancedFloorItem<TeleporterFloorItem.T
     private long pairId = -1;
     boolean isDoor = false;
 
+    /**
+     * Creates a teleporter floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public TeleporterFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
 
@@ -42,6 +56,11 @@ public class TeleporterFloorItem extends AdvancedFloorItem<TeleporterFloorItem.T
         }
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(TeleporterItemEvent event) {
         try {
@@ -242,6 +261,14 @@ public class TeleporterFloorItem extends AdvancedFloorItem<TeleporterFloorItem.T
         }
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (isWiredTrigger) return false;
@@ -281,6 +308,11 @@ public class TeleporterFloorItem extends AdvancedFloorItem<TeleporterFloorItem.T
         return true;
     }
 
+    /**
+     * Handles the entity step on callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOn(RoomEntity entity) {
         if (this.inUse || !(entity instanceof PlayerEntity)) {
@@ -304,11 +336,17 @@ public class TeleporterFloorItem extends AdvancedFloorItem<TeleporterFloorItem.T
         }
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
 
     }
 
+    /**
+     * Handles the placed callback for this room contract.
+     */
     @Override
     public void onPlaced() {
         this.getItemData().setData("0");
@@ -322,12 +360,21 @@ public class TeleporterFloorItem extends AdvancedFloorItem<TeleporterFloorItem.T
         return this.pairId;
     }
 
+    /**
+     * Executes end teleporting for this room contract.
+     */
     public void endTeleporting() {
         this.toggleAnimation(false);
         this.toggleDoor(false);
         //this.inUse = false;
     }
 
+    /**
+     * Handles incoming entity for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param otherItem Other item supplied by the caller.
+     */
     public void handleIncomingEntity(PlayerEntity entity, TeleporterFloorItem otherItem) {
         if (otherItem != null)
             otherItem.endTeleporting();
@@ -356,6 +403,11 @@ public class TeleporterFloorItem extends AdvancedFloorItem<TeleporterFloorItem.T
         }
     }
 
+    /**
+     * Executes toggle door for this room contract.
+     *
+     * @param state State supplied by the caller.
+     */
     protected void toggleDoor(boolean state) {
         if (state)
             this.getItemData().setData("1");
@@ -365,6 +417,11 @@ public class TeleporterFloorItem extends AdvancedFloorItem<TeleporterFloorItem.T
         this.sendUpdate();
     }
 
+    /**
+     * Executes toggle animation for this room contract.
+     *
+     * @param state State supplied by the caller.
+     */
     protected void toggleAnimation(boolean state) {
         if (state) {
             this.getItemData().setData("2");
@@ -375,10 +432,21 @@ public class TeleporterFloorItem extends AdvancedFloorItem<TeleporterFloorItem.T
         this.sendUpdate();
     }
 
+    /**
+     * Executes notify state for this room contract.
+     *
+     * @param state State supplied by the caller.
+     */
     public void notifyState(String state){
         this.getRoom().getEntities().broadcastMessage(new WhisperMessageComposer(-1, "Current state is " + state + "."));
     }
 
+    /**
+     * Returns the partner for this room contract.
+     *
+     * @param pairId Pair id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     protected RoomItemFloor getPartner(long pairId) {
         return this.getRoom().getItems().getFloorItem(pairId);
     }

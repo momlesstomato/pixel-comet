@@ -11,14 +11,28 @@ import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.game.rooms.types.mapping.RoomTile;
 import com.cometproject.server.network.messages.outgoing.room.items.lovelock.LoveLockWidgetMessageComposer;
 
+/**
+ * Describes love lock floor item behavior for the room subsystem.
+ */
 public class LoveLockFloorItem extends RoomItemFloor {
     private int leftEntity = 0;
     private int rightEntity = 0;
 
+    /**
+     * Creates a love lock floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public LoveLockFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Executes compose item data for this room contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void composeItemData(IComposer msg) {
         final String[] loveLockData = this.getItemData().getData().split(String.valueOf((char) 5));
@@ -32,6 +46,14 @@ public class LoveLockFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (isWiredTrigger || entity == null) {
@@ -88,10 +110,20 @@ public class LoveLockFloorItem extends RoomItemFloor {
         return true;
     }
 
+    /**
+     * Returns the left entity for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getLeftEntity() {
         return leftEntity;
     }
 
+    /**
+     * Returns the right entity for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getRightEntity() {
         return rightEntity;
     }

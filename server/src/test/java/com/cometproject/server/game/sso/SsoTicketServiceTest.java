@@ -161,6 +161,12 @@ class SsoTicketServiceTest {
     }
 
     private record MapConfigurationSource(Map<String, String> values) implements ConfigurationSource {
+        /**
+         * Executes get for this Comet contract.
+         *
+         * @param key Key supplied by the caller.
+         * @return Value exposed by the contract.
+         */
         @Override
         public String get(final String key) {
             return this.values.get(key);

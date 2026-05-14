@@ -7,10 +7,19 @@ import com.cometproject.server.network.messages.outgoing.user.inventory.UpdateIn
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.queries.player.PlayerDao;
 
+/**
+ * Describes view inventory command behavior for the Comet subsystem.
+ */
 public class ViewInventoryCommand extends ChatCommand {
 
     private String logDesc = "";
 
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
 
@@ -54,31 +63,61 @@ public class ViewInventoryCommand extends ChatCommand {
                 .replace("%b", username);
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "viewinventory_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return Locale.getOrDefault("command.parameter.username", "%username%");
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.viewinventory.description");
     }
 
+    /**
+     * Indicates whether async applies to this Comet contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isAsync() {
         return true;
     }
 
+    /**
+     * Returns the loggable description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getLoggableDescription(){
         return this.logDesc;
     }
 
+    /**
+     * Executes loggable for this Comet contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean Loggable(){
         return true;

@@ -18,6 +18,9 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+/**
+ * Manages cache runtime state for the storage subsystem.
+ */
 public class CacheManager extends CachableObject implements Startable {
     private final Logger LOGGER = LoggerFactory.getLogger(CacheManager.class.getName());
     private final String keyPrefix;
@@ -25,16 +28,27 @@ public class CacheManager extends CachableObject implements Startable {
     private final int port;
     private JedisPool jedisPool;
 
+    /**
+     * Creates a cache manager instance for the storage subsystem.
+     */
     public CacheManager() {
         this.keyPrefix = Configuration.currentConfig().getOrDefault(RedisConfiguration.PREFIX, RedisConfiguration.defaults().get(RedisConfiguration.PREFIX));
         this.host = Configuration.currentConfig().getOrDefault(RedisConfiguration.CONNECTION_HOST, RedisConfiguration.defaults().get(RedisConfiguration.CONNECTION_HOST));
         this.port = Integer.parseInt(Configuration.currentConfig().getOrDefault(RedisConfiguration.CONNECTION_PORT, RedisConfiguration.defaults().get(RedisConfiguration.CONNECTION_PORT)));
     }
 
+    /**
+     * Returns the instance for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static CacheManager getInstance() {
         return CometBootstrap.resolve(CacheManager.class);
     }
 
+    /**
+     * Starts this storage component.
+     */
     @Override
     public void start() {
         if (this.host.isEmpty()) {
@@ -51,6 +65,9 @@ public class CacheManager extends CachableObject implements Startable {
         LOGGER.info("Redis connected on {}:{}", this.host, this.port);
     }
 
+    /**
+     * Stops this storage component.
+     */
     @Override
     public void stop() {
         if (this.jedisPool != null) {
@@ -80,6 +97,12 @@ public class CacheManager extends CachableObject implements Startable {
         }
     }
 
+    /**
+     * Executes put for this storage contract.
+     *
+     * @param key Key supplied by the caller.
+     * @param object Object supplied by the caller.
+     */
     public void put(final String key, CachableObject object) {
         if (this.jedisPool == null) {
             return;
@@ -97,6 +120,14 @@ public class CacheManager extends CachableObject implements Startable {
         }
     }
 
+    /**
+     * Executes publish string for this storage contract.
+     *
+     * @param key Key supplied by the caller.
+     * @param value Value supplied by the caller.
+     * @param setter Setter supplied by the caller.
+     * @param setterKey Setter key supplied by the caller.
+     */
     public void publishString(final String key, final String value, boolean setter, String setterKey) {
         if (this.jedisPool == null) {
             return;
@@ -118,6 +149,12 @@ public class CacheManager extends CachableObject implements Startable {
         }
     }
 
+    /**
+     * Executes put string for this storage contract.
+     *
+     * @param key Key supplied by the caller.
+     * @param value Value supplied by the caller.
+     */
     public void putString(final String key, final String value) {
         if (this.jedisPool == null) {
             return;
@@ -134,6 +171,12 @@ public class CacheManager extends CachableObject implements Startable {
         }
     }
 
+    /**
+     * Returns the string for this storage contract.
+     *
+     * @param key Key supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public String getString(String key) {
         try {
             try (final Jedis connection = this.jedisPool.getResource()) {
@@ -146,6 +189,13 @@ public class CacheManager extends CachableObject implements Startable {
         return null;
     }
 
+    /**
+     * Executes get for this storage contract.
+     *
+     * @param clazz Clazz supplied by the caller.
+     * @param key Key supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public <T> T get(final Class<T> clazz, final String key) {
         try {
             try (final Jedis connection = this.jedisPool.getResource()) {
@@ -163,6 +213,12 @@ public class CacheManager extends CachableObject implements Startable {
         return null;
     }
 
+    /**
+     * Executes exists for this storage contract.
+     *
+     * @param key Key supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean exists(final String key) {
         try {
             try (final Jedis connection = this.jedisPool.getResource()) {

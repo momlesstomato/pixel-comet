@@ -6,8 +6,17 @@ import com.cometproject.server.network.messages.outgoing.user.details.UserObject
 import com.cometproject.server.network.sessions.Session;
 
 
+/**
+ * Describes flag me command behavior for the Comet subsystem.
+ */
 public class FlagMeCommand extends ChatCommand {
 
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param message Message supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] message) {
         if (message.length != 1) {
@@ -37,16 +46,31 @@ public class FlagMeCommand extends ChatCommand {
         }
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "flagme_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.flagme.description");

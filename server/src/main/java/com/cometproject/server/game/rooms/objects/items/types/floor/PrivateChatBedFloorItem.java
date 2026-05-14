@@ -11,14 +11,28 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
+/**
+ * Describes private chat bed floor item behavior for the room subsystem.
+ */
 public class PrivateChatBedFloorItem extends DefaultFloorItem {
 
     private List<PlayerEntity> entities = Lists.newArrayList();
 
+    /**
+     * Creates a private chat bed floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public PrivateChatBedFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Handles the entity step on callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOn(RoomEntity entity) {
         if (!(entity instanceof PlayerEntity) || this.entities.contains(entity)) return;
@@ -32,6 +46,11 @@ public class PrivateChatBedFloorItem extends DefaultFloorItem {
         entity.markNeedsUpdate();
     }
 
+    /**
+     * Handles the entity step off callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOff(RoomEntity entity) {
         if (!(entity instanceof PlayerEntity)) return;
@@ -42,6 +61,11 @@ public class PrivateChatBedFloorItem extends DefaultFloorItem {
         entity.markNeedsUpdate();
     }
 
+    /**
+     * Executes broadcast message for this room contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void broadcastMessage(MessageComposer msg) {
         for (PlayerEntity playerEntity : this.entities) {
             playerEntity.getPlayer().getSession().send(msg);

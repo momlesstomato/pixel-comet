@@ -14,7 +14,17 @@ import com.cometproject.server.protocol.messages.MessageEvent;
 import com.cometproject.storage.api.StorageContext;
 
 
+/**
+ * Represents the give group admin message event published by the network message subsystem.
+ */
 public class GiveGroupAdminMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @throws Exception When the operation cannot complete.
+     */
     @Override
     public void handle(Session client, MessageEvent msg) throws Exception {
         int groupId = msg.readInt();

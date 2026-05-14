@@ -10,14 +10,29 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * Describes monitor client behavior for the networking subsystem.
+ */
 public class MonitorClient {
     public final String MONITOR_HOST = "monitor.comet.openhabbo.com";
     public final int MONITOR_PORT = 13337;
 
+    /**
+     * Creates a monitor client instance for the networking subsystem.
+     *
+     * @param loopGroup Loop group supplied by the caller.
+     */
     public MonitorClient(EventLoopGroup loopGroup) {
         createBootstrap(new Bootstrap(), loopGroup);
     }
 
+    /**
+     * Creates bootstrap for this networking contract.
+     *
+     * @param bootstrap Bootstrap supplied by the caller.
+     * @param eventLoop Event loop supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public Bootstrap createBootstrap(Bootstrap bootstrap, EventLoopGroup eventLoop) {
         if (bootstrap != null) {
             final MonitorClientHandler handler = new MonitorClientHandler();
@@ -29,6 +44,11 @@ public class MonitorClient {
             bootstrap.option(ChannelOption.TCP_NODELAY, true);
 
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+                /**
+                 * Executes init channel for this networking contract.
+                 *
+                 * @param socketChannel Socket channel supplied by the caller.
+                 */
                 @Override
                 protected void initChannel(SocketChannel socketChannel) {
                     socketChannel.pipeline().addLast(handler);
@@ -41,13 +61,26 @@ public class MonitorClient {
         return bootstrap;
     }
 
+    /**
+     * Describes connection listener behavior for the networking subsystem.
+     */
     public class ConnectionListener implements ChannelFutureListener {
         private MonitorClient client;
 
+        /**
+         * Executes connection listener for this networking contract.
+         *
+         * @param client Client supplied by the caller.
+         */
         public ConnectionListener(MonitorClient client) {
             this.client = client;
         }
 
+        /**
+         * Executes operation complete for this networking contract.
+         *
+         * @param channelFuture Channel future supplied by the caller.
+         */
         @Override
         public void operationComplete(ChannelFuture channelFuture) {
             if (!channelFuture.isSuccess()) {

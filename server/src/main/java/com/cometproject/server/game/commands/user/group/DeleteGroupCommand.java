@@ -17,10 +17,19 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
+/**
+ * Describes delete group command behavior for the Comet subsystem.
+ */
 public class DeleteGroupCommand extends ChatCommand {
     private String logDesc;
     private String groupName;
 
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         if (client.getPlayer().getId() != client.getPlayer().getEntity().getRoom().getData().getOwnerId() && !client.getPlayer().getPermissions().getRank().roomFullControl()) {
@@ -102,26 +111,51 @@ public class DeleteGroupCommand extends ChatCommand {
                 .replace("%d", room.getData().getName());
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "deletegroup_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.deletegroup.description");
     }
 
+    /**
+     * Returns the loggable description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getLoggableDescription() {
         return this.logDesc;
     }
 
+    /**
+     * Executes loggable for this Comet contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean Loggable() {
         return true;

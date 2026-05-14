@@ -4,11 +4,24 @@ import com.cometproject.gamecenter.fastfood.net.FastFoodGameSession;
 import com.cometproject.storage.mysql.MySQLConnectionProvider;
 import com.cometproject.storage.mysql.repositories.MySQLRepository;
 
+/**
+ * Persists and loads my SQL fast food data for the storage subsystem.
+ */
 public class MySQLFastFoodRepository extends MySQLRepository {
+    /**
+     * Creates a my SQL fast food repository instance for the storage subsystem.
+     *
+     * @param connectionProvider Connection provider supplied by the caller.
+     */
     public MySQLFastFoodRepository(MySQLConnectionProvider connectionProvider) {
         super(connectionProvider);
     }
 
+    /**
+     * Loads player data for this storage contract.
+     *
+     * @param gameSession Game session supplied by the caller.
+     */
     public void loadPlayerData(final FastFoodGameSession gameSession) {
         select("SELECT * FROM fastfood_user_data WHERE player_id = ?", (data) -> {
             final int parachutes = data.readInteger("parachutes");
@@ -29,6 +42,11 @@ public class MySQLFastFoodRepository extends MySQLRepository {
         }
     }
 
+    /**
+     * Persists player data for this storage contract.
+     *
+     * @param gameSession Game session supplied by the caller.
+     */
     public void savePlayerData(final FastFoodGameSession gameSession) {
         update("UPDATE fastfood_user_data SET parachutes = ?, objects = ?, shields = ?, games_played = ? WHERE player_id = ?",
                 gameSession.getParachutes(), gameSession.getMissiles(), gameSession.getShields(), 1,

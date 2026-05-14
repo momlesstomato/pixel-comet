@@ -2,6 +2,9 @@ package com.cometproject.games.snowwar.thread;
 
 import java.util.concurrent.ScheduledFuture;
 
+/**
+ * Describes game task behavior for the Snow War game subsystem.
+ */
 public abstract class GameTask extends Thread {
   public ScheduledFuture<?> future;
 }

@@ -26,6 +26,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
+/**
+ * Owns game behavior inside the room processing subsystem.
+ */
 public class GameComponent {
     private final AtomicInteger blobCounter = new AtomicInteger(0);
     private Room room;
@@ -35,6 +38,11 @@ public class GameComponent {
     private Map<GameTeam, Set<AbstractGameGateFloorItem>> gates;
     private Set<PlayerEntity> players;
 
+    /**
+     * Creates a game component instance for the room processing subsystem.
+     *
+     * @param room Room participating in the operation.
+     */
     public GameComponent(Room room) {
         this.teams = new HashMap<GameTeam, List<Integer>>() {{
             put(GameTeam.BLUE, Lists.newArrayList());
@@ -56,6 +64,9 @@ public class GameComponent {
         this.room = room;
     }
 
+    /**
+     * Releases resources owned by this room processing component.
+     */
     public void dispose() {
         for (Map.Entry<GameTeam, List<Integer>> entry : this.teams.entrySet()) {
             entry.getValue().clear();
@@ -70,6 +81,9 @@ public class GameComponent {
         this.scores.clear();
     }
 
+    /**
+     * Stops this room processing component.
+     */
     public void stop() {
         if (this.instance != null) {
             this.instance.stop();
@@ -78,6 +92,11 @@ public class GameComponent {
         this.instance = null;
     }
 
+    /**
+     * Creates new for this room processing contract.
+     *
+     * @param game Game supplied by the caller.
+     */
     public void createNew(GameType game) {
         if (game == GameType.BANZAI) {
             this.instance = new BanzaiGame(this.room);
@@ -90,10 +109,22 @@ public class GameComponent {
         }
     }
 
+    /**
+     * Indicates whether teamed applies to this room processing contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isTeamed(int id) {
         return this.getTeam(id) != GameTeam.NONE;
     }
 
+    /**
+     * Executes join team for this room processing contract.
+     *
+     * @param team Team supplied by the caller.
+     * @param entity Entity supplied by the caller.
+     */
     public void joinTeam(GameTeam team, PlayerEntity entity) {
         this.teams.get(team).add(entity.getPlayerId());
         this.players.add(entity);
@@ -101,6 +132,11 @@ public class GameComponent {
         entity.getPlayer().getSession().send(new YouArePlayingGameMessageComposer(true));
     }
 
+    /**
+     * Removes from team from this room processing contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     public void removeFromTeam(PlayerEntity entity) {
         if (entity.getGameTeam() == null || entity.getGameTeam() == GameTeam.NONE) {
             return;
@@ -115,6 +151,12 @@ public class GameComponent {
         entity.getPlayer().getSession().send(new YouArePlayingGameMessageComposer(false));
     }
 
+    /**
+     * Returns the team for this room processing contract.
+     *
+     * @param userId User id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public GameTeam getTeam(int userId) {
         for (Map.Entry<GameTeam, List<Integer>> entry : this.getTeams().entrySet()) {
             if (entry.getValue().contains(userId)) {
@@ -125,6 +167,12 @@ public class GameComponent {
         return GameTeam.NONE;
     }
 
+    /**
+     * Executes decrease score for this room processing contract.
+     *
+     * @param team Team supplied by the caller.
+     * @param amount Amount supplied by the caller.
+     */
     public void decreaseScore(GameTeam team, int amount) {
         if (!this.scores.containsKey(team)) {
             return;
@@ -134,6 +182,12 @@ public class GameComponent {
         this.scoreUpdated(team);
     }
 
+    /**
+     * Executes increase score for this room processing contract.
+     *
+     * @param team Team supplied by the caller.
+     * @param amount Amount supplied by the caller.
+     */
     public void increaseScore(GameTeam team, int amount) {
         if (!this.scores.containsKey(team)) {
             return;
@@ -143,10 +197,18 @@ public class GameComponent {
         this.scoreUpdated(team);
     }
 
+    /**
+     * Executes reset scores for this room processing contract.
+     */
     public void resetScores() {
         this.resetScores(false);
     }
 
+    /**
+     * Executes reset scores for this room processing contract.
+     *
+     * @param update Update supplied by the caller.
+     */
     public void resetScores(boolean update) {
         if (this.scores != null)
             this.scores.clear();
@@ -181,35 +243,76 @@ public class GameComponent {
         WiredTriggerScoreAchieved.executeTriggers(this.getRoom().getGame().getScore(team), team, this.getRoom());
     }
 
+    /**
+     * Returns the gates for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<GameTeam, Set<AbstractGameGateFloorItem>> getGates() {
         return this.gates;
     }
 
+    /**
+     * Returns the score for this room processing contract.
+     *
+     * @param team Team supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public int getScore(GameTeam team) {
         return this.scores.get(team);
     }
 
 
+    /**
+     * Returns the teams for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<GameTeam, List<Integer>> getTeams() {
         return teams;
     }
 
+    /**
+     * Returns the instance for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RoomGame getInstance() {
         return this.instance;
     }
 
+    /**
+     * Returns the room for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Room getRoom() {
         return this.room;
     }
 
+    /**
+     * Returns the scores for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<GameTeam, Integer> getScores() {
         return scores;
     }
 
+    /**
+     * Returns the players for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Set<PlayerEntity> getPlayers() {
         return this.players;
     }
 
+    /**
+     * Returns the blob counter for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public AtomicInteger getBlobCounter() {
         return blobCounter;
     }

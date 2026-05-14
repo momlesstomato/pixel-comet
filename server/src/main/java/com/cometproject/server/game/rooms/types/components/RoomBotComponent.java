@@ -14,11 +14,19 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Owns room bot behavior inside the room processing subsystem.
+ */
 public class RoomBotComponent {
     private Room room;
 
     private Map<String, Integer> botNameToId;
 
+    /**
+     * Creates a room bot component instance for the room processing subsystem.
+     *
+     * @param room Room participating in the operation.
+     */
     public RoomBotComponent(Room room) {
         this.room = room;
 
@@ -27,10 +35,16 @@ public class RoomBotComponent {
         this.load();
     }
 
+    /**
+     * Releases resources owned by this room processing component.
+     */
     public void dispose() {
         this.botNameToId.clear();
     }
 
+    /**
+     * Executes load for this room processing contract.
+     */
     public void load() {
         try {
             List<IBotData> botData = this.room.getCachedData() != null ? this.room.getCachedData().getBots() : RoomBotDao.getBotsByRoomId(this.room.getId());
@@ -56,6 +70,12 @@ public class RoomBotComponent {
         }
     }
 
+    /**
+     * Returns the available name for this room processing contract.
+     *
+     * @param name Name supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public String getAvailableName(String name) {
         int usedCount = 0;
 
@@ -70,6 +90,15 @@ public class RoomBotComponent {
         return name + usedCount;
     }
 
+    /**
+     * Adds bot to this room processing contract.
+     *
+     * @param bot Bot supplied by the caller.
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     * @param height Height supplied by the caller.
+     * @return Result produced by the mutation.
+     */
     public BotEntity addBot(IBotData bot, int x, int y, double height) {
         int virtualId = room.getEntities().getFreeId();
         String name;
@@ -93,6 +122,12 @@ public class RoomBotComponent {
         return botEntity;
     }
 
+    /**
+     * Returns the bot by name for this room processing contract.
+     *
+     * @param name Name supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public BotEntity getBotByName(String name) {
         if (this.botNameToId.containsKey(name)) {
             return this.getRoom().getEntities().getEntityByBotId(this.botNameToId.get(name));
@@ -101,10 +136,21 @@ public class RoomBotComponent {
         return null;
     }
 
+    /**
+     * Returns the room for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Room getRoom() {
         return this.room;
     }
 
+    /**
+     * Executes change bot name for this room processing contract.
+     *
+     * @param currentName Current name supplied by the caller.
+     * @param newName New name supplied by the caller.
+     */
     public void changeBotName(String currentName, String newName) {
         if (!this.botNameToId.containsKey(currentName)) return;
 
@@ -114,11 +160,22 @@ public class RoomBotComponent {
         this.botNameToId.put(newName, botId);
     }
 
+    /**
+     * Executes change bot motto for this room processing contract.
+     *
+     * @param bot Bot supplied by the caller.
+     * @param motto Motto supplied by the caller.
+     */
     public void changeBotMotto(BotEntity bot, String motto){
         bot.getData().setMotto(motto);
         bot.getData().save();
     }
 
+    /**
+     * Removes bot from this room processing contract.
+     *
+     * @param name Name supplied by the caller.
+     */
     public void removeBot(String name) {
         this.botNameToId.remove(name);
     }

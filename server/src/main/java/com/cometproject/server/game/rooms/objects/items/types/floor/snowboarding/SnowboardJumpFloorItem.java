@@ -10,11 +10,25 @@ import com.cometproject.server.network.messages.outgoing.room.avatar.ActionMessa
 import com.cometproject.server.utilities.RandomUtil;
 
 
+/**
+ * Describes snowboard jump floor item behavior for the room subsystem.
+ */
 public class SnowboardJumpFloorItem extends RoomItemFloor {
+    /**
+     * Creates a snowboard jump floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public SnowboardJumpFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Handles the entity step on callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOn(RoomEntity entity) {
         Position tileGoal = this.getPartnerTile();
@@ -48,6 +62,11 @@ public class SnowboardJumpFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Handles the entity step off callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOff(RoomEntity entity) {
         if (!(entity instanceof PlayerEntity)) {

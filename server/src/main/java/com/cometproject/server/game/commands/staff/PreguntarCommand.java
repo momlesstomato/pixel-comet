@@ -9,8 +9,17 @@ import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessage
 import com.cometproject.server.network.sessions.Session;
 
 
+/**
+ * Describes preguntar command behavior for the Comet subsystem.
+ */
 public class PreguntarCommand extends ChatCommand {
 
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         if (params.length < 1) {
@@ -27,16 +36,31 @@ public class PreguntarCommand extends ChatCommand {
         }
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "preguntar_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.preguntar.description");

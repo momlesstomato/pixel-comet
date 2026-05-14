@@ -18,8 +18,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Describes achievement dao behavior for the storage subsystem.
+ */
 public class AchievementDao {
 
+    /**
+     * Returns the achievements for this storage contract.
+     *
+     * @param achievementGroups Achievement groups supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getAchievements(Map<AchievementType, IAchievementGroup> achievementGroups) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -59,6 +68,12 @@ public class AchievementDao {
         return count;
     }
 
+    /**
+     * Returns the talents for this storage contract.
+     *
+     * @param talentTrackLevels Talent track levels supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getTalents(Map<Integer, ITalentTrackLevel> talentTrackLevels) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -112,6 +127,12 @@ public class AchievementDao {
         return count;
     }
 
+    /**
+     * Returns the game center achievements for this storage contract.
+     *
+     * @param achievementGroups Achievement groups supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getGameCenterAchievements(Map<Integer, Map<AchievementType, IAchievementGroup>> achievementGroups) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

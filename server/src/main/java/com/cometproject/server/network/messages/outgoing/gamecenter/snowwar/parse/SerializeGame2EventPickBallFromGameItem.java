@@ -7,13 +7,28 @@
 /*    */ 
 /*    */ 
 /*    */ 
+/**
+ * Describes serialize game2 event pick ball from game item behavior for the Snow War game subsystem.
+ */
 /*    */ public class SerializeGame2EventPickBallFromGameItem
 /*    */ {
+/**
+ * Executes parse for this network message contract.
+ *
+ * @param msg Composer buffer that receives serialized protocol fields.
+ * @param evt Evt supplied by the caller.
+ */
 /*    */   public static void parse(IComposer msg, PickBallFromGameItem evt) {
 /* 13 */     msg.writeInt(evt.player.objectId);
 /* 14 */     msg.writeInt(evt.gameItem.objectId);
 /*    */   }
 /*    */   
+/**
+ * Executes parse for this Snow War game contract.
+ *
+ * @param ClientMessage Client message supplied by the caller.
+ * @param evt Evt supplied by the caller.
+ */
 /*    */   public static void parse(MessageWriter ClientMessage, PickBallFromGameItem evt) {
 /* 18 */     ComposerShit.add(evt.player.objectId, ClientMessage);
 /* 19 */     ComposerShit.add(evt.gameItem.objectId, ClientMessage);

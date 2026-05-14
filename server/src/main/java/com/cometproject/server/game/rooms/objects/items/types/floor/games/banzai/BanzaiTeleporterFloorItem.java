@@ -16,6 +16,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 
+/**
+ * Describes banzai teleporter floor item behavior for the room subsystem.
+ */
 public class BanzaiTeleporterFloorItem extends RoomItemFloor {
     private int stage = 0;
 
@@ -23,16 +26,32 @@ public class BanzaiTeleporterFloorItem extends RoomItemFloor {
     private RoomEntity entity;
     private RoomItemFloor floorItem;
 
+    /**
+     * Creates a banzai teleporter floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public BanzaiTeleporterFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
         this.getItemData().setData(0);
     }
 
 //    @Override
+/**
+ * Executes on event complete for this Snow War game contract.
+ *
+ * @param event Event supplied by the caller.
+ */
 //    public void onEventComplete(BanzaiTeleportEvent event) {
 //
 //    }
 
+    /**
+     * Handles the item added to stack callback for this room contract.
+     *
+     * @param floorItem Floor item supplied by the caller.
+     */
     @Override
     public void onItemAddedToStack(RoomItemFloor floorItem) {
         if (this.floorItem != null) return;
@@ -63,6 +82,11 @@ public class BanzaiTeleporterFloorItem extends RoomItemFloor {
         this.setTicks(LowPriorityItemProcessor.getProcessTime(0.25));
     }
 
+    /**
+     * Handles the entity step on callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOn(RoomEntity entity) {
         if (this.entity != null) return; // wait yer turn
@@ -115,6 +139,9 @@ public class BanzaiTeleporterFloorItem extends RoomItemFloor {
         return new Position(randomTeleporter.getPosition().getX(), randomTeleporter.getPosition().getY(), randomTeleporter.getTile().getWalkHeight());
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
         if (this.stage == 1) {
@@ -157,6 +184,9 @@ public class BanzaiTeleporterFloorItem extends RoomItemFloor {
         this.sendUpdate();
     }
 
+    /**
+     * Represents the banzai teleport event published by the room subsystem.
+     */
     public class BanzaiTeleportEvent extends FloorItemEvent {
 
         protected static final int OUTGOING = 2;
@@ -164,6 +194,11 @@ public class BanzaiTeleporterFloorItem extends RoomItemFloor {
 
         private final int event;
 
+        /**
+         * Executes banzai teleport event for this room contract.
+         *
+         * @param event Event supplied by the caller.
+         */
         protected BanzaiTeleportEvent(int event) {
             super(1);
 

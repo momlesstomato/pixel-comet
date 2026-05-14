@@ -5,6 +5,9 @@
 /*    */ import com.cometproject.games.snowwar.Tile;
 /*    */ 
 /*    */ 
+/**
+ * Describes pick balls game item object behavior for the Snow War game subsystem.
+ */
 /*    */ public abstract class PickBallsGameItemObject
 /*    */   extends GameItemObject
 /*    */ {
@@ -13,6 +16,14 @@
 /*    */   protected Tile location;
 /*    */   public int concurrentUses;
 /*    */   
+/**
+ * Creates a pick balls game item object instance for the Snow War game subsystem.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ * @param _arg2 Arg2 supplied by the caller.
+ * @param _arg3 Arg3 supplied by the caller.
+ * @param _arg4 Arg4 supplied by the caller.
+ */
 /*    */   public PickBallsGameItemObject(int _arg1, Tile _arg2, int _arg3, int _arg4) {
 /* 17 */     super(_arg1);
 /* 18 */     this.location = _arg2;
@@ -21,23 +32,49 @@
 /*    */   }
 /*    */ 
 /*    */   
+/**
+ * Executes direction360 for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*    */   public Direction360 direction360() {
 /* 25 */     return null;
 /*    */   }
 /*    */ 
 /*    */   
+/**
+ * Executes location3 d for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*    */   public PlayerTile location3D() {
 /* 30 */     return this.location.location();
 /*    */   }
 /*    */   
+/**
+ * Executes 4rk for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*    */   public int _4rk() {
 /* 34 */     return this.parentFuseId;
 /*    */   }
 /*    */   
+/**
+ * Executes can pick up from here for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*    */   public boolean canPickUpFromHere() {
 /* 38 */     return (this.snowBalls > this.concurrentUses);
 /*    */   }
 /*    */   
+/**
+ * Executes pick up for this Snow War game contract.
+ *
+ * @param ammount Ammount supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 /*    */   public int pickUp(int ammount) {
 /* 42 */     if (this.snowBalls < ammount) {
 /* 43 */       ammount = this.snowBalls;
@@ -46,6 +83,11 @@
 /* 46 */     return ammount;
 /*    */   }
 /*    */   
+/**
+ * Handles the snowball pickup callback for this Snow War game contract.
+ *
+ * @param paramInt Param int supplied by the caller.
+ */
 /*    */   public abstract void onSnowballPickup(int paramInt);
 /*    */ }
 

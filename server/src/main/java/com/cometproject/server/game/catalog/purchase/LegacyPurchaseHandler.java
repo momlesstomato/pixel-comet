@@ -73,14 +73,30 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
+/**
+ * Describes legacy purchase handler behavior for the catalog subsystem.
+ */
 public class LegacyPurchaseHandler implements ICatalogPurchaseHandler {
     private static final DateTimeFormatter PURCHASE_DATE_FORMAT = DateTimeFormatter.ofPattern("d-M-yyyy");
     private final Logger LOGGER = LoggerFactory.getLogger(LegacyPurchaseHandler.class);
     private ExecutorService executorService;
 
+    /**
+     * Creates a legacy purchase handler instance for the catalog subsystem.
+     */
     public LegacyPurchaseHandler() {
     }
 
+    /**
+     * Executes purchase item for this catalog contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param pageId Page id supplied by the caller.
+     * @param itemId Item id supplied by the caller.
+     * @param data Data supplied by the caller.
+     * @param amount Amount supplied by the caller.
+     * @param giftData Gift data supplied by the caller.
+     */
     @Override
     public void purchaseItem(ISession client, int pageId, int itemId, String data, int amount, IGiftData giftData) {
         if (CometSettings.asyncCatalogPurchase) {
@@ -95,7 +111,7 @@ public class LegacyPurchaseHandler implements ICatalogPurchaseHandler {
     }
 
     /**
-     * Handle the catalog purchase
+     * Handle the catalog purchase.
      *
      * @param client   The session assigned to the player who's purchasing the item
      * @param pageId   The catalog page the purchased item is on
@@ -593,7 +609,7 @@ public class LegacyPurchaseHandler implements ICatalogPurchaseHandler {
     }
 
     /**
-     * Deliver the gift
+     * Deliver the gift.
      *
      * @param playerId The ID of the player to deliver the item to
      * @param giftData The data of the gift
@@ -625,6 +641,12 @@ public class LegacyPurchaseHandler implements ICatalogPurchaseHandler {
         }
     }
 
+    /**
+     * Executes purchase bundle for this catalog contract.
+     *
+     * @param roomBundle Room bundle supplied by the caller.
+     * @param client Client supplied by the caller.
+     */
     @Override
     public void purchaseBundle(IRoomBundle roomBundle, ISession client) {
         try {
@@ -650,12 +672,25 @@ public class LegacyPurchaseHandler implements ICatalogPurchaseHandler {
         }
     }
 
+    /**
+     * Executes purchase bundle for this catalog contract.
+     *
+     * @param page Page supplied by the caller.
+     * @param client Client supplied by the caller.
+     */
     @Override
     public void purchaseBundle(ICatalogPage page, ISession client) {
         RoomBundle roomBundle = RoomBundleManager.getInstance().getBundle(page.getExtraData());
         purchaseBundle(roomBundle, client);
     }
 
+    /**
+     * Executes apply discount for this catalog contract.
+     *
+     * @param cost Cost supplied by the caller.
+     * @param quantity Quantity supplied by the caller.
+     * @return Result produced by the operation.
+     */
     @Override
     public int applyDiscount(int cost, int quantity) {
         int uCost = cost;

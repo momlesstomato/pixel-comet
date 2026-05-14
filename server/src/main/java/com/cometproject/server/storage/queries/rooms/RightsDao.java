@@ -13,7 +13,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
+/**
+ * Describes rights dao behavior for the storage subsystem.
+ */
 public class RightsDao {
+    /**
+     * Returns the rights by room id for this storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static List<Integer> getRightsByRoomId(int roomId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -43,6 +52,12 @@ public class RightsDao {
         return data;
     }
 
+    /**
+     * Executes delete for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param roomId Room identifier used by the operation.
+     */
     public static void delete(int playerId, int roomId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -63,6 +78,12 @@ public class RightsDao {
         }
     }
 
+    /**
+     * Executes add for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param roomId Room identifier used by the operation.
+     */
     public static void add(int playerId, int roomId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -83,6 +104,13 @@ public class RightsDao {
         }
     }
 
+    /**
+     * Adds room ban to this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param roomId Room identifier used by the operation.
+     * @param expireTimestamp Expire timestamp supplied by the caller.
+     */
     public static void addRoomBan(int playerId, int roomId, int expireTimestamp) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -104,6 +132,12 @@ public class RightsDao {
         }
     }
 
+    /**
+     * Deletes room ban for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param roomId Room identifier used by the operation.
+     */
     public static void deleteRoomBan(int playerId, int roomId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -125,6 +159,12 @@ public class RightsDao {
     }
 
 
+    /**
+     * Returns the room bans by room id for this storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, RoomBan> getRoomBansByRoomId(int roomId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

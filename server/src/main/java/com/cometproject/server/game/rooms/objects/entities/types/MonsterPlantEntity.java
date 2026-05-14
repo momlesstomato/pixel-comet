@@ -26,8 +26,21 @@ import com.google.common.collect.Sets;
 
 import static com.cometproject.server.game.commands.ChatCommand.sendNotif;
 
+/**
+ * Describes monster plant entity behavior for the room subsystem.
+ */
 public class MonsterPlantEntity extends PetEntity {
 
+    /**
+     * Creates a monster plant entity instance for the room subsystem.
+     *
+     * @param data Data supplied by the caller.
+     * @param identifier Identifier supplied by the caller.
+     * @param startPosition Start position supplied by the caller.
+     * @param startBodyRotation Start body rotation supplied by the caller.
+     * @param startHeadRotation Start head rotation supplied by the caller.
+     * @param roomInstance Room instance supplied by the caller.
+     */
     public MonsterPlantEntity(IPetData data, int identifier, Position startPosition, int startBodyRotation, int startHeadRotation, Room roomInstance) {
         super(data, identifier, startPosition, startBodyRotation, startHeadRotation, roomInstance);
         this.setData(data);
@@ -35,11 +48,20 @@ public class MonsterPlantEntity extends PetEntity {
         this.setGrowth();
     }
 
+    /**
+     * Executes send growth for this room contract.
+     */
     public void sendGrowth() {
         this.setGrowth();
         this.composeUpdate();
     }
 
+    /**
+     * Executes move to for this room contract.
+     *
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     */
     @Override
     public void moveTo(int x, int y) {
         Position position = new Position(x, y, this.getRoom().getMapping().getTile(x, y).getWalkHeight());
@@ -48,10 +70,16 @@ public class MonsterPlantEntity extends PetEntity {
         super.moveTo(x, y);
     }
 
+    /**
+     * Executes compose update for this room contract.
+     */
     public void composeUpdate() {
         this.getRoom().getEntities().broadcastMessage(new AvatarUpdateMessageComposer(this));
     }
 
+    /**
+     * Updates the growth for this room contract.
+     */
     public void setGrowth() {
         if (((PetMonsterPlantData) this.getData()).isDead()) {
             this.addStatus(RoomEntityStatus.RIP, "");
@@ -65,6 +93,11 @@ public class MonsterPlantEntity extends PetEntity {
     }
 
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         PetMonsterPlantData pet = ((PetMonsterPlantData) this.getData());
@@ -92,6 +125,11 @@ public class MonsterPlantEntity extends PetEntity {
         msg.writeString("");
     }
 
+    /**
+     * Executes compose information for this room contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void composeInformation(IComposer msg) {
         PetMonsterPlantData pet = ((PetMonsterPlantData) this.getData());
@@ -124,6 +162,11 @@ public class MonsterPlantEntity extends PetEntity {
         msg.writeBoolean(pet.isActive());
     }
 
+    /**
+     * Executes compose update for this room contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void composeUpdate(IComposer msg) {
         PetMonsterPlantData pet = (PetMonsterPlantData) this.getData();
@@ -135,6 +178,11 @@ public class MonsterPlantEntity extends PetEntity {
         msg.writeBoolean(pet.isActive());
     }
 
+    /**
+     * Executes breed for this room contract.
+     *
+     * @param plant Plant supplied by the caller.
+     */
     public void breed(MonsterPlantEntity plant) {
         PetMonsterPlantData plantData = (PetMonsterPlantData) plant.getData();
         PetMonsterPlantData thisData = (PetMonsterPlantData) this.getData();

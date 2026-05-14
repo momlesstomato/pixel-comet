@@ -16,7 +16,15 @@ import com.cometproject.server.network.messages.outgoing.notification.AdvancedAl
 import io.javalin.http.Context;
 
 
+/**
+ * Registers room routes endpoints for the HTTP route subsystem.
+ */
 public class RoomRoutes {
+    /**
+     * Returns the all active rooms for this HTTP route contract.
+     *
+     * @param context Context supplied by the caller.
+     */
     public static void getAllActiveRooms(final Context context) {
         List<RoomStats> activeRooms = new ArrayList<>();
 
@@ -27,6 +35,11 @@ public class RoomRoutes {
         ApiResponseUtils.success(context, Map.of("active_rooms", activeRooms));
     }
 
+    /**
+     * Executes room action for this HTTP route contract.
+     *
+     * @param context Context supplied by the caller.
+     */
     public static void roomAction(final Context context) {
         final Integer roomId = ApiRequestUtils.pathInt(context, "id");
 

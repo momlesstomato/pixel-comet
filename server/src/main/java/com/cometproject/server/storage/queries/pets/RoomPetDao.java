@@ -15,7 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Describes room pet dao behavior for the storage subsystem.
+ */
 public class RoomPetDao {
+    /**
+     * Returns the pets by room id for this storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static List<IPetData> getPetsByRoomId(int roomId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -79,6 +88,14 @@ public class RoomPetDao {
         return data;
     }
 
+    /**
+     * Updates pet for this storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     * @param petId Pet id supplied by the caller.
+     */
     public static void updatePet(int roomId, int x, int y, int petId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

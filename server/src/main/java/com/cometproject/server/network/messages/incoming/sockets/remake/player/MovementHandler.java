@@ -4,7 +4,16 @@ import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.network.sessions.Session;
 import com.google.gson.JsonObject;
 
+/**
+ * Describes movement handler behavior for the network message subsystem.
+ */
 public class MovementHandler {
+    /**
+     * Creates a movement handler instance for the network message subsystem.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public MovementHandler(Session client, JsonObject msg) {
         if (client.getPlayer().getEntity() == null || client.getPlayer().getEntity().getRoom() == null)
             return;

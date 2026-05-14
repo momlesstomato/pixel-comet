@@ -12,11 +12,20 @@ import com.google.common.collect.Lists;
 
 import java.util.*;
 
+/**
+ * Describes highscore classic floor item behavior for the room subsystem.
+ */
 public class HighscoreClassicFloorItem extends RoomItemFloor {
 
     private final ScoreboardItemData itemData;
     private boolean state;
 
+    /**
+     * Creates a highscore classic floor item instance for the room subsystem.
+     *
+     * @param roomItemData Room item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public HighscoreClassicFloorItem(RoomItemData roomItemData, Room room) {
         super(roomItemData, room);
 
@@ -31,12 +40,25 @@ public class HighscoreClassicFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Executes compose item data for this room contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void composeItemData(IComposer msg) {
         msg.writeInt(0);
         this.composeHighscoreData(msg);
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (!isWiredTrigger) {
@@ -59,11 +81,22 @@ public class HighscoreClassicFloorItem extends RoomItemFloor {
         return true;
     }
 
+    /**
+     * Returns the data object for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDataObject() {
         return (this.state ? "1" : "0") + JsonUtil.getInstance().toJson(this.itemData);
     }
 
+    /**
+     * Adds entry to this room contract.
+     *
+     * @param users Users supplied by the caller.
+     * @param score Score supplied by the caller.
+     */
     public void addEntry(List<String> users, int score) {
         this.itemData.addEntry(users, score);
         this.sendUpdate();
@@ -71,6 +104,12 @@ public class HighscoreClassicFloorItem extends RoomItemFloor {
         this.saveData();
     }
 
+    /**
+     * Adds point to this room contract.
+     *
+     * @param identifier Identifier supplied by the caller.
+     * @param score Score supplied by the caller.
+     */
     public void addPoint(String identifier, int score) {
         this.itemData.addPoint(identifier, score);
 
@@ -78,10 +117,18 @@ public class HighscoreClassicFloorItem extends RoomItemFloor {
         this.saveData();
     }
 
+    /**
+     * Returns the score data for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public ScoreboardItemData getScoreData() {
         return itemData;
     }
 
+    /**
+     * Executes reset scoreboard for this room contract.
+     */
     public void resetScoreboard() {
         this.itemData.getPoints().clear();
         this.itemData.getEntries().clear();
@@ -89,6 +136,11 @@ public class HighscoreClassicFloorItem extends RoomItemFloor {
         this.save();
     }
 
+    /**
+     * Executes compose highscore data for this room contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void composeHighscoreData(IComposer msg) {
         msg.writeInt(6);
 

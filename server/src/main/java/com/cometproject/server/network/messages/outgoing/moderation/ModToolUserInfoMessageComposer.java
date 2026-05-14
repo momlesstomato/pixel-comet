@@ -11,20 +11,39 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 import java.util.Date;
 
 
+/**
+ * Serializes the mod tool user info message for the Pixel Protocol client.
+ */
 public class ModToolUserInfoMessageComposer extends MessageComposer {
     private final PlayerData playerData;
     private final PlayerStatistics playerStatistics;
 
+    /**
+     * Creates a mod tool user info message composer instance for the network message subsystem.
+     *
+     * @param playerData Player data supplied by the caller.
+     * @param playerStatistics Player statistics supplied by the caller.
+     */
     public ModToolUserInfoMessageComposer(final PlayerData playerData, final PlayerStatistics playerStatistics) {
         this.playerData = playerData;
         this.playerStatistics = playerStatistics;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.ModeratorUserInfoMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(playerData.getId());

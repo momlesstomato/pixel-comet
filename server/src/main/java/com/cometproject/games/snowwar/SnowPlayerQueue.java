@@ -11,10 +11,18 @@ import com.cometproject.server.network.sessions.Session;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Describes snow player queue behavior for the Snow War game subsystem.
+ */
 public class SnowPlayerQueue {
     private static final Map<Integer, RoomQueue> roomQueue = new ConcurrentHashMap<>(100);
     private static int roomCounter = 0;
 
+    /**
+     * Adds player in queue to this Snow War game contract.
+     *
+     * @param cn Cn supplied by the caller.
+     */
     public static void addPlayerInQueue(Session cn) {
         if(!CometSettings.snowStormEnabled) {
             cn.getPlayer().sendBubble("", "Las colas Beta de Snow Storm están desactivadas ahora mismo.");
@@ -62,6 +70,12 @@ public class SnowPlayerQueue {
         }
     }
 
+    /**
+     * Executes player exit for this Snow War game contract.
+     *
+     * @param room Room participating in the operation.
+     * @param playerObject Player object supplied by the caller.
+     */
     public static void playerExit(SnowWarRoom room, HumanGameObject playerObject) {
         RoomQueue queue = roomQueue.get(room.roomId);
         if (queue == null) {
@@ -81,6 +95,11 @@ public class SnowPlayerQueue {
         playerObject.cleanData();
     }
 
+    /**
+     * Executes room loaded for this Snow War game contract.
+     *
+     * @param room Room participating in the operation.
+     */
     public static void roomLoaded(SnowWarRoom room) {
         RoomQueue queue = roomQueue.remove(room.roomId);
         if (queue == null) {
@@ -120,6 +139,9 @@ public class SnowPlayerQueue {
         SnowWarTask.addTask(new SnowWarTask(room), 0, 1000);
     }
 
+    /**
+     * Executes cleanup queues for this Snow War game contract.
+     */
     public static void cleanupQueues(){
         roomQueue.clear();
         roomCounter = 0;

@@ -38,6 +38,9 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * Describes game cycle behavior for the Comet subsystem.
+ */
 public class GameCycle implements CometTask, Startable {
     private static final int interval = 1;
 
@@ -50,14 +53,25 @@ public class GameCycle implements CometTask, Startable {
     private int currentOnlineRecord = 0;
     private int onlineRecord = 0;
 
+    /**
+     * Creates a game cycle instance for the Comet subsystem.
+     */
     public GameCycle() {
 
     }
 
+    /**
+     * Returns the instance for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static GameCycle getInstance() {
         return CometBootstrap.resolve(GameCycle.class);
     }
 
+    /**
+     * Starts this Comet component.
+     */
     @Override
     public void start() {
         this.currentOnlineRecord = StatisticsDao.getPlayerRecord();
@@ -67,6 +81,9 @@ public class GameCycle implements CometTask, Startable {
         this.active = true;
     }
 
+    /**
+     * Runs this Comet task.
+     */
     @Override
     public void run() {
         try {
@@ -219,6 +236,9 @@ public class GameCycle implements CometTask, Startable {
         }
     }
 
+    /**
+     * Stops this Comet component.
+     */
     @Override
     public void stop() {
         this.active = false;
@@ -228,10 +248,20 @@ public class GameCycle implements CometTask, Startable {
         }
     }
 
+    /**
+     * Returns the current online record for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getCurrentOnlineRecord() {
         return this.currentOnlineRecord;
     }
 
+    /**
+     * Returns the online record for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getOnlineRecord() {
         return this.onlineRecord;
     }

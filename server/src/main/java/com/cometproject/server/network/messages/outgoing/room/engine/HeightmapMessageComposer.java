@@ -8,18 +8,36 @@ import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
 
+/**
+ * Serializes the heightmap message for the Pixel Protocol client.
+ */
 public class HeightmapMessageComposer extends MessageComposer {
     private final Room room;
 
+    /**
+     * Creates a heightmap message composer instance for the network message subsystem.
+     *
+     * @param room Room participating in the operation.
+     */
     public HeightmapMessageComposer(final Room room) {
         this.room = room;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.HeightMapMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(room.getModel().getSizeX());

@@ -29,7 +29,35 @@ import java.util.Arrays;
 import java.util.List;
 
 
+/**
+ * Describes pet ai behavior for the room subsystem.
+ */
 public class PetAI extends AbstractBotAI {
+    /**
+     * Executes as list for this room contract.
+     *
+     * @param 0 0 supplied by the caller.
+     * @param 100 100 supplied by the caller.
+     * @param 200 200 supplied by the caller.
+     * @param 400 400 supplied by the caller.
+     * @param 600 600 supplied by the caller.
+     * @param 900 900 supplied by the caller.
+     * @param 1300 1300 supplied by the caller.
+     * @param 1800 1800 supplied by the caller.
+     * @param 2400 2400 supplied by the caller.
+     * @param 3200 3200 supplied by the caller.
+     * @param 4300 4300 supplied by the caller.
+     * @param 5700 5700 supplied by the caller.
+     * @param 7600 7600 supplied by the caller.
+     * @param 10100 10100 supplied by the caller.
+     * @param 13300 13300 supplied by the caller.
+     * @param 17500 17500 supplied by the caller.
+     * @param 23000 23000 supplied by the caller.
+     * @param 30200 30200 supplied by the caller.
+     * @param 39600 39600 supplied by the caller.
+     * @param 51900 51900 supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static final List<Integer> levelBoundaries = Arrays.asList(0, 100, 200, 400, 600, 900, 1300,
             1800, 2400, 3200, 4300, 5700, 7600, 10100, 13300, 17500, 23000, 30200, 39600, 51900);
     private static final PetAction[] possibleActions = {
@@ -47,12 +75,23 @@ public class PetAI extends AbstractBotAI {
 
     private PetFoodFloorItem foodItem;
 
+    /**
+     * Creates a pet ai instance for the room subsystem.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     public PetAI(RoomEntity entity) {
         super(entity);
 
         this.setTicksUntilCompleteInSeconds(RandomUtil.getRandomInt(0, 50));
     }
 
+    /**
+     * Handles the player enter callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onPlayerEnter(PlayerEntity entity) {
         if (this.getPetEntity().getData() == null) {
@@ -69,6 +108,11 @@ public class PetAI extends AbstractBotAI {
         return false;
     }
 
+    /**
+     * Handles the added to room callback for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onAddedToRoom() {
         this.say(this.getMessage(PetMessageType.WELCOME_HOME));
@@ -96,6 +140,9 @@ public class PetAI extends AbstractBotAI {
         return false;
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
         if (this.playTimer != 0 || this.getPetEntity().hasMount()) {
@@ -150,6 +197,9 @@ public class PetAI extends AbstractBotAI {
         this.setTicksUntilCompleteInSeconds(25);
     }
 
+    /**
+     * Handles the tick callback for this room contract.
+     */
     @Override
     public void onTick() {
         super.onTick();
@@ -197,6 +247,13 @@ public class PetAI extends AbstractBotAI {
         }
     }
 
+    /**
+     * Handles the talk callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param message Message supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onTalk(PlayerEntity entity, String message) {
         if (message.startsWith(this.getPetEntity().getData().getName())) {
@@ -234,6 +291,9 @@ public class PetAI extends AbstractBotAI {
         return false;
     }
 
+    /**
+     * Executes try nest for this room contract.
+     */
     public void tryNest() {
         this.waitTimer = 10;
         this.nesting = true;
@@ -247,6 +307,9 @@ public class PetAI extends AbstractBotAI {
         }
     }
 
+    /**
+     * Executes try eat for this room contract.
+     */
     public void tryEat() {
         this.waitTimer = 10;
 
@@ -272,6 +335,11 @@ public class PetAI extends AbstractBotAI {
         }
     }
 
+    /**
+     * Executes apply gesture for this room contract.
+     *
+     * @param gestureType Gesture type supplied by the caller.
+     */
     public void applyGesture(String gestureType) {
         if (!this.canGesture()) {
             return;
@@ -302,14 +370,23 @@ public class PetAI extends AbstractBotAI {
         return false;
     }
 
+    /**
+     * Executes wait for interaction for this room contract.
+     */
     public void waitForInteraction() {
         this.waitTimer = 20;
     }
 
+    /**
+     * Executes stay for this room contract.
+     */
     public void stay() {
         this.interactionTimer = RandomUtil.getRandomInt(40, 80);
     }
 
+    /**
+     * Handles the scratched callback for this room contract.
+     */
     public void onScratched() {
         this.waitTimer = 0;
 
@@ -326,6 +403,11 @@ public class PetAI extends AbstractBotAI {
         petEntity.getData().saveStats();
     }
 
+    /**
+     * Executes increase experience for this room contract.
+     *
+     * @param amount Amount supplied by the caller.
+     */
     public void increaseExperience(int amount) {
         this.getPetEntity().getData().increaseExperience(amount);
         this.getEntity().getRoom().getEntities().broadcastMessage(new AddExperiencePointsMessageComposer(this.getPetEntity().getData().getId(), this.getPetEntity().getId(), amount));
@@ -348,6 +430,9 @@ public class PetAI extends AbstractBotAI {
         }
     }
 
+    /**
+     * Executes free for this room contract.
+     */
     public void free() {
         this.interactionTimer = 0;
         this.playTimer = 0;
@@ -389,6 +474,9 @@ public class PetAI extends AbstractBotAI {
         }
     }
 
+    /**
+     * Executes play for this room contract.
+     */
     public void play() {
         // Find a random toy item
         final PetToyFloorItem floorItem = WiredUtil.getRandomElement(this.getPetEntity().getRoom().getItems().getByClass(PetToyFloorItem.class));
@@ -403,6 +491,9 @@ public class PetAI extends AbstractBotAI {
         }
     }
 
+    /**
+     * Executes play dead for this room contract.
+     */
     public void playDead() {
         this.getPetEntity().cancelWalk();
 
@@ -448,11 +539,21 @@ public class PetAI extends AbstractBotAI {
         return message;
     }
 
+    /**
+     * Indicates whether this room contract can move.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean canMove() {
         return this.waitTimer == 0 && this.playTimer == 0 && this.interactionTimer == 0 & this.getPetEntity().getMountedEntity() == null;
     }
 
+    /**
+     * Updates the following player for this room contract.
+     *
+     * @param followingPlayer Following player supplied by the caller.
+     */
     public void setFollowingPlayer(PlayerEntity followingPlayer) {
         if (followingPlayer == null && this.followingPlayer != null) {
             this.followingPlayer.getFollowingEntities().remove(this.getPetEntity());
@@ -461,6 +562,9 @@ public class PetAI extends AbstractBotAI {
         this.followingPlayer = followingPlayer;
     }
 
+    /**
+     * Executes begin breeding for this room contract.
+     */
     public void beginBreeding() {
         final BreedingBoxFloorItem breedingBox = this.findBreedingBox();
 
@@ -473,11 +577,17 @@ public class PetAI extends AbstractBotAI {
         this.getPetEntity().moveTo(breedingBox.getPosition());
     }
 
+    /**
+     * Executes begin nesting for this room contract.
+     */
     public void beginNesting() {
         this.waitTimer = 62;
         this.lay();
     }
 
+    /**
+     * Executes begin eating for this room contract.
+     */
     public void beginEating() {
         this.getPetEntity().addStatus(RoomEntityStatus.EAT, "1");
         this.getPetEntity().markNeedsUpdate();
@@ -485,6 +595,9 @@ public class PetAI extends AbstractBotAI {
         this.waitTimer = 240;
     }
 
+    /**
+     * Executes breed complete for this room contract.
+     */
     public void breedComplete() {
         this.waitTimer = 0;
 
@@ -540,6 +653,11 @@ public class PetAI extends AbstractBotAI {
         return null;
     }
 
+    /**
+     * Executes eating complete for this room contract.
+     *
+     * @param awardHappiness Award happiness supplied by the caller.
+     */
     public void eatingComplete(boolean awardHappiness) {
         this.waitTimer = 0;
 
@@ -553,10 +671,16 @@ public class PetAI extends AbstractBotAI {
         this.getPetEntity().markNeedsUpdate();
     }
 
+    /**
+     * Executes eating complete for this room contract.
+     */
     public void eatingComplete() {
         this.eatingComplete(true);
     }
 
+    /**
+     * Executes nesting complete for this room contract.
+     */
     public void nestingComplete() {
         this.nesting = false;
         this.waitTimer = 0;

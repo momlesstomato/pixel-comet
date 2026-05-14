@@ -42,6 +42,9 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
+/**
+ * Describes room behavior for the room subsystem.
+ */
 public class Room implements Attributable, IRoom {
     public static final boolean useCycleForItems = false;
     public static final boolean useCycleForEntities = false;
@@ -80,16 +83,31 @@ public class Room implements Attributable, IRoom {
     private boolean isReloading = false;
     private boolean forcedUnload = false;
 
+    /**
+     * Creates a room instance for the room subsystem.
+     *
+     * @param data Data supplied by the caller.
+     */
     public Room(IRoomData data) {
         this.data = data;
         this.LOGGER = LoggerFactory.getLogger("Room \"" + this.getData().getName() + "\"");
         this.cachedData = null;
     }
 
+    /**
+     * Creates a room instance for the room subsystem.
+     *
+     * @param cachedRoomObject Cached room object supplied by the caller.
+     */
     public Room(RoomDataObject cachedRoomObject) {
         this(cachedRoomObject.getData());
     }
 
+    /**
+     * Executes load for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Room load() {
         this.model = GameContext.getCurrent().getRoomModelService().getModel(this.getData().getModel());
 
@@ -148,10 +166,20 @@ public class Room implements Attributable, IRoom {
         return this;
     }
 
+    /**
+     * Returns the category for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RoomCategory getCategory() {
         return NavigatorManager.getInstance().getCategory(this.data.getCategoryId());
     }
 
+    /**
+     * Returns the cache object for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RoomDataObject getCacheObject() {
         final List<FloorItemDataObject> floorItems = new ArrayList<>();
         final List<WallItemDataObject> wallItems = new ArrayList<>();
@@ -192,6 +220,11 @@ public class Room implements Attributable, IRoom {
         return new RoomDataObject(this.getId(), this.getData(), rights, floorItems, wallItems, petData, botData);
     }
 
+    /**
+     * Indicates whether idle applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isIdle() {
         if (this.idleTicks < 600 && this.getEntities().realPlayerCount() > 0) {
             this.idleTicks = 0;
@@ -206,16 +239,25 @@ public class Room implements Attributable, IRoom {
         return false;
     }
 
+    /**
+     * Updates the idle now for this room contract.
+     */
     public void setIdleNow() {
         this.idleTicks = 600;
         this.forcedUnload = true;
     }
 
+    /**
+     * Executes reload for this room contract.
+     */
     public void reload() {
         this.setIdleNow();
         this.isReloading = true;
     }
 
+    /**
+     * Releases resources owned by this room component.
+     */
     public void dispose() {
         if (this.isDisposed) {
             return;
@@ -278,6 +320,9 @@ public class Room implements Attributable, IRoom {
         this.LOGGER.debug("[ROOM " + this.getData().getId() + "] > DISPOSED.");
     }
 
+    /**
+     * Executes tick for this room contract.
+     */
     public void tick() {
         WiredTriggerAtGivenTime.executeTriggers(this, this.wiredTimer.incrementAndGet());
 
@@ -290,6 +335,11 @@ public class Room implements Attributable, IRoom {
         }
     }
 
+    /**
+     * Executes start question for this room contract.
+     *
+     * @param question Question supplied by the caller.
+     */
     public void startQuestion(String question) {
         this.question = question;
         this.yesVotes = Sets.newConcurrentHashSet();
@@ -298,6 +348,11 @@ public class Room implements Attributable, IRoom {
         this.getEntities().broadcastMessage(new QuickPollMessageComposer(question));
     }
 
+    /**
+     * Executes start infobus for this room contract.
+     *
+     * @param id Id supplied by the caller.
+     */
     public void startInfobus(String id) {
         Poll poll = PollManager.getInstance().getPollbyId(Integer.parseInt(id));
 
@@ -309,10 +364,19 @@ public class Room implements Attributable, IRoom {
         this.getEntities().broadcastMessage(new StartInfobusPollMessageComposer(poll));
     }
 
+    /**
+     * Indicates whether this room contract has answered infobus.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasAnsweredInfobus(int playerId){
         return this.infobusChoice1.contains(playerId) || this.infobusChoice2.contains(playerId) || this.infobusChoice3.contains(playerId);
     }
 
+    /**
+     * Executes end question for this room contract.
+     */
     public void endQuestion() {
         this.question = null;
 
@@ -327,6 +391,9 @@ public class Room implements Attributable, IRoom {
         }
     }
 
+    /**
+     * Executes end infobus for this room contract.
+     */
     public void endInfobus() {
         this.getEntities().broadcastMessage(new GetInfobusPollResultsMessageComposer(this));
 
@@ -343,18 +410,37 @@ public class Room implements Attributable, IRoom {
         }
     }
 
+    /**
+     * Returns the wired timer for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getWiredTimer() {
         return this.wiredTimer.get();
     }
 
+    /**
+     * Executes reset wired timer for this room contract.
+     */
     public void resetWiredTimer() {
         this.wiredTimer.set(0);
     }
 
+    /**
+     * Returns the promotion for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RoomPromotion getPromotion() {
         return RoomManager.getInstance().getRoomPromotions().get(this.getId());
     }
 
+    /**
+     * Updates the attribute for this room contract.
+     *
+     * @param attributeKey Attribute key supplied by the caller.
+     * @param attributeValue Attribute value supplied by the caller.
+     */
     @Override
     public void setAttribute(String attributeKey, Object attributeValue) {
         if (this.attributes.containsKey(attributeKey)) {
@@ -364,89 +450,196 @@ public class Room implements Attributable, IRoom {
         this.attributes.put(attributeKey, attributeValue);
     }
 
+    /**
+     * Returns the attribute for this room contract.
+     *
+     * @param attributeKey Attribute key supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public Object getAttribute(String attributeKey) {
         return this.attributes.get(attributeKey);
     }
 
+    /**
+     * Indicates whether this room contract has attribute.
+     *
+     * @param attributeKey Attribute key supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean hasAttribute(String attributeKey) {
         return this.attributes.containsKey(attributeKey);
     }
 
+    /**
+     * Removes attribute from this room contract.
+     *
+     * @param attributeKey Attribute key supplied by the caller.
+     */
     @Override
     public void removeAttribute(String attributeKey) {
         this.attributes.remove(attributeKey);
     }
 
+    /**
+     * Returns the id for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getId() {
         return this.data.getId();
     }
 
+    /**
+     * Returns the data for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public IRoomData getData() {
         return this.data;
     }
 
+    /**
+     * Returns the model for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public IRoomModel getModel() {
         return this.model;
     }
 
+    /**
+     * Returns the process for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public ProcessComponent getProcess() {
         return this.process;
     }
 
+    /**
+     * Returns the item process for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public ItemProcessComponent getItemProcess() {
         return this.itemProcess;
     }
 
+    /**
+     * Returns the items for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public ItemsComponent getItems() {
         return this.items;
     }
 
+    /**
+     * Returns the trade for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public TradeComponent getTrade() {
         return this.trade;
     }
 
+    /**
+     * Returns the RPS for this Snow War game contract.
+     *
+     * @return Value exposed by the contract.
+     */
     //public RPSComponent getRPS() { return this.rps; }
 
+    /**
+     * Returns the rights for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RightsComponent getRights() {
         return this.rights;
     }
 
+    /**
+     * Returns the bots for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RoomBotComponent getBots() {
         return this.bots;
     }
 
+    /**
+     * Returns the pets for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public PetComponent getPets() {
         return this.pets;
     }
 
+    /**
+     * Returns the game for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public GameComponent getGame() {
         return this.game;
     }
 
+    /**
+     * Returns the entities for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public EntityComponent getEntities() {
         return this.entities;
     }
 
+    /**
+     * Returns the mapping for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RoomMapping getMapping() {
         return this.mapping;
     }
 
+    /**
+     * Returns the group for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public IGroup getGroup() {
         if (this.group == null || this.group.getData() == null) return null;
 
         return this.group;
     }
 
+    /**
+     * Updates the group for this room contract.
+     *
+     * @param group Group supplied by the caller.
+     */
     public void setGroup(final IGroup group) {
         this.group = group;
     }
 
+    /**
+     * Indicates whether this room contract has room mute.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasRoomMute() {
         return this.attributes.containsKey("room_muted") && (boolean) this.attributes.get("room_muted");
     }
 
+    /**
+     * Updates the room mute for this room contract.
+     *
+     * @param mute Mute supplied by the caller.
+     */
     public void setRoomMute(boolean mute) {
         if (this.attributes.containsKey("room_muted")) {
             this.attributes.replace("room_muted", mute);
@@ -455,50 +648,110 @@ public class Room implements Attributable, IRoom {
         }
     }
 
+    /**
+     * Returns the ratings for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Set<Integer> getRatings() {
         return ratings;
     }
 
+    /**
+     * Returns the no votes for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Set<Integer> getNoVotes() {
         return noVotes;
     }
 
+    /**
+     * Returns the yes votes for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Set<Integer> getYesVotes() {
         return yesVotes;
     }
 
+    /**
+     * Returns the infobus choice1 for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Set<Integer> getInfobusChoice1() {
         return infobusChoice1;
     }
 
+    /**
+     * Returns the infobus choice2 for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Set<Integer> getInfobusChoice2() {
         return infobusChoice2;
     }
 
+    /**
+     * Returns the infobus choice3 for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Set<Integer> getInfobusChoice3() {
         return infobusChoice3;
     }
 
+    /**
+     * Returns the question for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getQuestion() {
         return question;
     }
 
+    /**
+     * Returns the cached data for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RoomDataObject getCachedData() {
         return cachedData;
     }
 
+    /**
+     * Indicates whether reloading applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isReloading() {
         return this.isReloading;
     }
 
+    /**
+     * Returns the filter for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public FilterComponent getFilter() {
         return filter;
     }
 
+    /**
+     * Returns the executed event for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getExecutedEvent() {
         return this.executedEvent;
     }
 
+    /**
+     * Updates the executed event for this room contract.
+     *
+     * @param executedEvent Executed event supplied by the caller.
+     */
     public void setExecutedEvent(int executedEvent) {
         this.executedEvent = executedEvent;
     }

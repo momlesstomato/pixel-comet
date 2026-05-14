@@ -11,21 +11,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * Describes session event handler behavior for the network session subsystem.
+ */
 public class SessionEventHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionEventHandler.class);
 
     /**
-     * The session attached to the event handler
+     * The session attached to the event handler.
      */
     private final Session session;
 
     /**
-     * The events required to complete login
+     * The events required to complete login.
      */
     private final Map<Short, Boolean> loginEvents;
 
     /**
-     * Initialize the event handler
+     * Initialize the event handler.
      *
      * @param session The session attached to the event handler.
      */
@@ -40,7 +43,7 @@ public class SessionEventHandler {
     }
 
     /**
-     * Handle the incoming event
+     * Handle the incoming event.
      *
      * @param msg The incoming event
      */
@@ -62,7 +65,7 @@ public class SessionEventHandler {
     }
 
     /**
-     * Clean up the event handler
+     * Clean up the event handler.
      */
     public void dispose() {
         this.loginEvents.clear();

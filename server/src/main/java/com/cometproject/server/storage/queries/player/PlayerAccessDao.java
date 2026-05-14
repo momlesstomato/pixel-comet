@@ -8,8 +8,18 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 
+/**
+ * Describes player access dao behavior for the storage subsystem.
+ */
 public class PlayerAccessDao {
 
+    /**
+     * Persists access for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param hardwareId Hardware id supplied by the caller.
+     * @param ipAddress Ip address supplied by the caller.
+     */
     public static void saveAccess(int playerId, String hardwareId, String ipAddress) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

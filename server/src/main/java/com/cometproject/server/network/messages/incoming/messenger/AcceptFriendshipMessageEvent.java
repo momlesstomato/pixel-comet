@@ -11,7 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Represents the accept friendship message event published by the network message subsystem.
+ */
 public class AcceptFriendshipMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void handle(Session client, MessageEvent msg) {
         int amount = msg.readInt();
         List<Integer> requests = new ArrayList<>();

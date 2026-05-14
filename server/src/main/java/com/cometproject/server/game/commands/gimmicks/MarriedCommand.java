@@ -9,7 +9,16 @@ import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMess
 import com.cometproject.server.network.sessions.Session;
 
 
+/**
+ * Describes married command behavior for the Comet subsystem.
+ */
 public class MarriedCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         if (params.length < 1) {
@@ -73,16 +82,31 @@ public class MarriedCommand extends ChatCommand {
         }
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "married_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return Locale.getOrDefault("command.parameter.username", "%username%");
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.married.description");

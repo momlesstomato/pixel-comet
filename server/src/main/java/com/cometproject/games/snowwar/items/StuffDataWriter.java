@@ -5,6 +5,9 @@
 /*    */ 
 /*    */ 
 /*    */ 
+/**
+ * Describes stuff data writer behavior for the Snow War game subsystem.
+ */
 /*    */ public class StuffDataWriter
 /*    */ {
 /* 10 */   public List<Integer> savedPositions = new ArrayList<>();
@@ -12,15 +15,31 @@
 /*    */   private byte[] bytes;
 /*    */   public int writer;
 /*    */   
+/**
+ * Creates a stuff data writer instance for the Snow War game subsystem.
+ *
+ * @param type Type supplied by the caller.
+ * @param Size Size supplied by the caller.
+ */
 /*    */   public StuffDataWriter(int type, int Size) {
 /* 16 */     this.bytes = new byte[Size];
 /* 17 */     writeInt8(type);
 /*    */   }
 /*    */   
+/**
+ * Creates a stuff data writer instance for the Snow War game subsystem.
+ *
+ * @param type Type supplied by the caller.
+ */
 /*    */   public StuffDataWriter(int type) {
 /* 21 */     this(type, 1000);
 /*    */   }
 /*    */   
+/**
+ * Returns the data for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*    */   public byte[] getData() {
 /* 25 */     if (this.writer == this.bytes.length) {
 /* 26 */       return this.bytes;
@@ -35,6 +54,11 @@
 /* 35 */     return this.bytes;
 /*    */   }
 /*    */   
+/**
+ * Executes write int32 for this Snow War game contract.
+ *
+ * @param in In supplied by the caller.
+ */
 /*    */   public void writeInt32(int in) {
 /* 39 */     this.bytes[this.writer++] = (byte)(in >>> 24 & 0xFF);
 /* 40 */     this.bytes[this.writer++] = (byte)(in >>> 16 & 0xFF);
@@ -42,15 +66,30 @@
 /* 42 */     this.bytes[this.writer++] = (byte)(in >>> 0 & 0xFF);
 /*    */   }
 /*    */   
+/**
+ * Executes write int16 for this Snow War game contract.
+ *
+ * @param in In supplied by the caller.
+ */
 /*    */   public void writeInt16(int in) {
 /* 46 */     this.bytes[this.writer++] = (byte)(in >>> 8 & 0xFF);
 /* 47 */     this.bytes[this.writer++] = (byte)(in >>> 0 & 0xFF);
 /*    */   }
 /*    */   
+/**
+ * Executes write int8 for this Snow War game contract.
+ *
+ * @param in In supplied by the caller.
+ */
 /*    */   public void writeInt8(int in) {
 /* 51 */     this.bytes[this.writer++] = (byte)(in >>> 0 & 0xFF);
 /*    */   }
 /*    */   
+/**
+ * Executes write string for this Snow War game contract.
+ *
+ * @param in In supplied by the caller.
+ */
 /*    */   public void writeString(String in) {
 /* 55 */     int len = in.length();
 /* 56 */     writeInt16(len);
@@ -59,6 +98,11 @@
 /*    */     }
 /*    */   }
 /*    */   
+/**
+ * Executes write bytes for this Snow War game contract.
+ *
+ * @param in In supplied by the caller.
+ */
 /*    */   public void writeBytes(byte[] in) {
 /* 63 */     int len = in.length;
 /* 64 */     writeInt16(len);
@@ -68,11 +112,22 @@
 /*    */   }
 /*    */ 
 /*    */   
+/**
+ * Updates the saved for this Snow War game contract.
+ *
+ * @param add Add supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 /*    */   public Object setSaved(Object add) {
 /* 72 */     this.savedPositions.add(Integer.valueOf(this.writer));
 /* 73 */     return add;
 /*    */   }
 /*    */   
+/**
+ * Executes write saved for this Snow War game contract.
+ *
+ * @param add Add supplied by the caller.
+ */
 /*    */   public void writeSaved(Object add) {
 /* 77 */     if (add instanceof Integer) {
 /* 78 */       int tmp = this.writer;
@@ -84,6 +139,11 @@
 /*    */     } 
 /*    */   }
 /*    */   
+/**
+ * Executes write saved int8 for this Snow War game contract.
+ *
+ * @param add Add supplied by the caller.
+ */
 /*    */   public void writeSavedInt8(int add) {
 /* 88 */     int tmp = this.writer;
 /* 89 */     this.writer = ((Integer)this.savedPositions.remove(this.savedPositions.size() - 1)).intValue();

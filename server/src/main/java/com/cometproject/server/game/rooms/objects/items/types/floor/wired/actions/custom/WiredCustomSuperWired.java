@@ -14,22 +14,46 @@ import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessage
 import com.cometproject.server.network.messages.outgoing.room.engine.RoomForwardMessageComposer;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Describes wired custom super wired behavior for the room subsystem.
+ */
 public class WiredCustomSuperWired extends WiredActionItem {
 
+    /**
+     * Creates a wired custom super wired instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public WiredCustomSuperWired(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Executes requires player for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean requiresPlayer() {
         return true;
     }
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 7;
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(WiredItemEvent event) {
         if (!(event.entity instanceof PlayerEntity)) {

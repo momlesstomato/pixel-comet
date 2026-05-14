@@ -14,7 +14,17 @@ import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessage
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;
 
+/**
+ * Represents the send ambassador alert message event published by the network message subsystem.
+ */
 public class SendAmbassadorAlertMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @throws Exception When the operation cannot complete.
+     */
     public void handle(Session client, MessageEvent msg) throws Exception {
         client.getPlayer().getEntity().setStatusType(0);
 
@@ -53,6 +63,15 @@ public class SendAmbassadorAlertMessageEvent implements Event {
         client.getPlayer().setLastPhotoTaken(System.currentTimeMillis());
     }
 
+    /**
+     * Handles interaction for this network message contract.
+     *
+     * @param room Room participating in the operation.
+     * @param type Type supplied by the caller.
+     * @param actor Actor supplied by the caller.
+     * @param victim Victim supplied by the caller.
+     * @param actorPosition Actor position supplied by the caller.
+     */
     public void handleInteraction(Room room, String type, Session actor, PlayerEntity victim, Position actorPosition){
         int effectOne = 0;
         int effectOneDuration = 5;

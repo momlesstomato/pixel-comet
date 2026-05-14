@@ -4,18 +4,36 @@ import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
+/**
+ * Serializes the seasonal calendar message for the Pixel Protocol client.
+ */
 public class SeasonalCalendarMessageComposer extends MessageComposer {
     private int type;
 
+    /**
+     * Creates a seasonal calendar message composer instance for the network message subsystem.
+     *
+     * @param type Type supplied by the caller.
+     */
     public SeasonalCalendarMessageComposer(int type) {
         this.type = type;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.SeasonalCalendarMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
 

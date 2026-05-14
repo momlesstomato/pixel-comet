@@ -6,21 +6,40 @@ import com.cometproject.gamecenter.fastfood.net.FastFoodGameSession;
 import com.cometproject.gamecenter.fastfood.net.FastFoodNetSession;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
+/**
+ * Serializes the player join game message for the Pixel Protocol client.
+ */
 public class PlayerJoinGameMessageComposer extends MessageComposer  {
 
     private final FastFoodGame fastFoodGame;
     private final FastFoodGameSession gameSession;
 
+    /**
+     * Creates a player join game message composer instance for the protocol composer subsystem.
+     *
+     * @param fastFoodGame Fast food game supplied by the caller.
+     * @param gameSession Game session supplied by the caller.
+     */
     public PlayerJoinGameMessageComposer(FastFoodGame fastFoodGame, FastFoodGameSession gameSession) {
         this.fastFoodGame = fastFoodGame;
         this.gameSession = gameSession;
     }
 
+    /**
+     * Returns the outgoing Pixel Protocol message id.
+     *
+     * @return Outgoing message id registered in the protocol header table.
+     */
     @Override
     public short getId() {
         return 3;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(this.gameSession.getPlayerId());

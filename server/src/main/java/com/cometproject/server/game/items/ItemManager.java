@@ -23,6 +23,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
+/**
+ * Manages item runtime state for the item subsystem.
+ */
 public class ItemManager implements IFurnitureService {
     private Logger LOGGER = LoggerFactory.getLogger(ItemManager.class);
 
@@ -39,14 +42,25 @@ public class ItemManager implements IFurnitureService {
     private AtomicInteger itemIdCounter;
     private Integer saddleId;
 
+    /**
+     * Creates a item manager instance for the item subsystem.
+     */
     public ItemManager() {
 
     }
 
+    /**
+     * Returns the instance for this item contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static ItemManager getInstance() {
         return CometBootstrap.resolve(ItemManager.class);
     }
 
+    /**
+     * Starts this item component.
+     */
     @Override
     public void start() {
         this.itemDefinitions = new HashMap<>();
@@ -66,6 +80,9 @@ public class ItemManager implements IFurnitureService {
         LOGGER.info("ItemManager initialized");
     }
 
+    /**
+     * Loads crafting machines for this item contract.
+     */
     public void loadCraftingMachines() {
         if (!this.craftingMachines.isEmpty()) {
             this.craftingMachines.clear();
@@ -82,6 +99,12 @@ public class ItemManager implements IFurnitureService {
         }
     }
 
+    /**
+     * Returns the crafting machine for this item contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public CraftingMachine getCraftingMachine(int itemId) {
         final CraftingMachine[] machine = {null};
         for(CraftingMachine machineX : this.craftingMachines){
@@ -91,6 +114,9 @@ public class ItemManager implements IFurnitureService {
         return machine[0];
     }
 
+    /**
+     * Loads item definitions for this item contract.
+     */
     @Override
     public void loadItemDefinitions() {
         Map<Integer, FurnitureDefinition> tempMap = this.itemDefinitions;
@@ -124,10 +150,19 @@ public class ItemManager implements IFurnitureService {
         LOGGER.info("Loaded " + this.getItemDefinitions().size() + " item definitions");
     }
 
+    /**
+     * Returns the by base id for this item contract.
+     *
+     * @param baseId Base id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public FurnitureDefinition getByBaseId(int baseId) {
         return this.itemDefinitions.get(baseId);
     }
 
+    /**
+     * Loads music data for this item contract.
+     */
     @Override
     public void loadMusicData() {
         if (!this.musicData.isEmpty()) {
@@ -138,6 +173,12 @@ public class ItemManager implements IFurnitureService {
         LOGGER.info("Loaded " + this.musicData.size() + " songs");
     }
 
+    /**
+     * Returns the item virtual id for this item contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getItemVirtualId(long itemId) {
         if (this.itemIdToVirtualId.containsKey(itemId)) {
@@ -152,6 +193,11 @@ public class ItemManager implements IFurnitureService {
         return virtualId;
     }
 
+    /**
+     * Executes dispose item virtual id for this item contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     */
     @Override
     public void disposeItemVirtualId(long itemId) {
         int virtualId = this.getItemVirtualId(itemId);
@@ -160,16 +206,34 @@ public class ItemManager implements IFurnitureService {
         this.virtualIdToItemId.remove(virtualId);
     }
 
+    /**
+     * Returns the item id by virtual id for this item contract.
+     *
+     * @param virtualId Virtual id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public Long getItemIdByVirtualId(int virtualId) {
         return this.virtualIdToItemId.get(virtualId);
     }
 
+    /**
+     * Returns the teleport partner for this item contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public long getTeleportPartner(long itemId) {
         return TeleporterDao.getPairId(itemId);
     }
 
+    /**
+     * Executes room id by item id for this item contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @return Result produced by the operation.
+     */
     @Override
     public int roomIdByItemId(long itemId) {
         final Data<Integer> data = Data.createEmpty();
@@ -183,6 +247,12 @@ public class ItemManager implements IFurnitureService {
         return 0;
     }
 
+    /**
+     * Returns the definition for this item contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public FurnitureDefinition getDefinition(int itemId) {
         if (this.getItemDefinitions().containsKey(itemId)) {
@@ -192,6 +262,12 @@ public class ItemManager implements IFurnitureService {
         return null;
     }
 
+    /**
+     * Returns the music data for this item contract.
+     *
+     * @param songId Song id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public IMusicData getMusicData(int songId) {
         if (this.musicData.containsKey(songId)) {
@@ -201,6 +277,12 @@ public class ItemManager implements IFurnitureService {
         return null;
     }
 
+    /**
+     * Returns the music data by name for this item contract.
+     *
+     * @param name Name supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public IMusicData getMusicDataByName(String name) {
         for (IMusicData musicData : this.musicData.values()) {
@@ -212,31 +294,62 @@ public class ItemManager implements IFurnitureService {
         return null;
     }
 
+    /**
+     * Returns the item id to virtual ids for this item contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Map<Long, Integer> getItemIdToVirtualIds() {
         return itemIdToVirtualId;
     }
 
+    /**
+     * Returns the by sprite id for this item contract.
+     *
+     * @param spriteId Sprite id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public FurnitureDefinition getBySpriteId(int spriteId) {
         return this.itemDefinitions.get(this.itemSpriteIdToDefinitionId.get(spriteId));
     }
 
+    /**
+     * Returns the logger for this item contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Logger getLogger() {
         return LOGGER;
     }
 
+    /**
+     * Returns the item definitions for this item contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Map<Integer, FurnitureDefinition> getItemDefinitions() {
         return this.itemDefinitions;
     }
 
+    /**
+     * Returns the saddle id for this item contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Integer getSaddleId() {
         return saddleId;
     }
 
+    /**
+     * Returns the crackable rewards for this item contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<Integer, CrackableReward> getCrackableRewards() {
         return crackableRewards;
     }

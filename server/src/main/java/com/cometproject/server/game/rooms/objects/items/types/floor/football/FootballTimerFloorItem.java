@@ -10,13 +10,25 @@ import com.cometproject.server.game.rooms.objects.items.types.floor.wired.trigge
 import com.cometproject.server.game.rooms.types.Room;
 
 
+/**
+ * Describes football timer floor item behavior for the room subsystem.
+ */
 public class FootballTimerFloorItem extends RoomItemFloor {
     private int time = 0;
 
+    /**
+     * Creates a football timer floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public FootballTimerFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Executes send update for this room contract.
+     */
     @Override
     public void sendUpdate() {
         this.time = Integer.parseInt(this.getItemData().getData());
@@ -24,6 +36,14 @@ public class FootballTimerFloorItem extends RoomItemFloor {
         super.sendUpdate();
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTriggered Is wired triggered supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTriggered) {
         if (!isWiredTriggered) {
@@ -89,6 +109,9 @@ public class FootballTimerFloorItem extends RoomItemFloor {
         return true;
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
         if (this.time > 0) {

@@ -8,8 +8,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
+/**
+ * Describes teleporter dao behavior for the storage subsystem.
+ */
 public class TeleporterDao {
 
+    /**
+     * Returns the pair id for this storage contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static long getPairId(long id) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -37,6 +46,12 @@ public class TeleporterDao {
         return 0;
     }
 
+    /**
+     * Persists pair for this storage contract.
+     *
+     * @param item1 Item1 supplied by the caller.
+     * @param item2 Item2 supplied by the caller.
+     */
     public static void savePair(long item1, long item2) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

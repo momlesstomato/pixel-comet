@@ -8,11 +8,20 @@ import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
 import com.cometproject.server.game.rooms.types.Room;
 
 
+/**
+ * Describes mannequin floor item behavior for the room subsystem.
+ */
 public class MannequinFloorItem extends RoomItemFloor {
     private String name = "New Mannequin";
     private String figure = "ch-210-62.lg-270-62";
     private String gender = "m";
 
+    /**
+     * Creates a mannequin floor item instance for the room subsystem.
+     *
+     * @param roomItemData Room item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public MannequinFloorItem(RoomItemData roomItemData, Room room) {
         super(roomItemData, room);
 
@@ -37,6 +46,11 @@ public class MannequinFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Executes compose item data for this room contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void composeItemData(IComposer msg) {
         msg.writeInt(0);
         msg.writeInt(1);
@@ -50,6 +64,14 @@ public class MannequinFloorItem extends RoomItemFloor {
         msg.writeString(this.getName());
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (isWiredTrigger || !(entity instanceof PlayerEntity))
@@ -103,31 +125,66 @@ public class MannequinFloorItem extends RoomItemFloor {
         return true;
     }
 
+    /**
+     * Returns the data object for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDataObject() {
         return this.name + ";#;" + this.figure + ";#;" + this.gender;
     }
 
+    /**
+     * Returns the name for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Updates the name for this room contract.
+     *
+     * @param name Name supplied by the caller.
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the figure for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getFigure() {
         return figure;
     }
 
+    /**
+     * Updates the figure for this room contract.
+     *
+     * @param figure Figure supplied by the caller.
+     */
     public void setFigure(String figure) {
         this.figure = figure;
     }
 
+    /**
+     * Returns the gender for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getGender() {
         return gender;
     }
 
+    /**
+     * Updates the gender for this room contract.
+     *
+     * @param gender Gender supplied by the caller.
+     */
     public void setGender(String gender) {
         this.gender = gender;
     }

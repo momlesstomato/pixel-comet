@@ -13,20 +13,34 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Manages poll runtime state for the Comet subsystem.
+ */
 public class PollManager implements Startable {
     private static Logger LOGGER = LoggerFactory.getLogger(PollManager.class.getName());
     private final Map<Integer, Integer> roomIdToPollId;
     private Map<Integer, Poll> polls;
 
+    /**
+     * Creates a poll manager instance for the Comet subsystem.
+     */
     public PollManager() {
         this.polls = new ConcurrentHashMap<>();
         this.roomIdToPollId = new ConcurrentHashMap<>();
     }
 
+    /**
+     * Returns the instance for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static PollManager getInstance() {
         return CometBootstrap.resolve(PollManager.class);
     }
 
+    /**
+     * Starts this Comet component.
+     */
     @Override
     public void start() {
         if (this.polls != null) {
@@ -55,6 +69,12 @@ public class PollManager implements Startable {
         LOGGER.info("Loaded " + this.getPolls().size() + " poll(s)");
     }
 
+    /**
+     * Executes room has poll for this Comet contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean roomHasPoll(int roomId) {
         Poll poll = this.getPollByRoomId(roomId);
 
@@ -69,6 +89,12 @@ public class PollManager implements Startable {
         return this.roomIdToPollId.containsKey(roomId);
     }
 
+    /**
+     * Returns the poll by room id for this Comet contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public Poll getPollByRoomId(int roomId) {
         if (!this.roomIdToPollId.containsKey(roomId)) {
             return null;
@@ -77,10 +103,21 @@ public class PollManager implements Startable {
         return this.getPollbyId(this.roomIdToPollId.get(roomId));
     }
 
+    /**
+     * Returns the pollby id for this Comet contract.
+     *
+     * @param pollId Poll id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public Poll getPollbyId(int pollId) {
         return this.polls.get(pollId);
     }
 
+    /**
+     * Returns the polls for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<Integer, Poll> getPolls() {
         return polls;
     }

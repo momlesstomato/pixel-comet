@@ -4,7 +4,16 @@ import com.cometproject.games.snowwar.RoomQueue;
 import com.cometproject.games.snowwar.SnowWar;
 import com.cometproject.server.network.sessions.Session;
 
+/**
+ * Describes serialize game2 behavior for the network message subsystem.
+ */
 public class SerializeGame2 {
+    /**
+     * Executes parse for this network message contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @param queue Queue supplied by the caller.
+     */
     public static void parse(IComposer msg, RoomQueue queue) {
         msg.writeInt(queue.room.roomId);
         msg.writeString(queue.room.Name);

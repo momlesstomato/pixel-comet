@@ -20,12 +20,24 @@ import com.cometproject.storage.api.data.currency.CurrencyUseCases;
 import com.cometproject.storage.api.services.ICurrencyService;
 import com.google.common.collect.Sets;
 
+/**
+ * Describes subscription revision handler behavior for the networking subsystem.
+ */
 public class SubscriptionRevisionHandler extends AbstractWebSocketHandler<SubscriptionRevisionHandler.ASMData> {
 
+    /**
+     * Creates a subscription revision handler instance for the networking subsystem.
+     */
     public SubscriptionRevisionHandler() {
         super(ASMData.class);
     }
 
+    /**
+     * Executes handle for this networking contract.
+     *
+     * @param ctx Netty channel context for the current operation.
+     * @param authenticationData Authentication data supplied by the caller.
+     */
     @Override
     public void handle(WebSocketClientConnection ctx, ASMData authenticationData) {
         if (authenticationData.pid.isEmpty() || !isNumeric(authenticationData.pid)|| !isNumeric(authenticationData.oid))
@@ -105,6 +117,12 @@ public class SubscriptionRevisionHandler extends AbstractWebSocketHandler<Subscr
         private String oid;
     }
 
+    /**
+     * Indicates whether numeric applies to this networking contract.
+     *
+     * @param str Str supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public static boolean isNumeric(String str) {
         try {
             Double.parseDouble(str);

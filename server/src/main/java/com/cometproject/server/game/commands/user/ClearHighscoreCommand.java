@@ -6,8 +6,17 @@ import com.cometproject.server.network.messages.outgoing.notification.Notificati
 import com.cometproject.server.network.sessions.Session;
 import java.util.List;
 
+/**
+ * Describes clear highscore command behavior for the Comet subsystem.
+ */
 public class ClearHighscoreCommand extends ChatCommand {
 
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param message Message supplied by the caller.
+     */
     @Override
     public void execute(Session client, String message[]) {
         if(client == null)
@@ -30,16 +39,31 @@ public class ClearHighscoreCommand extends ChatCommand {
         client.send(new NotificationMessageComposer("highscore", "Has reiniciado correctamente la clasificación de la sala."));
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "highscore_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.highscore.description");

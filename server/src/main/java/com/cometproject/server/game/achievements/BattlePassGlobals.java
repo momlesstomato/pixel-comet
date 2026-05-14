@@ -6,6 +6,9 @@ import com.cometproject.server.game.achievements.types.BattlePassRewardEnum;
 
 import java.util.ArrayList;
 
+/**
+ * Describes battle pass globals behavior for the Comet subsystem.
+ */
 public class BattlePassGlobals {
     public static ArrayList<BattlePassMission> battlePassMissions = new ArrayList<BattlePassMission>(){{
         add(new BattlePassMission(1, "Visita 10 salas del hotel", 10, BattlePassMissionEnums.MissionType.VISITROOM, BattlePassRewardEnum.RewardType.CURRENCY, "30", "https://cdn.discordapp.com/attachments/882679902162288651/1007356969058840697/1er-nivel.png"));

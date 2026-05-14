@@ -25,8 +25,17 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;
 
 
+/**
+ * Represents the talk message event published by the network message subsystem.
+ */
 public class TalkMessageEvent implements Event {
     private String targetGroup;
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void handle(Session client, MessageEvent msg) {
         String message = msg.readString();
 
@@ -156,6 +165,12 @@ public class TalkMessageEvent implements Event {
         }
     }
 
+    /**
+     * Executes using colour code for this network message contract.
+     *
+     * @param Message Message supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public static boolean UsingColourCode(String Message)
     {
         boolean UsingColour = false;
@@ -173,6 +188,12 @@ public class TalkMessageEvent implements Event {
         return UsingColour;
     }
 
+    /**
+     * Executes filter message for this network message contract.
+     *
+     * @param message Message supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static String filterMessage(String message) {
         if (message.contains("&#1º;")) {
             message = message.replace("&#1º;", "");

@@ -1,5 +1,8 @@
 package com.cometproject.server.game.pets.races;
 
+/**
+ * Describes pet type behavior for the pet subsystem.
+ */
 public class PetType {
     //dog,cat,croco,terrier,bear,pig,lion,rhino,spider,turtle,chicken,frog,dragon,monster,monkey,horse,monsterplant,bunnyeaster,bunnyevil,bunnydepressed,bunnylove,pigeongood,pigeonevil,demonmonkey,bearbaby,terrierbaby,gnome,gnome,kittenbaby,puppybaby,pigletbaby,haloompa,fools,pterosaur,velociraptor
     public static final int DOG = 0;

@@ -25,15 +25,28 @@ public final class JavalinWebSocketConnection extends AbstractConnection {
         this.context = context;
     }
 
+    /**
+     * Returns the remote address for this network connection contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getRemoteAddress() {
         return this.context.host();
     }
 
+    /**
+     * Executes flush for this network connection contract.
+     */
     @Override
     public void flush() {
     }
 
+    /**
+     * Executes send internal for this network connection contract.
+     *
+     * @param composer Composer supplied by the caller.
+     */
     @Override
     protected void sendInternal(final IMessageComposer composer) {
         if (!this.context.session.isOpen()) {
@@ -45,6 +58,11 @@ public final class JavalinWebSocketConnection extends AbstractConnection {
         this.context.send(payload);
     }
 
+    /**
+     * Executes send raw internal for this network connection contract.
+     *
+     * @param payload Payload supplied by the caller.
+     */
     @Override
     protected void sendRawInternal(final String payload) {
         if (!this.context.session.isOpen()) {
@@ -55,6 +73,11 @@ public final class JavalinWebSocketConnection extends AbstractConnection {
         this.context.send(payload);
     }
 
+    /**
+     * Executes close internal for this network connection contract.
+     *
+     * @param closeCode Close code supplied by the caller.
+     */
     @Override
     protected void closeInternal(final ConnectionCloseCode closeCode) {
         if (!this.context.session.isOpen()) {

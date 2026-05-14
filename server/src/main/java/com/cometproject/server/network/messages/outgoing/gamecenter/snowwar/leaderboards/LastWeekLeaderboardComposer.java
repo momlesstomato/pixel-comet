@@ -7,17 +7,35 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 /*    */ 
 /*    */ 
 /*    */ 
+/**
+ * Describes last week leaderboard composer packets for the Snow War protocol layer.
+ */
 /*    */ public class LastWeekLeaderboardComposer
 /*    */   extends MessageComposer
 /*    */ {
 /*    */   List<GamePlayer> data;
 /*    */   private int gameId;
 /*    */   
+/**
+ * Creates a last week leaderboard composer instance for the Snow War game subsystem.
+ *
+ * @param gameId Game id supplied by the caller.
+ */
 /*    */   public LastWeekLeaderboardComposer(int gameId) {
 /* 18 */     this.gameId = gameId;
 /*    */   }
 /*    */ 
+/**
+ * Writes this message body using the Pixel Protocol field order.
+ *
+ * @param msg Composer buffer that receives serialized protocol fields.
+ */
 /*    */   @Override
+/**
+ * Writes this message body using the Pixel Protocol field order.
+ *
+ * @param msg Composer buffer that receives serialized protocol fields.
+ */
 /*    */   public void compose(IComposer msg) {
 /* 24 */     int i = 1;
 /*    */     
@@ -42,6 +60,11 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 /*    */   }
 /*    */ 
 /*    */   @Override
+/**
+ * Returns the id for this network message contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*    */   public short getId() {
 /* 48 */     return 188;
 /*    */   }

@@ -10,7 +10,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * Describes locale dao behavior for the storage subsystem.
+ */
 public class LocaleDao {
+    /**
+     * Returns the all for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<String, String> getAll() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

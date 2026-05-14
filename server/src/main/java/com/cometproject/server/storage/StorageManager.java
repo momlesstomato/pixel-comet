@@ -14,6 +14,9 @@ import com.cometproject.storage.mysql.MySQLStorageInitializer;
 import com.cometproject.storage.mysql.connections.HikariConnectionProvider;
 import com.google.inject.Inject;
 
+/**
+ * Manages storage runtime state for the storage subsystem.
+ */
 public class StorageManager implements Startable {
     private final HikariConnectionProvider hikariConnectionProvider;
     private final IPlayerRepository playerRepository;
@@ -32,10 +35,18 @@ public class StorageManager implements Startable {
         this.playerRepository = playerRepository;
     }
 
+    /**
+     * Returns the instance for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static StorageManager getInstance() {
         return CometBootstrap.resolve(StorageManager.class);
     }
 
+    /**
+     * Starts this storage component.
+     */
     @Override
     public void start() {
         final MySQLStorageInitializer initializer = new MySQLStorageInitializer(
@@ -61,6 +72,9 @@ public class StorageManager implements Startable {
         SqlHelper.init(hikariConnectionProvider);
     }
 
+    /**
+     * Stops this storage component.
+     */
     @Override
     public void stop() {
         CacheManager.getInstance().stop();

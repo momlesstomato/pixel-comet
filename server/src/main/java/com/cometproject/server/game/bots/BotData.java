@@ -12,9 +12,12 @@ import com.google.gson.JsonObject;
 import java.util.Arrays;
 
 
+/**
+ * Carries bot data data for the Comet subsystem.
+ */
 public abstract class BotData implements IBotData {
     /**
-     * The ID of the bot
+     * The ID of the bot.
      */
     private int id;
 
@@ -24,42 +27,42 @@ public abstract class BotData implements IBotData {
     private int chatDelay;
 
     /**
-     * The ID of the player who owns the bot
+     * The ID of the player who owns the bot.
      */
     private int ownerId;
 
     /**
-     * The name of the bot
+     * The name of the bot.
      */
     private String username;
 
     /**
-     * The motto of the bot
+     * The motto of the bot.
      */
     private String motto;
 
     /**
-     * The figure of the bot
+     * The figure of the bot.
      */
     private String figure;
 
     /**
-     * The gender of the bot
+     * The gender of the bot.
      */
     private String gender;
 
     /**
-     * The name of the 1bot's owner
+     * The name of the 1bot's owner.
      */
     private String ownerName;
 
     /**
-     * Can the bot talk without being triggered (currently the only way it can...)
+     * Can the bot talk without being triggered (currently the only way it can...).
      */
     private boolean isAutomaticChat;
 
     /**
-     * The messages the bot can say
+     * The messages the bot can say.
      */
     private String[] messages;
 
@@ -70,7 +73,7 @@ public abstract class BotData implements IBotData {
     private String data;
 
     /**
-     * Initialize the bot
+     * Initialize the bot.
      *
      * @param id            The ID of the bot
      * @param username      The name of the bot
@@ -102,6 +105,17 @@ public abstract class BotData implements IBotData {
         this.isAutomaticChat = automaticChat;
     }
 
+    /**
+     * Creates a bot data instance for the Comet subsystem.
+     *
+     * @param id Id supplied by the caller.
+     * @param botName Bot name supplied by the caller.
+     * @param ownerName Owner name supplied by the caller.
+     * @param botFigure Bot figure supplied by the caller.
+     * @param botGender Bot gender supplied by the caller.
+     * @param botMotto Bot motto supplied by the caller.
+     * @param type Type supplied by the caller.
+     */
     public BotData(int id, String botName, String ownerName, String botFigure, String botGender, String botMotto, BotType type) {
         this.id = id;
         this.username = botName;
@@ -111,6 +125,11 @@ public abstract class BotData implements IBotData {
         this.botType = type;
     }
 
+    /**
+     * Executes to JSON object for this Comet contract.
+     *
+     * @return Result produced by the operation.
+     */
     @Override
     public JsonObject toJsonObject() {
         final JsonObject jsonObject = new JsonObject();
@@ -139,7 +158,7 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Get a random chat message from the array
+     * Get a random chat message from the array.
      *
      * @return A random chat message from the array
      */
@@ -155,7 +174,7 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Strip non-alpha-numeric characters from a chat message
+     * Strip non-alpha-numeric characters from a chat message.
      *
      * @param msg The chat message we will filter
      * @return A filtered version of the chat message
@@ -165,7 +184,7 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Save the bot data
+     * Save the bot data.
      */
     @Override
     public void save() {
@@ -173,7 +192,7 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Get the bot's ID
+     * Get the bot's ID.
      *
      * @return The bot's ID
      */
@@ -183,7 +202,7 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Get the bot's name
+     * Get the bot's name.
      *
      * @return The bot's name
      */
@@ -193,7 +212,7 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Set the bot's username
+     * Set the bot's username.
      *
      * @param username The new username
      */
@@ -203,7 +222,7 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Get the bot's motto
+     * Get the bot's motto.
      *
      * @return The bot's motto
      */
@@ -213,7 +232,7 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Set the bot's motto
+     * Set the bot's motto.
      *
      * @param motto The new motto
      */
@@ -223,7 +242,7 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Get the bot's figure
+     * Get the bot's figure.
      *
      * @return The bot's figure
      */
@@ -233,7 +252,7 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Set the bot's figure
+     * Set the bot's figure.
      *
      * @param figure The new figure
      */
@@ -243,7 +262,7 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Get the bot's gender
+     * Get the bot's gender.
      *
      * @return The bot's gender
      */
@@ -253,7 +272,7 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Set the bot's gender
+     * Set the bot's gender.
      *
      * @param gender The new gender
      */
@@ -263,7 +282,7 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Get how long it is before the bot will talk
+     * Get how long it is before the bot will talk.
      *
      * @return Seconds until the bot will talk
      */
@@ -273,7 +292,7 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Set how long it is before the bot can talk
+     * Set how long it is before the bot can talk.
      *
      * @param delay Seconds until the bot will talk
      */
@@ -283,7 +302,7 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Get the bot's chat messages
+     * Get the bot's chat messages.
      *
      * @return Bot's chat messages
      */
@@ -293,7 +312,7 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Set the bot's chat messages
+     * Set the bot's chat messages.
      *
      * @param messages New chat messages
      */
@@ -313,7 +332,7 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Set whether or not the bot can talk without being triggered
+     * Set whether or not the bot can talk without being triggered.
      *
      * @param isAutomaticChat Whether or not the bot can talk without being triggered
      */
@@ -323,7 +342,7 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Get the name of the owner of the bot
+     * Get the name of the owner of the bot.
      *
      * @return The name of the owner of the bot
      */
@@ -333,7 +352,7 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Get the ID of the owner of the bot
+     * Get the ID of the owner of the bot.
      *
      * @return The ID of the owner of the bot
      */
@@ -343,33 +362,58 @@ public abstract class BotData implements IBotData {
     }
 
     /**
-     * Dispose the bot (Clear associated lists etc.)
+     * Dispose the bot (Clear associated lists etc.).
      */
     @Override
     public void dispose() {
         Arrays.fill(messages, null);
     }
 
+    /**
+     * Returns the bot type for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public BotType getBotType() {
         return botType;
     }
 
+    /**
+     * Returns the mode for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public BotMode getMode() {
         return mode;
     }
 
+    /**
+     * Updates the mode for this Comet contract.
+     *
+     * @param mode Mode supplied by the caller.
+     */
     @Override
     public void setMode(BotMode mode) {
         this.mode = mode;
     }
 
+    /**
+     * Returns the data for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getData() {
         return data;
     }
 
+    /**
+     * Updates the data for this Comet contract.
+     *
+     * @param data Data supplied by the caller.
+     */
     @Override
     public void setData(String data) {
         this.data = data;

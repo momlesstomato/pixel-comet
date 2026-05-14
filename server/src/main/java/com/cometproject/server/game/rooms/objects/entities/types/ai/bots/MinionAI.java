@@ -15,6 +15,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**
+ * Describes minion ai behavior for the room subsystem.
+ */
 public class MinionAI extends AbstractBotAI {
     private final static Map<String, Consumer<BotEntity>> speechCommands = new HashMap<String, Consumer<BotEntity>>() {{
         put("minions leave", (entity) -> entity.leaveRoom(false, false, false));
@@ -58,10 +61,22 @@ public class MinionAI extends AbstractBotAI {
         });
     }};
 
+    /**
+     * Creates a minion ai instance for the room subsystem.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     public MinionAI(RoomEntity entity) {
         super(entity);
     }
 
+    /**
+     * Handles the talk callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param message Message supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onTalk(PlayerEntity entity, String message) {
         if (message.startsWith(":")) return false;
@@ -79,6 +94,12 @@ public class MinionAI extends AbstractBotAI {
         return false;
     }
 
+    /**
+     * Handles the player leave callback for this room contract.
+     *
+     * @param playerEntity Player entity supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onPlayerLeave(PlayerEntity playerEntity) {
         if (playerEntity.getPlayerId() == ((BotEntity) this.getEntity()).getData().getOwnerId()) {

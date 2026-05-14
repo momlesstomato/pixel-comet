@@ -23,17 +23,31 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 
+/**
+ * Describes player battle pass info behavior for the player subsystem.
+ */
 public class PlayerBattlePassInfo {
     public int playerId;
     public int level;
     public int exp;
     public ArrayList<Integer> completedMissions = new ArrayList<Integer>();
 
+    /**
+     * Creates a player battle pass info instance for the player subsystem.
+     *
+     * @param level Level supplied by the caller.
+     * @param exp Exp supplied by the caller.
+     */
     public PlayerBattlePassInfo(int level, int exp){
         this.level = level;
         this.exp = exp;
     }
 
+    /**
+     * Adds experience point to this player contract.
+     *
+     * @param mission Mission supplied by the caller.
+     */
     public void addExperiencePoint(int mission){
         if(this.level != mission) return;
 
@@ -68,6 +82,12 @@ public class PlayerBattlePassInfo {
         player.getPlayer().getData().updateBattlePass();
     }
 
+    /**
+     * Executes give reward for this player contract.
+     *
+     * @param ms Ms supplied by the caller.
+     * @param player Player participating in the operation.
+     */
     public void giveReward(BattlePassMission ms, Session player){
         if(ms.rewardType == BattlePassRewardEnum.RewardType.BADGE){
             player.getPlayer().getInventory().addBadge(ms.rewardReference, true);
@@ -121,6 +141,12 @@ public class PlayerBattlePassInfo {
         }
     }
 
+    /**
+     * Executes count exp mission for this player contract.
+     *
+     * @param mission Mission supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public int countExpMission(int mission){
         int matches = 0;
         for(int completed : completedMissions){

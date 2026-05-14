@@ -5,8 +5,17 @@
 /*    */ 
 /*    */ 
 /*    */ 
+/**
+ * Describes serialize game2 player stats data behavior for the Snow War game subsystem.
+ */
 /*    */ public class SerializeGame2PlayerStatsData
 /*    */ {
+/**
+ * Executes parse for this network message contract.
+ *
+ * @param msg Composer buffer that receives serialized protocol fields.
+ * @param Player Player supplied by the caller.
+ */
 /*    */   public static void parse(IComposer msg, HumanGameObject Player) {
 /* 11 */     msg.writeInt(Player.score);
 /* 12 */     msg.writeInt(Player.kills);

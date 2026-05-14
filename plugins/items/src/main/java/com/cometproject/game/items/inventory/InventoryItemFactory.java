@@ -9,12 +9,24 @@ import com.cometproject.api.game.players.data.components.inventory.InventoryItem
 import com.cometproject.api.game.players.data.components.inventory.PlayerItem;
 import com.cometproject.game.items.inventory.items.*;
 
+/**
+ * Creates inventory item instances for the item subsystem.
+ */
 public class InventoryItemFactory implements IPlayerItemFactory {
     private IFurnitureService furnitureService;
 
+    /**
+     * Creates a inventory item factory instance for the item subsystem.
+     */
     public InventoryItemFactory() {
     }
 
+    /**
+     * Creates item for this item contract.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public PlayerItem createItem(InventoryItemData itemData) {
         if (this.furnitureService == null) {

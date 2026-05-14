@@ -12,6 +12,9 @@ import com.cometproject.storage.mysql.models.factories.rooms.RoomDataFactory;
 import com.cometproject.storage.mysql.models.factories.rooms.RoomModelDataFactory;
 import com.cometproject.storage.mysql.repositories.*;
 
+/**
+ * Describes my SQL storage initializer behavior for the MySQL storage subsystem.
+ */
 public class MySQLStorageInitializer implements IStorageInitializer {
 
     private final MySQLConnectionProvider connectionProvider;
@@ -33,6 +36,11 @@ public class MySQLStorageInitializer implements IStorageInitializer {
         MySQLStorageContext.setCurrentContext(new MySQLStorageContext(connectionProvider));
     }
 
+    /**
+     * Updates the up for this MySQL storage contract.
+     *
+     * @param storageContext Storage context supplied by the caller.
+     */
     @Override
     public void setup(StorageContext storageContext) {
         storageContext.setGroupRepository(new MySQLGroupRepository(new GroupDataFactory(), connectionProvider));

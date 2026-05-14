@@ -14,6 +14,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
+/**
+ * Describes inventory item behavior for the player subsystem.
+ */
 public class InventoryItem implements PlayerItem {
     private long id;
     private int baseId;
@@ -22,6 +25,12 @@ public class InventoryItem implements PlayerItem {
 
     private LimitedEditionItem limitedEditionItem;
 
+    /**
+     * Creates a inventory item instance for the player subsystem.
+     *
+     * @param data Data supplied by the caller.
+     * @throws SQLException When the operation cannot complete.
+     */
     public InventoryItem(ResultSet data) throws SQLException {
         this.id = data.getLong("id");
         this.baseId = data.getInt("base_item");
@@ -40,12 +49,28 @@ public class InventoryItem implements PlayerItem {
         }
     }
 
+    /**
+     * Creates a inventory item instance for the player subsystem.
+     *
+     * @param id Id supplied by the caller.
+     * @param baseId Base id supplied by the caller.
+     * @param extraData Extra data supplied by the caller.
+     * @param giftData Gift data supplied by the caller.
+     * @param limitEditionItem Limit edition item supplied by the caller.
+     */
     public InventoryItem(long id, int baseId, String extraData, IGiftData giftData, LimitedEditionItem limitEditionItem) {
         this.init(id, baseId, extraData, (GiftData) giftData);
 
         this.limitedEditionItem = limitEditionItem;
     }
 
+    /**
+     * Creates a inventory item instance for the player subsystem.
+     *
+     * @param id Id supplied by the caller.
+     * @param baseId Base id supplied by the caller.
+     * @param extraData Extra data supplied by the caller.
+     */
     public InventoryItem(long id, int baseId, String extraData) {
         this.init(id, baseId, extraData, null);
     }
@@ -57,6 +82,11 @@ public class InventoryItem implements PlayerItem {
         this.giftData = giftData;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void compose(IComposer msg) {
         if (this.getDefinition().getItemType() == ItemType.WALL) {
             msg.writeInt(this.getVirtualId());
@@ -188,6 +218,11 @@ public class InventoryItem implements PlayerItem {
         msg.writeInt(isGift ? this.getGiftData().getWrappingPaper() * 1000 + this.getGiftData().getDecorationType() : 0);
     }
 
+    /**
+     * Executes serialize trade for this player contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void serializeTrade(IComposer msg) {
         final boolean isGift = this.getGiftData() != null;
         final boolean isGroupItem = this.getDefinition().getInteraction().equals("group_item") || this.getDefinition().getInteraction().equals("group_gate");
@@ -264,39 +299,79 @@ public class InventoryItem implements PlayerItem {
         }
     }
 
+    /**
+     * Returns the id for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public long getId() {
         return this.id;
     }
 
+    /**
+     * Returns the definition for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public FurnitureDefinition getDefinition() {
         return ItemManager.getInstance().getDefinition(this.getBaseId());
     }
 
+    /**
+     * Returns the base id for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getBaseId() {
         return this.baseId;
     }
 
+    /**
+     * Returns the extra data for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getExtraData() {
         return this.extraData;
     }
 
+    /**
+     * Returns the gift data for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public GiftData getGiftData() {
         return giftData;
     }
 
+    /**
+     * Returns the limited edition item for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public LimitedEditionItem getLimitedEditionItem() {
         return limitedEditionItem;
     }
 
+    /**
+     * Creates snapshot for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public InventoryItemSnapshot createSnapshot() {
         return new InventoryItemSnapshot(this.id, this.baseId, this.extraData);
     }
 
+    /**
+     * Returns the virtual id for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getVirtualId() {
         return ItemManager.getInstance().getItemVirtualId(this.getId());

@@ -47,6 +47,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
+/**
+ * Owns items behavior inside the room processing subsystem.
+ */
 public class ItemsComponent {
 
     private final Logger LOGGER;
@@ -59,6 +62,11 @@ public class ItemsComponent {
     private long soundMachineId = 0;
     private long moodlightId;
 
+    /**
+     * Creates a items component instance for the room processing subsystem.
+     *
+     * @param room Room participating in the operation.
+     */
     public ItemsComponent(Room room) {
         this.room = room;
         this.LOGGER = LoggerFactory.getLogger("Room Items Component [" + room.getData().getName() + "]");
@@ -138,6 +146,9 @@ public class ItemsComponent {
         }
     }
 
+    /**
+     * Handles the loaded callback for this room processing contract.
+     */
     public void onLoaded() {
         for (RoomItemFloor floorItem : floorItems.values()) {
             floorItem.onLoad();
@@ -148,6 +159,9 @@ public class ItemsComponent {
         }
     }
 
+    /**
+     * Releases resources owned by this room processing component.
+     */
     public void dispose() {
         for (RoomItemFloor floorItem : floorItems.values()) {
             ItemManager.getInstance().disposeItemVirtualId(floorItem.getId());
@@ -175,6 +189,12 @@ public class ItemsComponent {
         this.itemClassIndex.clear();
     }
 
+    /**
+     * Updates the moodlight for this room processing contract.
+     *
+     * @param moodlight Moodlight supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean setMoodlight(long moodlight) {
         if (this.moodlightId != 0)
             return false;
@@ -183,6 +203,11 @@ public class ItemsComponent {
         return true;
     }
 
+    /**
+     * Removes moodlight from this room processing contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean removeMoodlight() {
         if (this.moodlightId == 0) {
             return false;
@@ -192,6 +217,9 @@ public class ItemsComponent {
         return true;
     }
 
+    /**
+     * Executes commit for this room processing contract.
+     */
     public void commit() {
         if (!CometSettings.storageItemQueueEnabled) {
             return;
@@ -214,6 +242,12 @@ public class ItemsComponent {
         floorItems.clear();*/
     }
 
+    /**
+     * Indicates whether moodlight matches applies to this room processing contract.
+     *
+     * @param item Item supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isMoodlightMatches(RoomItem item) {
         if (this.moodlightId == 0) {
             return false;
@@ -222,10 +256,31 @@ public class ItemsComponent {
         return (this.moodlightId == item.getId());
     }
 
+    /**
+     * Returns the moodlight for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public MoodlightWallItem getMoodlight() {
         return (MoodlightWallItem) this.getWallItem(this.moodlightId);
     }
 
+    /**
+     * Adds floor item to this room processing contract.
+     *
+     * @param id Id supplied by the caller.
+     * @param baseId Base id supplied by the caller.
+     * @param room Room participating in the operation.
+     * @param ownerId Owner id supplied by the caller.
+     * @param ownerName Owner name supplied by the caller.
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     * @param rot Rot supplied by the caller.
+     * @param height Height supplied by the caller.
+     * @param data Data supplied by the caller.
+     * @param limitedEditionItem Limited edition item supplied by the caller.
+     * @return Result produced by the mutation.
+     */
     public RoomItemFloor addFloorItem(long id, int baseId, Room room, int ownerId, String ownerName, int x, int y, int rot, double height, String data, LimitedEditionItem limitedEditionItem) {
         final RoomItemData itemData = new RoomItemData(id, baseId, ownerId, ownerName, new Position(x, y, height), rot, data, "", limitedEditionItem);
 
@@ -239,6 +294,18 @@ public class ItemsComponent {
         return floor;
     }
 
+    /**
+     * Adds wall item to this room processing contract.
+     *
+     * @param id Id supplied by the caller.
+     * @param baseId Base id supplied by the caller.
+     * @param room Room participating in the operation.
+     * @param ownerId Owner id supplied by the caller.
+     * @param ownerName Owner name supplied by the caller.
+     * @param position Position supplied by the caller.
+     * @param data Data supplied by the caller.
+     * @return Result produced by the mutation.
+     */
     public RoomItemWall addWallItem(long id, int baseId, Room room, int ownerId, String ownerName, String position, String data) {
         final RoomItemData itemData = new RoomItemData(id, baseId, ownerId, ownerName, new Position(), 0, data, position, null);
         RoomItemWall wall = RoomItemFactory.createWall(itemData, room, ItemManager.getInstance().getDefinition(baseId));
@@ -247,6 +314,13 @@ public class ItemsComponent {
         return wall;
     }
 
+    /**
+     * Returns the items on square for this room processing contract.
+     *
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public List<RoomItemFloor> getItemsOnSquare(int x, int y) {
         RoomTile tile = this.getRoom().getMapping().getTile(x, y);
 
@@ -257,6 +331,12 @@ public class ItemsComponent {
         return new ArrayList<>(tile.getItems());
     }
 
+    /**
+     * Returns the floor item for this room processing contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public RoomItemFloor getFloorItem(int id) {
         Long itemId = ItemManager.getInstance().getItemIdByVirtualId(id);
 
@@ -267,6 +347,12 @@ public class ItemsComponent {
         return this.floorItems.get(itemId);
     }
 
+    /**
+     * Returns the wall item for this room processing contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public RoomItemWall getWallItem(int id) {
         Long itemId = ItemManager.getInstance().getItemIdByVirtualId(id);
 
@@ -277,14 +363,32 @@ public class ItemsComponent {
         return this.wallItems.get(itemId);
     }
 
+    /**
+     * Returns the floor item for this room processing contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public RoomItemFloor getFloorItem(long id) {
         return this.floorItems.get(id);
     }
 
+    /**
+     * Returns the wall item for this room processing contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public RoomItemWall getWallItem(long id) {
         return this.wallItems.get(id);
     }
 
+    /**
+     * Returns the by interaction for this room processing contract.
+     *
+     * @param interaction Interaction supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public List<RoomItemFloor> getByInteraction(String interaction) {
         List<RoomItemFloor> items = new ArrayList<>();
 
@@ -305,6 +409,12 @@ public class ItemsComponent {
         return items;
     }
 
+    /**
+     * Returns the by class for this room processing contract.
+     *
+     * @param clazz Clazz supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public <T extends RoomItemFloor> List<T> getByClass(Class<T> clazz) {
         List<T> items = new ArrayList<>();
 
@@ -326,6 +436,13 @@ public class ItemsComponent {
         return items;
     }
 
+    /**
+     * Removes item from this room processing contract.
+     *
+     * @param item Item supplied by the caller.
+     * @param ownerId Owner id supplied by the caller.
+     * @param client Client supplied by the caller.
+     */
     public void removeItem(RoomItemWall item, int ownerId, Session client) {
         StorageContext.getCurrentContext().getRoomItemRepository().removeItemFromRoom(item.getId(), ownerId, item.getItemData().getData());
 
@@ -338,10 +455,23 @@ public class ItemsComponent {
         }
     }
 
+    /**
+     * Removes item from this room processing contract.
+     *
+     * @param item Item supplied by the caller.
+     * @param client Client supplied by the caller.
+     */
     public void removeItem(RoomItemFloor item, Session client) {
         removeItem(item, client, true);
     }
 
+    /**
+     * Removes item from this room processing contract.
+     *
+     * @param item Item supplied by the caller.
+     * @param client Client supplied by the caller.
+     * @param toInventory To inventory supplied by the caller.
+     */
     public void removeItem(RoomItemFloor item, Session client, boolean toInventory) {
         if (item instanceof SoundMachineFloorItem) {
             this.soundMachineId = 0;
@@ -360,6 +490,14 @@ public class ItemsComponent {
         removeItem(item, client, toInventory, false);
     }
 
+    /**
+     * Removes item from this room processing contract.
+     *
+     * @param item Item supplied by the caller.
+     * @param session Session participating in the operation.
+     * @param toInventory To inventory supplied by the caller.
+     * @param delete Delete supplied by the caller.
+     */
     public void removeItem(RoomItemFloor item, Session session, boolean toInventory, boolean delete) {
         List<RoomEntity> affectEntities = room.getEntities().getEntitiesAt(item.getPosition());
         List<Position> tilesToUpdate = new ArrayList<>();
@@ -420,6 +558,17 @@ public class ItemsComponent {
         }
     }
 
+    /**
+     * Executes move floor item wired for this room processing contract.
+     *
+     * @param item Item supplied by the caller.
+     * @param newPosition New position supplied by the caller.
+     * @param rotation Rotation supplied by the caller.
+     * @param save Save supplied by the caller.
+     * @param autoheight Autoheight supplied by the caller.
+     * @param limit Limit supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean moveFloorItemWired(RoomItemFloor item, Position newPosition, int rotation, boolean save, boolean autoheight, boolean limit) {
         if (item == null) return false;
 
@@ -534,6 +683,13 @@ public class ItemsComponent {
         return true;
     }
 
+    /**
+     * Removes item from this room processing contract.
+     *
+     * @param item Item supplied by the caller.
+     * @param client Client supplied by the caller.
+     * @param toInventory To inventory supplied by the caller.
+     */
     public void removeItem(RoomItemWall item, Session client, boolean toInventory) {
         this.getRoom().getEntities().broadcastMessage(new RemoveWallItemMessageComposer(item.getVirtualId(), item.getItemData().getOwnerId()));
         this.getWallItems().remove(item.getId());
@@ -559,10 +715,31 @@ public class ItemsComponent {
         }
     }
 
+    /**
+     * Executes move floor item for this room processing contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @param newPosition New position supplied by the caller.
+     * @param rotation Rotation supplied by the caller.
+     * @param save Save supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean moveFloorItem(long itemId, Position newPosition, int rotation, boolean save) {
         return moveFloorItem(itemId, newPosition, rotation, save, true, null, false);
     }
 
+    /**
+     * Executes move floor item for this room processing contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @param newPosition New position supplied by the caller.
+     * @param rotation Rotation supplied by the caller.
+     * @param save Save supplied by the caller.
+     * @param obeyStack Obey stack supplied by the caller.
+     * @param mover Mover supplied by the caller.
+     * @param isRentable Is rentable supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean moveFloorItem(long itemId, Position newPosition, int rotation, boolean save, boolean obeyStack, Player mover, boolean isRentable) {
         RoomItemFloor item = this.getFloorItem(itemId);
         if (item == null) return false;
@@ -766,6 +943,13 @@ public class ItemsComponent {
         return true;
     }
 
+    /**
+     * Executes place wall item for this room processing contract.
+     *
+     * @param item Item supplied by the caller.
+     * @param position Position supplied by the caller.
+     * @param player Player participating in the operation.
+     */
     public void placeWallItem(PlayerItem item, String position, Player player) {
         int roomId = this.room.getId();
 
@@ -784,18 +968,43 @@ public class ItemsComponent {
         wallItem.onPlaced();
     }
 
+    /**
+     * Returns the room for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Room getRoom() {
         return this.room;
     }
 
+    /**
+     * Returns the floor items for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<Long, RoomItemFloor> getFloorItems() {
         return this.floorItems;
     }
 
+    /**
+     * Returns the wall items for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<Long, RoomItemWall> getWallItems() {
         return this.wallItems;
     }
 
+    /**
+     * Executes place floor item for this room processing contract.
+     *
+     * @param item Item supplied by the caller.
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     * @param rot Rot supplied by the caller.
+     * @param player Player participating in the operation.
+     * @param isRentable Is rentable supplied by the caller.
+     */
     public void placeFloorItem(PlayerItem item, int x, int y, int rot, Player player, boolean isRentable) {
         RoomTile tile = room.getMapping().getTile(x, y);
 
@@ -914,6 +1123,14 @@ public class ItemsComponent {
         floorItem.saveData();
     }
 
+    /**
+     * Executes place floor item for this room processing contract.
+     *
+     * @param item Item supplied by the caller.
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     * @param rot Rot supplied by the caller.
+     */
     public void placeFloorItem(PlayerItem item, int x, int y, int rot) {
         RoomTile tile = room.getMapping().getTile(x, y);
 
@@ -987,6 +1204,11 @@ public class ItemsComponent {
         this.itemInteractionIndex.get(floorItem.getDefinition().getInteraction()).add(floorItem.getId());
     }
 
+    /**
+     * Returns the sound machine for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public SoundMachineFloorItem getSoundMachine() {
         if (this.soundMachineId != 0) {
             return ((SoundMachineFloorItem) this.getFloorItem(this.soundMachineId));
@@ -995,6 +1217,11 @@ public class ItemsComponent {
         return null;
     }
 
+    /**
+     * Returns the item owners for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<Integer, String> getItemOwners() {
         return this.itemOwners;
     }

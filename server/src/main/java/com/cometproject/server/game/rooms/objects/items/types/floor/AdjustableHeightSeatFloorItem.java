@@ -5,7 +5,16 @@ import com.cometproject.server.game.rooms.types.Room;
 import org.apache.commons.lang3.StringUtils;
 
 
+/**
+ * Describes adjustable height seat floor item behavior for the room subsystem.
+ */
 public class AdjustableHeightSeatFloorItem extends SeatFloorItem {
+    /**
+     * Creates a adjustable height seat floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public AdjustableHeightSeatFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
 
@@ -14,6 +23,11 @@ public class AdjustableHeightSeatFloorItem extends SeatFloorItem {
         }
     }
 
+    /**
+     * Returns the sit height for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public double getSitHeight() {
         double height;

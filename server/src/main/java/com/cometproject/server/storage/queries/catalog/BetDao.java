@@ -13,7 +13,20 @@ import java.util.LinkedList;
 import java.util.List;
 
 
+/**
+ * Describes bet dao behavior for the storage subsystem.
+ */
 public class BetDao {
+    /**
+     * Executes insert bet for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param type Type supplied by the caller.
+     * @param amount Amount supplied by the caller.
+     * @param timestamp Timestamp supplied by the caller.
+     * @param result Result supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static int insertBet(int playerId, String type, String amount, String timestamp, String result) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -49,6 +62,13 @@ public class BetDao {
         return 0;
     }
 
+    /**
+     * Executes insert roullette result for this storage contract.
+     *
+     * @param result Result supplied by the caller.
+     * @param timestamp Timestamp supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static int insertRoulletteResult(String result, String timestamp) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -79,6 +99,15 @@ public class BetDao {
         return 0;
     }
 
+    /**
+     * Returns the leader board for this storage contract.
+     *
+     * @param gameId Game id supplied by the caller.
+     * @param friendId Friend id supplied by the caller.
+     * @param lastWeek Last week supplied by the caller.
+     * @param onlyStaff Only staff supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static List<GamePlayer> getLeaderBoard(int gameId, int friendId, boolean lastWeek, boolean onlyStaff) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -120,6 +149,11 @@ public class BetDao {
         return data;
     }
 
+    /**
+     * Returns the games for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static List<GameCenterInfo> getGames() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

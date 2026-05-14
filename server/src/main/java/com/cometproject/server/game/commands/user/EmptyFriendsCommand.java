@@ -8,7 +8,16 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.queries.player.messenger.MessengerDao;
 import com.cometproject.server.storage.queries.player.relationships.RelationshipDao;
 
+/**
+ * Describes empty friends command behavior for the Comet subsystem.
+ */
 public class EmptyFriendsCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         MessengerDao.deleteAllFriendships(client.getPlayer().getId());
@@ -51,16 +60,31 @@ public class EmptyFriendsCommand extends ChatCommand {
         sendAlert(Locale.getOrDefault("command.emptyfriends.success", "All friendships deleted successfully"), client);
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "emptyfriends_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.getOrDefault("command.emptyfriends.description", "Deletes all of your friendships");

@@ -5,6 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 
+/**
+ * Describes logging behavior for the logging subsystem.
+ */
 public class Logging {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("LegacyLogger");

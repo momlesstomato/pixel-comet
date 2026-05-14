@@ -15,7 +15,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
+/**
+ * Describes poll dao behavior for the storage subsystem.
+ */
 public class PollDao {
+    /**
+     * Returns the all polls for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, Poll> getAllPolls() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -94,6 +102,14 @@ public class PollDao {
         return data;
     }
 
+    /**
+     * Persists answer for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param pollId Poll id supplied by the caller.
+     * @param questionId Question id supplied by the caller.
+     * @param answer Answer supplied by the caller.
+     */
     public static void saveAnswer(int playerId, int pollId, int questionId, String answer) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -117,6 +133,14 @@ public class PollDao {
         }
     }
 
+    /**
+     * Indicates whether this storage contract has answered.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param pollId Poll id supplied by the caller.
+     * @param questionId Question id supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public static boolean hasAnswered(int playerId, int pollId, int questionId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -149,6 +173,13 @@ public class PollDao {
         return false;
     }
 
+    /**
+     * Indicates whether this storage contract has answered.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param pollId Poll id supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public static boolean hasAnswered(int playerId, int pollId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

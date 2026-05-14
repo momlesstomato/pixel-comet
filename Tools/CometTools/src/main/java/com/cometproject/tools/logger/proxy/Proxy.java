@@ -23,6 +23,9 @@ public class Proxy {
 
     }
 
+    /**
+     * Starts this tooling component.
+     */
     public void start() {
         System.out.println("Starting Raw TCP Proxy on "+host+":"+listenPort+". Will forward to "+out+":"+port+".");
 

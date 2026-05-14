@@ -8,15 +8,28 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 
 import java.util.List;
 
+/**
+ * Describes weekly leaderboard composer behavior for the network message subsystem.
+ */
 public class WeeklyLeaderboardComposer extends MessageComposer {
     private List<GamePlayer> data;
     private int gameId;
 
+    /**
+     * Creates a weekly leaderboard composer instance for the network message subsystem.
+     *
+     * @param gameId Game id supplied by the caller.
+     */
     public WeeklyLeaderboardComposer(int gameId) {
         this.gameId = gameId;
         this.data = GameCenterManager.getInstance().getLeaderboardByWeek(true);
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         int i = 1;
@@ -39,6 +52,11 @@ public class WeeklyLeaderboardComposer extends MessageComposer {
         msg.writeInt(gameId);
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.WeeklyLeaderboardComposer;

@@ -5,6 +5,9 @@ import com.cometproject.server.logging.database.queries.LogQueries;
 import com.cometproject.server.tasks.CometTask;
 
 
+/**
+ * Describes log entry container behavior for the logging subsystem.
+ */
 public class LogEntryContainer implements CometTask {
 //    private FastTable<AbstractLogEntry> entriesToSave = new FastTable<>();
 //    private FastTable<AbstractLogEntry> entriesPending = new FastTable<>();
@@ -13,11 +16,17 @@ public class LogEntryContainer implements CometTask {
 //
 //    private boolean isWriting = false;
 
+    /**
+     * Creates a log entry container instance for the logging subsystem.
+     */
     public LogEntryContainer() {
 //        CometThreadManager.getInstance().executePeriodic(this, 500, 500, TimeUnit.MILLISECONDS);
     }
 
     //
+    /**
+     * Runs this logging task.
+     */
     @Override
     public void run() {
 //        if (this.entriesToSave.size() < 1) return;
@@ -41,6 +50,11 @@ public class LogEntryContainer implements CometTask {
 //        this.isWriting = false;
     }
 
+    /**
+     * Executes put for this logging contract.
+     *
+     * @param logEntry Log entry supplied by the caller.
+     */
     public void put(AbstractLogEntry logEntry) {
         LogQueries.putEntry(logEntry);
 //

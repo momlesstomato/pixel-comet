@@ -20,12 +20,21 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
+/**
+ * Describes console commands behavior for the boot lifecycle subsystem.
+ */
 public class ConsoleCommands {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsoleCommands.class);
 
+    /**
+     * Executes init for this boot lifecycle contract.
+     */
     public static void init() {
         // Console commands
         final Thread cmdThr = new Thread() {
+            /**
+             * Runs this boot lifecycle task.
+             */
             public void run() {
                 while (Comet.isRunning) {
                     if (!Comet.isRunning) {
@@ -49,6 +58,11 @@ public class ConsoleCommands {
         cmdThr.start();
     }
 
+    /**
+     * Handles command for this boot lifecycle contract.
+     *
+     * @param line Line supplied by the caller.
+     */
     public static void handleCommand(String line) {
         if (line.startsWith("/")) {
             switch (line.split(" ")[0]) {

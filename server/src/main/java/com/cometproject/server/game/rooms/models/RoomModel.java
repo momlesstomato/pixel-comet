@@ -8,6 +8,9 @@ import com.cometproject.api.utilities.ModelUtils;
 import org.slf4j.LoggerFactory;
 
 
+/**
+ * Describes room model behavior for the room subsystem.
+ */
 public abstract class RoomModel implements IRoomModel {
     private static final char[] HEIGHT_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz".toCharArray();
 
@@ -24,6 +27,17 @@ public abstract class RoomModel implements IRoomModel {
     private RoomTileState[][] squareState;
     private int wallHeight;
 
+    /**
+     * Creates a room model instance for the room subsystem.
+     *
+     * @param name Name supplied by the caller.
+     * @param heightmap Heightmap supplied by the caller.
+     * @param doorX Door x supplied by the caller.
+     * @param doorY Door y supplied by the caller.
+     * @param doorRotation Door rotation supplied by the caller.
+     * @param wallHeight Wall height supplied by the caller.
+     * @throws InvalidModelException When the operation cannot complete.
+     */
     public RoomModel(String name, String heightmap, int doorX, int doorY, int doorRotation, int wallHeight) throws InvalidModelException {
         this.name = name;
         this.heightmap = heightmap;
@@ -91,54 +105,119 @@ public abstract class RoomModel implements IRoomModel {
         }
     }
 
+    /**
+     * Returns the id for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getId() {
         return this.name;
     }
 
+    /**
+     * Returns the map for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getMap() {
         return this.map;
     }
 
+    /**
+     * Returns the door x for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getDoorX() {
         return this.doorX;
     }
 
+    /**
+     * Returns the door y for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getDoorY() {
         return this.doorY;
     }
 
+    /**
+     * Returns the door z for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getDoorZ() {
         return this.doorZ;
     }
 
+    /**
+     * Updates the door z for this room contract.
+     *
+     * @param doorZ Door z supplied by the caller.
+     */
     public void setDoorZ(int doorZ) {
         this.doorZ = doorZ;
     }
 
+    /**
+     * Returns the door rotation for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getDoorRotation() {
         return this.doorRotation;
     }
 
+    /**
+     * Returns the size x for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getSizeX() {
         return this.mapSizeX;
     }
 
+    /**
+     * Returns the size y for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getSizeY() {
         return this.mapSizeY;
     }
 
+    /**
+     * Returns the square state for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RoomTileState[][] getSquareState() {
         return this.squareState;
     }
 
+    /**
+     * Returns the square height for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int[][] getSquareHeight() {
         return this.squareHeight;
     }
 
+    /**
+     * Returns the wall height for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getWallHeight() {
         return wallHeight;
     }
 
+    /**
+     * Returns the relative heightmap for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getRelativeHeightmap() {
         StringBuilder builder = new StringBuilder();
@@ -155,6 +234,11 @@ public abstract class RoomModel implements IRoomModel {
         return builder.toString();
     }
 
+    /**
+     * Returns the room model data for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public RoomModelData getRoomModelData() {
         return new RoomModelData(this.name, this.heightmap, this.doorX, this.doorY, this.doorRotation, this.wallHeight);

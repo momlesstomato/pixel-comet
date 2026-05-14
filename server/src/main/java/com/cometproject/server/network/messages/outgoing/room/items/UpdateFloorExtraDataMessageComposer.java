@@ -12,27 +12,53 @@
 //import com.cometproject.server.utilities.attributes.Stateable;
 //
 //
+/**
+ * Serializes the update floor extra data message for the Pixel Protocol client.
+ */
 //public class UpdateFloorExtraDataMessageComposer extends MessageComposer {
 //    private final int id;
 //    private final RoomItemFloor floorItem;
 //    private final boolean useGroupItem;
 //
+/**
+ * Creates a update floor extra data message composer instance for the Snow War game subsystem.
+ *
+ * @param id Id supplied by the caller.
+ * @param floorItem Floor item supplied by the caller.
+ * @param useGroupItem Use group item supplied by the caller.
+ */
 //    public UpdateFloorExtraDataMessageComposer(int id, RoomItemFloor floorItem, boolean useGroupItem) {
 //        this.id = id;
 //        this.floorItem = floorItem;
 //        this.useGroupItem = useGroupItem;
 //    }
 //
+/**
+ * Creates a update floor extra data message composer instance for the Snow War game subsystem.
+ *
+ * @param id Id supplied by the caller.
+ * @param floorItem Floor item supplied by the caller.
+ */
 //    public UpdateFloorExtraDataMessageComposer(int id, RoomItemFloor floorItem) {
 //        this(id, floorItem, true);
 //    }
 //
 //    @Override
+/**
+ * Returns the outgoing Pixel Protocol message id.
+ *
+ * @return Value exposed by the contract.
+ */
 //    public short getId() {
 //        return Composers.Update;
 //    }
 //
 //    @Override
+/**
+ * Writes this message body using the Pixel Protocol field order.
+ *
+ * @param msg Msg supplied by the caller.
+ */
 //    public void compose(IComposer msg) {
 //        if (floorItem instanceof MannequinFloorItem) {
 //            msg.writeString(String.valueOf(id));

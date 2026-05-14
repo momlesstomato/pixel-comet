@@ -5,11 +5,14 @@ import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
 import com.cometproject.server.game.rooms.types.Room;
 
 
+/**
+ * Describes wired trigger at given time long behavior for the room subsystem.
+ */
 public class WiredTriggerAtGivenTimeLong extends WiredTriggerAtGivenTime {
     private static final int PARAM_TICK_LENGTH = 0;
 
     /**
-     * The default constructor
+     * The default constructor.
      *
      * @param id       The ID of the item
      * @param itemId   The ID of the item definition
@@ -27,6 +30,13 @@ public class WiredTriggerAtGivenTimeLong extends WiredTriggerAtGivenTime {
         this.getWiredData().getParams().putIfAbsent(PARAM_TICK_LENGTH, 2); // 1s
     }
 
+    /**
+     * Executes execute triggers for this room contract.
+     *
+     * @param room Room participating in the operation.
+     * @param timer Timer supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public static boolean executeTriggers(Room room, int timer) {
         boolean wasExecuted = false;
 
@@ -41,6 +51,11 @@ public class WiredTriggerAtGivenTimeLong extends WiredTriggerAtGivenTime {
         return wasExecuted;
     }
 
+    /**
+     * Returns the time for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getTime() {
         return this.getWiredData().getParams().get(PARAM_TICK_LENGTH) * 10;

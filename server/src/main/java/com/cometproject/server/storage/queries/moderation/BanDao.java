@@ -13,7 +13,15 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
+/**
+ * Describes ban dao behavior for the storage subsystem.
+ */
 public class BanDao {
+    /**
+     * Returns the active bans for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<String, Ban> getActiveBans() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -42,6 +50,17 @@ public class BanDao {
         return data;
     }
 
+    /**
+     * Creates ban for this storage contract.
+     *
+     * @param type Type supplied by the caller.
+     * @param length Length supplied by the caller.
+     * @param expire Expire supplied by the caller.
+     * @param data Data supplied by the caller.
+     * @param addedBy Added by supplied by the caller.
+     * @param reason Reason supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int createBan(BanType type, long length, long expire, String data, int addedBy, String reason) {
 
         Connection sqlConnection = null;
@@ -76,6 +95,11 @@ public class BanDao {
         return 0;
     }
 
+    /**
+     * Deletes ban for this storage contract.
+     *
+     * @param data Data supplied by the caller.
+     */
     public static void deleteBan(String data) {
 
         Connection sqlConnection = null;

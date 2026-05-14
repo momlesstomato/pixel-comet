@@ -9,7 +9,16 @@ import java.io.FileReader;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * Describes scripts loader behavior for the tooling subsystem.
+ */
 public class ScriptsLoader {
+    /**
+     * Executes load for this tooling contract.
+     *
+     * @param fileName File name supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static String load(String fileName) {
         Stopwatch stopwatch = Stopwatch.createStarted();
         File file = new File(fileName);

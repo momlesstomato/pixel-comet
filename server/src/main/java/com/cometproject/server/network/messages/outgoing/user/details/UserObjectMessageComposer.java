@@ -11,14 +11,28 @@ import java.util.Date;
 import java.util.TimeZone;
 
 
+/**
+ * Serializes the user object message for the Pixel Protocol client.
+ */
 public class UserObjectMessageComposer extends MessageComposer {
 
     private final Player player;
 
+    /**
+     * Creates a user object message composer instance for the network message subsystem.
+     *
+     * @param player Player participating in the operation.
+     */
     public UserObjectMessageComposer(final Player player) {
         this.player = player;
     }
 
+    /**
+     * Returns the date for this network message contract.
+     *
+     * @param timestamp Timestamp supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static String getDate(int timestamp) {
         Date d = new Date(timestamp * 1000L);
         SimpleDateFormat df = new SimpleDateFormat(Locale.getOrDefault("date.format", "MMM d yyyy 'at' HH:mm"));
@@ -27,11 +41,21 @@ public class UserObjectMessageComposer extends MessageComposer {
         return df.format(d);
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.UserObjectMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(player.getId());

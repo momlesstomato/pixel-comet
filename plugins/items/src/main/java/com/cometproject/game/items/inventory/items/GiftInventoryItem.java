@@ -7,10 +7,19 @@ import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.api.utilities.JsonUtil;
 import com.cometproject.game.items.inventory.InventoryItem;
 
+/**
+ * Describes gift inventory item behavior for the item subsystem.
+ */
 public class GiftInventoryItem extends InventoryItem {
 
     private final GiftData giftData;
 
+    /**
+     * Creates a gift inventory item instance for the item subsystem.
+     *
+     * @param inventoryItemData Inventory item data supplied by the caller.
+     * @param furnitureDefinition Furniture definition supplied by the caller.
+     */
     public GiftInventoryItem(InventoryItemData inventoryItemData, FurnitureDefinition furnitureDefinition) {
         super(inventoryItemData, furnitureDefinition);
 
@@ -30,6 +39,12 @@ public class GiftInventoryItem extends InventoryItem {
         }
     }
 
+    /**
+     * Executes compose data for this item contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean composeData(IComposer msg) {
         super.composeData(msg);
@@ -38,6 +53,11 @@ public class GiftInventoryItem extends InventoryItem {
         return true;
     }
 
+    /**
+     * Returns the extra int for this item contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getExtraInt() {
         if(this.giftData == null) {

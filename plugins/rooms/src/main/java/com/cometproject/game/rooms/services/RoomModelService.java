@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+/**
+ * Coordinates room model behavior for the room subsystem.
+ */
 public class RoomModelService implements IRoomModelService {
     private static final Logger LOGGER = LoggerFactory.getLogger(RoomModelService.class);
 
@@ -16,6 +19,12 @@ public class RoomModelService implements IRoomModelService {
 
     private final Map<String, IRoomModel> models;
 
+    /**
+     * Creates a room model service instance for the room subsystem.
+     *
+     * @param roomModelFactory Room model factory supplied by the caller.
+     * @param roomRepository Room repository supplied by the caller.
+     */
     public RoomModelService(IRoomModelFactory roomModelFactory, IRoomRepository roomRepository) {
         this.roomRepository = roomRepository;
         this.roomModelFactory = roomModelFactory;
@@ -23,6 +32,9 @@ public class RoomModelService implements IRoomModelService {
         this.models = Maps.newConcurrentMap();
     }
 
+    /**
+     * Loads models for this room contract.
+     */
     @Override
     public void loadModels() {
         this.models.clear();
@@ -44,11 +56,22 @@ public class RoomModelService implements IRoomModelService {
         });
     }
 
+    /**
+     * Returns the model for this room contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public IRoomModel getModel(String id) {
         return this.models.get(id);
     }
 
+    /**
+     * Returns the room model factory for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public IRoomModelFactory getRoomModelFactory() {
         return this.roomModelFactory;

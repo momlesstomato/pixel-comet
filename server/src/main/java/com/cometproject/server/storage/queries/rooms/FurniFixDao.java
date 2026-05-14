@@ -7,8 +7,17 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 
+/**
+ * Describes furni fix dao behavior for the storage subsystem.
+ */
 public class FurniFixDao {
 
+    /**
+     * Executes change name for this storage contract.
+     *
+     * @param name Name supplied by the caller.
+     * @param itemId Item id supplied by the caller.
+     */
     public static void changeName(String name, long itemId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -29,6 +38,12 @@ public class FurniFixDao {
         }
     }
 
+    /**
+     * Indicates whether this storage contract can sit.
+     *
+     * @param option Option supplied by the caller.
+     * @param itemId Item id supplied by the caller.
+     */
     public static void canSit(String option, long itemId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -49,6 +64,12 @@ public class FurniFixDao {
         }
     }
 
+    /**
+     * Indicates whether walkable applies to this storage contract.
+     *
+     * @param option Option supplied by the caller.
+     * @param itemId Item id supplied by the caller.
+     */
     public static void isWalkable(String option, long itemId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -69,6 +90,12 @@ public class FurniFixDao {
         }
     }
 
+    /**
+     * Executes change width for this storage contract.
+     *
+     * @param option Option supplied by the caller.
+     * @param itemId Item id supplied by the caller.
+     */
     public static void changeWidth(String option, long itemId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -89,6 +116,12 @@ public class FurniFixDao {
         }
     }
 
+    /**
+     * Executes change length for this storage contract.
+     *
+     * @param option Option supplied by the caller.
+     * @param itemId Item id supplied by the caller.
+     */
     public static void changeLength(String option, long itemId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -109,6 +142,12 @@ public class FurniFixDao {
         }
     }
 
+    /**
+     * Executes change interaction type for this storage contract.
+     *
+     * @param option Option supplied by the caller.
+     * @param itemId Item id supplied by the caller.
+     */
     public static void changeInteractionType(String option, long itemId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -129,6 +168,12 @@ public class FurniFixDao {
         }
     }
 
+    /**
+     * Executes change interaction count for this storage contract.
+     *
+     * @param option Option supplied by the caller.
+     * @param itemId Item id supplied by the caller.
+     */
     public static void changeInteractionCount(String option, long itemId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -148,6 +193,12 @@ public class FurniFixDao {
             SqlHelper.closeSilently(sqlConnection);
         }
     }
+    /**
+     * Executes change stack height for this storage contract.
+     *
+     * @param option Option supplied by the caller.
+     * @param itemId Item id supplied by the caller.
+     */
     public static void changeStackHeight(double option, long itemId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -167,6 +218,12 @@ public class FurniFixDao {
             SqlHelper.closeSilently(sqlConnection);
         }
     }
+    /**
+     * Indicates whether this storage contract can stack.
+     *
+     * @param option Option supplied by the caller.
+     * @param itemId Item id supplied by the caller.
+     */
     public static void canStack(String option, long itemId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

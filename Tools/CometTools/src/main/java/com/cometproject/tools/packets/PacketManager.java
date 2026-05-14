@@ -14,6 +14,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * Manages packet runtime state for the tooling subsystem.
+ */
 public class PacketManager {
     private final String oldScriptsFilename = "Habbo_old.txt";
     private final String newScriptsFilename = "Habbo_new.txt";
@@ -21,6 +24,9 @@ public class PacketManager {
     private HabboRevision oldRevision;
     private HabboRevision newRevision;
 
+    /**
+     * Creates a packet manager instance for the tooling subsystem.
+     */
     public PacketManager() {
         String oldScripts = ScriptsLoader.load("./scripts/" + oldScriptsFilename);
         String newScripts = ScriptsLoader.load("./scripts/" + newScriptsFilename);
@@ -173,10 +179,20 @@ public class PacketManager {
         return revision;
     }
 
+    /**
+     * Returns the old revision for this tooling contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public HabboRevision getOldRevision() {
         return oldRevision;
     }
 
+    /**
+     * Returns the new revision for this tooling contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public HabboRevision getNewRevision() {
         return newRevision;
     }

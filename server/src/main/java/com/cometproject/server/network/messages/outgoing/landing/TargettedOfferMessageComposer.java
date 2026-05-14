@@ -4,6 +4,9 @@ import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
+/**
+ * Serializes the targetted offer message for the Pixel Protocol client.
+ */
 public class TargettedOfferMessageComposer extends MessageComposer {
     private String type;
     private boolean resize;
@@ -13,6 +16,17 @@ public class TargettedOfferMessageComposer extends MessageComposer {
     private String data;
     private int timer;
 
+    /**
+     * Creates a targetted offer message composer instance for the network message subsystem.
+     *
+     * @param type Type supplied by the caller.
+     * @param button Button supplied by the caller.
+     * @param image Image supplied by the caller.
+     * @param icon Icon supplied by the caller.
+     * @param data Data supplied by the caller.
+     * @param resize Resize supplied by the caller.
+     * @param timer Timer supplied by the caller.
+     */
     public TargettedOfferMessageComposer(String type, String button, String image, String icon, String data, Boolean resize, int timer){
         this.type = type;
         this.button = button;
@@ -23,11 +37,21 @@ public class TargettedOfferMessageComposer extends MessageComposer {
         this.timer = timer;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.TargettedOfferMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(resize ? 4 : 1); // Open 4 - Minimized 1

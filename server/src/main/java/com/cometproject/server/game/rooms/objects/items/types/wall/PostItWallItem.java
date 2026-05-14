@@ -8,10 +8,19 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Arrays;
 
 
+/**
+ * Describes post it wall item behavior for the room subsystem.
+ */
 public class PostItWallItem extends RoomItemWall {
     private String colour;
     private String message;
 
+    /**
+     * Creates a post it wall item instance for the room subsystem.
+     *
+     * @param roomItemData Room item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public PostItWallItem(RoomItemData roomItemData, Room room) {
         super(roomItemData, room);
 
@@ -21,11 +30,21 @@ public class PostItWallItem extends RoomItemWall {
             this.setExtraData("FFFF33 ");
     }
 
+    /**
+     * Returns the state for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getState() {
         return colour;
     }
 
+    /**
+     * Updates the extra data for this room contract.
+     *
+     * @param extraData Extra data supplied by the caller.
+     */
     public void setExtraData(String extraData) {
         String[] data = extraData.split(" ");
         String colour = data[0];
@@ -57,10 +76,20 @@ public class PostItWallItem extends RoomItemWall {
         return data.contains(" ");
     }
 
+    /**
+     * Returns the colour for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getColour() {
         return colour;
     }
 
+    /**
+     * Returns the message for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getMessage() {
         return message;
     }

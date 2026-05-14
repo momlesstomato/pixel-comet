@@ -1,5 +1,8 @@
 package com.cometproject.games.snowwar.items;
 
+/**
+ * Describes base item behavior for the Snow War game subsystem.
+ */
 public class BaseItem {
 /*  8 */   public static final BaseItem snst_tree1_d = new BaseItem("s", 4061, "snst_tree1_d", 1, 1);
 /*  9 */   public static final BaseItem snst_block1 = new BaseItem("s", 4066, "snst_block1", 1, 1);
@@ -24,6 +27,15 @@ public class BaseItem {
 /*    */   public boolean allowWalk;
 /* 29 */   public int itemExtraType = 0;
 /*    */   
+/**
+ * Creates a base item instance for the Snow War game subsystem.
+ *
+ * @param type Type supplied by the caller.
+ * @param id Id supplied by the caller.
+ * @param name Name supplied by the caller.
+ * @param xdim Xdim supplied by the caller.
+ * @param ydim Ydim supplied by the caller.
+ */
 /*    */   public BaseItem(String type, int id, String name, int xdim, int ydim) {
 /* 32 */     this.Type = type;
 /* 33 */     this.SpriteId = id;

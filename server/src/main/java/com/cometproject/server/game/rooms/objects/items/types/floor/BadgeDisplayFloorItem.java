@@ -5,12 +5,26 @@ import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.server.game.rooms.objects.items.types.DefaultFloorItem;
 import com.cometproject.server.game.rooms.types.Room;
 
+/**
+ * Describes badge display floor item behavior for the room subsystem.
+ */
 public class BadgeDisplayFloorItem extends DefaultFloorItem {
 
+    /**
+     * Creates a badge display floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public BadgeDisplayFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Executes compose item data for this room contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void composeItemData(IComposer msg) {
         msg.writeInt(0);

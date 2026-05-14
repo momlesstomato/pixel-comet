@@ -9,16 +9,27 @@ import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.storage.queries.pets.RoomPetDao;
 
 
+/**
+ * Owns pet behavior inside the room processing subsystem.
+ */
 public class PetComponent {
 
     private Room room;
 
+    /**
+     * Creates a pet component instance for the room processing subsystem.
+     *
+     * @param room Room participating in the operation.
+     */
     public PetComponent(Room room) {
         this.room = room;
 
         this.load();
     }
 
+    /**
+     * Executes load for this room processing contract.
+     */
     public void load() {
         for (IPetData data : this.room.getCachedData() != null ? this.room.getCachedData().getPets() :
                 RoomPetDao.getPetsByRoomId(this.room.getId())) {
@@ -37,6 +48,13 @@ public class PetComponent {
     }
 
 
+    /**
+     * Adds pet to this room processing contract.
+     *
+     * @param pet Pet supplied by the caller.
+     * @param position Position supplied by the caller.
+     * @return Result produced by the mutation.
+     */
     public PetEntity addPet(IPetData pet, Position position) {
         RoomPetDao.updatePet(this.room.getId(), position.getX(), position.getY(), pet.getId());
 
@@ -47,6 +65,13 @@ public class PetComponent {
         return petEntity;
     }
 
+    /**
+     * Adds monster plant to this room processing contract.
+     *
+     * @param pet Pet supplied by the caller.
+     * @param position Position supplied by the caller.
+     * @return Result produced by the mutation.
+     */
     public MonsterPlantEntity addMonsterPlant(PetMonsterPlantData pet, Position position) {
         pet.setRoomId(this.room.getId());
         pet.setRoomPosition(position);
@@ -57,6 +82,11 @@ public class PetComponent {
         return petEntity;
     }
 
+    /**
+     * Returns the room for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Room getRoom() {
         return this.room;
     }

@@ -1,148 +1,7 @@
-/*package com.cometproject.server.game.guides;
+package com.cometproject.server.game.guides;
 
 import com.cometproject.api.utilities.Startable;
-import com.cometproject.server.game.guides.types.HelpRequest;
-import com.cometproject.server.game.guides.types.HelperSession;
-import com.cometproject.server.network.messages.outgoing.help.guides.*;
-import com.cometproject.server.network.messages.outgoing.notification.AlertMessageComposer;
-import com.cometproject.server.tasks.CometThreadManager;
-import com.cometproject.server.utilities.collections.ConcurrentHashSet;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-
-public class GuideManager implements Startable {
-    private static GuideManager guideManagerInstance;
-
-    private final Map<Integer, HelperSession> sessions = new ConcurrentHashMap<>();
-
-    private final Map<Integer, Boolean> activeGuides = new ConcurrentHashMap<>();
-    private final Set<Integer> activeGuardians = new ConcurrentHashSet<>();
-
-    private final Map<Integer, HelpRequest> activeHelpRequests = new ConcurrentHashMap<>();
-
-    public static GuideManager getInstance() {
-        if (guideManagerInstance == null) {
-            guideManagerInstance = new GuideManager();
-        }
-
-        return guideManagerInstance;
-    }
-
-    @Override
-    public void initialize() {
-        CometThreadManager.getInstance().executePeriodic(this::processRequests, 1000L, 1000L, TimeUnit.MILLISECONDS);
-    }
-
-    private void processRequests() {
-        // Loop through every request and make sure it has an attached guide, if it doesn't.. find a guide that hasn't
-        // declined it yet.
-
-        for (HelpRequest helpRequest : this.activeHelpRequests.values()) {
-            if (!helpRequest.hasGuide()) {
-                if (helpRequest.getProcessTicks() >= 60) {
-                    // Find a guide!
-                    for (Map.Entry<Integer, Boolean> activeGuide : activeGuides.entrySet()) {
-                        if (!activeGuide.getValue()) { // Guide is available!
-                            if (!helpRequest.declined(activeGuide.getKey())) {
-                                helpRequest.setGuide(activeGuide.getKey());
-                                helpRequest.getGuideSession().getPlayer().setHelpRequest(helpRequest);
-                                helpRequest.getPlayerSession().getPlayer().setHelpRequest(helpRequest);
-
-                                helpRequest.getPlayerSession().send(new GuideSessionAttachedMessageComposer(helpRequest, false));
-                                helpRequest.getGuideSession().send(new GuideSessionAttachedMessageComposer(helpRequest, true));
-                                helpRequest.resetProcessTicks();
-                                break;
-                            }
-                        }
-                    }
-
-                    if (helpRequest.hasGuide()) {
-                        this.activeGuides.put(helpRequest.guideId, true);
-                    }
-
-                    // None found? Search again!
-                    helpRequest.resetProcessTicks();
-                } else {
-                    helpRequest.incrementProcessTicks();
-                }
-            }
-
-            if(helpRequest.hasGuide() && !helpRequest.getValidation()){
-                if (helpRequest.getProcessTicks() >= 60) {
-
-                    helpRequest.getGuideSession().send(new GuideSessionDettachedMessageComposer());
-                    GuideManager.getInstance().finishPlayerDuty(helpRequest.getGuideSession().getPlayer().getHelperSession());
-                    helpRequest.getGuideSession().send(new GuideToolsMessageComposer(false));
-
-                    helpRequest.decline(helpRequest.guideId);
-                }
-
-                helpRequest.incrementProcessTicks();
-            }
-        }
-    }
-
-    public void startPlayerDuty(final HelperSession helperSession) {
-        this.sessions.put(helperSession.getPlayerId(), helperSession);
-
-        if (helperSession.handlesHelpRequests()) {
-            this.activeGuides.put(helperSession.getPlayerId(), false);
-        }
-
-        if (helperSession.handlesBullyReports()) {
-            this.activeGuardians.add(helperSession.getPlayerId());
-        }
-    }
-
-    public void finishPlayerDuty(final HelperSession helperSession) {
-        //check if they have any on-going stuff?
-
-        this.sessions.remove(helperSession.getPlayerId());
-
-        if (helperSession.handlesHelpRequests()) {
-            this.activeGuides.remove(helperSession.getPlayerId());
-        }
-
-        if (helperSession.handlesBullyReports()) {
-            this.activeGuardians.remove(helperSession.getPlayerId());
-        }
-    }
-
-    public void requestHelp(final HelpRequest helpRequest) {
-        this.activeHelpRequests.put(helpRequest.getPlayerId(), helpRequest);
-    }
-
-    public void removeRequest(final int playerId, final HelpRequest helpRequest){
-        this.activeHelpRequests.remove(playerId, helpRequest);
-    }
-
-    public void flushGuide(final int guideId){
-        this.activeGuides.remove(guideId);
-        this.activeGuides.put(guideId, false);
-
-    }
-
-    public HelpRequest getHelpRequestByCreator(final int playerId) {
-        return this.activeHelpRequests.get(playerId);
-    }
-
-    public int getActiveGuideCount() {
-        return this.activeGuides.size();
-    }
-
-    public int getActiveGuardianCount() {
-        return this.activeGuardians.size();
-    }
-}
-
-*/
-
-        package com.cometproject.server.game.guides;
-
-    import com.cometproject.api.utilities.Startable;
-    import com.cometproject.server.boot.CometBootstrap;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.guides.types.HelpRequest;
 import com.cometproject.server.game.guides.types.HelperSession;
 import com.cometproject.server.network.messages.outgoing.help.guides.GuideSessionAttachedMessageComposer;
@@ -156,6 +15,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Manages guide runtime state for the Comet subsystem.
+ */
 public class GuideManager implements Startable {
 
     private final Map<Integer, HelperSession> sessions = new ConcurrentHashMap<>();
@@ -165,11 +27,19 @@ public class GuideManager implements Startable {
 
     private final Map<Integer, HelpRequest> activeHelpRequests = new ConcurrentHashMap<>();
 
+    /**
+     * Starts this Comet component.
+     */
     @Override
     public void start() {
         CometThreadManager.getInstance().executePeriodic(this::processRequests, 1000L, 1000L, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Returns the active help requests for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<Integer, HelpRequest> getactiveHelpRequests()
     {
         return activeHelpRequests;
@@ -382,6 +252,11 @@ public class GuideManager implements Startable {
         }
     }
 
+    /**
+     * Executes start player duty for this Comet contract.
+     *
+     * @param helperSession Helper session supplied by the caller.
+     */
     public void startPlayerDuty(final HelperSession helperSession) {
         this.sessions.put(helperSession.getPlayerId(), helperSession);
 
@@ -394,6 +269,11 @@ public class GuideManager implements Startable {
         }
     }
 
+    /**
+     * Executes finish player duty for this Comet contract.
+     *
+     * @param helperSession Helper session supplied by the caller.
+     */
     public void finishPlayerDuty(final HelperSession helperSession) {
         //check if they have any on-going stuff?
 
@@ -410,22 +290,48 @@ public class GuideManager implements Startable {
         }
     }
 
+    /**
+     * Executes request help for this Comet contract.
+     *
+     * @param helpRequest Help request supplied by the caller.
+     */
     public void requestHelp(final HelpRequest helpRequest) {
         this.activeHelpRequests.put(helpRequest.getPlayerId(), helpRequest);
     }
 
+    /**
+     * Returns the help request by creator for this Comet contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public HelpRequest getHelpRequestByCreator(final int playerId) {
         return this.activeHelpRequests.get(playerId);
     }
 
+    /**
+     * Returns the active guide count for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getActiveGuideCount() {
         return this.activeGuides.size();
     }
 
+    /**
+     * Returns the active guardian count for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getActiveGuardianCount() {
         return this.activeGuardians.size();
     }
 
+    /**
+     * Returns the instance for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static GuideManager getInstance() {
         return CometBootstrap.resolve(GuideManager.class);
     }

@@ -18,7 +18,17 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
+/**
+ * Represents the submit poll answer message event published by the network message subsystem.
+ */
 public class SubmitPollAnswerMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @throws Exception When the operation cannot complete.
+     */
     @Override
     public void handle(Session client, MessageEvent msg) throws Exception {
         final int pollId = msg.readInt();

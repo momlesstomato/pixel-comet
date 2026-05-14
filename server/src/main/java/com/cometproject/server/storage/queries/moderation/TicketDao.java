@@ -18,7 +18,15 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Describes ticket dao behavior for the storage subsystem.
+ */
 public class TicketDao {
+    /**
+     * Returns the open tickets for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, HelpTicket> getOpenTickets() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -57,6 +65,11 @@ public class TicketDao {
         return data;
     }
 
+    /**
+     * Persists ticket for this storage contract.
+     *
+     * @param helpTicket Help ticket supplied by the caller.
+     */
     public static void saveTicket(HelpTicket helpTicket) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -89,6 +102,18 @@ public class TicketDao {
         }
     }
 
+    /**
+     * Creates ticket for this storage contract.
+     *
+     * @param submitterId Submitter id supplied by the caller.
+     * @param message Message supplied by the caller.
+     * @param category Category supplied by the caller.
+     * @param reportedId Reported id supplied by the caller.
+     * @param timestamp Timestamp supplied by the caller.
+     * @param roomId Room identifier used by the operation.
+     * @param chatMessages Chat messages supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int createTicket(int submitterId, String message, int category, int reportedId, int timestamp, int roomId, List<ChatMessage> chatMessages) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

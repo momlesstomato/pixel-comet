@@ -22,15 +22,26 @@ import com.google.gson.JsonObject;
 
 import java.util.Map;
 
+/**
+ * Owns achievement behavior inside the player subsystem.
+ */
 public class AchievementComponent extends PlayerComponent implements PlayerAchievements {
     private Map<AchievementType, IAchievementProgress> progression;
 
+    /**
+     * Creates a achievement component instance for the player subsystem.
+     *
+     * @param player Player participating in the operation.
+     */
     public AchievementComponent(IPlayer player) {
         super(player);
 
         this.loadAchievements();
     }
 
+    /**
+     * Loads achievements for this player contract.
+     */
     @Override
     public void loadAchievements() {
         if (this.progression != null) {
@@ -40,6 +51,12 @@ public class AchievementComponent extends PlayerComponent implements PlayerAchie
         this.progression = PlayerAchievementDao.getAchievementProgress(this.getPlayer().getId());
     }
 
+    /**
+     * Executes progress achievement for this player contract.
+     *
+     * @param type Type supplied by the caller.
+     * @param data Data supplied by the caller.
+     */
     @Override
     public void progressAchievement(AchievementType type, int data) {
         IAchievementGroup achievementGroup = AchievementManager.getInstance().getAchievementGroup(type);
@@ -155,21 +172,41 @@ public class AchievementComponent extends PlayerComponent implements PlayerAchie
         this.getPlayer().flush();
     }
 
+    /**
+     * Indicates whether this player contract has started achievement.
+     *
+     * @param achievementType Achievement type supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean hasStartedAchievement(AchievementType achievementType) {
         return this.progression.containsKey(achievementType);
     }
 
+    /**
+     * Returns the progress for this player contract.
+     *
+     * @param achievementType Achievement type supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public IAchievementProgress getProgress(AchievementType achievementType) {
         return this.progression.get(achievementType);
     }
 
+    /**
+     * Releases resources owned by this player component.
+     */
     @Override
     public void dispose() {
         this.progression.clear();
     }
 
+    /**
+     * Executes to JSON for this player contract.
+     *
+     * @return Result produced by the operation.
+     */
     public JsonArray toJson() {
         final JsonArray coreArray = new JsonArray();
 

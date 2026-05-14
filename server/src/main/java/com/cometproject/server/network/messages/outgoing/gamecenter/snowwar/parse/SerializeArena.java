@@ -6,8 +6,17 @@
 /*    */ 
 /*    */ 
 /*    */ 
+/**
+ * Describes serialize arena behavior for the Snow War game subsystem.
+ */
 /*    */ public class SerializeArena
 /*    */ {
+/**
+ * Executes parse for this network message contract.
+ *
+ * @param msg Composer buffer that receives serialized protocol fields.
+ * @param arena Arena supplied by the caller.
+ */
 /*    */   public static void parse(IComposer msg, SnowWarRoom arena) {
 /* 12 */     msg.writeInt(arena.ArenaType.ArenaWidth);
 /* 13 */     msg.writeInt(arena.ArenaType.ArenaHeight);

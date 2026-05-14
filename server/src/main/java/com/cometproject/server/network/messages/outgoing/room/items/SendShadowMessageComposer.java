@@ -5,20 +5,39 @@ import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
+/**
+ * Serializes the send shadow message for the Pixel Protocol client.
+ */
 public class SendShadowMessageComposer extends MessageComposer {
     private final int playerId;
     private final Position position;
 
+    /**
+     * Creates a send shadow message composer instance for the network message subsystem.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param position Position supplied by the caller.
+     */
     public SendShadowMessageComposer(int playerId, Position position) {
         this.playerId = playerId;
         this.position = position;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.ObjectAddMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(2147418112 + this.playerId);

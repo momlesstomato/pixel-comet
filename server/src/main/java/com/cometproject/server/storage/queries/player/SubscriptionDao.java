@@ -9,7 +9,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
+/**
+ * Describes subscription dao behavior for the storage subsystem.
+ */
 public class SubscriptionDao {
+    /**
+     * Returns the expire time for this storage contract.
+     *
+     * @param userId User id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getExpireTime(int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -37,6 +46,12 @@ public class SubscriptionDao {
         return 0;
     }
 
+    /**
+     * Updates claimable offers for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param offerId Offer id supplied by the caller.
+     */
     public static void updateClaimableOffers(int playerId, int offerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -57,6 +72,12 @@ public class SubscriptionDao {
         }
     }
 
+    /**
+     * Returns the claimable offer for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static int getClaimableOffer(int playerId){
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -84,6 +105,12 @@ public class SubscriptionDao {
         return 0;
     }
 
+    /**
+     * Returns the start time for this storage contract.
+     *
+     * @param userId User id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getStartTime(int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -111,6 +138,12 @@ public class SubscriptionDao {
         return 0;
     }
 
+    /**
+     * Returns the presents for this storage contract.
+     *
+     * @param userId User id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getPresents(int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -138,6 +171,12 @@ public class SubscriptionDao {
         return 0;
     }
 
+    /**
+     * Returns the allowed items for this storage contract.
+     *
+     * @param userId User id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getAllowedItems(int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -165,6 +204,12 @@ public class SubscriptionDao {
         return 50;
     }
 
+    /**
+     * Returns the borrowed items for this storage contract.
+     *
+     * @param userId User id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getBorrowedItems(int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -193,6 +238,12 @@ public class SubscriptionDao {
     }
 
 
+    /**
+     * Executes decrement presents for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param presents Presents supplied by the caller.
+     */
     public static void decrementPresents(int playerId, int presents) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -213,6 +264,12 @@ public class SubscriptionDao {
         }
     }
 
+    /**
+     * Updates allowed items for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param items Items supplied by the caller.
+     */
     public static void updateAllowedItems(int playerId, int items) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -233,6 +290,12 @@ public class SubscriptionDao {
         }
     }
 
+    /**
+     * Updates borrowed items for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param items Items supplied by the caller.
+     */
     public static void updateBorrowedItems(int playerId, int items) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -253,6 +316,12 @@ public class SubscriptionDao {
         }
     }
 
+    /**
+     * Executes renew subscription for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param expire Expire supplied by the caller.
+     */
     public static void renewSubscription(int playerId, int expire) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -273,6 +342,12 @@ public class SubscriptionDao {
         }
     }
 
+    /**
+     * Adds subscription to this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param expire Expire supplied by the caller.
+     */
     public static void addSubscription(int playerId, int expire) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -294,6 +369,12 @@ public class SubscriptionDao {
         }
     }
 
+    /**
+     * Adds premium item to this storage contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @param roomId Room identifier used by the operation.
+     */
     public static void addPremiumItem(long itemId, int roomId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -314,6 +395,11 @@ public class SubscriptionDao {
         }
     }
 
+    /**
+     * Removes premium item from this storage contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     */
     public static void removePremiumItem(long itemId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

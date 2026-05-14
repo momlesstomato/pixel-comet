@@ -12,7 +12,20 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Describes group item dao behavior for the storage subsystem.
+ */
 public class GroupItemDao {
+    /**
+     * Loads group items for this storage contract.
+     *
+     * @param bases Bases supplied by the caller.
+     * @param symbols Symbols supplied by the caller.
+     * @param baseColours Base colours supplied by the caller.
+     * @param symbolColours Symbol colours supplied by the caller.
+     * @param backgroundColours Background colours supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int loadGroupItems(List<IGroupBadgeItem> bases, List<IGroupBadgeItem> symbols, List<IGroupBadgeItem> baseColours,
                                      Map<Integer, IGroupBadgeItem> symbolColours, Map<Integer, IGroupBadgeItem> backgroundColours) {
         Connection sqlConnection = null;

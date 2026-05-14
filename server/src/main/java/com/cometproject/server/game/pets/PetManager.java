@@ -21,6 +21,9 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
+/**
+ * Manages pet runtime state for the pet subsystem.
+ */
 public class PetManager implements Startable {
     private final Map<Integer, IPetData> pendingPetDataSaves = Maps.newConcurrentMap();
     private Logger LOGGER = LoggerFactory.getLogger(PetManager.class.getName());
@@ -31,14 +34,25 @@ public class PetManager implements Startable {
     private ArrayList<PetMonsterPlant> monsterPlantBodies;
     private ArrayList<PetMonsterPlantColor> monsterPlantColors;
 
+    /**
+     * Creates a pet manager instance for the pet subsystem.
+     */
     public PetManager() {
 
     }
 
+    /**
+     * Returns the instance for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static PetManager getInstance() {
         return CometBootstrap.resolve(PetManager.class);
     }
 
+    /**
+     * Starts this pet component.
+     */
     @Override
     public void start() {
         this.loadPetRaces();
@@ -53,6 +67,9 @@ public class PetManager implements Startable {
         LOGGER.info("PetManager initialized");
     }
 
+    /**
+     * Loads pet races for this pet contract.
+     */
     public void loadPetRaces() {
         if (this.petRaces != null) {
             this.petRaces.clear();
@@ -67,6 +84,9 @@ public class PetManager implements Startable {
         }
     }
 
+    /**
+     * Loads pet breed pallets for this pet contract.
+     */
     public void loadPetBreedPallets() {
         if (this.petBreedPallets != null) {
             this.petBreedPallets.clear();
@@ -81,6 +101,9 @@ public class PetManager implements Startable {
         }
     }
 
+    /**
+     * Loads pet speech for this pet contract.
+     */
     public void loadPetSpeech() {
         if (this.petMessages != null) {
             this.petMessages.clear();
@@ -96,6 +119,9 @@ public class PetManager implements Startable {
         }
     }
 
+    /**
+     * Loads transformable pets for this pet contract.
+     */
     public void loadTransformablePets() {
         if (this.transformablePets != null) {
             this.transformablePets.clear();
@@ -110,6 +136,12 @@ public class PetManager implements Startable {
         }
     }
 
+    /**
+     * Executes validate pet name for this pet contract.
+     *
+     * @param petName Pet name supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public int validatePetName(String petName) {
         String pattern = "^[a-zA-Z0-9]*$";
 
@@ -128,6 +160,12 @@ public class PetManager implements Startable {
         return 0;
     }
 
+    /**
+     * Returns the races by race id for this pet contract.
+     *
+     * @param raceId Race id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public List<IPetRace> getRacesByRaceId(int raceId) {
         List<IPetRace> races = new ArrayList<>();
 
@@ -139,6 +177,9 @@ public class PetManager implements Startable {
         return races;
     }
 
+    /**
+     * Loads monster plants races for this pet contract.
+     */
     public void loadMonsterPlantsRaces() {
         this.monsterPlantBodies = new ArrayList<>();
         this.monsterPlantBodies.add(new PetMonsterPlant(1, "Amnesia", 0, 3600, 300));
@@ -169,30 +210,67 @@ public class PetManager implements Startable {
         this.monsterPlantColors.add(new PetMonsterPlantColor("Cyaneus", 10));
     }
 
+    /**
+     * Returns the monster plant bodies for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public ArrayList<PetMonsterPlant> getMonsterPlantBodies() {
         return monsterPlantBodies;
     }
 
+    /**
+     * Returns the monster plant colors for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public ArrayList<PetMonsterPlantColor> getMonsterPlantColors() {
         return monsterPlantColors;
     }
 
+    /**
+     * Returns the pet races for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<PetRace> getPetRaces() {
         return this.petRaces;
     }
 
+    /**
+     * Returns the speech for this pet contract.
+     *
+     * @param petType Pet type supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public PetSpeech getSpeech(int petType) {
         return this.petMessages.get(petType);
     }
 
+    /**
+     * Returns the transformable pets for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<String, String> getTransformablePets() {
         return transformablePets;
     }
 
+    /**
+     * Returns the transformation data for this pet contract.
+     *
+     * @param type Type supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public String getTransformationData(String type) {
         return this.transformablePets.get(type);
     }
 
+    /**
+     * Returns the pet breed pallets for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<Integer, Map<PetBreedLevel, Set<Integer>>> getPetBreedPallets() {
         return petBreedPallets;
     }

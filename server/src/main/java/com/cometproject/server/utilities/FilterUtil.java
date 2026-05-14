@@ -5,7 +5,16 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
+/**
+ * Describes filter util behavior for the Comet subsystem.
+ */
 public class FilterUtil {
+    /**
+     * Executes process for this Comet contract.
+     *
+     * @param string String supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static String process(String string) {
         String result = string;
 

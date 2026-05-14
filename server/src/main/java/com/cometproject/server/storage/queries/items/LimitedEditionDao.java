@@ -10,7 +10,15 @@ import java.sql.SQLException;
 import java.util.concurrent.ThreadLocalRandom;
 
 
+/**
+ * Describes limited edition dao behavior for the storage subsystem.
+ */
 public class LimitedEditionDao {
+    /**
+     * Executes save for this storage contract.
+     *
+     * @param item Item supplied by the caller.
+     */
     public static void save(LimitedEditionItemData item) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -32,6 +40,12 @@ public class LimitedEditionDao {
         }
     }
 
+    /**
+     * Executes get for this storage contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static LimitedEditionItemData get(long itemId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -59,6 +73,14 @@ public class LimitedEditionDao {
         return null;
     }
 
+    /**
+     * Returns the available number for this storage contract.
+     *
+     * @param baseId Base id supplied by the caller.
+     * @param number Number supplied by the caller.
+     * @param limitedTotal Limited total supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getAvailableNumber(int baseId, int number, int limitedTotal){
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

@@ -11,9 +11,12 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
+/**
+ * Describes wired action execute stacks behavior for the room subsystem.
+ */
 public class WiredActionExecuteStacks extends WiredActionItem {
     /**
-     * The default constructor
+     * The default constructor.
      *
      * @param id        The ID of the item
      * @param itemId    The ID of the item definition
@@ -30,6 +33,11 @@ public class WiredActionExecuteStacks extends WiredActionItem {
         super(itemData, room);
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(WiredItemEvent event) {
         List<Position> tilesToExecute = Lists.newArrayList();
@@ -94,11 +102,21 @@ public class WiredActionExecuteStacks extends WiredActionItem {
     }
 
 
+    /**
+     * Executes requires player for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean requiresPlayer() {
         return false;
     }
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 18;

@@ -11,6 +11,9 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * Describes room game behavior for the room processing subsystem.
+ */
 public abstract class RoomGame implements CometTask {
     protected int timer;
     protected int gameLength;
@@ -22,12 +25,21 @@ public abstract class RoomGame implements CometTask {
 
     private Logger LOGGER;
 
+    /**
+     * Creates a room game instance for the room processing subsystem.
+     *
+     * @param room Room participating in the operation.
+     * @param gameType Game type supplied by the caller.
+     */
     public RoomGame(Room room, GameType gameType) {
         this.type = gameType;
         this.LOGGER = LoggerFactory.getLogger("RoomGame [" + room.getData().getName() + "][" + room.getData().getId() + "][" + this.type + "]");
         this.room = room;
     }
 
+    /**
+     * Runs this room processing task.
+     */
     @Override
     public void run() {
         try {
@@ -72,6 +84,9 @@ public abstract class RoomGame implements CometTask {
         }
     }
 
+    /**
+     * Stops this room processing component.
+     */
     public void stop() {
         /*for (WiredAddonBlob blob : room.getItems().getByClass(WiredAddonBlob.class)) {
             blob.hideBlob();
@@ -86,6 +101,11 @@ public abstract class RoomGame implements CometTask {
         }
     }
 
+    /**
+     * Executes start timer for this room processing contract.
+     *
+     * @param amount Amount supplied by the caller.
+     */
     public void startTimer(int amount) {
         if (this.active && this.future != null) {
             this.future.cancel(false);
@@ -99,24 +119,53 @@ public abstract class RoomGame implements CometTask {
         LOGGER.debug("Game active for " + amount + " seconds");
     }
 
+    /**
+     * Returns the game component for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     protected GameComponent getGameComponent() {
         return this.room.getGame();
     }
 
+    /**
+     * Executes tick for this room processing contract.
+     */
     public abstract void tick();
 
+    /**
+     * Handles the game ends callback for this room processing contract.
+     */
     public abstract void onGameEnds();
 
+    /**
+     * Handles the game starts callback for this room processing contract.
+     */
     public abstract void onGameStarts();
 
+    /**
+     * Returns the type for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public GameType getType() {
         return this.type;
     }
 
+    /**
+     * Returns the log for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Logger getLog() {
         return this.LOGGER;
     }
 
+    /**
+     * Indicates whether active applies to this room processing contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isActive() {
         return active;
     }

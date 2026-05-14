@@ -10,8 +10,16 @@ import com.cometproject.server.network.messages.outgoing.gamecenter.snowwar.Stag
 
 /*    */
 /*    */ 
+/**
+ * Describes snow stage run behavior for the Snow War game subsystem.
+ */
 /*    */ public class SnowStageRun
 /*    */ {
+/**
+ * Executes exec for this task scheduling contract.
+ *
+ * @param room Room participating in the operation.
+ */
 /*    */   public static void exec(SnowWarRoom room) {
 /* 11 */     room.broadcast(new StageRunningComposer(120));
 /*    */   }

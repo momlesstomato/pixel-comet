@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Set;
 
 
+/**
+ * Serializes the load profile message for the Pixel Protocol client.
+ */
 public class LoadProfileMessageComposer extends MessageComposer {
     private final PlayerData player;
     private final PlayerStatistics stats;
@@ -23,6 +26,15 @@ public class LoadProfileMessageComposer extends MessageComposer {
     private final boolean isMyFriend;
     private final boolean requestSent;
 
+    /**
+     * Creates a load profile message composer instance for the network message subsystem.
+     *
+     * @param player Player participating in the operation.
+     * @param stats Stats supplied by the caller.
+     * @param groups Groups supplied by the caller.
+     * @param isMyFriend Is my friend supplied by the caller.
+     * @param hasSentRequest Has sent request supplied by the caller.
+     */
     public LoadProfileMessageComposer(PlayerData player, PlayerStatistics stats, Set<Integer> groups, boolean isMyFriend, boolean hasSentRequest) {
         this.player = player;
         this.stats = stats;
@@ -31,11 +43,21 @@ public class LoadProfileMessageComposer extends MessageComposer {
         this.requestSent = hasSentRequest;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.ProfileInformationMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(player.getId());

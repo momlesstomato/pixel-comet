@@ -9,7 +9,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
+/**
+ * Describes statistics dao behavior for the storage subsystem.
+ */
 public class StatisticsDao {
+    /**
+     * Persists statistics for this storage contract.
+     *
+     * @param players Players supplied by the caller.
+     * @param rooms Rooms supplied by the caller.
+     * @param version Version supplied by the caller.
+     * @param onlineRecord Online record supplied by the caller.
+     */
     public static void saveStatistics(int players, int rooms, String version, int onlineRecord) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -33,6 +44,13 @@ public class StatisticsDao {
         }
     }
 
+    /**
+     * Persists statistics for this storage contract.
+     *
+     * @param players Players supplied by the caller.
+     * @param rooms Rooms supplied by the caller.
+     * @param version Version supplied by the caller.
+     */
     public static void saveStatistics(int players, int rooms, String version) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -54,6 +72,11 @@ public class StatisticsDao {
         }
     }
 
+    /**
+     * Returns the player record for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static int getPlayerRecord() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

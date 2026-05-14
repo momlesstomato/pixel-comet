@@ -6,7 +6,13 @@ import com.cometproject.logger.ResponseBuilder;
 import static com.cometproject.logger.CometLogger.JSON_TRANSFORMER;
 
 
+/**
+ * Registers routes endpoints for the tooling subsystem.
+ */
 public class Routes {
+    /**
+     * Executes init for this tooling contract.
+     */
     public static void init() {
         defaultRoutes();
         chatlogRoutes();

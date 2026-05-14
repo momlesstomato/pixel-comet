@@ -8,6 +8,9 @@ import com.cometproject.server.game.rooms.objects.entities.types.ai.AbstractBotA
 import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.permissions.FloodFilterMessageComposer;
 
+/**
+ * Describes waiter ai behavior for the room subsystem.
+ */
 public class WaiterAI extends AbstractBotAI {
     public static final Drink[] drinks = {
             new Drink("té", 1),
@@ -27,10 +30,22 @@ public class WaiterAI extends AbstractBotAI {
             new Drink("champán", 35)
     };
 
+    /**
+     * Creates a waiter ai instance for the room subsystem.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     public WaiterAI(RoomEntity entity) {
         super(entity);
     }
 
+    /**
+     * Handles the talk callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param message Message supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onTalk(PlayerEntity entity, String message) {
 
@@ -58,6 +73,9 @@ public class WaiterAI extends AbstractBotAI {
         return false;
     }
 
+    /**
+     * Describes drink behavior for the room subsystem.
+     */
     public static class Drink {
         private String trigger;
         private int handItemId;
@@ -67,10 +85,20 @@ public class WaiterAI extends AbstractBotAI {
             this.handItemId = handItemId;
         }
 
+        /**
+         * Returns the trigger for this room contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public String getTrigger() {
             return trigger;
         }
 
+        /**
+         * Returns the hand item id for this room contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public int getHandItemId() {
             return handItemId;
         }

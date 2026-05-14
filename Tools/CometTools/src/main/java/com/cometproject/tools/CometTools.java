@@ -9,11 +9,17 @@ import com.google.common.base.Stopwatch;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * Describes comet tools behavior for the tooling subsystem.
+ */
 public class CometTools {
     private PacketManager packetManager;
     private PacketLogger packetLogger;
     private CometWindow cometWindow;
 
+    /**
+     * Creates a comet tools instance for the tooling subsystem.
+     */
     public CometTools() {
         Stopwatch stopwatch = Stopwatch.createStarted();
 
@@ -25,22 +31,47 @@ public class CometTools {
 
     private static CometTools instance;
 
+    /**
+     * Executes main for this tooling contract.
+     *
+     * @param args Args supplied by the caller.
+     */
     public static void main(String[] args) {
         instance = new CometTools();
     }
 
+    /**
+     * Returns the instance for this tooling contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static CometTools getInstance() {
         return instance;
     }
 
+    /**
+     * Returns the packet manager for this tooling contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public PacketManager getPacketManager() {
         return packetManager;
     }
 
+    /**
+     * Updates the packet manager for this tooling contract.
+     *
+     * @param packetManager Packet manager supplied by the caller.
+     */
     public void setPacketManager(PacketManager packetManager) {
         this.packetManager = packetManager;
     }
 
+    /**
+     * Returns the packet logger for this tooling contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public PacketLogger getPacketLogger() {
         return packetLogger;
     }

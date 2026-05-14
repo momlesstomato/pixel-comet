@@ -41,8 +41,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
+/**
+ * Manages room runtime state for the room subsystem.
+ */
 public class RoomManager implements Startable, IRoomService, IRoomModelService {
 
+    /**
+     * Manages room runtime state for the room subsystem.
+     */
     public static final Logger LOGGER = LoggerFactory.getLogger(RoomManager.class);
     public static final int LRU_MAX_ENTRIES = Integer.parseInt(Configuration.currentConfig().getProperty("comet.game.rooms.data.max"));
     public static final int LRU_MAX_LOWER_WATERMARK = Integer.parseInt(Configuration.currentConfig().getProperty("comet.game.rooms.data.lowerWatermark"));
@@ -63,14 +69,25 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
 
     private Map<Integer, RoomReloadListener> reloadListeners;
 
+    /**
+     * Creates a room manager instance for the room subsystem.
+     */
     public RoomManager() {
 
     }
 
+    /**
+     * Returns the instance for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static RoomManager getInstance() {
         return CometBootstrap.resolve(RoomManager.class);
     }
 
+    /**
+     * Starts this room component.
+     */
     @Override
     public void start() {
         this.roomDataInstances = new ConcurrentHashMap<>();
@@ -101,6 +118,9 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         LOGGER.info("RoomManager initialized");
     }
 
+    /**
+     * Stops this room component.
+     */
     @Override
     public void stop() {
         if (this.globalCycle != null) {
@@ -112,6 +132,9 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         }
     }
 
+    /**
+     * Loads promoted rooms for this room contract.
+     */
     public void loadPromotedRooms() {
         RoomDao.deleteExpiredRoomPromotions();
         RoomDao.getActivePromotions(this.roomPromotions);
@@ -119,6 +142,13 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         LOGGER.info("Loaded " + this.getRoomPromotions().size() + " room promotions");
     }
 
+    /**
+     * Executes initialize room for this room contract.
+     *
+     * @param initializer Initializer supplied by the caller.
+     * @param roomId Room identifier used by the operation.
+     * @param password Password supplied by the caller.
+     */
     public void initializeRoom(Session initializer, int roomId, String password) {
         this.executorService.submit(() -> {
             if (initializer != null && initializer.getPlayer() != null) {
@@ -127,6 +157,9 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         });
     }
 
+    /**
+     * Loads models for this room contract.
+     */
     @Override
     public void loadModels() {
         if (this.models != null && !this.models.isEmpty()) {
@@ -138,6 +171,12 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         LOGGER.info("Loaded " + this.models.size() + " room models");
     }
 
+    /**
+     * Returns the model for this room contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public IRoomModel getModel(String id) {
         if (this.models != null && this.models.containsKey(id)) {
@@ -148,11 +187,22 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         return null;
     }
 
+    /**
+     * Returns the room model factory for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public IRoomModelFactory getRoomModelFactory() {
         return ServerRoomModelFactory.INSTANCE;
     }
 
+    /**
+     * Executes get for this room contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public Room get(int id) {
         if (id < 1) return null;
 
@@ -200,6 +250,12 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         room.getItems().onLoaded();
     }
 //
+/**
+ * Returns the room data for this room contract.
+ *
+ * @param id Id supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 @Override
     public IRoomData getRoomData(int id) {
         if (this.roomDataInstances.containsKey(id)) {
@@ -215,11 +271,19 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         return roomData;
     }
 
+    /**
+     * Persists room data for this room contract.
+     *
+     * @param roomData Room data supplied by the caller.
+     */
     @Override
     public void saveRoomData(IRoomData roomData) {
         StorageContext.getCurrentContext().getRoomRepository().updateRoom(roomData);
     }
 
+    /**
+     * Executes unload idle rooms for this room contract.
+     */
     public void unloadIdleRooms() {
         for (Room room : this.unloadingRoomInstances.values()) {
             this.executorService.submit(() -> {
@@ -256,12 +320,22 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         }
     }
 
+    /**
+     * Executes force unload for this room contract.
+     *
+     * @param id Id supplied by the caller.
+     */
     public void forceUnload(int id) {
         if (this.loadedRoomInstances.containsKey(id)) {
             this.loadedRoomInstances.remove(id).dispose();
         }
     }
 
+    /**
+     * Removes data from this room contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     */
     public void removeData(int roomId) {
         if (this.getRoomDataInstances().get(roomId) == null) {
             return;
@@ -270,10 +344,21 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         this.getRoomDataInstances().remove(roomId);
     }
 
+    /**
+     * Adds reload listener to this room contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param listener Listener supplied by the caller.
+     */
     public void addReloadListener(int roomId, RoomReloadListener listener) {
         this.reloadListeners.put(roomId, listener);
     }
 
+    /**
+     * Loads rooms for user for this room contract.
+     *
+     * @param player Player participating in the operation.
+     */
     public void loadRoomsForUser(IPlayer player) {
         player.getRooms().clear();
         player.getRoomsWithRights().clear();
@@ -298,6 +383,12 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         }
     }
 
+    /**
+     * Returns the rooms by query for this room contract.
+     *
+     * @param query Query supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public List<IRoomData> getRoomsByQuery(String query) {
         List<IRoomData> rooms = new ArrayList<>();
 
@@ -328,10 +419,32 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         return rooms;
     }
 
+    /**
+     * Indicates whether active applies to this room contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isActive(int id) {
         return this.getRoomInstances().containsKey(id);
     }
 
+    /**
+     * Creates room for this room contract.
+     *
+     * @param name Name supplied by the caller.
+     * @param description Description supplied by the caller.
+     * @param model Model supplied by the caller.
+     * @param category Category supplied by the caller.
+     * @param maxVisitors Max visitors supplied by the caller.
+     * @param tradeState Trade state supplied by the caller.
+     * @param client Client supplied by the caller.
+     * @param wallTickness Wall tickness supplied by the caller.
+     * @param floorThickness Floor thickness supplied by the caller.
+     * @param decorations Decorations supplied by the caller.
+     * @param hideWalls Hide walls supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public int createRoom(String name, String description, CustomFloorMapData model, int category, int maxVisitors, int tradeState, ISession client, int wallTickness, int floorThickness, String decorations, boolean hideWalls) {
         int roomId = RoomDao.createRoom(name, model, description, category, maxVisitors, RoomTradeState.valueOf(tradeState), client.getPlayer().getId(), client.getPlayer().getData().getUsername(), wallTickness, floorThickness, decorations, hideWalls);
 
@@ -340,6 +453,18 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         return roomId;
     }
 
+    /**
+     * Creates room for this room contract.
+     *
+     * @param name Name supplied by the caller.
+     * @param description Description supplied by the caller.
+     * @param model Model supplied by the caller.
+     * @param category Category supplied by the caller.
+     * @param maxVisitors Max visitors supplied by the caller.
+     * @param tradeState Trade state supplied by the caller.
+     * @param client Client supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public int createRoom(String name, String description, String model, int category, int maxVisitors, int tradeState, Session client) {
         int roomId = RoomDao.createRoom(name, model, description, category, maxVisitors, RoomTradeState.valueOf(tradeState), client.getPlayer().getId(), client.getPlayer().getData().getUsername());
 
@@ -348,6 +473,11 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         return roomId;
     }
 
+    /**
+     * Executes rights rooms update for this room contract.
+     *
+     * @param client Client supplied by the caller.
+     */
     public void rightsRoomsUpdate(Session client) {
         this.loadRoomsForUser(client.getPlayer());
     }
@@ -369,6 +499,11 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         return rooms;
     }
 
+    /**
+     * Returns the random active room for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getRandomActiveRoom() {
         final List<Integer> rooms = this.getActiveAvailableRooms();
         final Integer roomId = WiredUtil.getRandomElement(rooms);
@@ -382,10 +517,25 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         return -1;
     }
 
+    /**
+     * Returns the rooms by category for this room contract.
+     *
+     * @param category Category supplied by the caller.
+     * @param player Player participating in the operation.
+     * @return Value exposed by the contract.
+     */
     public List<IRoomData> getRoomsByCategory(int category, Player player) {
         return this.getRoomsByCategory(category, 0, player);
     }
 
+    /**
+     * Returns the rooms by category for this room contract.
+     *
+     * @param category Category supplied by the caller.
+     * @param minimumPlayers Minimum players supplied by the caller.
+     * @param player Player participating in the operation.
+     * @return Value exposed by the contract.
+     */
     public List<IRoomData> getRoomsByCategory(int category, int minimumPlayers, Player player) {
         List<IRoomData> rooms = new ArrayList<>();
 
@@ -414,6 +564,13 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         return rooms;
     }
 
+    /**
+     * Executes promote room for this room contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param name Name supplied by the caller.
+     * @param description Description supplied by the caller.
+     */
     public void promoteRoom(int roomId, String name, String description) {
         if (this.roomPromotions.containsKey(roomId)) {
             RoomPromotion promo = this.roomPromotions.get(roomId);
@@ -436,6 +593,13 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         }
     }
 
+    /**
+     * Creates r pinstance for this room contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param name Name supplied by the caller.
+     * @param description Description supplied by the caller.
+     */
     public void createRPinstance(int roomId, String name, String description) {
         /*RoomPromotion roomPromotion = new RoomPromotion(roomId, name, description, Long.MIN_VALUE, Long.MAX_VALUE);
         RoomDao.createPromotedRoom(roomPromotion);
@@ -452,14 +616,30 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         }*/
     }
 
+    /**
+     * Indicates whether this room contract has promotion.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasPromotion(int roomId) {
         return this.roomPromotions.containsKey(roomId) && !this.roomPromotions.get(roomId).isExpired();
     }
 
+    /**
+     * Returns the emotions for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public final ChatEmotionsManager getEmotions() {
         return this.emotions;
     }
 
+    /**
+     * Returns the room instances for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public final Map<Integer, Room> getRoomInstances() {
         return this.loadedRoomInstances;
     }
@@ -468,14 +648,29 @@ public class RoomManager implements Startable, IRoomService, IRoomModelService {
         return this.roomDataInstances;
     }
 
+    /**
+     * Returns the global cycle for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public final RoomCycle getGlobalCycle() {
         return this.globalCycle;
     }
 
+    /**
+     * Returns the filter for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public final WordFilter getFilter() {
         return filterManager;
     }
 
+    /**
+     * Returns the room promotions for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<Integer, RoomPromotion> getRoomPromotions() {
         return roomPromotions;
     }

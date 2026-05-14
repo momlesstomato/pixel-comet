@@ -9,7 +9,13 @@ import com.cometproject.games.snowwar.items.MapStuffData;
 import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * Describes snow war arena8 behavior for the Snow War game subsystem.
+ */
 public class SnowWarArena8 extends SnowWarArenaBase {
+    /**
+     * Creates a snow war arena8 instance for the Snow War game subsystem.
+     */
     public SnowWarArena8() {
         ArenaHeight = 50;
         ArenaWidth = 50;
@@ -1319,6 +1325,12 @@ public class SnowWarArena8 extends SnowWarArenaBase {
         /* 1321 */     spawnsRED.add(new SpawnPoint(33, 46));
     }
 
+    /**
+     * Executes game objects for this Snow War game contract.
+     *
+     * @param gameObjects Game objects supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public void gameObjects(Map<Integer, GameItemObject> gameObjects, SnowWarRoom room) {
         gameObjects.put(0, new TreeGameObject(19, 41, 0, 1, 3, 3, 0, room.map, room));
         gameObjects.put(1, new TreeGameObject(9, 31, 0, 1, 5, 3, 0, room.map, room));

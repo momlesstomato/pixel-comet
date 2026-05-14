@@ -5,39 +5,42 @@ import com.cometproject.api.game.groups.types.IGroupData;
 import com.cometproject.api.game.players.data.PlayerAvatar;
 
 
+/**
+ * Carries group data data for the MySQL storage subsystem.
+ */
 public class GroupData implements IGroupData {
     /**
-     * The ID of the group1
+     * The ID of the group1.
      */
     private int id;
 
     /**
-     * The title of the group
+     * The title of the group.
      */
     private String title;
 
     /**
-     * The description of the group
+     * The description of the group.
      */
     private String description;
 
     /**
-     * The badge image created by the group owner
+     * The badge image created by the group owner.
      */
     private String badge;
 
     /**
-     * The group owner's ID
+     * The group owner's ID.
      */
     private int ownerId;
 
     /**
-     * The room assigned to the group's ID
+     * The room assigned to the group's ID.
      */
     private int roomId;
 
     /**
-     * The time the group was created
+     * The time the group was created.
      */
     private int created;
 
@@ -48,12 +51,12 @@ public class GroupData implements IGroupData {
     private GroupType type;
 
     /**
-     * The first colour of the group
+     * The first colour of the group.
      */
     private int colourA;
 
     /**
-     * The second colour of the group
+     * The second colour of the group.
      */
     private int colourB;
 
@@ -69,10 +72,28 @@ public class GroupData implements IGroupData {
     private boolean hasForum;
 
     /**
-     * The name of the owner
+     * The name of the owner.
      */
     private PlayerAvatar ownerAvatar;
 
+    /**
+     * Creates a group data instance for the MySQL storage subsystem.
+     *
+     * @param id Id supplied by the caller.
+     * @param title Title supplied by the caller.
+     * @param description Description supplied by the caller.
+     * @param badge Badge supplied by the caller.
+     * @param ownerId Owner id supplied by the caller.
+     * @param ownerName Owner name supplied by the caller.
+     * @param roomId Room identifier used by the operation.
+     * @param created Created supplied by the caller.
+     * @param type Type supplied by the caller.
+     * @param colourA Colour a supplied by the caller.
+     * @param colourB Colour b supplied by the caller.
+     * @param canMembersDecorate Can members decorate supplied by the caller.
+     * @param hasForum Has forum supplied by the caller.
+     * @param playerAvatar Player avatar supplied by the caller.
+     */
     public GroupData(int id, String title, String description, String badge, int ownerId, String ownerName, int roomId, int created, GroupType type, int colourA, int colourB, boolean canMembersDecorate, boolean hasForum, PlayerAvatar playerAvatar) {
         this.id = id;
         this.title = title;
@@ -90,7 +111,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Create a group data instance using data provided by
+     * Create a group data instance using data provided by.
      * the group creator
      *
      * @param title       The title of the group
@@ -116,7 +137,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Get the ID of the group
+     * Get the ID of the group.
      *
      * @return The ID of the group
      */
@@ -126,7 +147,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Set the ID of the group
+     * Set the ID of the group.
      *
      * @param id The ID of the group
      */
@@ -136,7 +157,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Get the title of the group
+     * Get the title of the group.
      *
      * @return The title of the group
      */
@@ -146,7 +167,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Set the title of the group
+     * Set the title of the group.
      *
      * @param title The title of the group
      */
@@ -156,7 +177,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Get the description of the group
+     * Get the description of the group.
      *
      * @return The description of the group
      */
@@ -166,7 +187,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Set the description of the group
+     * Set the description of the group.
      *
      * @param description The description of the group
      */
@@ -176,7 +197,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Get the ID of the owner of the group
+     * Get the ID of the owner of the group.
      *
      * @return The ID of the owner of the group
      */
@@ -186,7 +207,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Set the ID of the owner of the group
+     * Set the ID of the owner of the group.
      *
      * @param id The ID of the group
      */
@@ -195,13 +216,18 @@ public class GroupData implements IGroupData {
         this.ownerId = id;
     }
 
+    /**
+     * Returns the owner name for this MySQL storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getOwnerName() {
         return this.ownerAvatar.getUsername();
     }
 
     /**
-     * Get the badge of the group
+     * Get the badge of the group.
      *
      * @return The badge created by the group owner
      */
@@ -211,7 +237,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Set the badge of the group
+     * Set the badge of the group.
      *
      * @param badge The badge created by the group owner
      */
@@ -221,7 +247,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Get the room ID assigned the group
+     * Get the room ID assigned the group.
      *
      * @return The room ID assigned to the group
      */
@@ -231,7 +257,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Set the room ID assigned to the group
+     * Set the room ID assigned to the group.
      *
      * @param roomId The room ID assigned to the group
      */
@@ -241,7 +267,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Get the time the group was created
+     * Get the time the group was created.
      *
      * @return The time the group was created
      */
@@ -261,7 +287,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Set whether or not the group administrators can decorate the room
+     * Set whether or not the group administrators can decorate the room.
      *
      * @param canMembersDecorate Can the group administrators decorate the room?
      */
@@ -271,7 +297,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Get the membership type of the group
+     * Get the membership type of the group.
      *
      * @return The membership type of the group
      */
@@ -281,7 +307,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Set the membership type of the group
+     * Set the membership type of the group.
      *
      * @param type The membership type of the group
      */
@@ -291,7 +317,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Get the first colour of the group
+     * Get the first colour of the group.
      *
      * @return The first colour of the group
      */
@@ -301,7 +327,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Set the first colour of the group
+     * Set the first colour of the group.
      *
      * @param colourA The first colour of the group
      */
@@ -311,7 +337,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Get the second colour of the group
+     * Get the second colour of the group.
      *
      * @return The second colour of the group
      */
@@ -321,7 +347,7 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Set the second colour of the group
+     * Set the second colour of the group.
      *
      * @param colourB The second colour of the group
      */
@@ -340,11 +366,21 @@ public class GroupData implements IGroupData {
         return this.hasForum;
     }
 
+    /**
+     * Updates the has forum for this MySQL storage contract.
+     *
+     * @param hasForum Has forum supplied by the caller.
+     */
     @Override
     public void setHasForum(boolean hasForum) {
         this.hasForum = hasForum;
     }
 
+    /**
+     * Returns the owner avatar for this MySQL storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public PlayerAvatar getOwnerAvatar() {
         return this.ownerAvatar;

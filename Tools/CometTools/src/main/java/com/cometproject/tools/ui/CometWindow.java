@@ -13,6 +13,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
+/**
+ * Describes comet window behavior for the tooling subsystem.
+ */
 public class CometWindow extends JFrame {
     public static final String WINDOW_TITLE = "Comet Tools";
     public static final Dimension WINDOW_DIMENSION = new Dimension(1024, 700);
@@ -27,6 +30,11 @@ public class CometWindow extends JFrame {
     private JTextPane loggerConsole;
     private JButton startLogger;
 
+    /**
+     * Creates a comet window instance for the tooling subsystem.
+     *
+     * @param tools Tools supplied by the caller.
+     */
     public CometWindow(CometTools tools) {
         this.tools = tools;
 
@@ -75,6 +83,11 @@ public class CometWindow extends JFrame {
 
     private class CometPacketSelectionHandler implements ListSelectionListener {
 
+        /**
+         * Executes value changed for this tooling contract.
+         *
+         * @param e E supplied by the caller.
+         */
         @Override
         public void valueChanged(ListSelectionEvent e) {
             try {
@@ -117,6 +130,11 @@ public class CometWindow extends JFrame {
 
     private class CometPacketInitListener implements ActionListener {
 
+        /**
+         * Executes action performed for this tooling contract.
+         *
+         * @param e E supplied by the caller.
+         */
         @Override
         public void actionPerformed(ActionEvent e) {
             initPacketList();
@@ -127,6 +145,11 @@ public class CometWindow extends JFrame {
 
     private class CometPacketLoggerStartListener implements ActionListener {
 
+        /**
+         * Executes action performed for this tooling contract.
+         *
+         * @param e E supplied by the caller.
+         */
         @Override
         public void actionPerformed(ActionEvent e) {
             initPacketLogger();

@@ -12,7 +12,16 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Describes player achievement dao behavior for the storage subsystem.
+ */
 public class PlayerAchievementDao {
+    /**
+     * Returns the achievement progress for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static Map<AchievementType, IAchievementProgress> getAchievementProgress(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -43,6 +52,13 @@ public class PlayerAchievementDao {
         return achievements;
     }
 
+    /**
+     * Persists progress for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param type Type supplied by the caller.
+     * @param progress Progress supplied by the caller.
+     */
     public static void saveProgress(int playerId, AchievementType type, IAchievementProgress progress) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -68,6 +84,13 @@ public class PlayerAchievementDao {
         }
     }
 
+    /**
+     * Updates badge for this storage contract.
+     *
+     * @param oldBadge Old badge supplied by the caller.
+     * @param newBadge New badge supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     */
     public static void updateBadge(String oldBadge, String newBadge, int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

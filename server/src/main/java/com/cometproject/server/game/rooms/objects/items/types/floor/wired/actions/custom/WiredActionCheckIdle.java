@@ -11,9 +11,12 @@ import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.network.messages.outgoing.room.avatar.IdleStatusMessageComposer;
 
 
+/**
+ * Describes wired action check idle behavior for the room subsystem.
+ */
 public class WiredActionCheckIdle extends WiredActionItem {
     /**
-     * The default constructor
+     * The default constructor.
      *
      * @param id       The ID of the item
      * @param itemId   The ID of the item definition
@@ -29,6 +32,11 @@ public class WiredActionCheckIdle extends WiredActionItem {
         super(itemData, room);
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(WiredItemEvent event) {
         if (this.getWiredData().getSelectedIds().size() == 0) return;
@@ -51,11 +59,21 @@ public class WiredActionCheckIdle extends WiredActionItem {
         }
     }
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 0;
     }
 
+    /**
+     * Executes requires player for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean requiresPlayer() {
         return false;

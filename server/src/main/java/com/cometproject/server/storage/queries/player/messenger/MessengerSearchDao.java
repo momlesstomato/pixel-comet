@@ -12,7 +12,16 @@ import java.util.Date;
 import java.util.List;
 
 
+/**
+ * Describes messenger search dao behavior for the storage subsystem.
+ */
 public class MessengerSearchDao {
+    /**
+     * Executes perform search for this storage contract.
+     *
+     * @param query Query supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static List<MessengerSearchResult> performSearch(String query) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

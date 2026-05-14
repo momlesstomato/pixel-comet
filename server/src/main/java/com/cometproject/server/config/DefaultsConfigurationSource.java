@@ -43,11 +43,22 @@ public final class DefaultsConfigurationSource implements ConfigurationSource {
         this.defaults = Map.copyOf(defaultsMap);
     }
 
+    /**
+     * Executes get for this configuration contract.
+     *
+     * @param key Key supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public String get(final String key) {
         return this.defaults.get(key);
     }
 
+    /**
+     * Returns the all for this configuration contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Map<String, String> getAll() {
         return this.defaults;

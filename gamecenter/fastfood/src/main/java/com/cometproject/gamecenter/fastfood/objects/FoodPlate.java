@@ -5,6 +5,9 @@ import com.cometproject.gamecenter.fastfood.net.FastFoodGameSession;
 import com.cometproject.gamecenter.fastfood.net.composers.ApplyShieldMessageComposer;
 import com.cometproject.gamecenter.fastfood.net.composers.FoodUpdateMessageComposer;
 
+/**
+ * Describes food plate behavior for the Fast Food game subsystem.
+ */
 public class FoodPlate {
     private final int objectId;
     private final int playerId;
@@ -20,7 +23,7 @@ public class FoodPlate {
     private boolean openedParachute = false;
     private boolean hasShield = false;
 
-    /***
+    /*
      *
      * STATES:
      * 1 - Normal Drop
@@ -30,7 +33,12 @@ public class FoodPlate {
      * 5 - Hidden
      */
 
-
+    /**
+     * Creates a falling food plate for the Fast Food arena.
+     *
+     * @param objectId Plate object id sent to the client.
+     * @param playerId Player id that owns the plate.
+     */
     public FoodPlate(int objectId, int playerId) {
         this.objectId = objectId;
         this.playerId = playerId;
@@ -40,6 +48,12 @@ public class FoodPlate {
         this.state = 1;
     }
 
+    /**
+     * Executes tick for this Fast Food game contract.
+     *
+     * @param gameSession Game session supplied by the caller.
+     * @param game Game supplied by the caller.
+     */
     public void tick(FastFoodGameSession gameSession, FastFoodGame game) {
         // (System.currentTimeMillis() - this.timeDropped) >= (this.state == 2 ? 4500 : 2500)
         //System.out.print("FoodPlate - ID: " + this.getObjectId() + " - State: " + this.getState() + " - Location: " + this.location + " - Finalized: " + finalized + "\n");
@@ -84,6 +98,11 @@ public class FoodPlate {
         }
     }
 
+    /**
+     * Executes open parachute for this Fast Food game contract.
+     *
+     * @param game Game supplied by the caller.
+     */
     public void openParachute(FastFoodGame game) {
         this.state = 2;
         this.openedParachute = true;
@@ -102,54 +121,117 @@ public class FoodPlate {
         game.broadcast(new FoodUpdateMessageComposer(this.getPlayerId(), this.getObjectId(), this.getState(), -1, 0));
     }
 
+    /**
+     * Executes apply shield for this Fast Food game contract.
+     *
+     * @param game Game supplied by the caller.
+     */
     public void applyShield(FastFoodGame game) {
         this.hasShield = true;
         game.broadcast(new ApplyShieldMessageComposer(this.getPlayerId(), this.getObjectId(), true));
     }
 
+    /**
+     * Executes hide plate for this Fast Food game contract.
+     *
+     * @param game Game supplied by the caller.
+     */
     public void hidePlate(FastFoodGame game){
         game.broadcast(new FoodUpdateMessageComposer(this.getPlayerId(), this.getObjectId(), 5, 0, 0));
     }
 
+    /**
+     * Returns the object id for this Fast Food game contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getObjectId() {
         return this.objectId;
     }
 
+    /**
+     * Returns the location for this Fast Food game contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public float getLocation() {
         return this.location;
     }
 
+    /**
+     * Updates the location for this Fast Food game contract.
+     *
+     * @param location Location supplied by the caller.
+     */
     public void setLocation(float location) {
         this.location = location;
     }
 
+    /**
+     * Returns the speed for this Fast Food game contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public float getSpeed() {
         return this.speed;
     }
 
+    /**
+     * Updates the speed for this Fast Food game contract.
+     *
+     * @param speed Speed supplied by the caller.
+     */
     public void setSpeed(float speed) {
         this.speed = speed;
     }
 
+    /**
+     * Returns the state for this Fast Food game contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getState() {
         return this.state;
     }
 
+    /**
+     * Updates the state for this Fast Food game contract.
+     *
+     * @param state State supplied by the caller.
+     */
     public void setState(int state) {
         this.state = state;
     }
 
+    /**
+     * Returns the player id for this Fast Food game contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getPlayerId() {
         return this.playerId;
     }
 
+    /**
+     * Returns the time opened for this Fast Food game contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public long getTimeOpened(){
         return this.timeOpened;
     }
+    /**
+     * Indicates whether finalized applies to this Fast Food game contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isFinalized() {
         return this.finalized;
     }
 
+    /**
+     * Enumerates plate type values used by the Fast Food game subsystem.
+     */
     public enum plateType{
         Pizza("1"),
         Soap("2"),
@@ -164,10 +246,21 @@ public class FoodPlate {
             this.groupName = groupName;
         }
 
+        /**
+         * Returns the group name for this Fast Food game contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public String getGroupName() {
             return groupName;
         }
 
+        /**
+         * Returns the type by name for this Fast Food game contract.
+         *
+         * @param name Name supplied by the caller.
+         * @return Value exposed by the contract.
+         */
         public static plateType getTypeByName(String name) {
             for (plateType type : plateType.values()) {
                 if (type.groupName.equals(name)) {

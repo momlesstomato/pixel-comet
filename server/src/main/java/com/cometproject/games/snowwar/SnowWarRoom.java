@@ -7,6 +7,9 @@ import io.netty.channel.ChannelHandlerContext;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Describes snow war room behavior for the Snow War game subsystem.
+ */
 public class SnowWarRoom extends SynchronizedGameStage {
     public int[] teamScore = {SnowWar.TEAM_BLUE,SnowWar.TEAM_RED};
     public int checksum;
@@ -29,6 +32,11 @@ public class SnowWarRoom extends SynchronizedGameStage {
     public List<ChannelHandlerContext> fullGameStatusQueue;
     private Map<Integer, HumanGameObject> stageLoadedPlayers;
 
+    /**
+     * Creates a snow war room instance for the Snow War game subsystem.
+     *
+     * @param id Id supplied by the caller.
+     */
     public SnowWarRoom(int id) {
         super();
         this.ArenaType = new SnowWarArena8();//SnowWar.getRandomArena();
@@ -42,6 +50,11 @@ public class SnowWarRoom extends SynchronizedGameStage {
         }
     }
 
+    /**
+     * Executes broadcast for this Snow War game contract.
+     *
+     * @param Message Message supplied by the caller.
+     */
     public void broadcast(IMessageComposer Message) {
         for (HumanGameObject player : this.players.values()) {
             if (player.currentSnowWar != null) {
@@ -50,6 +63,11 @@ public class SnowWarRoom extends SynchronizedGameStage {
         }
     }
 
+    /**
+     * Returns the stage loaded players for this Snow War game contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Collection<HumanGameObject> getStageLoadedPlayers() {
         if (this.stageLoadedPlayers == null) {
             return null;
@@ -59,6 +77,11 @@ public class SnowWarRoom extends SynchronizedGameStage {
         return result;
     }
 
+    /**
+     * Executes stage loaded for this Snow War game contract.
+     *
+     * @param humanObject Human object supplied by the caller.
+     */
     public void stageLoaded(HumanGameObject humanObject) {
         if (this.stageLoadedPlayers == null) {
             this.stageLoadedPlayers = new ConcurrentHashMap<>();

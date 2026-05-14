@@ -10,7 +10,15 @@ import com.cometproject.server.network.sessions.Session;
 
 import io.javalin.http.Context;
 
+/**
+ * Registers photo routes endpoints for the HTTP route subsystem.
+ */
 public class PhotoRoutes {
+    /**
+     * Executes purchase for this HTTP route contract.
+     *
+     * @param context Context supplied by the caller.
+     */
     public static void purchase(final Context context) {
         final String ssoTicket = ApiRequestUtils.firstNonBlank(
                 context.header("sso_ticket"),

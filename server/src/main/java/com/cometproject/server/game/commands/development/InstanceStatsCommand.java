@@ -7,7 +7,16 @@ import com.cometproject.server.game.rooms.RoomManager;
 import com.cometproject.server.network.messages.outgoing.notification.AlertMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 
+/**
+ * Describes instance stats command behavior for the Comet subsystem.
+ */
 public class InstanceStatsCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         StringBuilder message = new StringBuilder("<b>Comet Server - Instance Statistics </b><br><br>");
@@ -27,21 +36,41 @@ public class InstanceStatsCommand extends ChatCommand {
 //        client.send(new MotdNotificationMessageComposer(queryStats.toString()));
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "debug";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return "";
     }
 
+    /**
+     * Indicates whether hidden applies to this Comet contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isHidden() {
         return true;

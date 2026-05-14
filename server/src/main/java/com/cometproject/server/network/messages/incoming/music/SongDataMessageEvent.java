@@ -10,7 +10,17 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
+/**
+ * Represents the song data message event published by the network message subsystem.
+ */
 public class SongDataMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @throws Exception When the operation cannot complete.
+     */
     @Override
     public void handle(Session client, MessageEvent msg) throws Exception {
         int size = msg.readInt();

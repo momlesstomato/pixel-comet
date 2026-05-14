@@ -7,11 +7,25 @@ import com.cometproject.server.game.rooms.objects.entities.types.PetEntity;
 import com.cometproject.server.game.rooms.objects.items.types.DefaultFloorItem;
 import com.cometproject.server.game.rooms.types.Room;
 
+/**
+ * Describes pet toy floor item behavior for the room subsystem.
+ */
 public class PetToyFloorItem extends DefaultFloorItem {
+    /**
+     * Creates a pet toy floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public PetToyFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Handles the entity step on callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOn(RoomEntity entity) {
         if (!(entity instanceof PetEntity)) {
@@ -26,6 +40,11 @@ public class PetToyFloorItem extends DefaultFloorItem {
         this.sendUpdate();
     }
 
+    /**
+     * Handles the entity step off callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOff(RoomEntity entity) {
         if (!(entity instanceof PetEntity)) {

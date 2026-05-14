@@ -15,12 +15,24 @@ import com.cometproject.server.network.websockets.packets.incoming.AbstractWebSo
 import com.cometproject.server.network.websockets.packets.outgoing.SurvivalSoundEffectWebPacket;
 import com.cometproject.server.utilities.RandomUtil;
 
+/**
+ * Describes accept duel suggestion handler behavior for the networking subsystem.
+ */
 public class AcceptDuelSuggestionHandler extends AbstractWebSocketHandler<AcceptDuelSuggestionHandler.ASMData> {
 
+    /**
+     * Creates a accept duel suggestion handler instance for the networking subsystem.
+     */
     public AcceptDuelSuggestionHandler() {
         super(ASMData.class);
     }
 
+    /**
+     * Executes handle for this networking contract.
+     *
+     * @param ctx Netty channel context for the current operation.
+     * @param eventData Event data supplied by the caller.
+     */
     @Override
     public void handle(WebSocketClientConnection ctx, ASMData eventData) {
         Session s = NetworkManager.getInstance().getSessions().getByPlayerId(Integer.parseInt(eventData.session));

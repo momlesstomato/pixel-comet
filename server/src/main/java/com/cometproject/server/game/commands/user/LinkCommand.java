@@ -8,7 +8,16 @@ import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessage
 import com.cometproject.server.network.sessions.Session;
 
 
+/**
+ * Describes link command behavior for the Comet subsystem.
+ */
 public class LinkCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         if (params.length != 1) return;
@@ -23,16 +32,31 @@ public class LinkCommand extends ChatCommand {
         room.getEntities().broadcastMessage(new TalkMessageComposer(client.getPlayer().getEntity().getId(), variableLink, ChatEmotion.NONE, 0));
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "link_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return Locale.getOrDefault("command.parameter.link", "%link%");
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.link.description");

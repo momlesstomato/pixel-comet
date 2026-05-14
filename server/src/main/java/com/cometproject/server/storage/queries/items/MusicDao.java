@@ -10,7 +10,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
+/**
+ * Describes music dao behavior for the storage subsystem.
+ */
 public class MusicDao {
+    /**
+     * Returns the music data for this storage contract.
+     *
+     * @param musicData Music data supplied by the caller.
+     */
     public static void getMusicData(Map<Integer, IMusicData> musicData) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

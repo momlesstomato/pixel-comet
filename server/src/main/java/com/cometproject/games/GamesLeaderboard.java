@@ -5,6 +5,9 @@
 /*    */ import java.util.Map;
 /*    */ import java.util.concurrent.ConcurrentHashMap;
 /*    */ 
+/**
+ * Describes games leaderboard behavior for the Snow War game subsystem.
+ */
 /*    */ public class GamesLeaderboard
 /*    */ {
 /* 10 */   public static final Map<Integer, GamesLeaderboard> leaderboards = new ConcurrentHashMap<>();
@@ -13,6 +16,11 @@
 /*    */   
 /*    */   public List<SnowWarPlayerData> rankedList;
 /*    */   
+/**
+ * Creates a games leaderboard instance for the Comet subsystem.
+ *
+ * @param id Id supplied by the caller.
+ */
 /*    */   public GamesLeaderboard(int id) {
 /* 17 */     this.gameId = id;
 /*    */   }

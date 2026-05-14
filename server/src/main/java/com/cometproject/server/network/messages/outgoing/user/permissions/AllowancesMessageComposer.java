@@ -9,18 +9,36 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 import java.util.Map;
 
 
+/**
+ * Serializes the allowances message for the Pixel Protocol client.
+ */
 public class AllowancesMessageComposer extends MessageComposer {
     private final int rank;
 
+    /**
+     * Creates a allowances message composer instance for the network message subsystem.
+     *
+     * @param rank Rank supplied by the caller.
+     */
     public AllowancesMessageComposer(final int rank) {
         this.rank = rank;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.PerkAllowancesMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         if (rank == -1) {

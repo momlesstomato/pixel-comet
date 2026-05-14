@@ -12,6 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+/**
+ * Describes monitor message library behavior for the networking subsystem.
+ */
 public class MonitorMessageLibrary {
     public static boolean isInitialized = false;
     public static String request;
@@ -20,12 +23,18 @@ public class MonitorMessageLibrary {
     private static Gson gsonInstance = new Gson();
 
     // Hello message
+    /**
+     * Executes hello for this networking contract.
+     */
     public static void hello() {
         isInitialized = true;
 
         heartbeat();
     }
 
+    /**
+     * Executes heartbeat for this networking contract.
+     */
     public static void heartbeat() {
         JsonObject jsonObject = new JsonObject();
 
@@ -35,6 +44,11 @@ public class MonitorMessageLibrary {
         sendMessage(jsonObject.toString());
     }
 
+    /**
+     * Executes send message for this networking contract.
+     *
+     * @param json Json supplied by the caller.
+     */
     public static void sendMessage(String json) {
         ByteBuf msg = Unpooled.buffer(json.getBytes().length);
 

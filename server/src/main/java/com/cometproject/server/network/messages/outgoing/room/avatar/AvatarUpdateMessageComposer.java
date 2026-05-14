@@ -14,12 +14,20 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Serializes the avatar update message for the Pixel Protocol client.
+ */
 public class AvatarUpdateMessageComposer extends MessageComposer {
 
     private final int count;
     private final AvatarState singleEntity;
     private final List<AvatarState> entities;
 
+    /**
+     * Creates a avatar update message composer instance for the network message subsystem.
+     *
+     * @param entities Entities supplied by the caller.
+     */
     public AvatarUpdateMessageComposer(final Collection<RoomEntity> entities) {
         this.entities = Lists.newArrayList();
 
@@ -40,17 +48,32 @@ public class AvatarUpdateMessageComposer extends MessageComposer {
         this.singleEntity = null;
     }
 
+    /**
+     * Creates a avatar update message composer instance for the network message subsystem.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     public AvatarUpdateMessageComposer(final RoomEntity entity) {
         this.count = 1;
         this.singleEntity = new AvatarState(entity);
         this.entities = null;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.UserUpdateMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(this.count);
@@ -84,6 +107,11 @@ public class AvatarUpdateMessageComposer extends MessageComposer {
         private final int bodyRotation;
         private final String statusString;
 
+        /**
+         * Executes avatar state for this network message contract.
+         *
+         * @param entity Entity supplied by the caller.
+         */
         public AvatarState(RoomEntity entity) {
             this.id = entity.getId();
             this.position = entity.getPosition().copy();
@@ -110,26 +138,56 @@ public class AvatarUpdateMessageComposer extends MessageComposer {
             this.statusString = statusString.toString();
         }
 
+        /**
+         * Returns the id for this network message contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public int getId() {
             return id;
         }
 
+        /**
+         * Returns the position for this network message contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public Position getPosition() {
             return position;
         }
 
+        /**
+         * Returns the head rotation for this network message contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public int getHeadRotation() {
             return headRotation;
         }
 
+        /**
+         * Returns the body rotation for this network message contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public int getBodyRotation() {
             return bodyRotation;
         }
 
+        /**
+         * Returns the status string for this network message contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public String getStatusString() {
             return statusString;
         }
 
+        /**
+         * Executes to string for this network message contract.
+         *
+         * @return Result produced by the operation.
+         */
         @Override
         public String toString() {
             return String.format("AvatarState[%s, %s, %s, %s, %s]", this.id, this.position, this.headRotation, this.bodyRotation, this.statusString);

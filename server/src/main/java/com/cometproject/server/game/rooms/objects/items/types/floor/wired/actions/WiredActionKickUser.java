@@ -9,14 +9,28 @@ import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 
 
+/**
+ * Describes wired action kick user behavior for the room subsystem.
+ */
 public class WiredActionKickUser extends WiredActionShowMessage {
 
+    /**
+     * Creates a wired action kick user instance for the room subsystem.
+     *
+     * @param roomItemData Room item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public WiredActionKickUser(RoomItemData roomItemData, Room room) {
         super(roomItemData, room);
 
         this.isWhisperBubble = true;
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(WiredItemEvent event) {
         if (event.entity != null && event.type == 1) {

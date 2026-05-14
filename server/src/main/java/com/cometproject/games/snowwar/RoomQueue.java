@@ -7,15 +7,28 @@
 /*    */ 
 /*    */ 
 /*    */ 
+/**
+ * Describes room queue behavior for the Snow War game subsystem.
+ */
 /*    */ public class RoomQueue
 /*    */ {
 /*    */   public SnowWarRoom room;
 /* 13 */   public final Map<Integer, Session> players = new ConcurrentHashMap<>(10);
 /*    */   
+/**
+ * Creates a room queue instance for the Snow War game subsystem.
+ *
+ * @param snowRoom Snow room supplied by the caller.
+ */
 /*    */   public RoomQueue(SnowWarRoom snowRoom) {
 /* 16 */     this.room = snowRoom;
 /*    */   }
 /*    */   
+/**
+ * Executes broadcast for this Snow War game contract.
+ *
+ * @param Message Message supplied by the caller.
+ */
 /*    */   public void broadcast(IMessageComposer Message) {
 /* 20 */     for (Session cn : this.players.values())
 /* 21 */       cn.getChannel().writeAndFlush(Message); 

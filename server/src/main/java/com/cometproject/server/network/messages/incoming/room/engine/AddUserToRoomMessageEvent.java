@@ -32,7 +32,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * Represents the add user to room message event published by the network message subsystem.
+ */
 public class AddUserToRoomMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void handle(Session client, MessageEvent msg) {
         if(client.getPlayer().antiSpam("AddUserToRoomMessageEvent", 0.5))
             return;

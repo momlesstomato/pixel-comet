@@ -27,7 +27,15 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Describes room dao behavior for the storage subsystem.
+ */
 public class RoomDao {
+    /**
+     * Returns the models for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<String, StaticRoomModel> getModels() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -57,6 +65,12 @@ public class RoomDao {
         return data;
     }
 
+    /**
+     * Returns the room data by id for this storage contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static IRoomData getRoomDataById(int id) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -85,6 +99,12 @@ public class RoomDao {
         return null;
     }
 
+    /**
+     * Returns the rooms by player id for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, IRoomData> getRoomsByPlayerId(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -115,6 +135,12 @@ public class RoomDao {
         return rooms;
     }
 
+    /**
+     * Returns the rooms with rights by player id for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, IRoomData> getRoomsWithRightsByPlayerId(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -145,6 +171,12 @@ public class RoomDao {
         return rooms;
     }
 
+    /**
+     * Returns the rooms by query for this storage contract.
+     *
+     * @param query Query supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static List<IRoomData> getRoomsByQuery(String query) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -195,6 +227,23 @@ public class RoomDao {
         return rooms;
     }
 
+    /**
+     * Creates room for this storage contract.
+     *
+     * @param name Name supplied by the caller.
+     * @param model Model supplied by the caller.
+     * @param description Description supplied by the caller.
+     * @param category Category supplied by the caller.
+     * @param maxVisitors Max visitors supplied by the caller.
+     * @param tradeState Trade state supplied by the caller.
+     * @param userId User id supplied by the caller.
+     * @param username Username supplied by the caller.
+     * @param wallThickness Wall thickness supplied by the caller.
+     * @param floorThickness Floor thickness supplied by the caller.
+     * @param decorations Decorations supplied by the caller.
+     * @param hideWalls Hide walls supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int createRoom(String name, CustomFloorMapData model, String description, int category, int maxVisitors, RoomTradeState tradeState, int userId, String username, int wallThickness, int floorThickness, String decorations, boolean hideWalls) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -235,6 +284,19 @@ public class RoomDao {
         return 0;
     }
 
+    /**
+     * Creates room for this storage contract.
+     *
+     * @param name Name supplied by the caller.
+     * @param model Model supplied by the caller.
+     * @param description Description supplied by the caller.
+     * @param category Category supplied by the caller.
+     * @param maxVisitors Max visitors supplied by the caller.
+     * @param tradeState Trade state supplied by the caller.
+     * @param userId User id supplied by the caller.
+     * @param username Username supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int createRoom(String name, String model, String description, int category, int maxVisitors, RoomTradeState tradeState, int userId, String username) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -273,6 +335,11 @@ public class RoomDao {
         return 0;
     }
 
+    /**
+     * Deletes room for this storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     */
     public static void deleteRoom(int roomId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -291,6 +358,11 @@ public class RoomDao {
         }
     }
 
+    /**
+     * Returns the highest scored rooms for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static List<IRoomData> getHighestScoredRooms() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -320,6 +392,11 @@ public class RoomDao {
         return roomData;
     }
 
+    /**
+     * Returns the active promotions for this storage contract.
+     *
+     * @param roomPromotions Room promotions supplied by the caller.
+     */
     public static void getActivePromotions(Map<Integer, RoomPromotion> roomPromotions) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -345,6 +422,11 @@ public class RoomDao {
         }
     }
 
+    /**
+     * Updates promoted room for this storage contract.
+     *
+     * @param roomPromotion Room promotion supplied by the caller.
+     */
     public static void updatePromotedRoom(RoomPromotion roomPromotion) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -369,6 +451,11 @@ public class RoomDao {
         }
     }
 
+    /**
+     * Creates promoted room for this storage contract.
+     *
+     * @param roomPromotion Room promotion supplied by the caller.
+     */
     public static void createPromotedRoom(RoomPromotion roomPromotion) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -394,6 +481,9 @@ public class RoomDao {
         }
     }
 
+    /**
+     * Deletes expired room promotions for this storage contract.
+     */
     public static void deleteExpiredRoomPromotions() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -412,6 +502,11 @@ public class RoomDao {
         }
     }
 
+    /**
+     * Persists user counts for this storage contract.
+     *
+     * @param roomStatuses Room statuses supplied by the caller.
+     */
     public static void saveUserCounts(Map<Integer, Integer> roomStatuses) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -437,6 +532,12 @@ public class RoomDao {
         }
     }
 
+    /**
+     * Persists user count for this storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param userCount User count supplied by the caller.
+     */
     public static void saveUserCount(int roomId, int userCount) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -458,6 +559,12 @@ public class RoomDao {
         }
     }
 
+    /**
+     * Updates room idle ticks for this storage contract.
+     *
+     * @param ticks Ticks supplied by the caller.
+     * @param roomId Room identifier used by the operation.
+     */
     public static void updateRoomIdleTicks(int ticks, int roomId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -558,6 +665,13 @@ public class RoomDao {
         }
     }
 
+    /**
+     * Updates onwer room for this storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param ownerId Owner id supplied by the caller.
+     * @param ownerName Owner name supplied by the caller.
+     */
     public static void updateOnwerRoom(long roomId, int ownerId, String ownerName) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -576,6 +690,9 @@ public class RoomDao {
         }
     }
 
+    /**
+     * Returns the emojis for this storage contract.
+     */
     public static void getEmojis(){
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

@@ -12,9 +12,21 @@ import com.cometproject.server.game.rooms.filter.FilterResult;
 import com.cometproject.server.network.messages.outgoing.notification.AdvancedAlertMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 
+/**
+ * Describes trophy purchase handler behavior for the catalog subsystem.
+ */
 public class TrophyPurchaseHandler implements PurchaseHandler {
     private static final DateTimeFormatter TROPHY_DATE_FORMAT = DateTimeFormatter.ofPattern("d-M-yyyy");
 
+    /**
+     * Handles purchase data for this catalog contract.
+     *
+     * @param session Session participating in the operation.
+     * @param purchaseData Purchase data supplied by the caller.
+     * @param catalogItem Catalog item supplied by the caller.
+     * @param amount Amount supplied by the caller.
+     * @return Result produced by the operation.
+     */
     @Override
     public PurchaseResult handlePurchaseData(Session session, String purchaseData, ICatalogItem catalogItem, int amount) {
 

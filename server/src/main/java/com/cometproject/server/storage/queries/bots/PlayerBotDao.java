@@ -14,7 +14,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
+/**
+ * Describes player bot dao behavior for the storage subsystem.
+ */
 public class PlayerBotDao {
+    /**
+     * Returns the bots by player id for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, IBotData> getBotsByPlayerId(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -59,6 +68,17 @@ public class PlayerBotDao {
         return data;
     }
 
+    /**
+     * Creates bot for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param name Name supplied by the caller.
+     * @param figure Figure supplied by the caller.
+     * @param gender Gender supplied by the caller.
+     * @param motto Motto supplied by the caller.
+     * @param type Type supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int createBot(int playerId, String name, String figure, String gender, String motto, BotType type) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -95,6 +115,11 @@ public class PlayerBotDao {
         return 0;
     }
 
+    /**
+     * Deletes bots for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     */
     public static void deleteBots(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

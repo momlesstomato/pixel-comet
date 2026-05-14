@@ -10,11 +10,20 @@ import com.cometproject.server.logging.database.queries.LogQueries;
 import com.cometproject.server.storage.queries.system.StatisticsDao;
 
 
+/**
+ * Describes shutdown process behavior for the boot lifecycle subsystem.
+ */
 public class ShutdownProcess {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShutdownProcess.class);
 
+    /**
+     * Executes init for this boot lifecycle contract.
+     */
     public static void init() {
         Runtime.getRuntime().addShutdownHook(new Thread() {
+            /**
+             * Runs this boot lifecycle task.
+             */
             @Override
             public void run() {
                 shutdown(false);
@@ -22,6 +31,11 @@ public class ShutdownProcess {
         });
     }
 
+    /**
+     * Executes shutdown for this boot lifecycle contract.
+     *
+     * @param exit Exit supplied by the caller.
+     */
     public static void shutdown(boolean exit) {
         LOGGER.info("Comet is now shutting down");
 

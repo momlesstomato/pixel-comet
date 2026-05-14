@@ -16,7 +16,15 @@ import java.util.Map;
 import java.util.Set;
 
 
+/**
+ * Describes navigator dao behavior for the storage subsystem.
+ */
 public class NavigatorDao {
+    /**
+     * Returns the public rooms for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static LinkedHashMap<Integer, PublicRoom> getPublicRooms() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -46,6 +54,11 @@ public class NavigatorDao {
         return data;
     }
 
+    /**
+     * Returns the staff picks for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Set<Integer> getStaffPicks() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -76,6 +89,11 @@ public class NavigatorDao {
         return data;
     }
 
+    /**
+     * Returns the rp rooms for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Set<Integer> getRPRooms() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -106,6 +124,11 @@ public class NavigatorDao {
         return data;
     }
 
+    /**
+     * Returns the categories for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, Category> getCategories() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -148,6 +171,11 @@ public class NavigatorDao {
         return data;
     }
 
+    /**
+     * Deletes staff pick for this storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     */
     public static void deleteStaffPick(int roomId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -167,6 +195,12 @@ public class NavigatorDao {
         }
     }
 
+    /**
+     * Executes staff pick for this storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param picker Picker supplied by the caller.
+     */
     public static void staffPick(int roomId, int picker) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

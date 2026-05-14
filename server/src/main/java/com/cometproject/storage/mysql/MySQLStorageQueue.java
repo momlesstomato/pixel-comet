@@ -8,6 +8,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.*;
 
+/**
+ * Describes my SQL storage queue behavior for the MySQL storage subsystem.
+ */
 public abstract class MySQLStorageQueue<T, O> {
 
     private final String batchQuery;
@@ -18,6 +21,14 @@ public abstract class MySQLStorageQueue<T, O> {
 
     private final MySQLConnectionProvider connectionProvider;
 
+    /**
+     * Creates a my SQL storage queue instance for the MySQL storage subsystem.
+     *
+     * @param batchQuery Batch query supplied by the caller.
+     * @param delayMilliseconds Delay milliseconds supplied by the caller.
+     * @param executorService Executor service supplied by the caller.
+     * @param connectionProvider Connection provider supplied by the caller.
+     */
     public MySQLStorageQueue(String batchQuery, long delayMilliseconds, ScheduledExecutorService executorService,
                              MySQLConnectionProvider connectionProvider) {
         this.batchQuery = batchQuery;
@@ -30,6 +41,12 @@ public abstract class MySQLStorageQueue<T, O> {
 
     }
 
+    /**
+     * Executes add for this MySQL storage contract.
+     *
+     * @param key Key supplied by the caller.
+     * @param obj Obj supplied by the caller.
+     */
     public void add(T key, O obj) {
         if (this.storageQueue.containsKey(key)) {
             this.storageQueue.replace(key, obj);
@@ -38,6 +55,11 @@ public abstract class MySQLStorageQueue<T, O> {
         }
     }
 
+    /**
+     * Adds all to this MySQL storage contract.
+     *
+     * @param all All supplied by the caller.
+     */
     public void addAll(Collection<Pair<T, O>> all) {
         for (Pair<T, O> obj : all) {
             this.add(obj.getLeft(), obj.getRight());
@@ -76,15 +98,29 @@ public abstract class MySQLStorageQueue<T, O> {
         this.running = false;
     }
 
+    /**
+     * Handles the exception callback for this MySQL storage contract.
+     *
+     * @param e E supplied by the caller.
+     */
     public void onException(Exception e) {
         // TODO: log this somewhere useful, though it shouldn't really throw exceptions....
         e.printStackTrace();
     }
 
+    /**
+     * Returns the queued for this MySQL storage contract.
+     *
+     * @param obj Obj supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public O getQueued(T obj) {
         return this.storageQueue.get(obj);
     }
 
+    /**
+     * Stops this MySQL storage component.
+     */
     public void stop() {
         if (!this.running) {
             this.process();
@@ -93,5 +129,13 @@ public abstract class MySQLStorageQueue<T, O> {
         this.processFuture.cancel(false);
     }
 
+    /**
+     * Processes batch for this MySQL storage contract.
+     *
+     * @param preparedStatement Prepared statement supplied by the caller.
+     * @param id Id supplied by the caller.
+     * @param object Object supplied by the caller.
+     * @throws Exception When the operation cannot complete.
+     */
     protected abstract void processBatch(PreparedStatement preparedStatement, T id, O object) throws Exception;
 }

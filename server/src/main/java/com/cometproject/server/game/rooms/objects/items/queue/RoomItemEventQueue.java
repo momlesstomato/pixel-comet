@@ -8,12 +8,15 @@ import java.util.List;
 
 
 /**
- * Processes item events asynchronously without blocking the user threads
+ * Processes item events asynchronously without blocking the user threads.
  */
 public class RoomItemEventQueue {
     private final List<RoomItemEventQueueEntry> eventQueue = new LinkedList<>();
     private final Object lock = new Object();
 
+    /**
+     * Executes cycle for this room contract.
+     */
     public void cycle() {
         if (this.eventQueue.size() == 0) {
             return;
@@ -81,6 +84,11 @@ public class RoomItemEventQueue {
     }
 
     // TO-DO: avoid synchronizing, i am being lazy i already did this in the 'chat log processing code'
+    /**
+     * Executes queue for this room contract.
+     *
+     * @param entry Entry supplied by the caller.
+     */
     public void queue(RoomItemEventQueueEntry entry) {
         synchronized (this.lock) {
             this.eventQueue.add(entry);

@@ -12,6 +12,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+/**
+ * Describes hikari connection provider behavior for the MySQL storage subsystem.
+ */
 public class HikariConnectionProvider extends MySQLConnectionProvider {
 
     private final Logger LOGGER = LoggerFactory.getLogger(HikariConnectionProvider.class);
@@ -19,6 +22,9 @@ public class HikariConnectionProvider extends MySQLConnectionProvider {
     private HikariDataSource hikariDataSource;
     private boolean isConnectionFailed = true;
 
+    /**
+     * Creates a hikari connection provider instance for the MySQL storage subsystem.
+     */
     public HikariConnectionProvider() {
         try {
             HikariConfig config = new HikariConfig();
@@ -58,11 +64,22 @@ public class HikariConnectionProvider extends MySQLConnectionProvider {
 
     }
 
+    /**
+     * Returns the connection for this MySQL storage contract.
+     *
+     * @return Value exposed by the contract.
+     * @throws Exception When the operation cannot complete.
+     */
     @Override
     public Connection getConnection() throws Exception {
         return this.hikariDataSource.getConnection();
     }
 
+    /**
+     * Executes close connection for this MySQL storage contract.
+     *
+     * @param connection Connection supplied by the caller.
+     */
     @Override
     public void closeConnection(Connection connection) {
         try {
@@ -72,6 +89,11 @@ public class HikariConnectionProvider extends MySQLConnectionProvider {
         }
     }
 
+    /**
+     * Executes close statement for this MySQL storage contract.
+     *
+     * @param statement Statement supplied by the caller.
+     */
     @Override
     public void closeStatement(PreparedStatement statement) {
         try {
@@ -81,6 +103,11 @@ public class HikariConnectionProvider extends MySQLConnectionProvider {
         }
     }
 
+    /**
+     * Executes close results for this MySQL storage contract.
+     *
+     * @param resultSet Result set supplied by the caller.
+     */
     @Override
     public void closeResults(ResultSet resultSet) {
         try {
@@ -90,6 +117,9 @@ public class HikariConnectionProvider extends MySQLConnectionProvider {
         }
     }
 
+    /**
+     * Executes shutdown for this MySQL storage contract.
+     */
     public void shutdown() {
         this.hikariDataSource.close();
     }

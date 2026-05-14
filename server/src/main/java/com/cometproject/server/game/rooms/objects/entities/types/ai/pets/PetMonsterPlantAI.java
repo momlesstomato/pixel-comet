@@ -10,13 +10,27 @@ import com.cometproject.server.network.messages.outgoing.room.pets.PetUpdateStat
 
 import java.util.Random;
 
+/**
+ * Describes pet monster plant ai behavior for the room subsystem.
+ */
 public class PetMonsterPlantAI extends PetAI {
 
+    /**
+     * Creates a pet monster plant ai instance for the room subsystem.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     public PetMonsterPlantAI(RoomEntity entity) {
         super(entity);
         this.setTicksUntilCompleteInSeconds(1);
     }
 
+    /**
+     * Handles the player enter callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onPlayerEnter(PlayerEntity entity) {
         if (((PetMonsterPlantData) (this.getPetEntity()).getData()).isActive()) {
@@ -25,6 +39,11 @@ public class PetMonsterPlantAI extends PetAI {
         return false;
     }
 
+    /**
+     * Handles the added to room callback for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onAddedToRoom() {
         if (((PetMonsterPlantData) (this.getPetEntity()).getData()).isActive()) {
@@ -33,6 +52,9 @@ public class PetMonsterPlantAI extends PetAI {
         return false;
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
 
@@ -87,6 +109,11 @@ public class PetMonsterPlantAI extends PetAI {
 
     }
 
+    /**
+     * Executes random status for this room contract.
+     *
+     * @return Result produced by the operation.
+     */
     public RoomEntityStatus randomStatus() {
         int[] array = {1, 1, 1, 1, 2, 2, 2, 3, 3, 3};
         int pick = new Random().nextInt(array.length);
@@ -106,6 +133,11 @@ public class PetMonsterPlantAI extends PetAI {
         return null;
     }
 
+    /**
+     * Executes give diamonds for this room contract.
+     *
+     * @param time Time supplied by the caller.
+     */
     public void giveDiamonds(int time) {
         /*
         int count = 1;
@@ -174,20 +206,38 @@ public class PetMonsterPlantAI extends PetAI {
         */
     }
 
+    /**
+     * Executes clear status for this room contract.
+     */
     public void clearStatus() {
         this.getEntity().getStatuses().clear();
     }
 
+    /**
+     * Handles the tick callback for this room contract.
+     */
     @Override
     public void onTick() {
         super.onTick();
     }
 
+    /**
+     * Indicates whether this room contract can move.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean canMove() {
         return false;
     }
 
+    /**
+     * Handles the talk callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param message Message supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onTalk(PlayerEntity entity, String message) {
         if (((PetMonsterPlantData) (this.getPetEntity()).getData()).isActive()) {

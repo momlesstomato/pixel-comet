@@ -1,6 +1,15 @@
 /*    */ package com.cometproject.games.snowwar;
 /*    */ 
+/**
+ * Describes composer shit packets for the Snow War protocol layer.
+ */
 /*    */ public class ComposerShit {
+/**
+ * Executes add for this Snow War game contract.
+ *
+ * @param add Add supplied by the caller.
+ * @param Message Message supplied by the caller.
+ */
 /*    */   public static void add(Object add, MessageWriter Message) {
 /*  5 */     if (add == null) {
 /*  6 */       throw new UnsupportedOperationException("NULL Param in Append!");
@@ -39,6 +48,11 @@
 /* 39 */     throw new UnsupportedOperationException("Bad Param in Append " + add.getClass());
 /*    */   }
 /*    */   
+/**
+ * Executes end packet for this Snow War game contract.
+ *
+ * @param Message Message supplied by the caller.
+ */
 /*    */   public static void endPacket(MessageWriter Message) {
 /* 43 */     int tmp = Message.writer;
 /* 44 */     int len = tmp - 4;
@@ -52,6 +66,12 @@
 /* 52 */     Message.isReady = true;
 /*    */   }
 /*    */   
+/**
+ * Executes init packet for this Snow War game contract.
+ *
+ * @param headerId Header id supplied by the caller.
+ * @param Message Message supplied by the caller.
+ */
 /*    */   public static void initPacket(int headerId, MessageWriter Message) {
 /* 56 */     if (headerId == 0) {
 /* 57 */       throw new UnsupportedOperationException("Header = 0!!");

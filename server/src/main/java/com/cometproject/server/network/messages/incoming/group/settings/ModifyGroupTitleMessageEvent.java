@@ -11,8 +11,18 @@ import com.cometproject.server.network.messages.outgoing.room.engine.RoomDataMes
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;
 
+/**
+ * Represents the modify group title message event published by the network message subsystem.
+ */
 public class ModifyGroupTitleMessageEvent
         implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @throws Exception When the operation cannot complete.
+     */
     @Override
     public void handle(Session client, MessageEvent msg) throws Exception {
         if (client.getPlayer().antiSpam(this.getClass().getName(), 0.5)) {

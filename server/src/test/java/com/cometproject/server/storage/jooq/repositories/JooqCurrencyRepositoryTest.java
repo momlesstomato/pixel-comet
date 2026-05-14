@@ -352,6 +352,11 @@ class JooqCurrencyRepositoryTest {
             this.dsl = dsl;
         }
 
+        /**
+         * Executes dsl for this jOOQ storage contract.
+         *
+         * @return Result produced by the operation.
+         */
         @Override
         public DSLContext dsl() {
             return this.dsl;

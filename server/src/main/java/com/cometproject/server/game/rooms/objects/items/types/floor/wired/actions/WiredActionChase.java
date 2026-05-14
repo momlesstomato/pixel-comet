@@ -17,11 +17,14 @@ import com.cometproject.server.utilities.RandomUtil;
 import java.util.List;
 
 
+/**
+ * Describes wired action chase behavior for the room subsystem.
+ */
 public class WiredActionChase extends WiredActionItem {
     private int targetId = -1;
 
     /**
-     * Wired action to chase room entity
+     * Wired action to chase room entity.
      *
      * @param itemData the item data
      * @param room     the room
@@ -30,16 +33,31 @@ public class WiredActionChase extends WiredActionItem {
         super(itemData, room);
     }
 
+    /**
+     * Executes requires player for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean requiresPlayer() {
         return false;
     }
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 8;
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(WiredItemEvent event) {
         if (this.getWiredData().getSelectedIds().size() == 0) return;
@@ -76,6 +94,13 @@ public class WiredActionChase extends WiredActionItem {
     }
 
 
+    /**
+     * Indicates whether collided applies to this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param floorItem Floor item supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isCollided(PlayerEntity entity, RoomItemFloor floorItem) {
         boolean tilesTouching = entity.getPosition().touching(floorItem.getPosition());
 
@@ -125,6 +150,11 @@ public class WiredActionChase extends WiredActionItem {
         return null;
     }
 
+    /**
+     * Returns the target id for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getTargetId() {
         return this.targetId;
     }

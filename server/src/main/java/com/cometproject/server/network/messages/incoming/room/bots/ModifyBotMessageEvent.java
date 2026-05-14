@@ -21,7 +21,16 @@ import java.util.Arrays;
 import java.util.List;
 
 
+/**
+ * Represents the modify bot message event published by the network message subsystem.
+ */
 public class ModifyBotMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void handle(Session client, MessageEvent msg) {
         if(client.getPlayer().antiSpam(getClass().getName(), 0.4))

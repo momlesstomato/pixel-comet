@@ -8,7 +8,16 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.utilities.RandomUtil;
 import com.cometproject.storage.api.data.rooms.RoomData;
 
+/**
+ * Describes sing command behavior for the Comet subsystem.
+ */
 public class SingCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         RoomData data = (RoomData)client.getPlayer().getEntity().getRoom().getData();
@@ -34,16 +43,31 @@ public class SingCommand extends ChatCommand {
         client.getPlayer().getEntity().applyEffect(new PlayerEffect(16, 18));
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "sing_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return Locale.getOrDefault(null, "");
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.sing.description");

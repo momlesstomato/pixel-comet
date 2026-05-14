@@ -8,22 +8,46 @@ import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.network.messages.outgoing.room.items.RemoveFloorItemMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.items.SendShadowMessageComposer;
 
+/**
+ * Describes wired action give shadow behavior for the room subsystem.
+ */
 public class WiredActionGiveShadow extends WiredActionItem {
 
+    /**
+     * Creates a wired action give shadow instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public WiredActionGiveShadow(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Executes requires player for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean requiresPlayer() {
         return true;
     }
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 7;
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(WiredItemEvent event) {
         if (!(event.entity instanceof PlayerEntity)) {

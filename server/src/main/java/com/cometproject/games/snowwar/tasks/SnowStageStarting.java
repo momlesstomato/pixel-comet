@@ -20,8 +20,16 @@ import java.util.ArrayList;
 /*    */ 
 /*    */ 
 /*    */ 
+/**
+ * Describes snow stage starting behavior for the Snow War game subsystem.
+ */
 /*    */ public class SnowStageStarting
 /*    */ {
+/**
+ * Executes exec for this task scheduling contract.
+ *
+ * @param room Room participating in the operation.
+ */
 /*    */   public static void exec(SnowWarRoom room) {
 /* 17 */     room.gameObjects.clear();
 /*    */     

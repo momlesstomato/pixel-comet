@@ -11,7 +11,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Describes group forum thread dao behavior for the storage subsystem.
+ */
 public class GroupForumThreadDao {
+    /**
+     * Creates thread for this storage contract.
+     *
+     * @param groupId Group id supplied by the caller.
+     * @param title Title supplied by the caller.
+     * @param message Message supplied by the caller.
+     * @param authorId Author id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static IForumThread createThread(int groupId, String title, String message, int authorId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -48,6 +60,15 @@ public class GroupForumThreadDao {
         return null;
     }
 
+    /**
+     * Creates reply for this storage contract.
+     *
+     * @param groupId Group id supplied by the caller.
+     * @param threadId Thread id supplied by the caller.
+     * @param message Message supplied by the caller.
+     * @param authorId Author id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static IForumThreadReply createReply(int groupId, int threadId, String message, int authorId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -85,6 +106,14 @@ public class GroupForumThreadDao {
         return null;
     }
 
+    /**
+     * Persists message state for this storage contract.
+     *
+     * @param messageId Message id supplied by the caller.
+     * @param state State supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     * @param username Username supplied by the caller.
+     */
     public static void saveMessageState(int messageId, int state, int playerId, String username) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -107,6 +136,14 @@ public class GroupForumThreadDao {
         }
     }
 
+    /**
+     * Persists message lock state for this storage contract.
+     *
+     * @param messageId Message id supplied by the caller.
+     * @param isLocked Is locked supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     * @param username Username supplied by the caller.
+     */
     public static void saveMessageLockState(int messageId, boolean isLocked, int playerId, String username) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -129,6 +166,12 @@ public class GroupForumThreadDao {
         }
     }
 
+    /**
+     * Persists message pinned state for this storage contract.
+     *
+     * @param messageId Message id supplied by the caller.
+     * @param isPinned Is pinned supplied by the caller.
+     */
     public static void saveMessagePinnedState(int messageId, boolean isPinned) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -149,6 +192,12 @@ public class GroupForumThreadDao {
         }
     }
 
+    /**
+     * Returns the player message count for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static int getPlayerMessageCount(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

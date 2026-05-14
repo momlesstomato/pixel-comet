@@ -20,8 +20,17 @@ import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
 import com.google.common.collect.Sets;
 
+/**
+ * Describes fishing pool floor item behavior for the room subsystem.
+ */
 public class FishingPoolFloorItem extends RoomItemFloor {
 
+    /**
+     * Creates a fishing pool floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public FishingPoolFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
@@ -31,11 +40,22 @@ public class FishingPoolFloorItem extends RoomItemFloor {
     private int fishingPoleBaseItem = 101;
     private int fishingBugBaseItem = 100;
 
+    /**
+     * Handles the placed callback for this room contract.
+     */
     @Override
     public void onPlaced(){
         this.disposeItem();
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (!isWiredTrigger) {
@@ -81,6 +101,9 @@ public class FishingPoolFloorItem extends RoomItemFloor {
         return false;
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
         if(this.incomingEntity != null) {

@@ -10,7 +10,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * Describes filter dao behavior for the storage subsystem.
+ */
 public class FilterDao {
+    /**
+     * Loads wordfilter for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<String, String> loadWordfilter() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -39,6 +47,11 @@ public class FilterDao {
         return data;
     }
 
+    /**
+     * Executes save for this storage contract.
+     *
+     * @param wordfilter Wordfilter supplied by the caller.
+     */
     public static void save(Map<String, String> wordfilter) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

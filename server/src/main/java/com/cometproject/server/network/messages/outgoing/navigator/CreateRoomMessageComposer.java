@@ -5,19 +5,38 @@ import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
 
+/**
+ * Serializes the create room message for the Pixel Protocol client.
+ */
 public class CreateRoomMessageComposer extends MessageComposer {
     private final int roomId;
     private final String roomName;
 
+    /**
+     * Creates a create room message composer instance for the network message subsystem.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param roomName Room name supplied by the caller.
+     */
     public CreateRoomMessageComposer(final int roomId, final String roomName) {
         this.roomId = roomId;
         this.roomName = roomName;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public short getId() {
         return Composers.FlatCreatedMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(this.roomId);

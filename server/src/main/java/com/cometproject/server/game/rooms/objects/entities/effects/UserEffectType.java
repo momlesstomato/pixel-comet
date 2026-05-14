@@ -1,5 +1,8 @@
 package com.cometproject.server.game.rooms.objects.entities.effects;
 
+/**
+ * Enumerates user effect type values used by the room subsystem.
+ */
 public enum UserEffectType {
     SPOTLIGHT(1),
     HOVERBOARD(2),
@@ -177,6 +180,11 @@ public enum UserEffectType {
         this.effectId = effectId;
     }
 
+    /**
+     * Returns the effect id for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getEffectId() {
         return effectId;
     }

@@ -9,14 +9,31 @@ import com.cometproject.server.network.messages.outgoing.notification.MassEventM
 
 import java.util.Arrays;
 
+/**
+ * Describes roullette machine floor item behavior for the room subsystem.
+ */
 public class RoulletteMachineFloorItem extends RoomItemFloor {
     private PlayerEntity playerEntity = null;
     private boolean isOnBet = false;
     private int betColor = 0;
+    /**
+     * Creates a roullette machine floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public RoulletteMachineFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if(entity instanceof PlayerEntity){
@@ -34,10 +51,16 @@ public class RoulletteMachineFloorItem extends RoomItemFloor {
         return false;
     }
 
+    /**
+     * Handles the placed callback for this room contract.
+     */
     @Override
     public void onPlaced() {
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
     }

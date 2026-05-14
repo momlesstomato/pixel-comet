@@ -31,6 +31,9 @@ import com.google.common.io.Resources;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
+/**
+ * Manages module runtime state for the module subsystem.
+ */
 public class ModuleManager implements Startable {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModuleManager.class.getName());
     private final Injector serverInjector;
@@ -48,10 +51,18 @@ public class ModuleManager implements Startable {
         this.pluginInjectors = new ConcurrentHashMap<>();
     }
 
+    /**
+     * Returns the instance for this module contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static ModuleManager getInstance() {
         return CometBootstrap.resolve(ModuleManager.class);
     }
 
+    /**
+     * Starts this module component.
+     */
     @Override
     public void start() {
         if (this.modules != null) {
@@ -67,6 +78,9 @@ public class ModuleManager implements Startable {
         this.loadModules();
     }
 
+    /**
+     * Updates the up modules for this module contract.
+     */
     public void setupModules() {
         for (BaseModule baseModule : this.modules.values()) {
             this.activateModule(baseModule);
@@ -164,6 +178,11 @@ public class ModuleManager implements Startable {
         return loadedModule;
     }
 
+    /**
+     * Returns the event handler for this module contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public EventHandler getEventHandler() {
         return eventHandler;
     }

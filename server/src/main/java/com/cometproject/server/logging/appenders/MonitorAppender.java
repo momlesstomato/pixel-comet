@@ -11,14 +11,25 @@
 
 
 //
+/**
+ * Describes monitor appender behavior for the logging subsystem.
+ */
 //public class MonitorAppender extends AppenderSkeleton {
 //    private Gson gson = new Gson();
 //
+/**
+ * Creates a monitor appender instance for the Snow War game subsystem.
+ */
 //    public MonitorAppender() {
 //
 //    }
 //
 //    @Override
+/**
+ * Executes append for this Snow War game contract.
+ *
+ * @param loggingEvent Logging event supplied by the caller.
+ */
 //    protected void append(LoggingEvent loggingEvent) {
 //        if (!MonitorClientHandler.isConnected) return;
 //
@@ -38,11 +49,19 @@
 //    }
 //
 //    @Override
+/**
+ * Executes close for this Snow War game contract.
+ */
 //    public void close() {
 //
 //    }
 //
 //    @Override
+/**
+ * Executes requires layout for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 //    public boolean requiresLayout() {
 //        return false;
 //    }

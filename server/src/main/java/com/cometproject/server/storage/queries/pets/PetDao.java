@@ -19,7 +19,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
+/**
+ * Describes pet dao behavior for the storage subsystem.
+ */
 public class PetDao {
+    /**
+     * Returns the races for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static List<PetRace> getRaces() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -47,6 +55,12 @@ public class PetDao {
         return data;
     }
 
+    /**
+     * Returns the messages for this storage contract.
+     *
+     * @param petSpeechCount Pet speech count supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, PetSpeech> getMessages(AtomicInteger petSpeechCount) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -88,6 +102,11 @@ public class PetDao {
         return data;
     }
 
+    /**
+     * Returns the transformable pets for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<String, String> getTransformablePets() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -115,6 +134,12 @@ public class PetDao {
         return data;
     }
 
+    /**
+     * Returns the pets by player id for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, IPetData> getPetsByPlayerId(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -175,6 +200,17 @@ public class PetDao {
         return data;
     }
 
+    /**
+     * Creates pet for this storage contract.
+     *
+     * @param ownerId Owner id supplied by the caller.
+     * @param petName Pet name supplied by the caller.
+     * @param type Type supplied by the caller.
+     * @param race Race supplied by the caller.
+     * @param colour Colour supplied by the caller.
+     * @param extraData Extra data supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int createPet(int ownerId, String petName, int type, int race, String colour, String extraData) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -216,6 +252,13 @@ public class PetDao {
         return 0;
     }
 
+    /**
+     * Persists position for this storage contract.
+     *
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     * @param id Id supplied by the caller.
+     */
     public static void savePosition(int x, int y, int id) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -237,6 +280,18 @@ public class PetDao {
         }
     }
 
+    /**
+     * Persists stats for this storage contract.
+     *
+     * @param scratches Scratches supplied by the caller.
+     * @param level Level supplied by the caller.
+     * @param happiness Happiness supplied by the caller.
+     * @param experience Experience supplied by the caller.
+     * @param energy Energy supplied by the caller.
+     * @param hunger Hunger supplied by the caller.
+     * @param extradata Extradata supplied by the caller.
+     * @param petId Pet id supplied by the caller.
+     */
     public static void saveStats(int scratches, int level, int happiness, int experience, int energy, int hunger, String extradata, int petId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -265,6 +320,11 @@ public class PetDao {
         }
     }
 
+    /**
+     * Persists pets batch for this storage contract.
+     *
+     * @param data Data supplied by the caller.
+     */
     public static void savePetsBatch(IPetData data) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -302,6 +362,11 @@ public class PetDao {
     }
 
 
+    /**
+     * Persists stats batch for this storage contract.
+     *
+     * @param petStats Pet stats supplied by the caller.
+     */
     public static void saveStatsBatch(final Set<IPetStats> petStats) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -334,6 +399,11 @@ public class PetDao {
     }
 
 
+    /**
+     * Deletes pets for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     */
     public static void deletePets(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -353,6 +423,12 @@ public class PetDao {
         }
     }
 
+    /**
+     * Deletes pet for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param petId Pet id supplied by the caller.
+     */
     public static void deletePet(int playerId, int petId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -373,6 +449,16 @@ public class PetDao {
         }
     }
 
+    /**
+     * Persists horse data for this storage contract.
+     *
+     * @param id Id supplied by the caller.
+     * @param saddled Saddled supplied by the caller.
+     * @param hair Hair supplied by the caller.
+     * @param hairDye Hair dye supplied by the caller.
+     * @param anyRider Any rider supplied by the caller.
+     * @param raceId Race id supplied by the caller.
+     */
     public static void saveHorseData(int id, boolean saddled, int hair, int hairDye, boolean anyRider, int raceId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -399,6 +485,11 @@ public class PetDao {
         }
     }
 
+    /**
+     * Returns the pet breed pallets for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, Map<PetBreedLevel, Set<Integer>>> getPetBreedPallets() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

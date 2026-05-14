@@ -7,15 +7,29 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 
 import java.util.List;
 
+/**
+ * Describes game2 weekly leaderboard parser behavior for the network message subsystem.
+ */
 public class Game2WeeklyLeaderboardParser  extends MessageComposer {
     private int gameId;
     private List<GamePlayer> data;
 
+    /**
+     * Creates a game2 weekly leaderboard parser instance for the network message subsystem.
+     *
+     * @param gameId Game id supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     */
     public Game2WeeklyLeaderboardParser(int gameId, int playerId){
         this.gameId = gameId;
         //this.data = BetDao.getLeaderBoard(gameId, playerId, false, false);
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         int i = 1;
@@ -41,6 +55,11 @@ public class Game2WeeklyLeaderboardParser  extends MessageComposer {
         msg.writeInt(gameId);*/
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.Game2WeeklyLeaderboardParser;

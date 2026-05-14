@@ -3,11 +3,22 @@ package com.cometproject.server.utilities;
 import java.util.List;
 
 
+/**
+ * Describes badge util behavior for the Comet subsystem.
+ */
 public class BadgeUtil {
     private static String format(int num) {
         return (num < 10 ? "0" : "") + num;
     }
 
+    /**
+     * Executes generate for this Comet contract.
+     *
+     * @param guildBase Guild base supplied by the caller.
+     * @param guildBaseColor Guild base color supplied by the caller.
+     * @param guildStates Guild states supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static String generate(int guildBase, int guildBaseColor, List<Integer> guildStates) {
         String badgeImage = "b" + format(guildBase) + "" + format(guildBaseColor);
 

@@ -23,7 +23,15 @@ import java.sql.SQLException;
 import java.util.*;
 
 
+/**
+ * Describes catalog dao behavior for the storage subsystem.
+ */
 public class CatalogDao {
+    /**
+     * Returns the pages for this storage contract.
+     *
+     * @param pages Pages supplied by the caller.
+     */
     public static void getPages(Map<Integer, ICatalogPage> pages) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -53,6 +61,11 @@ public class CatalogDao {
         }
     }
 
+    /**
+     * Returns the items for this storage contract.
+     *
+     * @param items Items supplied by the caller.
+     */
     public static void getItems(Map<Integer, ICatalogItem> items) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -88,6 +101,11 @@ public class CatalogDao {
         }
     }
 
+    /**
+     * Returns the NUX gifts selection view for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static List<NuxGift> getNuxGiftsSelectionView() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -125,6 +143,11 @@ public class CatalogDao {
         return nuxGiftsData;
     }
 
+    /**
+     * Returns the role play products for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, RolePlayChart> getRolePlayProducts() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -160,6 +183,11 @@ public class CatalogDao {
         return rolePlayCharts;
     }
 
+    /**
+     * Returns the website offers for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, ShopOffer> getWebsiteOffers() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -246,6 +274,12 @@ public class CatalogDao {
         return data;
     }
 
+    /**
+     * Updates limit sells for item for this storage contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @param amount Amount supplied by the caller.
+     */
     public static void updateLimitSellsForItem(int itemId, int amount) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -266,6 +300,12 @@ public class CatalogDao {
         }
     }
 
+    /**
+     * Loads gift boxes for this storage contract.
+     *
+     * @param giftBoxesOld Gift boxes old supplied by the caller.
+     * @param giftBoxesNew Gift boxes new supplied by the caller.
+     */
     public static void loadGiftBoxes(List<Integer> giftBoxesOld, List<Integer> giftBoxesNew) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -293,6 +333,11 @@ public class CatalogDao {
         }
     }
 
+    /**
+     * Returns the featured pages for this storage contract.
+     *
+     * @param frontPageEntries Front page entries supplied by the caller.
+     */
     public static void getFeaturedPages(List<ICatalogFrontPageEntry> frontPageEntries) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -317,6 +362,11 @@ public class CatalogDao {
         }
     }
 
+    /**
+     * Returns the clothing for this storage contract.
+     *
+     * @param clothingItems Clothing items supplied by the caller.
+     */
     public static void getClothing(Map<String, IClothingItem> clothingItems) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -354,6 +404,14 @@ public class CatalogDao {
         }
     }
 
+    /**
+     * Persists recent purchase for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param catalogItem Catalog item supplied by the caller.
+     * @param amount Amount supplied by the caller.
+     * @param data Data supplied by the caller.
+     */
     public static void saveRecentPurchase(final int playerId, final int catalogItem, final int amount, final String data) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -377,6 +435,13 @@ public class CatalogDao {
         }
     }
 
+    /**
+     * Finds recent purchases for this storage contract.
+     *
+     * @param count Count supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static Set<Integer> findRecentPurchases(final int count, final int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

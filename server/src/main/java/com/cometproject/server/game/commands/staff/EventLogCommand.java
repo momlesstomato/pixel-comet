@@ -14,7 +14,16 @@ import java.util.Date;
 import java.util.List;
 
 
+/**
+ * Describes event log command behavior for the Comet subsystem.
+ */
 public class EventLogCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
 
@@ -39,16 +48,31 @@ public class EventLogCommand extends ChatCommand {
         client.send(new MotdNotificationMessageComposer("Lista de eventos abiertos:\n\n" + builder.toString()));
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "eventlog_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.eventlog.description");

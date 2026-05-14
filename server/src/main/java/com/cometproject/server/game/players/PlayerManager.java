@@ -29,6 +29,9 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.inject.Inject;
 
 
+/**
+ * Manages player runtime state for the player subsystem.
+ */
 public class PlayerManager implements IPlayerService {
     private static final String PLAYER_AVATAR_CACHE_SIZE_PROPERTY = "comet.cache.playerAvatar.maxSize";
     private static final String PLAYER_DATA_CACHE_SIZE_PROPERTY = "comet.cache.playerData.maxSize";
@@ -61,10 +64,18 @@ public class PlayerManager implements IPlayerService {
         this.playerRepository = playerRepository;
     }
 
+    /**
+     * Returns the instance for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static PlayerManager getInstance() {
         return CometBootstrap.resolve(PlayerManager.class);
     }
 
+    /**
+     * Starts this player component.
+     */
     @Override
     public void start() {
         this.playerIdToSessionId = new ConcurrentHashMap<>();
@@ -89,6 +100,9 @@ public class PlayerManager implements IPlayerService {
         LOGGER.info("PlayerManager initialized");
     }
 
+    /**
+     * Stops this player component.
+     */
     @Override
     public void stop() {
         if (this.playerLoginService != null) {
@@ -96,6 +110,12 @@ public class PlayerManager implements IPlayerService {
         }
     }
 
+    /**
+     * Executes submit login request for this player contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param ticket Ticket supplied by the caller.
+     */
     public void submitLoginRequest(ISession client, String ticket) {
         this.playerLoginService.submit(new PlayerLoginRequest(
             (Session) client,
@@ -104,6 +124,13 @@ public class PlayerManager implements IPlayerService {
             this.playerRepository));
     }
 
+    /**
+     * Returns the avatar by player id for this player contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param mode Mode supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public PlayerAvatar getAvatarByPlayerId(int playerId, byte mode) {
         if (this.isOnline(playerId)) {
             Session session = NetworkManager.getInstance().getSessions().getByPlayerId(playerId);
@@ -143,6 +170,12 @@ public class PlayerManager implements IPlayerService {
         return playerAvatar;
     }
 
+    /**
+     * Returns the data by player id for this player contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public PlayerData getDataByPlayerId(int playerId) {
         if (this.isOnline(playerId)) {
             Session session = NetworkManager.getInstance().getSessions().getByPlayerId(playerId);
@@ -169,6 +202,12 @@ public class PlayerManager implements IPlayerService {
         return playerData;
     }
 
+    /**
+     * Returns the player count by IP address for this player contract.
+     *
+     * @param ipAddress Ip address supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public int getPlayerCountByIpAddress(String ipAddress) {
         if (this.ipAddressToPlayerIds.containsKey(ipAddress)) {
             return this.ipAddressToPlayerIds.get(ipAddress).size();
@@ -177,6 +216,14 @@ public class PlayerManager implements IPlayerService {
         return 0;
     }
 
+    /**
+     * Executes put for this player contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param sessionId Session id supplied by the caller.
+     * @param username Username supplied by the caller.
+     * @param ipAddress Ip address supplied by the caller.
+     */
     public void put(int playerId, int sessionId, String username, String ipAddress) {
         this.playerIdToSessionId.remove(playerId);
 
@@ -196,6 +243,14 @@ public class PlayerManager implements IPlayerService {
         this.playerUsernameToPlayerId.put(username.toLowerCase(), playerId);
     }
 
+    /**
+     * Executes remove for this player contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param username Username supplied by the caller.
+     * @param sessionId Session id supplied by the caller.
+     * @param ipAddress Ip address supplied by the caller.
+     */
     public void remove(int playerId, String username, int sessionId, String ipAddress) {
         if (this.getSessionIdByPlayerId(playerId) != sessionId) {
             return;
@@ -215,6 +270,12 @@ public class PlayerManager implements IPlayerService {
         this.playerUsernameToPlayerId.remove(username.toLowerCase());
     }
 
+    /**
+     * Returns the player id by username for this player contract.
+     *
+     * @param username Username supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public int getPlayerIdByUsername(String username) {
         if (this.playerUsernameToPlayerId.containsKey(username.toLowerCase())) {
             return this.playerUsernameToPlayerId.get(username.toLowerCase());
@@ -223,6 +284,12 @@ public class PlayerManager implements IPlayerService {
         return -1;
     }
 
+    /**
+     * Returns the session id by player id for this player contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public int getSessionIdByPlayerId(int playerId) {
         if (this.playerIdToSessionId.containsKey(playerId)) {
             return this.playerIdToSessionId.get(playerId);
@@ -231,6 +298,12 @@ public class PlayerManager implements IPlayerService {
         return -1;
     }
 
+    /**
+     * Updates username cache for this player contract.
+     *
+     * @param oldName Old name supplied by the caller.
+     * @param newName New name supplied by the caller.
+     */
     public void updateUsernameCache(final String oldName, final String newName) {
         final int playerId = this.getPlayerIdByUsername(oldName.toLowerCase());
 
@@ -238,32 +311,72 @@ public class PlayerManager implements IPlayerService {
         this.playerUsernameToPlayerId.put(newName.toLowerCase(), playerId);
     }
 
+    /**
+     * Returns the player ids by IP address for this player contract.
+     *
+     * @param ipAddress Ip address supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public List<Integer> getPlayerIdsByIpAddress(String ipAddress) {
         return new ArrayList<>(this.ipAddressToPlayerIds.get(ipAddress));
     }
 
+    /**
+     * Indicates whether online applies to this player contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isOnline(int playerId) {
         return this.playerIdToSessionId.containsKey(playerId);
     }
 
+    /**
+     * Indicates whether online applies to this player contract.
+     *
+     * @param username Username supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isOnline(String username) {
         return this.playerUsernameToPlayerId.containsKey(username.toLowerCase());
     }
 
+    /**
+     * Executes size for this player contract.
+     *
+     * @return Result produced by the operation.
+     */
     public int size() {
         return this.playerIdToSessionId.size();
     }
 
+    /**
+     * Returns the player id by auth token for this player contract.
+     *
+     * @param authToken Auth token supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public Integer getPlayerIdByAuthToken(String authToken) {
         return this.ssoTicketService.resolvePlayerId(authToken).orElse(null);
     }
 
+    /**
+     * Creates auth token for this player contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param authToken Auth token supplied by the caller.
+     */
     @Override
     public void createAuthToken(int playerId, String authToken) {
         this.ssoTicketService.createSessionToken(playerId, authToken);
     }
 
+    /**
+     * Returns the player load execution service for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public ExecutorService getPlayerLoadExecutionService() {
         return playerLoginService;
     }

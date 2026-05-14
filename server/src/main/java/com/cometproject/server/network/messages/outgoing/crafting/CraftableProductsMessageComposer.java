@@ -6,18 +6,36 @@ import com.cometproject.server.game.items.crafting.CraftingRecipe;
 import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
+/**
+ * Serializes the craftable products message for the Pixel Protocol client.
+ */
 public class CraftableProductsMessageComposer extends MessageComposer {
     private final CraftingMachine machine;
 
+    /**
+     * Creates a craftable products message composer instance for the network message subsystem.
+     *
+     * @param machine Machine supplied by the caller.
+     */
     public CraftableProductsMessageComposer(CraftingMachine machine) {
         this.machine = machine;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.CraftableProductsMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         if(this.machine == null){

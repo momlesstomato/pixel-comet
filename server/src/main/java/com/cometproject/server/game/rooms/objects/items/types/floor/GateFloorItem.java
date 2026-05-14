@@ -9,11 +9,28 @@ import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
 import com.cometproject.server.game.rooms.types.Room;
 
 
+/**
+ * Describes gate floor item behavior for the room subsystem.
+ */
 public class GateFloorItem extends RoomItemFloor {
+    /**
+     * Creates a gate floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public GateFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity0 Entity0 supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity0, int requestData, boolean isWiredTrigger) {
         if (!isWiredTrigger) {
@@ -52,11 +69,22 @@ public class GateFloorItem extends RoomItemFloor {
         return true;
     }
 
+    /**
+     * Indicates whether movement cancelled applies to this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isMovementCancelled(RoomEntity entity) {
         return !this.isOpen();
     }
 
+    /**
+     * Indicates whether open applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isOpen() {
         return !this.getItemData().getData().equals("0");
     }

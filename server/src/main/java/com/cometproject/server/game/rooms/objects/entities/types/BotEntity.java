@@ -21,6 +21,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
+/**
+ * Describes bot entity behavior for the room subsystem.
+ */
 public class BotEntity extends RoomEntity {
     private IBotData data;
     private int cycleCount = 0;
@@ -30,6 +33,16 @@ public class BotEntity extends RoomEntity {
 
     private Map<String, Object> attributes = new ConcurrentHashMap<>();
 
+    /**
+     * Creates a bot entity instance for the room subsystem.
+     *
+     * @param data Data supplied by the caller.
+     * @param identifier Identifier supplied by the caller.
+     * @param startPosition Start position supplied by the caller.
+     * @param startBodyRotation Start body rotation supplied by the caller.
+     * @param startHeadRotation Start head rotation supplied by the caller.
+     * @param roomInstance Room instance supplied by the caller.
+     */
     public BotEntity(IBotData data, int identifier, Position startPosition, int startBodyRotation, int startHeadRotation, Room roomInstance) {
         super(identifier, startPosition, startBodyRotation, startHeadRotation, roomInstance);
 
@@ -65,28 +78,58 @@ public class BotEntity extends RoomEntity {
         }
     }
 
+    /**
+     * Executes say for this room contract.
+     *
+     * @param message Message supplied by the caller.
+     */
     public void say(String message) {
         this.getRoom().getEntities().broadcastMessage(new TalkMessageComposer(this.getId(), message, ChatEmotion.NONE, 2));
     }
 
+    /**
+     * Executes join room for this room contract.
+     *
+     * @param room Room participating in the operation.
+     * @param password Password supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean joinRoom(Room room, String password) {
         return true;
     }
 
+    /**
+     * Executes finalize join room for this room contract.
+     */
     @Override
     protected void finalizeJoinRoom() {
 
     }
 
+    /**
+     * Handles the reached tile callback for this room contract.
+     *
+     * @param tile Tile supplied by the caller.
+     */
     @Override
     public void onReachedTile(RoomTile tile) {
     }
 
+    /**
+     * Executes leave room for this room contract.
+     */
     public void leaveRoom() {
         this.leaveRoom(false, false, false);
     }
 
+    /**
+     * Executes leave room for this room contract.
+     *
+     * @param isOffline Is offline supplied by the caller.
+     * @param isKick Is kick supplied by the caller.
+     * @param toHotelView To hotel view supplied by the caller.
+     */
     @Override
     public void leaveRoom(boolean isOffline, boolean isKick, boolean toHotelView) {
         // Send leave room message to all instance entities
@@ -102,11 +145,20 @@ public class BotEntity extends RoomEntity {
         this.attributes.clear();
     }
 
+    /**
+     * Handles the chat callback for this room contract.
+     *
+     * @param message Message supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onChat(String message) {
         return false;
     }
 
+    /**
+     * Persists data object for this room contract.
+     */
     public void saveDataObject() {
         if (this.dataObject != null) {
             this.data.setData(JsonUtil.getInstance().toJson(this.dataObject));
@@ -114,6 +166,11 @@ public class BotEntity extends RoomEntity {
         }
     }
 
+    /**
+     * Handles the room dispose callback for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onRoomDispose() {
         // Send leave room message to all instance entities
@@ -129,30 +186,60 @@ public class BotEntity extends RoomEntity {
         return true;
     }
 
+    /**
+     * Returns the username for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getUsername() {
         return this.data.getUsername();
     }
 
+    /**
+     * Returns the motto for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getMotto() {
         return this.data.getMotto();
     }
 
+    /**
+     * Returns the figure for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getFigure() {
         return this.data.getFigure();
     }
 
+    /**
+     * Returns the gender for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getGender() {
         return this.data.getGender();
     }
 
+    /**
+     * Returns the bot id for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getBotId() {
         return this.data.getId();
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(this.getBotId());
@@ -185,30 +272,60 @@ public class BotEntity extends RoomEntity {
 
     }
 
+    /**
+     * Returns the data for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public BotData getData() {
         return (BotData) this.data;
     }
 
+    /**
+     * Returns the cycle count for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getCycleCount() {
         return this.cycleCount;
     }
 
+    /**
+     * Executes decrement cycle count for this room contract.
+     */
     public void decrementCycleCount() {
         cycleCount--;
     }
 
+    /**
+     * Executes increment cycle count for this room contract.
+     */
     public void incrementCycleCount() {
         cycleCount++;
     }
 
+    /**
+     * Executes reset cycle count for this room contract.
+     */
     public void resetCycleCount() {
         this.cycleCount = 0;
     }
 
+    /**
+     * Returns the ai for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public BotAI getAI() {
         return ai;
     }
 
+    /**
+     * Updates the attribute for this room contract.
+     *
+     * @param attributeKey Attribute key supplied by the caller.
+     * @param attributeValue Attribute value supplied by the caller.
+     */
     @Override
     public void setAttribute(String attributeKey, Object attributeValue) {
         if (this.attributes.containsKey(attributeKey)) {
@@ -218,21 +335,43 @@ public class BotEntity extends RoomEntity {
         }
     }
 
+    /**
+     * Returns the attribute for this room contract.
+     *
+     * @param attributeKey Attribute key supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public Object getAttribute(String attributeKey) {
         return this.attributes.get(attributeKey);
     }
 
+    /**
+     * Indicates whether this room contract has attribute.
+     *
+     * @param attributeKey Attribute key supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean hasAttribute(String attributeKey) {
         return this.attributes.containsKey(attributeKey);
     }
 
+    /**
+     * Removes attribute from this room contract.
+     *
+     * @param attributeKey Attribute key supplied by the caller.
+     */
     @Override
     public void removeAttribute(String attributeKey) {
         this.attributes.remove(attributeKey);
     }
 
+    /**
+     * Returns the data object for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public BotDataObject getDataObject() {
         return dataObject;
     }

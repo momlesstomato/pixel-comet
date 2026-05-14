@@ -7,7 +7,16 @@ import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
 import com.cometproject.server.game.rooms.types.Room;
 
 
+/**
+ * Describes football gate floor item behavior for the room subsystem.
+ */
 public class FootballGateFloorItem extends RoomItemFloor {
+    /**
+     * Creates a football gate floor item instance for the room subsystem.
+     *
+     * @param roomItemData Room item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public FootballGateFloorItem(RoomItemData roomItemData, Room room) {
         super(roomItemData, room);
 
@@ -17,6 +26,11 @@ public class FootballGateFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Handles the entity step on callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOn(RoomEntity entity) {
         if (!(entity instanceof PlayerEntity))
@@ -46,6 +60,12 @@ public class FootballGateFloorItem extends RoomItemFloor {
         playerEntity.getPlayer().getData().save();
     }
 
+    /**
+     * Updates the figure for this room contract.
+     *
+     * @param gender Gender supplied by the caller.
+     * @param figure Figure supplied by the caller.
+     */
     public void setFigure(String gender, String figure) {
         switch (gender.toUpperCase()) {
             case "M":
@@ -58,6 +78,12 @@ public class FootballGateFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Returns the figure for this room contract.
+     *
+     * @param gender Gender supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public String getFigure(String gender) {
         if (this.getItemData().getData().length() < 2) {
             return "hd-99999-99999.ch-3030-63.lg-275-1408";

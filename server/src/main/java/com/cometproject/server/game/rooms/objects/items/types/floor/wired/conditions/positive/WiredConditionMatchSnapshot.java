@@ -8,20 +8,41 @@ import com.cometproject.server.game.rooms.objects.items.types.floor.wired.base.W
 import com.cometproject.server.game.rooms.types.Room;
 
 
+/**
+ * Carries wired condition match snapshot data for the room subsystem.
+ */
 public class WiredConditionMatchSnapshot extends WiredConditionItem {
     private static final int PARAM_MATCH_STATE = 0;
     private static final int PARAM_MATCH_ROTATION = 1;
     private static final int PARAM_MATCH_POSITION = 2;
 
+    /**
+     * Creates a wired condition match snapshot instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public WiredConditionMatchSnapshot(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 0;
     }
 
+    /**
+     * Executes evaluate for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param data Data supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean evaluate(RoomEntity entity, Object data) {
         if (this.getWiredData().getParams().size() != 3) {

@@ -21,7 +21,16 @@ import com.cometproject.storage.api.services.ICurrencyService;
 
 import java.util.ArrayList;
 
+/**
+ * Describes buy room command behavior for the Comet subsystem.
+ */
 public class BuyRoomCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         Room room = client.getPlayer().getEntity().getRoom();
@@ -86,16 +95,31 @@ public class BuyRoomCommand extends ChatCommand {
         else BuyRoomCommand.sendNotif("Esta sala no está en venta.", client);
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "buyroom_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return Locale.getOrDefault(null, "");
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.buyroom.description");

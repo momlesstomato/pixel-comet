@@ -25,11 +25,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * Describes wired trigger item behavior for the room subsystem.
+ */
 public abstract class WiredTriggerItem extends WiredFloorItem {
 
+    /**
+     * Creates a wired trigger item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public WiredTriggerItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
+    /**
+     * Executes evaluate for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param data Data supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean evaluate(RoomEntity entity, Object data) {
         boolean wasSuccess;
@@ -44,6 +60,15 @@ public abstract class WiredTriggerItem extends WiredFloorItem {
         return wasSuccess;
     }
 
+    /**
+     * Executes start execute for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param data Data supplied by the caller.
+     * @param items Items supplied by the caller.
+     * @param requiredConditions Required conditions supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public static boolean startExecute(RoomEntity entity, Object data, List<RoomItemFloor> items, boolean requiredConditions) {
         try {
             List<WiredActionItem> wiredActions = Lists.newArrayList();
@@ -182,6 +207,13 @@ public abstract class WiredTriggerItem extends WiredFloorItem {
         return false;
     }
 
+    /**
+     * Returns the triggers for this room contract.
+     *
+     * @param room Room participating in the operation.
+     * @param clazz Clazz supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static <T extends RoomItemFloor> List<T> getTriggers(Room room, Class<T> clazz) {
         final List<T> triggers = Lists.newArrayList();
         final List<Position> position = Lists.newArrayList();
@@ -205,11 +237,21 @@ public abstract class WiredTriggerItem extends WiredFloorItem {
         return actionItem.evaluate(entity, data);
     }
 
+    /**
+     * Returns the dialog for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public MessageComposer getDialog() {
         return new WiredTriggerMessageComposer(this);
     }
 
+    /**
+     * Returns the incompatible actions for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<WiredActionItem> getIncompatibleActions() {
         // create an empty list to add the incompatible actions
         List<WiredActionItem> incompatibleActions = Lists.newArrayList();
@@ -231,5 +273,10 @@ public abstract class WiredTriggerItem extends WiredFloorItem {
         return incompatibleActions;
     }
 
+    /**
+     * Executes supplies player for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public abstract boolean suppliesPlayer();
 }

@@ -14,11 +14,21 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+/**
+ * Persists and loads my SQL group forum data for the MySQL storage subsystem.
+ */
 public class MySQLGroupForumRepository extends MySQLRepository implements IGroupForumRepository {
 
     private final GroupForumSettingsFactory forumSettingsFactory;
     private final GroupForumMessageFactory forumMessageFactory;
 
+    /**
+     * Creates a my SQL group forum repository instance for the MySQL storage subsystem.
+     *
+     * @param forumSettingsFactory Forum settings factory supplied by the caller.
+     * @param forumMessageFactory Forum message factory supplied by the caller.
+     * @param connectionProvider Connection provider supplied by the caller.
+     */
     public MySQLGroupForumRepository(GroupForumSettingsFactory forumSettingsFactory, GroupForumMessageFactory forumMessageFactory, MySQLConnectionProvider connectionProvider) {
         super(connectionProvider);
 
@@ -26,6 +36,12 @@ public class MySQLGroupForumRepository extends MySQLRepository implements IGroup
         this.forumMessageFactory = forumMessageFactory;
     }
 
+    /**
+     * Returns the settings by group id for this MySQL storage contract.
+     *
+     * @param groupId Group id supplied by the caller.
+     * @param forumSettingsConsumer Forum settings consumer supplied by the caller.
+     */
     @Override
     public void getSettingsByGroupId(int groupId, Consumer<IForumSettings> forumSettingsConsumer) {
         select("SELECT * FROM group_forum_settings WHERE group_id = ?", (data) -> {
@@ -33,6 +49,11 @@ public class MySQLGroupForumRepository extends MySQLRepository implements IGroup
         }, groupId);
     }
 
+    /**
+     * Persists settings for this MySQL storage contract.
+     *
+     * @param forumSettings Forum settings supplied by the caller.
+     */
     @Override
     public void saveSettings(IForumSettings forumSettings) {
         update("UPDATE group_forum_settings SET read_permission = ?, post_permission = ?, thread_permission = ?, " +
@@ -44,6 +65,12 @@ public class MySQLGroupForumRepository extends MySQLRepository implements IGroup
                 forumSettings.getGroupId());
     }
 
+    /**
+     * Returns the all messages for this MySQL storage contract.
+     *
+     * @param groupId Group id supplied by the caller.
+     * @param threadConsumer Thread consumer supplied by the caller.
+     */
     @Override
     public void getAllMessages(Integer groupId, BiConsumer<Map<Integer, IForumThread>, List<Integer>> threadConsumer) {
         final Map<Integer, IForumThread> forumThreads = Maps.newConcurrentMap();
@@ -81,6 +108,15 @@ public class MySQLGroupForumRepository extends MySQLRepository implements IGroup
         threadConsumer.accept(forumThreads, pinnedThreads);
     }
 
+    /**
+     * Creates thread for this MySQL storage contract.
+     *
+     * @param groupId Group id supplied by the caller.
+     * @param title Title supplied by the caller.
+     * @param message Message supplied by the caller.
+     * @param authorId Author id supplied by the caller.
+     * @param threadId Thread id supplied by the caller.
+     */
     @Override
     public void createThread(int groupId, String title, String message, int authorId, Consumer<Integer> threadId) {
         insert("INSERT into group_forum_messages (type, group_id, title, message, author_id, author_timestamp) " +
@@ -89,6 +125,15 @@ public class MySQLGroupForumRepository extends MySQLRepository implements IGroup
         }, groupId, title, message, authorId);
     }
 
+    /**
+     * Creates reply for this MySQL storage contract.
+     *
+     * @param groupId Group id supplied by the caller.
+     * @param threadId Thread id supplied by the caller.
+     * @param message Message supplied by the caller.
+     * @param authorId Author id supplied by the caller.
+     * @param messageId Message id supplied by the caller.
+     */
     @Override
     public void createReply(int groupId, int threadId, String message, int authorId, Consumer<Integer> messageId) {
         insert("INSERT into group_forum_messages (type, group_id, thread_id, message, " +
@@ -97,6 +142,14 @@ public class MySQLGroupForumRepository extends MySQLRepository implements IGroup
         }, groupId, threadId, message, authorId);
     }
 
+    /**
+     * Persists message state for this MySQL storage contract.
+     *
+     * @param messageId Message id supplied by the caller.
+     * @param state State supplied by the caller.
+     * @param modId Mod id supplied by the caller.
+     * @param modUsername Mod username supplied by the caller.
+     */
     @Override
     public void saveMessageState(int messageId, int state, int modId, String modUsername) {
         update("UPDATE group_forum_messages SET state = ?, moderator_id = ?, moderator_username = ? WHERE id = ?",
@@ -104,12 +157,26 @@ public class MySQLGroupForumRepository extends MySQLRepository implements IGroup
 
     }
 
+    /**
+     * Persists message lock for this MySQL storage contract.
+     *
+     * @param messageId Message id supplied by the caller.
+     * @param locked Locked supplied by the caller.
+     * @param modId Mod id supplied by the caller.
+     * @param modUsername Mod username supplied by the caller.
+     */
     @Override
     public void saveMessageLock(int messageId, boolean locked, int modId, String modUsername) {
         update("UPDATE group_forum_messages SET locked = ?, moderator_id = ?, moderator_username = ? WHERE id = ?",
                 locked ? "1" : "0", modId, modUsername, messageId);
     }
 
+    /**
+     * Persists message pin state for this MySQL storage contract.
+     *
+     * @param messageId Message id supplied by the caller.
+     * @param pinned Pinned supplied by the caller.
+     */
     @Override
     public void saveMessagePinState(int messageId, boolean pinned) {
         update("UPDATE group_forum_messages SET pinned = ? WHERE id = ?", pinned ? "1" : "0", messageId);
@@ -139,6 +206,13 @@ public class MySQLGroupForumRepository extends MySQLRepository implements IGroup
                 pinned, moderatorId, moderatorUsername);
     }
 
+    /**
+     * Executes build thread reply for this MySQL storage contract.
+     *
+     * @param resultReader Result reader supplied by the caller.
+     * @return Result produced by the operation.
+     * @throws Exception When the operation cannot complete.
+     */
     public IForumThreadReply buildThreadReply(IResultReader resultReader) throws Exception {
         final int id = resultReader.readInteger("id");
         final int threadId = resultReader.readInteger("thread_id");

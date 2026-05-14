@@ -6,9 +6,19 @@
 /*    */ import com.cometproject.server.network.sessions.Session;
 /*    */ import com.cometproject.server.protocol.messages.MessageEvent;
 /*    */ 
+/**
+ * Describes get user blocked parser behavior for the Snow War game subsystem.
+ */
 /*    */ public class GetUserBlockedParser
 /*    */   implements Event
 /*    */ {
+/**
+ * Executes handle for this network message contract.
+ *
+ * @param client Client supplied by the caller.
+ * @param msg Composer buffer that receives serialized protocol fields.
+ * @throws Exception When the operation cannot complete.
+ */
 /*    */   public void handle(Session client, MessageEvent msg) throws Exception {
 /* 13 */     client.send((IMessageComposer)new UserBlockedComposer(0));
 /*    */   }

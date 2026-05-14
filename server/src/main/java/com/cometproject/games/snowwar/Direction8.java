@@ -1,6 +1,9 @@
 /*     */ package com.cometproject.games.snowwar;
 /*     */ 
 /*     */ 
+/**
+ * Describes direction8 behavior for the Snow War game subsystem.
+ */
 /*     */ public class Direction8
 /*     */ {
 /*   6 */   public static Direction8[] DIRECTIONS = new Direction8[8];
@@ -18,6 +21,14 @@
 /*     */   private final int yDiff;
 /*     */   private final String rotName;
 /*     */   
+/**
+ * Creates a direction8 instance for the Snow War game subsystem.
+ *
+ * @param r R supplied by the caller.
+ * @param rName R name supplied by the caller.
+ * @param diffx Diffx supplied by the caller.
+ * @param diffy Diffy supplied by the caller.
+ */
 /*     */   public Direction8(int r, String rName, int diffx, int diffy) {
 /*  22 */     this.rot = r;
 /*  23 */     this.rotName = rName;
@@ -26,6 +37,12 @@
 /*  26 */     DIRECTIONS[r] = this;
 /*     */   }
 /*     */   
+/**
+ * Returns the direction for this Snow War game contract.
+ *
+ * @param dir Dir supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 /*     */   public static Direction8 getDirection(int dir) {
 /*  30 */     if (dir < 0 || dir > 7) {
 /*  31 */       return N;
@@ -34,10 +51,25 @@
 /*  34 */     return DIRECTIONS[dir];
 /*     */   }
 /*     */   
+/**
+ * Executes validate direction8 value for this Snow War game contract.
+ *
+ * @param dir Dir supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 /*     */   public static int validateDirection8Value(int dir) {
 /*  38 */     return dir & 0x7;
 /*     */   }
 /*     */   
+/**
+ * Returns the rot for this Snow War game contract.
+ *
+ * @param curX Cur x supplied by the caller.
+ * @param curY Cur y supplied by the caller.
+ * @param targetX Target x supplied by the caller.
+ * @param targetY Target y supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 /*     */   public static Direction8 getRot(int curX, int curY, int targetX, int targetY) {
 /*  42 */     int deltaX = targetX - curX;
 /*  43 */     int deltaY = targetY - curY;
@@ -84,53 +116,118 @@
 /*  84 */     return null;
 /*     */   }
 /*     */   
+/**
+ * Returns the rot for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public int getRot() {
 /*  88 */     return this.rot;
 /*     */   }
 /*     */   
+/**
+ * Executes rotate direction180 degrees for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public Direction8 rotateDirection180Degrees() {
 /*  92 */     return getDirectionAtRot(4);
 /*     */   }
 /*     */   
+/**
+ * Executes rotate direction45 degrees for this Snow War game contract.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 /*     */   public Direction8 rotateDirection45Degrees(boolean _arg1) {
 /*  96 */     return getDirectionAtRot(_arg1 ? 1 : -1);
 /*     */   }
 /*     */   
+/**
+ * Executes rotate direction90 degrees for this Snow War game contract.
+ *
+ * @param _arg1 Arg1 supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 /*     */   public Direction8 rotateDirection90Degrees(boolean _arg1) {
 /* 100 */     return getDirectionAtRot(_arg1 ? 2 : -2);
 /*     */   }
 /*     */ 
 /*     */   
+/**
+ * Executes ac for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public boolean _AC() {
 /* 105 */     return (this.rot % 2 == 0);
 /*     */   }
 /*     */ 
 /*     */   
+/**
+ * Executes 3f4 for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public int _3f4() {
 /* 110 */     return this.rot;
 /*     */   }
 /*     */   
+/**
+ * Returns the direction at rot for this Snow War game contract.
+ *
+ * @param diff Diff supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 /*     */   public Direction8 getDirectionAtRot(int diff) {
 /* 114 */     return DIRECTIONS[validateDirection8Value(this.rot + diff)];
 /*     */   }
 /*     */ 
 /*     */   
+/**
+ * Executes to string for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public String toString() {
 /* 119 */     return this.rotName + "(" + Integer.toString(this.rot) + ")";
 /*     */   }
 /*     */   
+/**
+ * Returns the rot name for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public String getRotName() {
 /* 123 */     return this.rotName;
 /*     */   }
 /*     */   
+/**
+ * Returns the diff x for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public int getDiffX() {
 /* 127 */     return this.xDiff;
 /*     */   }
 /*     */   
+/**
+ * Returns the diff y for this Snow War game contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*     */   public int getDiffY() {
 /* 131 */     return this.yDiff;
 /*     */   }
 /*     */   
+/**
+ * Executes have direction for this Snow War game contract.
+ *
+ * @param find Find supplied by the caller.
+ * @param directions Directions supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 /*     */   public static boolean haveDirection(Direction8 find, Direction8... directions) {
 /* 135 */     for (Direction8 val : directions) {
 /* 136 */       if (find == val) {

@@ -10,6 +10,9 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Serializes the pet breeding message for the Pixel Protocol client.
+ */
 public class PetBreedingMessageComposer extends MessageComposer {
 
     private final int itemId;
@@ -20,6 +23,14 @@ public class PetBreedingMessageComposer extends MessageComposer {
 
     private final IPetData father;
 
+    /**
+     * Creates a pet breeding message composer instance for the network message subsystem.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @param babyType Baby type supplied by the caller.
+     * @param mother Mother supplied by the caller.
+     * @param father Father supplied by the caller.
+     */
     public PetBreedingMessageComposer(final int itemId, final int babyType, final IPetData mother, final IPetData father) {
         this.itemId = itemId;
         this.babyType = babyType;
@@ -27,11 +38,21 @@ public class PetBreedingMessageComposer extends MessageComposer {
         this.father = father;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.PetBreedingMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(this.itemId);//?? result breed

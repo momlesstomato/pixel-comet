@@ -13,6 +13,9 @@ import com.cometproject.server.utilities.Direction;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Describes wired action move to direction behavior for the room subsystem.
+ */
 public class WiredActionMoveToDirection extends WiredActionItem {
     private static final int PARAM_START_DIR = 0;
     private static final int PARAM_ACTION_WHEN_BLOCKED = 1;
@@ -26,7 +29,7 @@ public class WiredActionMoveToDirection extends WiredActionItem {
     private static final int ACTION_TURN_RANDOM = 6;
 
     /**
-     * The default constructor
+     * The default constructor.
      *
      * @param id       The ID of the item
      * @param itemId   The ID of the item definition
@@ -42,16 +45,31 @@ public class WiredActionMoveToDirection extends WiredActionItem {
         super(itemData, room);
     }
 
+    /**
+     * Executes requires player for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean requiresPlayer() {
         return false;
     }
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 13;
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(WiredItemEvent event) {
         if (this.getWiredData().getParams().size() != 2) {

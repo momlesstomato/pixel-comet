@@ -13,11 +13,20 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Describes game center achievements configuration composer behavior for the network message subsystem.
+ */
 public class GameCenterAchievementsConfigurationComposer extends MessageComposer {
     private final int gameId;
     private final AchievementComponent playerAchivements;
     private final Map<AchievementType, IAchievementGroup> gameAchievements;
 
+    /**
+     * Creates a game center achievements configuration composer instance for the network message subsystem.
+     *
+     * @param gameId Game id supplied by the caller.
+     * @param playerAchievements Player achievements supplied by the caller.
+     */
     public GameCenterAchievementsConfigurationComposer(int gameId, AchievementComponent playerAchievements){
         this.gameId = gameId;
         this.playerAchivements = playerAchievements;
@@ -25,11 +34,21 @@ public class GameCenterAchievementsConfigurationComposer extends MessageComposer
         this.gameAchievements = gameAch == null ? new HashMap<>() : gameAch;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.GameAchievementsMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(gameId);

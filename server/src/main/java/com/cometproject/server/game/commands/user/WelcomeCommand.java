@@ -9,7 +9,16 @@ import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 
+/**
+ * Describes welcome command behavior for the Comet subsystem.
+ */
 public class WelcomeCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         Room room = client.getPlayer().getEntity().getRoom();
@@ -28,16 +37,31 @@ public class WelcomeCommand extends ChatCommand {
         room.getEntities().broadcastMessage(new TalkMessageComposer(client.getPlayer().getEntity().getId(), Locale.getOrDefault("welcome.message", "¡Hola, %user%, te damos la bienvenida a %hotelName%! Pásalo en grande y si tienes cualquier duda dínoslo.").replace("%user%", username).replace("%hotelName%", CometSettings.hotelName), ChatEmotion.SMILE, 0));
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "about_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.welcome.description");

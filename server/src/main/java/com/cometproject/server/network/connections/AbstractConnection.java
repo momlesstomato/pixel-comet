@@ -22,40 +22,80 @@ public abstract class AbstractConnection implements Connection {
     private final AtomicReference<ConnectionState> state = new AtomicReference<>(ConnectionState.CONNECTING);
     private final AtomicReference<ConnectionCipher> cipher = new AtomicReference<>(NullConnectionCipher.INSTANCE);
 
+    /**
+     * Creates a abstract connection instance for the network connection subsystem.
+     *
+     * @param transportType Transport type supplied by the caller.
+     */
     protected AbstractConnection(final ConnectionTransportType transportType) {
         this.transportType = transportType;
     }
 
+    /**
+     * Returns the id for this network connection contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getId() {
         return this.id;
     }
 
+    /**
+     * Returns the connected at for this network connection contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Instant getConnectedAt() {
         return this.connectedAt;
     }
 
+    /**
+     * Returns the state for this network connection contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public ConnectionState getState() {
         return this.state.get();
     }
 
+    /**
+     * Updates the state for this network connection contract.
+     *
+     * @param state State supplied by the caller.
+     */
     @Override
     public void setState(final ConnectionState state) {
         this.state.set(state);
     }
 
+    /**
+     * Returns the transport type for this network connection contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public ConnectionTransportType getTransportType() {
         return this.transportType;
     }
 
+    /**
+     * Returns the cipher for this network connection contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public ConnectionCipher getCipher() {
         return this.cipher.get();
     }
 
+    /**
+     * Updates the cipher for this network connection contract.
+     *
+     * @param cipher Cipher supplied by the caller.
+     */
     @Override
     public void setCipher(final ConnectionCipher cipher) {
         final ConnectionCipher resolvedCipher = cipher == null ? NullConnectionCipher.INSTANCE : cipher;
@@ -63,6 +103,11 @@ public abstract class AbstractConnection implements Connection {
         this.onCipherChanged(resolvedCipher);
     }
 
+    /**
+     * Executes send for this network connection contract.
+     *
+     * @param composer Composer supplied by the caller.
+     */
     @Override
     public void send(final IMessageComposer composer) {
         if (!this.canWrite()) {
@@ -76,6 +121,11 @@ public abstract class AbstractConnection implements Connection {
         }
     }
 
+    /**
+     * Executes send raw for this network connection contract.
+     *
+     * @param payload Payload supplied by the caller.
+     */
     @Override
     public void sendRaw(final String payload) {
         if (!this.canWrite()) {
@@ -89,6 +139,11 @@ public abstract class AbstractConnection implements Connection {
         }
     }
 
+    /**
+     * Executes close for this network connection contract.
+     *
+     * @param closeCode Close code supplied by the caller.
+     */
     @Override
     public void close(final ConnectionCloseCode closeCode) {
         if (!this.state.compareAndSet(ConnectionState.CONNECTING, ConnectionState.CLOSING)
@@ -106,6 +161,9 @@ public abstract class AbstractConnection implements Connection {
         }
     }
 
+    /**
+     * Releases resources owned by this network connection component.
+     */
     @Override
     public void dispose() {
         this.close(ConnectionCloseCode.NORMAL);

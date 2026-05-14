@@ -10,8 +10,17 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
+/**
+ * Represents the pet races message event published by the network message subsystem.
+ */
 public class PetRacesMessageEvent
 implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void handle(Session client, MessageEvent msg) {
         String petRace = msg.readString();

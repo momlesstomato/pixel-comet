@@ -13,7 +13,16 @@ import com.cometproject.storage.api.services.ICurrencyService;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Describes reward command behavior for the Comet subsystem.
+ */
 public class RewardCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         StorageContext.getCurrentContext().getRewardRepository().getActiveRewards((rewards) -> {
@@ -75,16 +84,31 @@ public class RewardCommand extends ChatCommand {
         return builder.toString();
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "reward_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "%reward%";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.reward.description");

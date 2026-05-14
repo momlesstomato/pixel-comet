@@ -22,6 +22,9 @@ import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.EventExecutorGroup;
 
+/**
+ * Describes network channel initializer behavior for the networking subsystem.
+ */
 public class NetworkChannelInitializer extends ChannelInitializer<SocketChannel> {
     private static final Logger LOGGER = LoggerFactory.getLogger(NetworkChannelInitializer.class.getName());
 
@@ -30,6 +33,12 @@ public class NetworkChannelInitializer extends ChannelInitializer<SocketChannel>
 
     private final ClientHandler clientHandler;
 
+    /**
+     * Creates a network channel initializer instance for the networking subsystem.
+     *
+     * @param executorGroup Executor group supplied by the caller.
+     * @param sessionFactory Session factory supplied by the caller.
+     */
     public NetworkChannelInitializer(EventExecutorGroup executorGroup, INetSessionFactory sessionFactory) {
         this.executor = executorGroup;
         this.sessionFactory = sessionFactory;
@@ -37,6 +46,11 @@ public class NetworkChannelInitializer extends ChannelInitializer<SocketChannel>
         this.clientHandler = new ClientHandler(sessionFactory);
     }
 
+    /**
+     * Executes init channel for this networking contract.
+     *
+     * @param ch Ch supplied by the caller.
+     */
     @Override
     protected void initChannel(SocketChannel ch) {
         // Check if we should register the client or disconnect it

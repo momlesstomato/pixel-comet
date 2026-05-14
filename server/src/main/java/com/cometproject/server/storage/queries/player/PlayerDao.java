@@ -26,7 +26,16 @@ import com.cometproject.server.storage.SqlHelper;
 import com.cometproject.server.storage.cache.CacheManager;
 import com.cometproject.server.utilities.collections.ConcurrentHashSet;
 
+/**
+ * Describes player dao behavior for the storage subsystem.
+ */
 public class PlayerDao {
+    /**
+     * Returns the player for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     @Deprecated
     public static Player getPlayer(int playerId) {
         Connection sqlConnection = null;
@@ -67,6 +76,12 @@ public class PlayerDao {
         return null;
     }
 
+    /**
+     * Returns the user look for this storage contract.
+     *
+     * @param username Username supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static String getUserLook(String username) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -87,6 +102,12 @@ public class PlayerDao {
         return null;
     }
 
+    /**
+     * Returns the user gender for this storage contract.
+     *
+     * @param username Username supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static String getUserGender(String username) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -107,6 +128,12 @@ public class PlayerDao {
         return null;
     }
 
+    /**
+     * Updates NUX status for this storage contract.
+     *
+     * @param s S supplied by the caller.
+     * @param userId User id supplied by the caller.
+     */
     public static void updateNuxStatus(int s, int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -127,6 +154,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Persists claimed goal for this storage contract.
+     *
+     * @param goal Goal supplied by the caller.
+     * @param userId User id supplied by the caller.
+     */
     public static void saveClaimedGoal(boolean goal, int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -147,6 +180,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Updates subscription for this storage contract.
+     *
+     * @param v V supplied by the caller.
+     * @param i I supplied by the caller.
+     */
     public static void updateSubscription(boolean v, int i) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -168,6 +207,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Returns the player battle plass info for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static PlayerBattlePassInfo getPlayerBattlePlassInfo(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -192,6 +237,12 @@ public class PlayerDao {
         return null;
     }
 
+    /**
+     * Executes player battle pass load missions completed for this storage contract.
+     *
+     * @param battlePass Battle pass supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     */
     public static void PlayerBattlePassLoadMissionsCompleted(PlayerBattlePassInfo battlePass, int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -213,6 +264,11 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Executes player battle pass create for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     */
     public static void PlayerBattlePassCreate(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -229,6 +285,11 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Executes update battle pass for this storage contract.
+     *
+     * @param battlePass Battle pass supplied by the caller.
+     */
     public static void UpdateBattlePass(PlayerBattlePassInfo battlePass) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -247,6 +308,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Executes update view points for this storage contract.
+     *
+     * @param points Points supplied by the caller.
+     * @param id Id supplied by the caller.
+     */
     public static void UpdateViewPoints(int points, int id) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -264,6 +331,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Executes insert battle pass completed for this storage contract.
+     *
+     * @param mission Mission supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     */
     public static void InsertBattlePassCompleted(int mission, int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -281,6 +354,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Returns the data by username for this storage contract.
+     *
+     * @param username Username supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static PlayerData getDataByUsername(String username) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -311,6 +390,12 @@ public class PlayerDao {
         return null;
     }
 
+    /**
+     * Returns the data by id for this storage contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static PlayerData getDataById(int id) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -342,6 +427,13 @@ public class PlayerDao {
         return null;
     }
 
+    /**
+     * Returns the avatar by id for this storage contract.
+     *
+     * @param id Id supplied by the caller.
+     * @param mode Mode supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static PlayerAvatar getAvatarById(int id, byte mode) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -391,6 +483,12 @@ public class PlayerDao {
         return null;
     }
 
+    /**
+     * Returns the motto by player id for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static String getMottoByPlayerId(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -422,6 +520,12 @@ public class PlayerDao {
         return "";
     }
 
+    /**
+     * Returns the settings by id for this storage contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static PlayerSettings getSettingsById(int id) {
         Connection sqlConnection = null;
         ResultSet resultSet = null;
@@ -459,6 +563,12 @@ public class PlayerDao {
         return new PlayerSettings();
     }
 
+    /**
+     * Returns the mistery by id for this storage contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static MisteryComponent getMisteryById(int id) {
         Connection sqlConnection = null;
         ResultSet resultSet = null;
@@ -488,6 +598,12 @@ public class PlayerDao {
         return new MisteryComponent(id);
     }
 
+    /**
+     * Returns the statistics by id for this storage contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static PlayerStatistics getStatisticsById(int id) {
         if (id < 0) return null; // todo: figure out why this would be negative
 
@@ -526,6 +642,13 @@ public class PlayerDao {
         return new PlayerStatistics(id);
     }
 
+    /**
+     * Updates player status for this storage contract.
+     *
+     * @param player Player participating in the operation.
+     * @param online Online supplied by the caller.
+     * @param setLastOnline Set last online supplied by the caller.
+     */
     public static void updatePlayerStatus(Player player, boolean online, boolean setLastOnline) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -553,6 +676,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Returns the username by player id for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static String getUsernameByPlayerId(int playerId) {
         if (CacheManager.getInstance().exists("players.username." + playerId)) {
             return CacheManager.getInstance().getString("players.username." + playerId);
@@ -588,6 +717,12 @@ public class PlayerDao {
         return null;
     }
 
+    /**
+     * Returns the id by username for this storage contract.
+     *
+     * @param username Username supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getIdByUsername(String username) {
         if (PlayerManager.getInstance().getPlayerIdByUsername(username) != -1)
             return PlayerManager.getInstance().getPlayerIdByUsername(username);
@@ -618,6 +753,12 @@ public class PlayerDao {
         return 0;
     }
 
+    /**
+     * Returns the rentable id for this storage contract.
+     *
+     * @param i I supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getRentableId(int i) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -645,6 +786,12 @@ public class PlayerDao {
         return 0;
     }
 
+    /**
+     * Returns the renter by id for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static String getRenterById(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -672,6 +819,12 @@ public class PlayerDao {
         return "UnknownUsername";
     }
 
+    /**
+     * Returns the IP address for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static String getIpAddress(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -699,6 +852,26 @@ public class PlayerDao {
         return "";
     }
 
+    /**
+     * Updates player data for this storage contract.
+     *
+     * @param id Id supplied by the caller.
+     * @param username Username supplied by the caller.
+     * @param motto Motto supplied by the caller.
+     * @param figure Figure supplied by the caller.
+     * @param credits Credits supplied by the caller.
+     * @param points Points supplied by the caller.
+     * @param gender Gender supplied by the caller.
+     * @param favouriteGroup Favourite group supplied by the caller.
+     * @param activityPoints Activity points supplied by the caller.
+     * @param seasonalPoints Seasonal points supplied by the caller.
+     * @param blackMoney Black money supplied by the caller.
+     * @param questId Quest id supplied by the caller.
+     * @param achievementPoints Achievement points supplied by the caller.
+     * @param nameColour Name colour supplied by the caller.
+     * @param tag Tag supplied by the caller.
+     * @param job Job supplied by the caller.
+     */
     public static void updatePlayerData(int id, String username, String motto, String figure, int credits, int points, String gender, int favouriteGroup, int activityPoints, int seasonalPoints, int blackMoney, int questId, int achievementPoints, String nameColour, String tag, String job) {
         updatePlayerDataWithoutCurrencies(id, username, motto, figure, credits, gender, favouriteGroup, questId, achievementPoints, nameColour, tag, job);
     }
@@ -748,6 +921,22 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Updates player rp for this storage contract.
+     *
+     * @param id Id supplied by the caller.
+     * @param job Job supplied by the caller.
+     * @param rank Rank supplied by the caller.
+     * @param hunger Hunger supplied by the caller.
+     * @param health Health supplied by the caller.
+     * @param warnings Warnings supplied by the caller.
+     * @param arrests Arrests supplied by the caller.
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     * @param lastRoom Last room supplied by the caller.
+     * @param weaponInfo Weapon info supplied by the caller.
+     * @param lastRobbery Last robbery supplied by the caller.
+     */
     public static void updatePlayerRP(int id, String job, int rank, int hunger, int health, int warnings, int arrests, int x, int y, int lastRoom, String weaponInfo, int lastRobbery) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -778,6 +967,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Updates player credits for this storage contract.
+     *
+     * @param id Id supplied by the caller.
+     * @param credits Credits supplied by the caller.
+     */
     public static void updatePlayerCredits(int id, int credits) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -798,6 +993,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Persists allow mentions for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param allowance Allowance supplied by the caller.
+     */
     public static void saveAllowMentions(int playerId, String allowance) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -818,6 +1019,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Updates player statistics for this storage contract.
+     *
+     * @param playerStatistics Player statistics supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public static boolean updatePlayerStatistics(PlayerStatistics playerStatistics) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -851,6 +1058,12 @@ public class PlayerDao {
         return false;
     }
 
+    /**
+     * Updates fireworks for this storage contract.
+     *
+     * @param fireworks Fireworks supplied by the caller.
+     * @param userId User id supplied by the caller.
+     */
     public static void updateFireworks(int fireworks, int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -871,6 +1084,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Updates daily rolls for this storage contract.
+     *
+     * @param amount Amount supplied by the caller.
+     * @param userId User id supplied by the caller.
+     */
     public static void updateDailyRolls(int amount, int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -891,6 +1110,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Updates home room for this storage contract.
+     *
+     * @param homeRoom Home room supplied by the caller.
+     * @param userId User id supplied by the caller.
+     */
     public static void updateHomeRoom(int homeRoom, int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -912,6 +1137,12 @@ public class PlayerDao {
     }
 
 
+    /**
+     * Updates event type for this storage contract.
+     *
+     * @param type Type supplied by the caller.
+     * @param userId User id supplied by the caller.
+     */
     public static void updateEventType(String type, int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -932,6 +1163,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Updates mystery key for this storage contract.
+     *
+     * @param key Key supplied by the caller.
+     * @param userId User id supplied by the caller.
+     */
     public static void updateMysteryKey(String key, int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -952,6 +1189,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Updates mystery box for this storage contract.
+     *
+     * @param box Box supplied by the caller.
+     * @param userId User id supplied by the caller.
+     */
     public static void updateMysteryBox(String box, int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -972,6 +1215,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Persists wardrobe for this storage contract.
+     *
+     * @param wardrobeData Wardrobe data supplied by the caller.
+     * @param userId User id supplied by the caller.
+     */
     public static void saveWardrobe(String wardrobeData, int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -992,6 +1241,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Persists volume for this storage contract.
+     *
+     * @param volumeData Volume data supplied by the caller.
+     * @param userId User id supplied by the caller.
+     */
     public static void saveVolume(String volumeData, int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1012,6 +1267,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Persists chat style for this storage contract.
+     *
+     * @param useOldChat Use old chat supplied by the caller.
+     * @param userId User id supplied by the caller.
+     */
     public static void saveChatStyle(boolean useOldChat, int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1032,6 +1293,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Persists allow trade for this storage contract.
+     *
+     * @param allowTrade Allow trade supplied by the caller.
+     * @param userId User id supplied by the caller.
+     */
     public static void saveAllowTrade(boolean allowTrade, int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1052,6 +1319,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Returns the tags by player id for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static List<String> getTagsByPlayerId(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1081,6 +1354,12 @@ public class PlayerDao {
         return badges;
     }
 
+    /**
+     * Returns the keys by player id for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static List<String> getKeysByPlayerId(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1110,6 +1389,12 @@ public class PlayerDao {
         return badges;
     }
 
+    /**
+     * Persists ignore invitations for this storage contract.
+     *
+     * @param ignoreInvitations Ignore invitations supplied by the caller.
+     * @param userId User id supplied by the caller.
+     */
     public static void saveIgnoreInvitations(boolean ignoreInvitations, int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1130,6 +1415,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Persists room camera follow for this storage contract.
+     *
+     * @param r R supplied by the caller.
+     * @param userId User id supplied by the caller.
+     */
     public static void saveRoomCameraFollow(boolean r, int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1150,6 +1441,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Persists allow friend requests for this storage contract.
+     *
+     * @param allowFriendRequests Allow friend requests supplied by the caller.
+     * @param userId User id supplied by the caller.
+     */
     public static void saveAllowFriendRequests(boolean allowFriendRequests, int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1170,6 +1467,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Persists ignore events for this storage contract.
+     *
+     * @param ignoreEvents Ignore events supplied by the caller.
+     * @param userId User id supplied by the caller.
+     */
     public static void saveIgnoreEvents(boolean ignoreEvents, int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1190,6 +1493,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Persists personal staff for this storage contract.
+     *
+     * @param personalStaff Personal staff supplied by the caller.
+     * @param userId User id supplied by the caller.
+     */
     public static void savePersonalStaff(boolean personalStaff, int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1210,6 +1519,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Persists bubble id for this storage contract.
+     *
+     * @param bubbleId Bubble id supplied by the caller.
+     * @param userId User id supplied by the caller.
+     */
     public static void saveBubbleId(int bubbleId, int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1230,6 +1545,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Persists room tool state for this storage contract.
+     *
+     * @param state State supplied by the caller.
+     * @param userId User id supplied by the caller.
+     */
     public static void saveRoomToolState(int state, int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1250,6 +1571,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Executes username is available for this storage contract.
+     *
+     * @param username Username supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public static boolean usernameIsAvailable(String username) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1278,6 +1605,11 @@ public class PlayerDao {
         return false;
     }
 
+    /**
+     * Executes reset home room for this storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     */
     public static void resetHomeRoom(int roomId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1297,6 +1629,9 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Executes reset online status for this storage contract.
+     */
     public static void resetOnlineStatus() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1315,6 +1650,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Updates rank for this storage contract.
+     *
+     * @param rank Rank supplied by the caller.
+     * @param username Username supplied by the caller.
+     */
     public static void updateRank(int rank, String username) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1333,6 +1674,11 @@ public class PlayerDao {
     }
 
 
+    /**
+     * Persists batch for this storage contract.
+     *
+     * @param playerData Player data supplied by the caller.
+     */
     public static void saveBatch(Map<Integer, PlayerData> playerData) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1365,6 +1711,13 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Executes daily player update for this storage contract.
+     *
+     * @param dailyRespects Daily respects supplied by the caller.
+     * @param dailyScratches Daily scratches supplied by the caller.
+     * @param dailyRolls Daily rolls supplied by the caller.
+     */
     public static void dailyPlayerUpdate(int dailyRespects, int dailyScratches, int dailyRolls) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1387,6 +1740,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Adds time mute to this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param timeMuted Time muted supplied by the caller.
+     */
     public static void addTimeMute(int playerId, int timeMuted) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1407,6 +1766,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Updates disable whisper for this storage contract.
+     *
+     * @param disableWhisper Disable whisper supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     */
     public static void updateDisableWhisper(final boolean disableWhisper, int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1427,6 +1792,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Returns the username already exist for this storage contract.
+     *
+     * @param username Username supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getUsernameAlreadyExist(String username) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1454,6 +1825,12 @@ public class PlayerDao {
         return 1;
     }
 
+    /**
+     * Updates players username for this storage contract.
+     *
+     * @param newName New name supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     */
     public static void updatePlayersUsername(String newName, int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1474,6 +1851,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Updates rooms username for this storage contract.
+     *
+     * @param newName New name supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     */
     public static void updateRoomsUsername(String newName, int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1494,6 +1877,13 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Persists name change log for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param newName New name supplied by the caller.
+     * @param oldName Old name supplied by the caller.
+     */
     public static void saveNameChangeLog(int playerId, String newName, String oldName) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1516,6 +1906,15 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Persists trade log for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param byplayerid Byplayerid supplied by the caller.
+     * @param baseitem Baseitem supplied by the caller.
+     * @param itemid Itemid supplied by the caller.
+     * @param timestamp Timestamp supplied by the caller.
+     */
     public static void saveTradeLog(int playerId, int byplayerid, int baseitem, long itemid, int timestamp) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1539,6 +1938,14 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Persists exchange log for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param itemId Item id supplied by the caller.
+     * @param baseId Base id supplied by the caller.
+     * @param currencyData Currency data supplied by the caller.
+     */
     public static void saveExchangeLog(int playerId, long itemId, int baseId, String currencyData) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1562,6 +1969,16 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Persists navigator settings for this storage contract.
+     *
+     * @param navigatorX Navigator x supplied by the caller.
+     * @param navigatorY Navigator y supplied by the caller.
+     * @param navigatorHeight Navigator height supplied by the caller.
+     * @param navigatorWidth Navigator width supplied by the caller.
+     * @param navigatorShowSearches Navigator show searches supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     */
     public static void saveNavigatorSettings(int navigatorX, int navigatorY, int navigatorHeight, int navigatorWidth, boolean navigatorShowSearches, int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1587,6 +2004,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Returns the favourite rooms for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static Set<Integer> getFavouriteRooms(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1616,6 +2039,12 @@ public class PlayerDao {
         return data;
     }
 
+    /**
+     * Persists favourite room for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param roomId Room identifier used by the operation.
+     */
     public static void saveFavouriteRoom(int playerId, int roomId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1637,6 +2066,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Deletes favourite room for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param roomId Room identifier used by the operation.
+     */
     public static void deleteFavouriteRoom(int playerId, int roomId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1658,6 +2093,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Returns the saved searches for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, ISavedSearch> getSavedSearches(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1687,6 +2128,12 @@ public class PlayerDao {
         return data;
     }
 
+    /**
+     * Returns the view modes for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static Map<String, Integer> getViewModes(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1716,6 +2163,13 @@ public class PlayerDao {
         return data;
     }
 
+    /**
+     * Persists view mode for this storage contract.
+     *
+     * @param category Category supplied by the caller.
+     * @param viewMode View mode supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     */
     public static void saveViewMode(String category, int viewMode, int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1737,6 +2191,13 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Persists search for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param savedSearch Saved search supplied by the caller.
+     * @return Result produced by the mutation.
+     */
     public static int saveSearch(int playerId, SavedSearch savedSearch) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1769,6 +2230,11 @@ public class PlayerDao {
         return 0;
     }
 
+    /**
+     * Deletes search for this storage contract.
+     *
+     * @param searchId Search id supplied by the caller.
+     */
     public static void deleteSearch(int searchId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1788,6 +2254,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Returns the effects for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static Set<Integer> getEffects(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1816,6 +2288,12 @@ public class PlayerDao {
         return data;
     }
 
+    /**
+     * Persists effect for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param effectId Effect id supplied by the caller.
+     */
     public static void saveEffect(int playerId, int effectId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -1836,6 +2314,12 @@ public class PlayerDao {
         }
     }
 
+    /**
+     * Updates rank for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param rank Rank supplied by the caller.
+     */
     public static void updateRank(int playerId, int rank) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

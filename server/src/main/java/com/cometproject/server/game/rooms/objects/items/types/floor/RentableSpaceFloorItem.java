@@ -10,12 +10,29 @@ import com.cometproject.server.network.messages.outgoing.rentables.RentableDataM
 import com.cometproject.server.storage.queries.items.ItemDao;
 import com.cometproject.server.storage.queries.player.PlayerDao;
 
+/**
+ * Describes rentable space floor item behavior for the room subsystem.
+ */
 public class RentableSpaceFloorItem  extends RoomItemFloor {
 
+    /**
+     * Creates a rentable space floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public RentableSpaceFloorItem (RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (isWiredTrigger) {
@@ -38,6 +55,9 @@ public class RentableSpaceFloorItem  extends RoomItemFloor {
         return true;
     }
 
+    /**
+     * Handles the placed callback for this room contract.
+     */
     @Override
     public void onPlaced() {
         this.getItemData().setData("48");
@@ -46,14 +66,28 @@ public class RentableSpaceFloorItem  extends RoomItemFloor {
         this.saveData();
     }
 
+    /**
+     * Handles the item added to stack callback for this room contract.
+     *
+     * @param f F supplied by the caller.
+     */
     @Override
     public void onItemAddedToStack(RoomItemFloor f){
     }
 
+    /**
+     * Executes verify status for this room contract.
+     *
+     * @param p P supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean verifyStatus(Player p){
         // Create Rentable component for player and check.
         return true;
     }
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
     }

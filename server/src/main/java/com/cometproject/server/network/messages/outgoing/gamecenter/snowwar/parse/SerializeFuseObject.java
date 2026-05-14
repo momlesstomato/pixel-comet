@@ -9,8 +9,17 @@ import com.cometproject.games.snowwar.items.MapStuffData;
 /*    */ 
 /*    */ 
 /*    */ 
+/**
+ * Describes serialize fuse object behavior for the Snow War game subsystem.
+ */
 /*    */ public class SerializeFuseObject
 /*    */ {
+/**
+ * Executes parse for this network message contract.
+ *
+ * @param msg Composer buffer that receives serialized protocol fields.
+ * @param fuseItem Fuse item supplied by the caller.
+ */
 /*    */   public static void parse(IComposer msg, GamefuseObject fuseItem) {
 /* 13 */     msg.writeString(fuseItem.baseItem.Name);
 /* 14 */     msg.writeInt(fuseItem.itemId);

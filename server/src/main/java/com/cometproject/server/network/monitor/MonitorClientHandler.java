@@ -17,6 +17,9 @@ import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * Describes monitor client handler behavior for the networking subsystem.
+ */
 public class MonitorClientHandler extends SimpleChannelInboundHandler {
     public static boolean isConnected = false;
 
@@ -27,6 +30,9 @@ public class MonitorClientHandler extends SimpleChannelInboundHandler {
 
     private ChannelHandlerContext context;
 
+    /**
+     * Creates a monitor client handler instance for the networking subsystem.
+     */
     public MonitorClientHandler() {
         String message = "{\"name\":\"hello\", \"message\": {\"version\": \"" + Comet.getBuild() + "\", \"port\": " + NetworkManager.getInstance().getServerPort() + "}}";
 
@@ -37,6 +43,11 @@ public class MonitorClientHandler extends SimpleChannelInboundHandler {
         }
     }
 
+    /**
+     * Executes channel active for this networking contract.
+     *
+     * @param ctx Netty channel context for the current operation.
+     */
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         MonitorClientHandler.isConnected = true;
@@ -47,6 +58,12 @@ public class MonitorClientHandler extends SimpleChannelInboundHandler {
         ctx.writeAndFlush(this.handshakeMessage);
     }
 
+    /**
+     * Executes channel read0 for this networking contract.
+     *
+     * @param channelHandlerContext Channel handler context supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Object msg) {
         ByteBuf buffer = (ByteBuf) msg;
@@ -57,11 +74,22 @@ public class MonitorClientHandler extends SimpleChannelInboundHandler {
         this.messageHandler.handle(message, channelHandlerContext);
     }
 
+    /**
+     * Executes channel read complete for this networking contract.
+     *
+     * @param ctx Netty channel context for the current operation.
+     */
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
         ctx.flush();
     }
 
+    /**
+     * Executes channel inactive for this networking contract.
+     *
+     * @param ctx Netty channel context for the current operation.
+     * @throws Exception When the operation cannot complete.
+     */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         MonitorClientHandler.isConnected = false;
@@ -71,12 +99,23 @@ public class MonitorClientHandler extends SimpleChannelInboundHandler {
         super.channelInactive(ctx);
     }
 
+    /**
+     * Executes exception caught for this networking contract.
+     *
+     * @param ctx Netty channel context for the current operation.
+     * @param cause Cause supplied by the caller.
+     */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         LOGGER.error("Exception caught from MonitorClient", cause);
         ctx.close();
     }
 
+    /**
+     * Returns the context for this networking contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public ChannelHandlerContext getContext() {
         return context;
     }

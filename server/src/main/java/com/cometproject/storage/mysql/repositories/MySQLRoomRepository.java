@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**
+ * Persists and loads my SQL room data for the MySQL storage subsystem.
+ */
 public class MySQLRoomRepository extends MySQLRepository implements IRoomRepository {
     private static final Type STRING_LIST_TYPE = new TypeToken<List<String>>() {
     }.getType();
@@ -27,6 +30,13 @@ public class MySQLRoomRepository extends MySQLRepository implements IRoomReposit
     private final RoomDataFactory roomDataFactory;
     private final RoomModelDataFactory roomModelDataFactory;
 
+    /**
+     * Creates a my SQL room repository instance for the MySQL storage subsystem.
+     *
+     * @param roomDataFactory Room data factory supplied by the caller.
+     * @param roomModelDataFactory Room model data factory supplied by the caller.
+     * @param connectionProvider Connection provider supplied by the caller.
+     */
     public MySQLRoomRepository(RoomDataFactory roomDataFactory, RoomModelDataFactory roomModelDataFactory, MySQLConnectionProvider connectionProvider) {
         super(connectionProvider);
 
@@ -34,6 +44,11 @@ public class MySQLRoomRepository extends MySQLRepository implements IRoomReposit
         this.roomModelDataFactory = roomModelDataFactory;
     }
 
+    /**
+     * Returns the all models for this MySQL storage contract.
+     *
+     * @param modelConsumer Model consumer supplied by the caller.
+     */
     @Override
     public void getAllModels(Consumer<Map<String, RoomModelData>> modelConsumer) {
         final Map<String, RoomModelData> roomModels = Maps.newHashMap();
@@ -51,6 +66,12 @@ public class MySQLRoomRepository extends MySQLRepository implements IRoomReposit
         modelConsumer.accept(roomModels);
     }
 
+    /**
+     * Returns the room data by id for this MySQL storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param dataConsumer Data consumer supplied by the caller.
+     */
     @Override
     public void getRoomDataById(int roomId, Consumer<IRoomData> dataConsumer) {
         select("SELECT * FROM rooms WHERE id = ? LIMIT 1;", (data) -> {
@@ -62,6 +83,11 @@ public class MySQLRoomRepository extends MySQLRepository implements IRoomReposit
         }, roomId);
     }
 
+    /**
+     * Updates room for this MySQL storage contract.
+     *
+     * @param data Data supplied by the caller.
+     */
     @Override
     public void updateRoom(IRoomData data) {
         StringBuilder tagString = new StringBuilder();

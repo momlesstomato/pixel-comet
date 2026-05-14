@@ -1,5 +1,8 @@
 package com.cometproject.server.network.websockets.packets.outgoing.battleroyale;
 
+/**
+ * Describes battle royale sync web packet behavior for the networking subsystem.
+ */
 public class BattleRoyaleSyncWebPacket {
     private String handle;
     private String figure;
@@ -10,6 +13,18 @@ public class BattleRoyaleSyncWebPacket {
     private String remaining;
     private String damage;
 
+    /**
+     * Creates a battle royale sync web packet instance for the networking subsystem.
+     *
+     * @param handle Handle supplied by the caller.
+     * @param figure Figure supplied by the caller.
+     * @param health Health supplied by the caller.
+     * @param shield Shield supplied by the caller.
+     * @param bullets Bullets supplied by the caller.
+     * @param kills Kills supplied by the caller.
+     * @param remaining Remaining supplied by the caller.
+     * @param damage Damage supplied by the caller.
+     */
     public BattleRoyaleSyncWebPacket(String handle, String figure, String health, String shield, String bullets, String kills, String remaining, String damage) {
         this.handle = handle;
         this.figure = figure;

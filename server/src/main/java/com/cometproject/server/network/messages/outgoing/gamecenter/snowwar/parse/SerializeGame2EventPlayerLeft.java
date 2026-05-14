@@ -8,12 +8,27 @@
 /*    */ 
 /*    */ 
 /*    */ 
+/**
+ * Describes serialize game2 event player left behavior for the Snow War game subsystem.
+ */
 /*    */ public class SerializeGame2EventPlayerLeft
 /*    */ {
+/**
+ * Executes parse for this network message contract.
+ *
+ * @param msg Composer buffer that receives serialized protocol fields.
+ * @param evt Evt supplied by the caller.
+ */
 /*    */   public static void parse(IComposer msg, PlayerLeft evt) {
 /* 14 */     msg.writeInt(evt.player.objectId);
 /*    */   }
 /*    */   
+/**
+ * Executes parse for this Snow War game contract.
+ *
+ * @param ClientMessage Client message supplied by the caller.
+ * @param evt Evt supplied by the caller.
+ */
 /*    */   public static void parse(MessageWriter ClientMessage, PlayerLeft evt) {
 /* 18 */     ComposerShit.add(evt.player.objectId, ClientMessage);
 /*    */   }

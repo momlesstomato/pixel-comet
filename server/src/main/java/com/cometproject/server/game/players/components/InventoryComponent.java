@@ -32,6 +32,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Owns inventory behavior inside the player subsystem.
+ */
 public class InventoryComponent extends PlayerComponent implements PlayerInventory {
     private Map<Long, PlayerItem> inventoryItems;
 
@@ -47,6 +50,11 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
 
     private Logger LOGGER = LoggerFactory.getLogger(InventoryComponent.class.getName());
 
+    /**
+     * Creates a inventory component instance for the player subsystem.
+     *
+     * @param player Player participating in the operation.
+     */
     public InventoryComponent(Player player) {
         super(player);
 
@@ -58,6 +66,9 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
         this.loadBadges();
     }
 
+    /**
+     * Loads effects for this player contract.
+     */
     public void loadEffects() {
         if (this.effects != null) {
             this.effects.clear();
@@ -67,6 +78,11 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
         this.effects = PlayerDao.getEffects(this.getPlayer().getId());
     }
 
+    /**
+     * Loads items for this player contract.
+     *
+     * @param userId User id supplied by the caller.
+     */
     @Override
     public void loadItems(int userId) {
         this.itemsLoaded = true;
@@ -89,6 +105,9 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
         }
     }
 
+    /**
+     * Loads badges for this player contract.
+     */
     @Override
     public void loadBadges() {
         try {
@@ -99,11 +118,24 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
         }
     }
 
+    /**
+     * Adds badge to this player contract.
+     *
+     * @param code Code supplied by the caller.
+     * @param insert Insert supplied by the caller.
+     */
     @Override
     public void addBadge(String code, boolean insert) {
         this.addBadge(code, insert, true);
     }
 
+    /**
+     * Adds badge to this player contract.
+     *
+     * @param code Code supplied by the caller.
+     * @param insert Insert supplied by the caller.
+     * @param sendAlert Send alert supplied by the caller.
+     */
     @Override
     public void addBadge(String code, boolean insert, boolean sendAlert) {
         if (!badges.containsKey(code)) {
@@ -128,6 +160,9 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
         }
     }
 
+    /**
+     * Executes send for this player contract.
+     */
     public void send() {
         if (this.inventoryItems.size() == 0) {
             this.getPlayer().getSession().send(new InventoryMessageComposer(1, 0, Maps.newHashMap()));
@@ -153,16 +188,36 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
         }
     }
 
+    /**
+     * Indicates whether this player contract has badge.
+     *
+     * @param code Code supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean hasBadge(String code) {
         return this.badges.containsKey(code);
     }
 
+    /**
+     * Removes badge from this player contract.
+     *
+     * @param code Code supplied by the caller.
+     * @param delete Delete supplied by the caller.
+     */
     @Override
     public void removeBadge(String code, boolean delete) {
         this.removeBadge(code, delete, true, true);
     }
 
+    /**
+     * Removes badge from this player contract.
+     *
+     * @param code Code supplied by the caller.
+     * @param delete Delete supplied by the caller.
+     * @param sendAlert Send alert supplied by the caller.
+     * @param sendUpdate Send update supplied by the caller.
+     */
     @Override
     public void removeBadge(String code, boolean delete, boolean sendAlert, boolean sendUpdate) {
         if (badges.containsKey(code)) {
@@ -182,6 +237,12 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
         }
     }
 
+    /**
+     * Executes achievement badge for this player contract.
+     *
+     * @param achievement Achievement supplied by the caller.
+     * @param level Level supplied by the caller.
+     */
     @Override
     public void achievementBadge(String achievement, int level) {
         final String oldBadge = achievement + (level - 1);
@@ -199,6 +260,9 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
         this.addBadge(newBadge, !isUpdated, false);
     }
 
+    /**
+     * Executes reset badge slots for this player contract.
+     */
     @Override
     public void resetBadgeSlots() {
         for (Map.Entry<String, Integer> badge : this.badges.entrySet()) {
@@ -210,6 +274,11 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
         this.getPlayer().flush();
     }
 
+    /**
+     * Executes equipped badges for this player contract.
+     *
+     * @return Result produced by the operation.
+     */
     @Override
     public String[] equippedBadges() {
         final String[] badges = new String[9];
@@ -227,6 +296,16 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
         //return Collections.sortbadges;
     }
 
+    /**
+     * Executes add for this player contract.
+     *
+     * @param id Id supplied by the caller.
+     * @param itemId Item id supplied by the caller.
+     * @param extraData Extra data supplied by the caller.
+     * @param giftData Gift data supplied by the caller.
+     * @param limitedEditionItem Limited edition item supplied by the caller.
+     * @return Result produced by the mutation.
+     */
     @Override
     public PlayerItem add(long id, int itemId, String extraData, IGiftData giftData, LimitedEditionItem limitedEditionItem) {
         PlayerItem item = new InventoryItem(id, itemId, extraData, giftData, limitedEditionItem);
@@ -238,6 +317,11 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
         return item;
     }
 
+    /**
+     * Returns the songs for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public List<SongItem> getSongs() {
         List<SongItem> songItems = Lists.newArrayList();
@@ -251,6 +335,12 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
         return songItems;
     }
 
+    /**
+     * Indicates whether this player contract has base item.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean hasBaseItem(long itemId){
         for (PlayerItem inventoryItem : this.inventoryItems.values()) {
@@ -261,11 +351,24 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
         return false;
     }
 
+    /**
+     * Executes add for this player contract.
+     *
+     * @param id Id supplied by the caller.
+     * @param itemId Item id supplied by the caller.
+     * @param extraData Extra data supplied by the caller.
+     * @param limitedEditionItem Limited edition item supplied by the caller.
+     */
     @Override
     public void add(long id, int itemId, String extraData, LimitedEditionItem limitedEditionItem) {
         add(id, itemId, extraData, null, limitedEditionItem);
     }
 
+    /**
+     * Adds item to this player contract.
+     *
+     * @param item Item supplied by the caller.
+     */
     @Override
     public void addItem(PlayerItem item) {
         this.inventoryItems.put(item.getId(), item);
@@ -273,11 +376,21 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
         this.getPlayer().flush();
     }
 
+    /**
+     * Removes item from this player contract.
+     *
+     * @param item Item supplied by the caller.
+     */
     @Override
     public void removeItem(PlayerItem item) {
         this.removeItem(item.getId());
     }
 
+    /**
+     * Removes item from this player contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     */
     @Override
     public void removeItem(long itemId) {
         this.inventoryItems.remove(itemId);
@@ -286,16 +399,31 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
         this.getPlayer().flush();
     }
 
+    /**
+     * Indicates whether this player contract has item.
+     *
+     * @param id Id supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean hasItem(long id) {
         return this.getInventoryItems().containsKey(id);
     }
 
+    /**
+     * Returns the item for this player contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public PlayerItem getItem(long id) {
         return this.inventoryItems.get(id);
     }
 
+    /**
+     * Releases resources owned by this player component.
+     */
     @Override
     public void dispose() {
         for (PlayerItem inventoryItem : this.inventoryItems.values()) {
@@ -312,48 +440,99 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
         this.badges = null;
     }
 
+    /**
+     * Returns the total size for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getTotalSize() {
         return this.inventoryItems.size();
     }
 
+    /**
+     * Returns the inventory items for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Map<Long, PlayerItem> getInventoryItems() {
         return this.inventoryItems;
     }
 
+    /**
+     * Returns the badges for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Map<String, Integer> getBadges() {
         return this.badges;
     }
 
+    /**
+     * Indicates whether this player contract has effect.
+     *
+     * @param effectId Effect id supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean hasEffect(int effectId) {
         return this.effects.contains(effectId);
     }
 
+    /**
+     * Returns the effects for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Set<Integer> getEffects() {
         return this.effects;
     }
 
+    /**
+     * Executes items loaded for this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean itemsLoaded() {
         return itemsLoaded;
     }
 
+    /**
+     * Returns the equipped effect for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getEquippedEffect() {
         return this.equippedEffect;
     }
 
+    /**
+     * Updates the equipped effect for this player contract.
+     *
+     * @param equippedEffect Equipped effect supplied by the caller.
+     */
     public void setEquippedEffect(int equippedEffect) {
         this.equippedEffect = equippedEffect;
     }
 
+    /**
+     * Indicates whether viewing inventory applies to this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isViewingInventory() {
         return this.isViewingInventory;
     }
 
+    /**
+     * Executes viewing inventory user id for this player contract.
+     *
+     * @return Result produced by the operation.
+     */
     public int viewingInventoryUserId() {
         return this.viewingInventoryUser;
     }

@@ -16,10 +16,27 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 abstract class IPlayerRepositoryContractTest {
+    /**
+     * Executes repository for this jOOQ storage contract.
+     *
+     * @return Result produced by the operation.
+     */
     protected abstract IPlayerRepository repository();
 
+    /**
+     * Executes dsl for this jOOQ storage contract.
+     *
+     * @return Result produced by the operation.
+     */
     protected abstract DSLContext dsl();
 
+    /**
+     * Executes insert test player for this jOOQ storage contract.
+     *
+     * @param id Id supplied by the caller.
+     * @param username Username supplied by the caller.
+     * @param authTicket Auth ticket supplied by the caller.
+     */
     protected abstract void insertTestPlayer(int id, String username, String authTicket);
 
     @Test

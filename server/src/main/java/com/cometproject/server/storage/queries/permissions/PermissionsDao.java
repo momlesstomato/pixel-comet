@@ -14,8 +14,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
+/**
+ * Describes permissions dao behavior for the storage subsystem.
+ */
 public class PermissionsDao {
 
+    /**
+     * Returns the perks for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, Perk> getPerks() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -44,6 +52,11 @@ public class PermissionsDao {
         return data;
     }
 
+    /**
+     * Returns the permissions for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, Rank> getPermissions() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -65,6 +78,11 @@ public class PermissionsDao {
         return data;
     }
 
+    /**
+     * Returns the override command permissions for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<String, OverrideCommandPermission> getOverrideCommandPermissions() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -96,6 +114,11 @@ public class PermissionsDao {
         return data;
     }
 
+    /**
+     * Returns the effects for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, Integer> getEffects() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -123,6 +146,11 @@ public class PermissionsDao {
         return data;
     }
 
+    /**
+     * Returns the override effects for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, EffectPermission> getOverrideEffects() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -154,6 +182,11 @@ public class PermissionsDao {
         return data;
     }
 
+    /**
+     * Returns the chat bubbles for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, Integer> getChatBubbles() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

@@ -22,6 +22,9 @@ import com.cometproject.networking.api.sessions.INetSession;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+/**
+ * Describes fast food message handler behavior for the Fast Food game subsystem.
+ */
 public class FastFoodMessageHandler implements IMessageHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(FastFoodMessageHandler.class);
 
@@ -32,6 +35,13 @@ public class FastFoodMessageHandler implements IMessageHandler {
     private final Map<Short, BiConsumer<IMessageEvent, FastFoodNetSession>> messageHandlers;
     private final Set<FastFoodGame> games = Sets.newConcurrentHashSet();
 
+    /**
+     * Creates a fast food message handler instance for the Fast Food game subsystem.
+     *
+     * @param executorService Executor service supplied by the caller.
+     * @param playerService Player service supplied by the caller.
+     * @param fastFoodRepository Fast food repository supplied by the caller.
+     */
     public FastFoodMessageHandler(ScheduledExecutorService executorService, IPlayerService playerService, MySQLFastFoodRepository fastFoodRepository) {
         this.messageHandlers = Maps.newConcurrentMap();
 
@@ -66,10 +76,22 @@ public class FastFoodMessageHandler implements IMessageHandler {
         session.getConnection().send(new AuthenticationOKMessageComposer());
     }
 
+    /**
+     * Returns the localisations for this Fast Food game contract.
+     *
+     * @param messageEvent Message event supplied by the caller.
+     * @param session Session participating in the operation.
+     */
     public void getLocalisations(IMessageEvent messageEvent, INetSession session) {
         session.getConnection().send(new SetClientLocalisationMessageComposer());
     }
 
+    /**
+     * Executes disconnect for this Fast Food game contract.
+     *
+     * @param messageEvent Message event supplied by the caller.
+     * @param session Session participating in the operation.
+     */
     public void disconnect(IMessageEvent messageEvent, INetSession session) {
         final FastFoodGameSession gameSession = (FastFoodGameSession) session.getGameSession();
 
@@ -78,10 +100,22 @@ public class FastFoodMessageHandler implements IMessageHandler {
         }
     }
 
+    /**
+     * Returns the power up prices for this Fast Food game contract.
+     *
+     * @param messageEvent Message event supplied by the caller.
+     * @param session Session participating in the operation.
+     */
     public void getPowerUpPrices(IMessageEvent messageEvent, INetSession session) {
 
     }
 
+    /**
+     * Returns the power ups for this Fast Food game contract.
+     *
+     * @param messageEvent Message event supplied by the caller.
+     * @param session Session participating in the operation.
+     */
     public void getPowerUps(IMessageEvent messageEvent, INetSession session) {
         final FastFoodGameSession gameSession = (FastFoodGameSession) session.getGameSession();
 
@@ -100,19 +134,43 @@ public class FastFoodMessageHandler implements IMessageHandler {
         session.getConnection().send(new MyPowerUpsMessageComposer(gameSession));
     }
 
+    /**
+     * Returns the games count for this Fast Food game contract.
+     *
+     * @param messageEvent Message event supplied by the caller.
+     * @param session Session participating in the operation.
+     */
     public void getGamesCount(IMessageEvent messageEvent, INetSession session) {
 
     }
 
+    /**
+     * Returns the user credits for this Fast Food game contract.
+     *
+     * @param messageEvent Message event supplied by the caller.
+     * @param session Session participating in the operation.
+     */
     public void getUserCredits(IMessageEvent messageEvent, INetSession session) {
 
     }
 
 
+    /**
+     * Executes purchase power up for this Fast Food game contract.
+     *
+     * @param messageEvent Message event supplied by the caller.
+     * @param session Session participating in the operation.
+     */
     public void purchasePowerUp(IMessageEvent messageEvent, INetSession session) {
 
     }
 
+    /**
+     * Executes join lobby for this Fast Food game contract.
+     *
+     * @param messageEvent Message event supplied by the caller.
+     * @param session Session participating in the operation.
+     */
     public void joinLobby(IMessageEvent messageEvent, FastFoodNetSession session) {
         final FastFoodGame fastFoodGame = this.findGame();
 
@@ -125,6 +183,12 @@ public class FastFoodMessageHandler implements IMessageHandler {
         }
     }
 
+    /**
+     * Executes launch missile for this Fast Food game contract.
+     *
+     * @param messageEvent Message event supplied by the caller.
+     * @param session Session participating in the operation.
+     */
     public void launchMissile(IMessageEvent messageEvent, FastFoodNetSession session) {
         if(session.getGameSession().getCurrentGame() == null || !session.getGameSession().getCurrentGame().hasStarted()) {
             return;
@@ -155,6 +219,12 @@ public class FastFoodMessageHandler implements IMessageHandler {
         return fastFoodGame;
     }
 
+    /**
+     * Handles message for this Fast Food game contract.
+     *
+     * @param messageEvent Message event supplied by the caller.
+     * @param session Session participating in the operation.
+     */
     @Override
     public void handleMessage(IMessageEvent messageEvent, INetSession session) {
         final short messageId = messageEvent.getId();

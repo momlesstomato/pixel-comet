@@ -15,6 +15,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * Manages landing runtime state for the Comet subsystem.
+ */
 public class LandingManager implements Startable {
     private static final Logger LOGGER = LoggerFactory.getLogger(LandingManager.class.getName());
     private Map<Integer, PromoArticle> articles;
@@ -22,13 +25,24 @@ public class LandingManager implements Startable {
 
     private Map<PlayerAvatar, Integer> hallOfFame;
 
+    /**
+     * Creates a landing manager instance for the Comet subsystem.
+     */
     public LandingManager() {
     }
 
+    /**
+     * Returns the instance for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static LandingManager getInstance() {
         return CometBootstrap.resolve(LandingManager.class);
     }
 
+    /**
+     * Starts this Comet component.
+     */
     @Override
     public void start() {
         this.loadArticles();
@@ -38,6 +52,9 @@ public class LandingManager implements Startable {
         LOGGER.info("LandingManager initialized");
     }
 
+    /**
+     * Loads articles for this Comet contract.
+     */
     public void loadArticles() {
         if (this.articles != null) {
             this.articles.clear();
@@ -46,6 +63,9 @@ public class LandingManager implements Startable {
         this.articles = LandingDao.getArticles();
     }
 
+    /**
+     * Loads calendar for this Comet contract.
+     */
     public void loadCalendar() {
         if (this.calendarDays != null) {
             this.calendarDays.clear();
@@ -70,23 +90,49 @@ public class LandingManager implements Startable {
         }
     }
 
+    /**
+     * Returns the articles for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<Integer, PromoArticle> getArticles() {
         return articles;
     }
 
+    /**
+     * Returns the hall of fame for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<PlayerAvatar, Integer> getHallOfFame() {
         return this.hallOfFame;
     }
 
+    /**
+     * Returns the unlock days for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getUnlockDays(){
         int time = (int) ((System.currentTimeMillis() / 1000L)) - CometSettings.calendarTimestamp; // CALENDAR TIMESTAMP
         return (((time / 60) / 60) / 24);
     }
 
+    /**
+     * Returns the total days for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getTotalDays(){
         return this.calendarDays.size();
     }
 
+    /**
+     * Returns the gift by day for this Comet contract.
+     *
+     * @param i I supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public String getGiftByDay(int i){
         if(this.calendarDays.containsKey(i))
             return this.calendarDays.get(i).getGift();
@@ -94,6 +140,12 @@ public class LandingManager implements Startable {
         return "";
     }
 
+    /**
+     * Returns the campaign day for this Comet contract.
+     *
+     * @param i I supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public CalendarDay getCampaignDay(int i){
         if(calendarDays.containsKey(i))
             return calendarDays.get(i);

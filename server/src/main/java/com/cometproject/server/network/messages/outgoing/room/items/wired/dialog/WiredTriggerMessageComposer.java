@@ -11,20 +11,38 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 import java.util.List;
 
 
+/**
+ * Serializes the wired trigger message for the Pixel Protocol client.
+ */
 public class WiredTriggerMessageComposer extends MessageComposer {
     private final List<WiredActionItem> incompatibleActions;
     private final WiredTriggerItem wiredTrigger;
 
+    /**
+     * Creates a wired trigger message composer instance for the network message subsystem.
+     *
+     * @param wiredTriggerItem Wired trigger item supplied by the caller.
+     */
     public WiredTriggerMessageComposer(final WiredTriggerItem wiredTriggerItem) {
         this.wiredTrigger = wiredTriggerItem;
         this.incompatibleActions = wiredTriggerItem.getIncompatibleActions();
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.WiredTriggerConfigMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeBoolean(false); // advanced
@@ -57,6 +75,9 @@ public class WiredTriggerMessageComposer extends MessageComposer {
         }
     }
 
+    /**
+     * Releases resources owned by this network message component.
+     */
     @Override
     public void dispose() {
         this.incompatibleActions.clear();

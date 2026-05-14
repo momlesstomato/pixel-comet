@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
+/**
+ * Describes pathfinder behavior for the room pathfinding subsystem.
+ */
 public abstract class Pathfinder {
     public static final byte DISABLE_DIAGONAL = 0;
     public static final byte ALLOW_DIAGONAL = 1;
@@ -31,10 +34,26 @@ public abstract class Pathfinder {
             new Position(-1, 0)
     };
 
+    /**
+     * Executes make path for this room pathfinding contract.
+     *
+     * @param roomFloorObject Room floor object supplied by the caller.
+     * @param end End supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public List<Square> makePath(RoomObject roomFloorObject, Position end) {
         return this.makePath(roomFloorObject, end, ALLOW_DIAGONAL, false);
     }
 
+    /**
+     * Executes make path for this room pathfinding contract.
+     *
+     * @param roomFloorObject Room floor object supplied by the caller.
+     * @param end End supplied by the caller.
+     * @param pathfinderMode Pathfinder mode supplied by the caller.
+     * @param isRetry Is retry supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public List<Square> makePath(RoomObject roomFloorObject, Position end, byte pathfinderMode, boolean isRetry) {
         List<Square> squares = new CopyOnWriteArrayList<>();
 
@@ -127,6 +146,16 @@ public abstract class Pathfinder {
         return null;
     }
 
+    /**
+     * Indicates whether valid step applies to this room pathfinding contract.
+     *
+     * @param roomObject Room object supplied by the caller.
+     * @param from From supplied by the caller.
+     * @param to To supplied by the caller.
+     * @param lastStep Last step supplied by the caller.
+     * @param isRetry Is retry supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isValidStep(RoomObject roomObject, Position from, Position to, boolean lastStep, boolean isRetry) {
         return (roomObject.getRoom().getMapping().isValidStep(roomObject instanceof RoomEntity ? ((RoomEntity) roomObject).getId() : 0,
                 from, to, lastStep, roomObject instanceof RoomItemFloor, isRetry) ||

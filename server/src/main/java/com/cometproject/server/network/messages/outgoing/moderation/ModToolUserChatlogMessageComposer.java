@@ -10,6 +10,9 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 import com.cometproject.server.storage.queries.player.PlayerDao;
 
 
+/**
+ * Serializes the mod tool user chatlog message for the Pixel Protocol client.
+ */
 public class ModToolUserChatlogMessageComposer extends MessageComposer {
     private final static String ROOM_ID = "roomId";
     private final static String ROOM_NAME = "roomName";
@@ -18,16 +21,32 @@ public class ModToolUserChatlogMessageComposer extends MessageComposer {
     private final int playerId;
     private final UserChatlogContainer userChatlogContainer;
 
+    /**
+     * Creates a mod tool user chatlog message composer instance for the network message subsystem.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param userChatlogContainer User chatlog container supplied by the caller.
+     */
     public ModToolUserChatlogMessageComposer(final int playerId, final UserChatlogContainer userChatlogContainer) {
         this.playerId = playerId;
         this.userChatlogContainer = userChatlogContainer;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.ModeratorUserChatlogMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         String username = PlayerDao.getUsernameByPlayerId(this.playerId);

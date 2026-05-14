@@ -24,6 +24,9 @@
 
 
 //
+/**
+ * Describes logging queue behavior for the logging subsystem.
+ */
 //public class LoggingQueue implements CometTask {
 //    private final static Logger log = Logger.getLogger(LoggingQueue.class);
 //
@@ -47,10 +50,20 @@
 //
 //    private int retryCount = 0;
 //
+/**
+ * Creates a logging queue instance for the Snow War game subsystem.
+ *
+ * @param token Token supplied by the caller.
+ */
 //    public LoggingQueue(String token) {
 //        this.token = token;
 //    }
 //
+/**
+ * Executes add entry for this Snow War game contract.
+ *
+ * @param entry Entry supplied by the caller.
+ */
 //    public void addEntry(AbstractLogEntry entry) {
 //        // Checks for if the logging server is responding
 //        if (!this.isLoggingActive.get()) { return; }
@@ -63,6 +76,9 @@
 //    }
 //
 //    @Override
+/**
+ * Executes run for this Snow War game contract.
+ */
 //    public void run() {
 //        // inactive retry
 //        if (!this.isLoggingActive.get()) {

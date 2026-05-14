@@ -20,13 +20,30 @@ import com.cometproject.storage.api.data.currency.CurrencyUseCases;
 import com.cometproject.storage.api.services.ICurrencyService;
 
 
+/**
+ * Describes slot machine floor item behavior for the room subsystem.
+ */
 public class SlotMachineFloorItem extends RoomItemFloor {
     private boolean isInUse = false;
 
+    /**
+     * Creates a slot machine floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public SlotMachineFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (!isWiredTrigger) {
@@ -133,6 +150,9 @@ public class SlotMachineFloorItem extends RoomItemFloor {
         return rand3;
     }
 
+    /**
+     * Handles the placed callback for this room contract.
+     */
     @Override
     public void onPlaced() {
         if (!"0".equals(this.getItemData().getData())) {
@@ -140,11 +160,17 @@ public class SlotMachineFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Handles the pickup callback for this room contract.
+     */
     @Override
     public void onPickup() {
         this.cancelTicks();
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
         this.isInUse = false;

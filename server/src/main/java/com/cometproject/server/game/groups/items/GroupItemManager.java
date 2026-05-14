@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Manages group item runtime state for the group subsystem.
+ */
 public class GroupItemManager implements IGroupItemService {
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupItemManager.class.getName());
     private List<IGroupBadgeItem> bases;
@@ -20,10 +23,16 @@ public class GroupItemManager implements IGroupItemService {
     private Map<Integer, IGroupBadgeItem> symbolColours;
     private Map<Integer, IGroupBadgeItem> backgroundColours;
 
+    /**
+     * Creates a group item manager instance for the group subsystem.
+     */
     public GroupItemManager() {
         this.load();
     }
 
+    /**
+     * Executes load for this group contract.
+     */
     public void load() {
         if (bases == null) {
             // If bases is null, gotta assume all the others are...
@@ -45,22 +54,47 @@ public class GroupItemManager implements IGroupItemService {
         LOGGER.info("Loaded " + itemCount + " group items");
     }
 
+    /**
+     * Returns the bases for this group contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<IGroupBadgeItem> getBases() {
         return this.bases;
     }
 
+    /**
+     * Returns the symbols for this group contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<IGroupBadgeItem> getSymbols() {
         return this.symbols;
     }
 
+    /**
+     * Returns the base colours for this group contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<IGroupBadgeItem> getBaseColours() {
         return this.baseColours;
     }
 
+    /**
+     * Returns the symbol colours for this group contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<Integer, IGroupBadgeItem> getSymbolColours() {
         return this.symbolColours;
     }
 
+    /**
+     * Returns the background colours for this group contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<Integer, IGroupBadgeItem> getBackgroundColours() {
         return this.backgroundColours;
     }

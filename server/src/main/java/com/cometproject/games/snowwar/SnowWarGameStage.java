@@ -3,6 +3,9 @@ package com.cometproject.games.snowwar;
 import com.cometproject.games.snowwar.gameobjects.GameItemObject;
 import java.util.List;
 
+/**
+ * Describes snow war game stage behavior for the Snow War game subsystem.
+ */
 public class SnowWarGameStage {
     public static int _43q = 25;
     public static int _3hO = 25;
@@ -10,15 +13,31 @@ public class SnowWarGameStage {
     private Tile[][] tileMap;
 
 
+    /**
+     * Executes initialize for this Snow War game contract.
+     *
+     * @param arena Arena supplied by the caller.
+     */
     public void initialize(SnowWarArenaBase arena) {
         buildMap(arena);
         addObjects(arena.fuseObjects);
     }
 
+    /**
+     * Executes 4 ce for this Snow War game contract.
+     *
+     * @param _arg1 Arg1 supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static Direction8 _4Ce(Tile _arg1) {
         return Direction360.direction360ValueToDirection8(Direction360.getRot(_43q - _arg1._4gH[0], _3hO - _arg1._4gH[1]));
     }
 
+    /**
+     * Executes 2 av for this Snow War game contract.
+     *
+     * @param _arg1 Arg1 supplied by the caller.
+     */
     public void _2Av(GameItemObject _arg1) {
         PlayerTile local1 = _arg1.location3D();
         Tile local2 = getTile(Tile._4mC(local1.x()), Tile._3FS(local1.y()));
@@ -27,6 +46,13 @@ public class SnowWarGameStage {
         }
     }
 
+    /**
+     * Executes 18 p for this Snow War game contract.
+     *
+     * @param _arg1 Arg1 supplied by the caller.
+     * @param _arg2 Arg2 supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean _18P(int _arg1, int _arg2) {
         int local1 = Tile._4mC(_arg1);
         int local2 = Tile._3FS(_arg2);
@@ -38,6 +64,12 @@ public class SnowWarGameStage {
         return false;
     }
 
+    /**
+     * Executes check floor collision for this Snow War game contract.
+     *
+     * @param gameItemObject Game item object supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean checkFloorCollision(GameItemObject gameItemObject) {
         if (gameItemObject.location3D().z() < 1) {
             return (true);
@@ -54,6 +86,13 @@ public class SnowWarGameStage {
 
     }
 
+    /**
+     * Returns the tile for this Snow War game contract.
+     *
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public Tile getTile(int x, int y) {
         if (x < 0 || x >= tileMap[0].length || y < 0 || y >= tileMap.length) {
             return (null);

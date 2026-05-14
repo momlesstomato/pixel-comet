@@ -17,7 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Describes room bot dao behavior for the storage subsystem.
+ */
 public class RoomBotDao {
+    /**
+     * Returns the bots by room id for this storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static List<IBotData> getBotsByRoomId(int roomId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -64,6 +73,12 @@ public class RoomBotDao {
         return data;
     }
 
+    /**
+     * Updates the room id for this storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param botId Bot id supplied by the caller.
+     */
     public static void setRoomId(int roomId, int botId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -84,6 +99,11 @@ public class RoomBotDao {
         }
     }
 
+    /**
+     * Persists data for this storage contract.
+     *
+     * @param data Data supplied by the caller.
+     */
     public static void saveData(BotData data) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -114,6 +134,15 @@ public class RoomBotDao {
         }
     }
 
+    /**
+     * Persists position for this storage contract.
+     *
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     * @param height Height supplied by the caller.
+     * @param botId Bot id supplied by the caller.
+     * @param roomId Room identifier used by the operation.
+     */
     public static void savePosition(int x, int y, double height, int botId, int roomId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

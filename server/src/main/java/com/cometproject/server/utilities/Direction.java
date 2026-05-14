@@ -1,5 +1,8 @@
 package com.cometproject.server.utilities;
 
+/**
+ * Enumerates direction values used by the Comet subsystem.
+ */
 public enum Direction {
     North,
     NorthEast,
@@ -74,14 +77,34 @@ public enum Direction {
         }
     }
 
+    /**
+     * Executes get for this Comet contract.
+     *
+     * @param num Num supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static final Direction get(int num) {
         return VALUES[num];
     }
 
+    /**
+     * Executes random for this Comet contract.
+     *
+     * @return Result produced by the operation.
+     */
     public static final Direction random() {
         return VALUES[RandomUtil.getRandomInt(0, 7)];
     }
 
+    /**
+     * Executes calculate for this Comet contract.
+     *
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     * @param x2 X2 supplied by the caller.
+     * @param y2 Y2 supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static final Direction calculate(int x, int y, int x2, int y2) {
         if (x > x2) {
             if (y == y2) return West;
@@ -97,10 +120,21 @@ public enum Direction {
         }
     }
 
+    /**
+     * Executes invert for this Comet contract.
+     *
+     * @return Result produced by the operation.
+     */
     public final Direction invert() {
         return VALUES[(this.num + (VALUES.length / 2)) % VALUES.length];
     }
 
+    /**
+     * Executes transform for this Comet contract.
+     *
+     * @param dir Dir supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public final Direction transform(Direction dir) {
         return VALUES[(this.num + dir.num) % VALUES.length];
     }

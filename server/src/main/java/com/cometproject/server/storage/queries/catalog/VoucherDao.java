@@ -10,7 +10,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Describes voucher dao behavior for the storage subsystem.
+ */
 public class VoucherDao {
+    /**
+     * Finds voucher by code for this storage contract.
+     *
+     * @param code Code supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static Voucher findVoucherByCode(final String code) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -46,6 +55,13 @@ public class VoucherDao {
         return voucher;
     }
 
+    /**
+     * Executes claim voucher for this storage contract.
+     *
+     * @param voucherId Voucher id supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     * @param claimed Claimed supplied by the caller.
+     */
     public static void claimVoucher(final int voucherId, final int playerId, final boolean claimed) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -69,6 +85,15 @@ public class VoucherDao {
         }
     }
 
+    /**
+     * Adds voucher to this storage contract.
+     *
+     * @param type Type supplied by the caller.
+     * @param prize Prize supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     * @param limit Limit supplied by the caller.
+     * @param code Code supplied by the caller.
+     */
     public static void addVoucher(String type, String prize, int playerId, int limit, String code) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

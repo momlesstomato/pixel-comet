@@ -19,6 +19,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
+/**
+ * Describes pet entity behavior for the room subsystem.
+ */
 public class PetEntity extends RoomEntity {
     private IPetData data;
     private PetAI ai;
@@ -27,6 +30,16 @@ public class PetEntity extends RoomEntity {
 
     private Map<String, Object> attributes = new ConcurrentHashMap<>();
 
+    /**
+     * Creates a pet entity instance for the room subsystem.
+     *
+     * @param data Data supplied by the caller.
+     * @param identifier Identifier supplied by the caller.
+     * @param startPosition Start position supplied by the caller.
+     * @param startBodyRotation Start body rotation supplied by the caller.
+     * @param startHeadRotation Start head rotation supplied by the caller.
+     * @param roomInstance Room instance supplied by the caller.
+     */
     public PetEntity(IPetData data, int identifier, Position startPosition, int startBodyRotation, int startHeadRotation, Room roomInstance) {
         super(identifier, startPosition, startBodyRotation, startHeadRotation, roomInstance);
 
@@ -34,33 +47,70 @@ public class PetEntity extends RoomEntity {
         this.ai = new PetAI(this);
     }
 
+    /**
+     * Updates the data for this room contract.
+     *
+     * @param data Data supplied by the caller.
+     */
     public void setData(IPetData data) {
         this.data = data;
     }
 
+    /**
+     * Updates the ai for this room contract.
+     *
+     * @param ai Ai supplied by the caller.
+     */
     public void setAi(PetAI ai) {
         this.ai = ai;
     }
 
+    /**
+     * Executes join room for this room contract.
+     *
+     * @param room Room participating in the operation.
+     * @param password Password supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean joinRoom(Room room, String password) {
         return true;
     }
 
+    /**
+     * Executes finalize join room for this room contract.
+     */
     @Override
     protected void finalizeJoinRoom() {
 
     }
 
+    /**
+     * Handles the reached tile callback for this room contract.
+     *
+     * @param tile Tile supplied by the caller.
+     */
     @Override
     public void onReachedTile(RoomTile tile) {
     }
 
+    /**
+     * Executes leave room for this room contract.
+     *
+     * @param isOffline Is offline supplied by the caller.
+     * @param isKick Is kick supplied by the caller.
+     * @param toHotelView To hotel view supplied by the caller.
+     */
     @Override
     public void leaveRoom(boolean isOffline, boolean isKick, boolean toHotelView) {
         this.leaveRoom(false);
     }
 
+    /**
+     * Executes leave room for this room contract.
+     *
+     * @param save Save supplied by the caller.
+     */
     public void leaveRoom(boolean save) {
         if (save) {
             PetDao.savePosition(this.getPosition().getX(), this.getPosition().getY(), this.data.getId());
@@ -90,11 +140,22 @@ public class PetEntity extends RoomEntity {
         this.attributes.clear();
     }
 
+    /**
+     * Handles the chat callback for this room contract.
+     *
+     * @param message Message supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onChat(String message) {
         return false;
     }
 
+    /**
+     * Handles the room dispose callback for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onRoomDispose() {
 //        PetDao.savePosition(this.getPosition().getX(), this.getPosition().getY(), this.data.getId());
@@ -105,26 +166,51 @@ public class PetEntity extends RoomEntity {
         return true;
     }
 
+    /**
+     * Returns the username for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getUsername() {
         return null;
     }
 
+    /**
+     * Returns the motto for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getMotto() {
         return null;
     }
 
+    /**
+     * Returns the figure for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getFigure() {
         return null;
     }
 
+    /**
+     * Returns the gender for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getGender() {
         return null;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(this.data.getId());
@@ -162,6 +248,11 @@ public class PetEntity extends RoomEntity {
         msg.writeString("");
     }
 
+    /**
+     * Executes compose update for this room contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void composeUpdate(IComposer msg) {
         msg.writeInt(this.getId());
         msg.writeInt(0); // anyone can ride
@@ -173,6 +264,11 @@ public class PetEntity extends RoomEntity {
         msg.writeBoolean(false);
     }
 
+    /**
+     * Executes compose information for this room contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void composeInformation(IComposer msg) {
         PetEntity petEntity = this;
 
@@ -241,35 +337,70 @@ public class PetEntity extends RoomEntity {
         }
     }
 
+    /**
+     * Returns the data for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public IPetData getData() {
         return data;
     }
 
+    /**
+     * Returns the cycle count for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getCycleCount() {
         return this.cycleCount;
     }
 
+    /**
+     * Executes decrement cycle count for this room contract.
+     */
     public void decrementCycleCount() {
         cycleCount--;
     }
 
+    /**
+     * Executes increment cycle count for this room contract.
+     */
     public void incrementCycleCount() {
         cycleCount++;
     }
 
+    /**
+     * Executes reset cycle count for this room contract.
+     */
     public void resetCycleCount() {
         this.cycleCount = 0;
     }
 
+    /**
+     * Returns the ai for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public BotAI getAI() {
         return ai;
     }
 
+    /**
+     * Returns the pet ai for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public PetAI getPetAI() {
         return this.ai;
     }
 
+    /**
+     * Updates the attribute for this room contract.
+     *
+     * @param attributeKey Attribute key supplied by the caller.
+     * @param attributeValue Attribute value supplied by the caller.
+     */
     @Override
     public void setAttribute(String attributeKey, Object attributeValue) {
         if (this.attributes.containsKey(attributeKey)) {
@@ -279,6 +410,12 @@ public class PetEntity extends RoomEntity {
         }
     }
 
+    /**
+     * Executes days since birthday for this room contract.
+     *
+     * @param birthday Birthday supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public int daysSinceBirthday(long birthday) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(birthday * 1000L);
@@ -289,16 +426,33 @@ public class PetEntity extends RoomEntity {
         return newCalendar.get(Calendar.DAY_OF_YEAR) - calendar.get(Calendar.DAY_OF_YEAR);
     }
 
+    /**
+     * Returns the attribute for this room contract.
+     *
+     * @param attributeKey Attribute key supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public Object getAttribute(String attributeKey) {
         return this.attributes.get(attributeKey);
     }
 
+    /**
+     * Indicates whether this room contract has attribute.
+     *
+     * @param attributeKey Attribute key supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean hasAttribute(String attributeKey) {
         return this.attributes.containsKey(attributeKey);
     }
 
+    /**
+     * Removes attribute from this room contract.
+     *
+     * @param attributeKey Attribute key supplied by the caller.
+     */
     @Override
     public void removeAttribute(String attributeKey) {
         this.attributes.remove(attributeKey);

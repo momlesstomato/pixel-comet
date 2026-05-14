@@ -7,7 +7,16 @@ import com.cometproject.server.network.sessions.Session;
 
 import java.util.Random;
 
+/**
+ * Describes test command behavior for the Comet subsystem.
+ */
 public class TestCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         /*client.send(new ConfirmableAlertMessageComposer(client.getPlayer().getData().getUsername(), 1, false));
@@ -31,16 +40,31 @@ public class TestCommand extends ChatCommand {
         }*/
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "test_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.test.description");

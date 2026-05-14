@@ -25,6 +25,9 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * Owns item process behavior inside the room processing subsystem.
+ */
 public class ItemProcessComponent implements CometTask {
     private static final int INTERVAL = 500;
     private static final int FLAG = 600;
@@ -38,12 +41,20 @@ public class ItemProcessComponent implements CometTask {
 
     private boolean active = false;
 
+    /**
+     * Creates a item process component instance for the room processing subsystem.
+     *
+     * @param room Room participating in the operation.
+     */
     public ItemProcessComponent(Room room) {
         this.room = room;
 
         LOGGER = LoggerFactory.getLogger("Item Process [" + room.getData().getName() + "]");
     }
 
+    /**
+     * Starts this room processing component.
+     */
     public void start() {
         if (Room.useCycleForItems) {
             this.active = true;
@@ -74,6 +85,9 @@ public class ItemProcessComponent implements CometTask {
         StorageContext.getCurrentContext().getRoomItemRepository().saveItemBatch(items);
     }
 
+    /**
+     * Stops this room processing component.
+     */
     public void stop() {
         if (Room.useCycleForItems) {
             this.active = false;
@@ -92,10 +106,18 @@ public class ItemProcessComponent implements CometTask {
         }
     }
 
+    /**
+     * Indicates whether active applies to this room processing contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isActive() {
         return this.active;
     }
 
+    /**
+     * Processes tick for this room processing contract.
+     */
     public void processTick() {
         if (!this.active) {
             return;
@@ -148,26 +170,50 @@ public class ItemProcessComponent implements CometTask {
         }
     }
 
+    /**
+     * Runs this room processing task.
+     */
     @Override
     public void run() {
         this.processTick();
     }
 
+    /**
+     * Executes queue action for this room processing contract.
+     *
+     * @param action Action supplied by the caller.
+     */
     public void queueAction(WiredTriggerExecutor action) {
         // TODO: monitor this
         CometThreadManager.getInstance().executeOnce(action);
     }
 
+    /**
+     * Persists item for this room processing contract.
+     *
+     * @param roomItem Room item supplied by the caller.
+     */
     public void saveItem(RoomItem roomItem) {
         this.saveQueue.remove(roomItem);
 
         this.saveQueue.add(roomItem);
     }
 
+    /**
+     * Handles exception for this room processing contract.
+     *
+     * @param item Item supplied by the caller.
+     * @param e E supplied by the caller.
+     */
     protected void handleException(RoomItem item, Exception e) {
         LOGGER.error("Error while processing item: " + item.getId() + " (" + item.getClass().getSimpleName() + ")", e);
     }
 
+    /**
+     * Returns the room for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Room getRoom() {
         return this.room;
     }

@@ -1,5 +1,8 @@
 package com.cometproject.games.data;
 
+/**
+ * Carries game player data data for the Comet subsystem.
+ */
 public class GamePlayerData {
   public int rank;
   

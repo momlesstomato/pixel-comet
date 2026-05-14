@@ -11,11 +11,27 @@ import com.cometproject.server.game.navigator.types.publics.PublicRoom;
 import com.cometproject.server.game.rooms.RoomManager;
 
 
+/**
+ * Describes room writer behavior for the room subsystem.
+ */
 public class RoomWriter {
+    /**
+     * Executes write for this room contract.
+     *
+     * @param room Room participating in the operation.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public static void write(IRoomData room, IComposer msg) {
         write(room, msg, false);
     }
 
+    /**
+     * Executes write for this room contract.
+     *
+     * @param room Room participating in the operation.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @param skipAuth Skip auth supplied by the caller.
+     */
     public static void write(IRoomData room, IComposer msg, boolean skipAuth) {
         boolean isActive = RoomManager.getInstance().isActive(room.getId());
         PublicRoom publicRoom = NavigatorManager.getInstance().getPublicRoom(room.getId());
@@ -47,6 +63,16 @@ public class RoomWriter {
         composeRoomSpecials(msg, room, promotion, group, room.getType());
     }
 
+    /**
+     * Executes entry data for this room contract.
+     *
+     * @param room Room participating in the operation.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @param isLoading Is loading supplied by the caller.
+     * @param checkEntry Check entry supplied by the caller.
+     * @param skipAuth Skip auth supplied by the caller.
+     * @param canMute Can mute supplied by the caller.
+     */
     public static void entryData(IRoomData room, IComposer msg, boolean isLoading, boolean checkEntry, boolean skipAuth, boolean canMute) {
         msg.writeBoolean(isLoading); // is loading
 
@@ -70,6 +96,15 @@ public class RoomWriter {
         msg.writeInt(room.getAntiFloodSettings());
     }
 
+    /**
+     * Executes compose room specials for this room contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @param roomData Room data supplied by the caller.
+     * @param promotion Promotion supplied by the caller.
+     * @param group Group supplied by the caller.
+     * @param roomType Room type supplied by the caller.
+     */
     public static void composeRoomSpecials(IComposer msg, IRoomData roomData, RoomPromotion promotion, IGroupData group, RoomType roomType) {
         boolean composeGroup = group != null;
         boolean composePromo = promotion != null;
@@ -163,6 +198,12 @@ public class RoomWriter {
         msg.writeString(group.getBadge());
     }
 
+    /**
+     * Executes room access to number for this room contract.
+     *
+     * @param access Access supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static int roomAccessToNumber(RoomAccessType access) {
         if (access == RoomAccessType.DOORBELL) {
             return 1;
@@ -176,6 +217,12 @@ public class RoomWriter {
         return 0;
     }
 
+    /**
+     * Executes room access to string for this room contract.
+     *
+     * @param access Access supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static RoomAccessType roomAccessToString(int access) {
         if (access == 1) {
             return RoomAccessType.DOORBELL;

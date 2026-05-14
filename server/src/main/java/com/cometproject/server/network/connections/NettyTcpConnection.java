@@ -37,16 +37,29 @@ public final class NettyTcpConnection extends AbstractConnection {
         return this.context;
     }
 
+    /**
+     * Returns the remote address for this network connection contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getRemoteAddress() {
         return ((InetSocketAddress) this.context.channel().remoteAddress()).getAddress().getHostAddress();
     }
 
+    /**
+     * Executes flush for this network connection contract.
+     */
     @Override
     public void flush() {
         this.context.flush();
     }
 
+    /**
+     * Handles the cipher changed callback for this network connection contract.
+     *
+     * @param cipher Cipher supplied by the caller.
+     */
     @Override
     protected void onCipherChanged(final ConnectionCipher cipher) {
         if (!(cipher instanceof Rc4ConnectionCipher)) {
@@ -64,16 +77,31 @@ public final class NettyTcpConnection extends AbstractConnection {
         }
     }
 
+    /**
+     * Executes send internal for this network connection contract.
+     *
+     * @param composer Composer supplied by the caller.
+     */
     @Override
     protected void sendInternal(final IMessageComposer composer) {
         this.context.writeAndFlush(composer, this.context.voidPromise());
     }
 
+    /**
+     * Executes send raw internal for this network connection contract.
+     *
+     * @param payload Payload supplied by the caller.
+     */
     @Override
     protected void sendRawInternal(final String payload) {
         this.context.writeAndFlush(payload, this.context.voidPromise());
     }
 
+    /**
+     * Executes close internal for this network connection contract.
+     *
+     * @param closeCode Close code supplied by the caller.
+     */
     @Override
     protected void closeInternal(final ConnectionCloseCode closeCode) {
         this.context.close();

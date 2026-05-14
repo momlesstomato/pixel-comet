@@ -6,9 +6,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * Manages chat emotions runtime state for the room subsystem.
+ */
 public class ChatEmotionsManager {
     private Map<String, ChatEmotion> emotions;
 
+    /**
+     * Creates a chat emotions manager instance for the room subsystem.
+     */
     public ChatEmotionsManager() {
         emotions = new HashMap<String, ChatEmotion>() {{
             put(":)", ChatEmotion.SMILE);
@@ -70,6 +76,12 @@ public class ChatEmotionsManager {
         RoomManager.LOGGER.info("Loaded " + this.emotions.size() + " chat emotions");
     }
 
+    /**
+     * Returns the emotion for this room contract.
+     *
+     * @param message Message supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public ChatEmotion getEmotion(String message) {
         for (Map.Entry<String, ChatEmotion> emotion : emotions.entrySet()) {
             if (message.toLowerCase().contains(emotion.getKey().toLowerCase())) {

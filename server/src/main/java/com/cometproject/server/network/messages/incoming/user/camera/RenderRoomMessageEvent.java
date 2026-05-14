@@ -18,9 +18,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
+/**
+ * Represents the render room message event published by the network message subsystem.
+ */
 public class RenderRoomMessageEvent implements Event {
     private static final byte[] signature = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10};
 
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @throws Exception When the operation cannot complete.
+     */
     @Override
     public void handle(Session client, MessageEvent msg) throws Exception {
         int length = msg.readInt();
@@ -48,6 +58,12 @@ public class RenderRoomMessageEvent implements Event {
         }
     }
 
+    /**
+     * Indicates whether png file applies to this network message contract.
+     *
+     * @param file File supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public static boolean isPngFile(byte[] file) {
         return Arrays.equals(Arrays.copyOfRange(file, 0, 8), signature);
     }

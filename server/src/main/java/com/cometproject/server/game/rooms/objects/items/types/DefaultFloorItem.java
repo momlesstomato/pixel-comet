@@ -18,11 +18,28 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
+/**
+ * Describes default floor item behavior for the room subsystem.
+ */
 public class DefaultFloorItem extends RoomItemFloor {
+    /**
+     * Creates a default floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public DefaultFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (!isWiredTrigger) {
@@ -64,6 +81,9 @@ public class DefaultFloorItem extends RoomItemFloor {
                     pEntity.getPlayer().sendBalance();
                     pEntity.getPlayer().getEntity().getRoom().getEntities().broadcastMessage(new WhisperMessageComposer(pEntity.getPlayer().getEntity().getId(), "Has recibido " + diamondsBonus + " asteroides y " + creditsBonus + " créditos de bonus.", 11));
                     new Timer().schedule(new TimerTask() {
+                        /**
+                         * Runs this room task.
+                         */
                         @Override
                         public void run() {
                             rData.isOnCooldown = false;
@@ -91,6 +111,11 @@ public class DefaultFloorItem extends RoomItemFloor {
         return true;
     }
 
+    /**
+     * Handles the entity step on callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOn(RoomEntity entity) {
         if (entity instanceof PlayerEntity) {

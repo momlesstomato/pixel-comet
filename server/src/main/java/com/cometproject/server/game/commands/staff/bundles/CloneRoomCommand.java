@@ -19,10 +19,19 @@ import com.google.common.collect.Sets;
 
 import java.util.Set;
 
+/**
+ * Describes clone room command behavior for the Comet subsystem.
+ */
 public class CloneRoomCommand extends ChatCommand {
 
     private String logDesc = "";
 
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         final RoomBundle bundle = RoomBundle.create(client.getPlayer().getEntity().getRoom(), "");
@@ -58,31 +67,61 @@ public class CloneRoomCommand extends ChatCommand {
         }
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "cloneroom_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.cloneroom.description");
     }
 
+    /**
+     * Indicates whether async applies to this Comet contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isAsync() {
         return true;
     }
 
+    /**
+     * Returns the loggable description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getLoggableDescription(){
         return this.logDesc;
     }
 
+    /**
+     * Executes loggable for this Comet contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean Loggable(){
         return true;

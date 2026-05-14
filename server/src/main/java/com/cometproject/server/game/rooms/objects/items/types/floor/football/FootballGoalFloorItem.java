@@ -13,9 +13,18 @@ import com.cometproject.server.network.messages.outgoing.room.avatar.ActionMessa
 import com.cometproject.server.network.sessions.Session;
 
 
+/**
+ * Describes football goal floor item behavior for the room subsystem.
+ */
 public class FootballGoalFloorItem extends RoomItemFloor {
     private GameTeam gameTeam;
 
+    /**
+     * Creates a football goal floor item instance for the room subsystem.
+     *
+     * @param roomItemData Room item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public FootballGoalFloorItem(RoomItemData roomItemData, Room room) {
         super(roomItemData, room);
 
@@ -35,6 +44,11 @@ public class FootballGoalFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Handles the item added to stack callback for this room contract.
+     *
+     * @param floorItem Floor item supplied by the caller.
+     */
     @Override
     public void onItemAddedToStack(RoomItemFloor floorItem) {
         if(floorItem instanceof RollableFloorItem) {
@@ -56,6 +70,11 @@ public class FootballGoalFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Returns the game team for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public GameTeam getGameTeam() {
         return gameTeam;
     }

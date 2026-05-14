@@ -5,14 +5,27 @@ import com.cometproject.tools.CometTools;
 import com.cometproject.tools.logger.proxy.Proxy;
 
 
+/**
+ * Describes packet logger behavior for the tooling subsystem.
+ */
 public class PacketLogger {
     private CometTools tools;
     private boolean isActive = false;
 
+    /**
+     * Creates a packet logger instance for the tooling subsystem.
+     *
+     * @param tools Tools supplied by the caller.
+     */
     public PacketLogger(CometTools tools) {
         this.isActive = false;
     }
 
+    /**
+     * Starts this tooling component.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean start() {
         try {
             // Initiate the Proxy
@@ -40,6 +53,11 @@ public class PacketLogger {
         }
     }
 
+    /**
+     * Stops this tooling component.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean stop() {
         try {
             return true;
@@ -48,6 +66,11 @@ public class PacketLogger {
         }
     }
 
+    /**
+     * Returns the is active for this tooling contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean getIsActive() {
         return this.isActive;
     }

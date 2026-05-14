@@ -9,7 +9,16 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Describes player quests dao behavior for the storage subsystem.
+ */
 public class PlayerQuestsDao {
+    /**
+     * Returns the quest progression for this storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, Integer> getQuestProgression(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -40,6 +49,14 @@ public class PlayerQuestsDao {
         return questProgression;
     }
 
+    /**
+     * Persists progression for this storage contract.
+     *
+     * @param isNew Is new supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     * @param questId Quest id supplied by the caller.
+     * @param progression Progression supplied by the caller.
+     */
     public static void saveProgression(boolean isNew, int playerId, int questId, int progression) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -70,6 +87,12 @@ public class PlayerQuestsDao {
         }
     }
 
+    /**
+     * Indicates whether this storage contract can cel quest.
+     *
+     * @param questId Quest id supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     */
     public static void cancelQuest(int questId, int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

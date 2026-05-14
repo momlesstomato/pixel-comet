@@ -6,8 +6,18 @@
 /*    */ 
 /*    */ 
 /*    */ 
+/**
+ * Describes serialize item data behavior for the Snow War game subsystem.
+ */
 /*    */ public class SerializeItemData
 /*    */ {
+/**
+ * Executes parse for this network message contract.
+ *
+ * @param msg Composer buffer that receives serialized protocol fields.
+ * @param baseItem Base item supplied by the caller.
+ * @param item Item supplied by the caller.
+ */
 /*    */   public static void parse(IComposer msg, BaseItem baseItem, Item item) {
 /* 12 */     msg.writeInt(item.extraData.getType());
 /* 13 */     item.extraData.serializeComposer(msg);

@@ -21,6 +21,12 @@ final class MapConfigurationSource implements ConfigurationSource {
         this.values = Map.copyOf(normalizedValues);
     }
 
+    /**
+     * Executes get for this configuration contract.
+     *
+     * @param key Key supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public String get(final String key) {
         final String value = this.values.get(key);
@@ -31,6 +37,11 @@ final class MapConfigurationSource implements ConfigurationSource {
         return this.values.get(ConfigurationKeys.toEnvKey(key));
     }
 
+    /**
+     * Returns the all for this configuration contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Map<String, String> getAll() {
         return this.values;

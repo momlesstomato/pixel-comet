@@ -28,8 +28,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Represents the buy group message event published by the network message subsystem.
+ */
 public class BuyGroupMessageEvent implements Event {
 
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void handle(Session client, MessageEvent msg) {
         if (client.getPlayer().getData().getCredits() < CometSettings.groupCost) {
             return;

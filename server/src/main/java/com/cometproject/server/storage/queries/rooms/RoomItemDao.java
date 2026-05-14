@@ -7,8 +7,20 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 
+/**
+ * Describes room item dao behavior for the storage subsystem.
+ */
 public class RoomItemDao {
 
+/**
+ * Returns the items for this Snow War game contract.
+ *
+ * @param room Room supplied by the caller.
+ * @param MapLong Map long supplied by the caller.
+ * @param floorItems Floor items supplied by the caller.
+ * @param MapLong Map long supplied by the caller.
+ * @param wallItems Wall items supplied by the caller.
+ */
 //    public static void getItems(Room room, Map<Long, RoomItemFloor> floorItems, Map<Long, RoomItemWall> wallItems) {
 //        Connection sqlConnection = null;
 //        PreparedStatement preparedStatement = null;
@@ -61,6 +73,13 @@ public class RoomItemDao {
 //        }
 //    }
 //
+/**
+ * Executes remove item from room for this Snow War game contract.
+ *
+ * @param itemId Item id supplied by the caller.
+ * @param userId User id supplied by the caller.
+ * @param finalState Final state supplied by the caller.
+ */
 //    public static void removeItemFromRoom(long itemId, int userId, String finalState) {
 //        Connection sqlConnection = null;
 //        PreparedStatement preparedStatement = null;
@@ -83,6 +102,11 @@ public class RoomItemDao {
 //        }
 //    }
 //
+    /**
+     * Deletes item for this storage contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     */
     public static void deleteItem(long itemId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -102,6 +126,12 @@ public class RoomItemDao {
         }
     }
 //
+/**
+ * Executes save data for this Snow War game contract.
+ *
+ * @param itemId Item id supplied by the caller.
+ * @param data Data supplied by the caller.
+ */
 //    public static void saveData(long itemId, String data) {
 //        Connection sqlConnection = null;
 //        PreparedStatement preparedStatement = null;
@@ -122,6 +152,12 @@ public class RoomItemDao {
 //        }
 //    }
 //
+/**
+ * Returns the room id by id for this Snow War game contract.
+ *
+ * @param itemId Item id supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 //    public static int getRoomIdById(long itemId) {
 //        Connection sqlConnection = null;
 //        PreparedStatement preparedStatement = null;
@@ -149,6 +185,15 @@ public class RoomItemDao {
 //        return 0;
 //    }
 //
+/**
+ * Executes save item position for this Snow War game contract.
+ *
+ * @param x X supplied by the caller.
+ * @param y Y supplied by the caller.
+ * @param height Height supplied by the caller.
+ * @param rotation Rotation supplied by the caller.
+ * @param id Id supplied by the caller.
+ */
 //    public static void saveItemPosition(int x, int y, double height, int rotation, long id) {
 //        Connection sqlConnection = null;
 //        PreparedStatement preparedStatement = null;
@@ -172,6 +217,17 @@ public class RoomItemDao {
 //        }
 //    }
 //
+/**
+ * Executes place floor item for this Snow War game contract.
+ *
+ * @param roomId Room id supplied by the caller.
+ * @param x X supplied by the caller.
+ * @param y Y supplied by the caller.
+ * @param height Height supplied by the caller.
+ * @param rot Rot supplied by the caller.
+ * @param data Data supplied by the caller.
+ * @param itemId Item id supplied by the caller.
+ */
 //    public static void placeFloorItem(long roomId, int x, int y, double height, int rot, String data, long itemId) {
 //        Connection sqlConnection = null;
 //        PreparedStatement preparedStatement = null;
@@ -197,6 +253,14 @@ public class RoomItemDao {
 //        }
 //    }
 //
+/**
+ * Executes place wall item for this Snow War game contract.
+ *
+ * @param roomId Room id supplied by the caller.
+ * @param wallPos Wall pos supplied by the caller.
+ * @param data Data supplied by the caller.
+ * @param itemId Item id supplied by the caller.
+ */
 //    public static void placeWallItem(int roomId, String wallPos, String data, long itemId) {
 //        Connection sqlConnection = null;
 //        PreparedStatement preparedStatement = null;
@@ -220,6 +284,12 @@ public class RoomItemDao {
 //        }
 //    }
 //
+/**
+ * Updates the base item for this Snow War game contract.
+ *
+ * @param itemId Item id supplied by the caller.
+ * @param baseId Base id supplied by the caller.
+ */
 //    public static void setBaseItem(long itemId, int baseId) {
 //        Connection sqlConnection = null;
 //        PreparedStatement preparedStatement = null;
@@ -241,6 +311,11 @@ public class RoomItemDao {
 //        }
 //    }
 //
+/**
+ * Executes process batch for this Snow War game contract.
+ *
+ * @param itemsToStore Items to store supplied by the caller.
+ */
 //    public static void processBatch(List<RoomItem> itemsToStore) {
 //        Connection sqlConnection = null;
 //        PreparedStatement preparedStatement = null;
@@ -276,6 +351,11 @@ public class RoomItemDao {
 //        }
 //    }
 //
+/**
+ * Executes save floor items for this Snow War game contract.
+ *
+ * @param items Items supplied by the caller.
+ */
 //    public static void saveFloorItems(Collection<RoomItem> items) {
 //        Connection sqlConnection = null;
 //        PreparedStatement preparedStatement = null;
@@ -307,6 +387,11 @@ public class RoomItemDao {
 //        }
 //    }
 //
+/**
+ * Executes save item for this Snow War game contract.
+ *
+ * @param floor Floor supplied by the caller.
+ */
 //    public static void saveItem(RoomItemFloor floor) {
 //        Connection sqlConnection = null;
 //        PreparedStatement preparedStatement = null;
@@ -331,6 +416,13 @@ public class RoomItemDao {
 //        }
 //    }
 //
+/**
+ * Executes save reward for this Snow War game contract.
+ *
+ * @param itemId Item id supplied by the caller.
+ * @param playerId Player id supplied by the caller.
+ * @param rewardData Reward data supplied by the caller.
+ */
 //    public static void saveReward(long itemId, int playerId, final String rewardData) {
 //        Connection sqlConnection = null;
 //        PreparedStatement preparedStatement = null;
@@ -353,6 +445,12 @@ public class RoomItemDao {
 //        }
 //    }
 //
+/**
+ * Returns the given rewards for this Snow War game contract.
+ *
+ * @param id Id supplied by the caller.
+ * @return Value exposed by the contract.
+ */
 //    public static Map<Integer, Set<String>> getGivenRewards(long id) {
 //        Connection sqlConnection = null;
 //        PreparedStatement preparedStatement = null;

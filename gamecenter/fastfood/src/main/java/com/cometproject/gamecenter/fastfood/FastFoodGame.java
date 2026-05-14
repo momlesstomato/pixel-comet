@@ -15,6 +15,9 @@ import com.cometproject.gamecenter.fastfood.players.MockPlayerBuilder;
 import com.cometproject.server.protocol.messages.MessageComposer;
 import com.google.common.collect.Sets;
 
+/**
+ * Describes fast food game behavior for the Fast Food game subsystem.
+ */
 public class FastFoodGame {
     private Set<FastFoodNetSession> players;
 
@@ -23,6 +26,9 @@ public class FastFoodGame {
 
     private final AtomicInteger counter = new AtomicInteger(0);
 
+    /**
+     * Creates a fast food game instance for the Fast Food game subsystem.
+     */
     public FastFoodGame() {
         this.players = Sets.newConcurrentHashSet();
 
@@ -49,6 +55,11 @@ public class FastFoodGame {
         }
     }
 
+    /**
+     * Executes start game for this Fast Food game contract.
+     *
+     * @param executorService Executor service supplied by the caller.
+     */
     public void startGame(ScheduledExecutorService executorService) {
         for (FastFoodNetSession netSession : this.getPlayers()) {
             if (netSession.getConnection() != null) {
@@ -63,10 +74,20 @@ public class FastFoodGame {
         this.started = true;
     }
 
+    /**
+     * Executes stop game for this Fast Food game contract.
+     */
     public void stopGame() {
         this.scheduledFuture.cancel(true);
     }
 
+    /**
+     * Executes launch for this Fast Food game contract.
+     *
+     * @param type Type supplied by the caller.
+     * @param gameSession Game session supplied by the caller.
+     * @param isCompleted Is completed supplied by the caller.
+     */
     public void launch(int type, FastFoodGameSession gameSession, boolean isCompleted) {
         switch (type){
             case 0:
@@ -102,6 +123,11 @@ public class FastFoodGame {
         }
     }
 
+    /**
+     * Executes broadcast for this Fast Food game contract.
+     *
+     * @param messageComposer Message composer supplied by the caller.
+     */
     public void broadcast(MessageComposer messageComposer) {
         for (FastFoodNetSession netSession : this.players) {
             if (netSession.getConnection() != null) {
@@ -110,6 +136,12 @@ public class FastFoodGame {
         }
     }
 
+    /**
+     * Executes broadcast for this Fast Food game contract.
+     *
+     * @param messageComposer Message composer supplied by the caller.
+     * @param gameSession Game session supplied by the caller.
+     */
     public void broadcast(MessageComposer messageComposer, FastFoodGameSession gameSession) {
         for (FastFoodNetSession netSession : this.players) {
             if (netSession.getConnection() != null && netSession.getGameSession() == gameSession) {
@@ -118,18 +150,38 @@ public class FastFoodGame {
         }
     }
 
+    /**
+     * Indicates whether this Fast Food game contract has started.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasStarted() {
         return this.started;
     }
 
+    /**
+     * Indicates whether this Fast Food game contract can start.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean canStart() {
         return this.players.size() == 3;
     }
 
+    /**
+     * Returns the players for this Fast Food game contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Set<FastFoodNetSession> getPlayers() {
         return this.players;
     }
 
+    /**
+     * Returns the counter for this Fast Food game contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public AtomicInteger getCounter() {
         return counter;
     }

@@ -10,7 +10,16 @@ import com.cometproject.server.game.rooms.types.components.games.GameTeam;
 import com.cometproject.server.network.sessions.Session;
 
 
+/**
+ * Describes effect command behavior for the Comet subsystem.
+ */
 public class EffectCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         if (params.length != 1) {
@@ -106,21 +115,41 @@ public class EffectCommand extends ChatCommand {
         }
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "enable_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return Locale.getOrDefault("command.parameter.number", "%number%");
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.enable.description");
     }
 
+    /**
+     * Indicates whether this Comet contract can disable.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean canDisable() {
         return true;

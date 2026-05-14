@@ -35,6 +35,12 @@ public final class DotEnvConfigurationSource implements ConfigurationSource {
         this.values = Map.copyOf(resolvedValues);
     }
 
+    /**
+     * Executes get for this configuration contract.
+     *
+     * @param key Key supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public String get(final String key) {
         final String directValue = this.values.get(key);
@@ -45,6 +51,11 @@ public final class DotEnvConfigurationSource implements ConfigurationSource {
         return this.values.get(ConfigurationKeys.toEnvKey(key));
     }
 
+    /**
+     * Returns the all for this configuration contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Map<String, String> getAll() {
         return this.values;

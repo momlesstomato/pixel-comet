@@ -5,8 +5,17 @@ import com.cometproject.server.game.commands.ChatCommand;
 import com.cometproject.server.network.sessions.Session;
 
 
+/**
+ * Describes teleport command behavior for the Comet subsystem.
+ */
 public class TeleportCommand extends ChatCommand {
 
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param message Message supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] message) {
         if (client.getPlayer().getEntity() != null && client.getPlayer().getEntity().getRoom() != null) {
@@ -26,16 +35,31 @@ public class TeleportCommand extends ChatCommand {
         }
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "teleport_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.teleport.description");

@@ -6,7 +6,15 @@
 //
 //import java.util.function.Consumer;
 //
+/**
+ * Represents the join group message event published by the group subsystem.
+ */
 //public class JoinGroupMessageEvent extends MessageEventHandler<GroupMessageParser> {
+/**
+ * Creates a join group message event instance for the Snow War game subsystem.
+ *
+ * @param parserConsumer Parser consumer supplied by the caller.
+ */
 //    public JoinGroupMessageEvent(Consumer<GroupMessageParser> parserConsumer) {
 //        super(Events.JoinGroupMessageEvent, parserConsumer);
 //    }

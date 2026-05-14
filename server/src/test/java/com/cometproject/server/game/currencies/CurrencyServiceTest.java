@@ -39,6 +39,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class CurrencyServiceTest {
+    /**
+     * Handles the currency adjustment requested callback for this currency contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Test
     void requestEventCancellationPreventsPersistence() {
         final InMemoryCurrencyRepository repository = new InMemoryCurrencyRepository();
@@ -62,6 +67,11 @@ class CurrencyServiceTest {
         assertEquals(0, repository.movements.size());
     }
 
+    /**
+     * Handles the currency adjustment requested callback for this currency contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Test
     void requestEventCanModifyAmountBeforePersistence() {
         final InMemoryCurrencyRepository repository = new InMemoryCurrencyRepository();
@@ -81,6 +91,11 @@ class CurrencyServiceTest {
         assertEquals(32, repository.balance("currency_0"));
     }
 
+    /**
+     * Handles the currency balance changed callback for this currency contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Test
     void postCommitEventRunsAfterPersistence() {
         final InMemoryCurrencyRepository repository = new InMemoryCurrencyRepository();
@@ -151,26 +166,55 @@ class CurrencyServiceTest {
             this.balances.put("currency_0", 25L);
         }
 
+        /**
+         * Returns the definitions for this currency contract.
+         *
+         * @param consumer Consumer supplied by the caller.
+         */
         @Override
         public void getDefinitions(final Consumer<List<ICurrencyDefinition>> consumer) {
             consumer.accept(List.copyOf(this.definitions.values()));
         }
 
+        /**
+         * Returns the definition for this currency contract.
+         *
+         * @param currencyCode Currency code supplied by the caller.
+         * @param consumer Consumer supplied by the caller.
+         */
         @Override
         public void getDefinition(final String currencyCode, final Consumer<ICurrencyDefinition> consumer) {
             consumer.accept(this.definitions.get(currencyCode));
         }
 
+        /**
+         * Returns the balances for this currency contract.
+         *
+         * @param playerId Player identifier used by the operation.
+         * @param consumer Consumer supplied by the caller.
+         */
         @Override
         public void getBalances(final int playerId, final Consumer<Map<String, Long>> consumer) {
             consumer.accept(Map.copyOf(this.balances));
         }
 
+        /**
+         * Returns the player rank for this currency contract.
+         *
+         * @param playerId Player identifier used by the operation.
+         * @param consumer Consumer supplied by the caller.
+         */
         @Override
         public void getPlayerRank(final int playerId, final Consumer<Integer> consumer) {
             consumer.accept(1);
         }
 
+        /**
+         * Executes adjust for this currency contract.
+         *
+         * @param adjustment Adjustment supplied by the caller.
+         * @param consumer Consumer supplied by the caller.
+         */
         @Override
         public void adjust(final CurrencyAdjustment adjustment, final Consumer<CurrencyMovementResult> consumer) {
             final long oldBalance = this.balance(adjustment.getCurrencyCode());
@@ -207,6 +251,12 @@ class CurrencyServiceTest {
             consumer.accept(result);
         }
 
+        /**
+         * Executes upsert definition for this currency contract.
+         *
+         * @param mutation Mutation supplied by the caller.
+         * @param consumer Consumer supplied by the caller.
+         */
         @Override
         public void upsertDefinition(
                 final com.cometproject.storage.api.data.currency.CurrencyDefinitionMutation mutation,
@@ -214,16 +264,33 @@ class CurrencyServiceTest {
             throw new UnsupportedOperationException();
         }
 
+        /**
+         * Executes disable definition for this currency contract.
+         *
+         * @param currencyCode Currency code supplied by the caller.
+         */
         @Override
         public void disableDefinition(final String currencyCode) {
             throw new UnsupportedOperationException();
         }
 
+        /**
+         * Returns the role rules for this currency contract.
+         *
+         * @param currencyCode Currency code supplied by the caller.
+         * @param consumer Consumer supplied by the caller.
+         */
         @Override
         public void getRoleRules(final String currencyCode, final Consumer<List<ICurrencyRoleRule>> consumer) {
             consumer.accept(List.of());
         }
 
+        /**
+         * Executes upsert role rule for this currency contract.
+         *
+         * @param mutation Mutation supplied by the caller.
+         * @param consumer Consumer supplied by the caller.
+         */
         @Override
         public void upsertRoleRule(
                 final CurrencyRoleRuleMutation mutation,
@@ -231,36 +298,78 @@ class CurrencyServiceTest {
             throw new UnsupportedOperationException();
         }
 
+        /**
+         * Deletes role rule for this currency contract.
+         *
+         * @param currencyCode Currency code supplied by the caller.
+         * @param rankId Rank id supplied by the caller.
+         */
         @Override
         public void deleteRoleRule(final String currencyCode, final int rankId) {
             throw new UnsupportedOperationException();
         }
 
+        /**
+         * Returns the aliases for this currency contract.
+         *
+         * @param currencyCode Currency code supplied by the caller.
+         * @param consumer Consumer supplied by the caller.
+         */
         @Override
         public void getAliases(final String currencyCode, final Consumer<List<CurrencyAlias>> consumer) {
             consumer.accept(List.of());
         }
 
+        /**
+         * Executes resolve alias for this currency contract.
+         *
+         * @param alias Alias supplied by the caller.
+         * @param consumer Consumer supplied by the caller.
+         */
         @Override
         public void resolveAlias(final String alias, final Consumer<String> consumer) {
             consumer.accept(null);
         }
 
+        /**
+         * Executes resolve use case for this currency contract.
+         *
+         * @param useCase Use case supplied by the caller.
+         * @param consumer Consumer supplied by the caller.
+         */
         @Override
         public void resolveUseCase(final String useCase, final Consumer<String> consumer) {
             consumer.accept(null);
         }
 
+        /**
+         * Executes upsert alias for this currency contract.
+         *
+         * @param alias Alias supplied by the caller.
+         * @param currencyCode Currency code supplied by the caller.
+         */
         @Override
         public void upsertAlias(final String alias, final String currencyCode) {
             throw new UnsupportedOperationException();
         }
 
+        /**
+         * Deletes alias for this currency contract.
+         *
+         * @param alias Alias supplied by the caller.
+         */
         @Override
         public void deleteAlias(final String alias) {
             throw new UnsupportedOperationException();
         }
 
+        /**
+         * Returns the movements for this currency contract.
+         *
+         * @param playerId Player identifier used by the operation.
+         * @param limit Limit supplied by the caller.
+         * @param consumer Consumer supplied by the caller.
+         */
         @Override
         public void getMovements(final int playerId, final int limit, final Consumer<List<ICurrencyMovement>> consumer) {
             consumer.accept(List.copyOf(this.movements));

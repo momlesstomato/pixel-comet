@@ -10,8 +10,17 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.storage.api.data.rooms.RoomData;
 
 
+/**
+ * Describes hug command behavior for the Comet subsystem.
+ */
 public class HugCommand extends ChatCommand {
 
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         RoomData data = (RoomData)client.getPlayer().getEntity().getRoom().getData();
@@ -58,16 +67,31 @@ public class HugCommand extends ChatCommand {
         }
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "hug_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return Locale.getOrDefault("command.parameter.username", "%username%");
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.hug.description");

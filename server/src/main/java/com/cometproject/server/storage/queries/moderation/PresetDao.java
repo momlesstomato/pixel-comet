@@ -11,7 +11,16 @@ import java.sql.SQLException;
 import java.util.List;
 
 
+/**
+ * Describes preset dao behavior for the storage subsystem.
+ */
 public class PresetDao {
+    /**
+     * Returns the presets for this storage contract.
+     *
+     * @param userPresets User presets supplied by the caller.
+     * @param roomPresets Room presets supplied by the caller.
+     */
     public static void getPresets(List<String> userPresets, List<String> roomPresets) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -44,6 +53,11 @@ public class PresetDao {
         }
     }
 
+    /**
+     * Returns the preset actions for this storage contract.
+     *
+     * @param actionCategories Action categories supplied by the caller.
+     */
     public static void getPresetActions(List<ActionCategory> actionCategories) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -68,6 +82,12 @@ public class PresetDao {
         }
     }
 
+    /**
+     * Returns the action presets for category for this storage contract.
+     *
+     * @param category Category supplied by the caller.
+     * @param presets Presets supplied by the caller.
+     */
     public static void getActionPresetsForCategory(int category, List<ActionPreset> presets) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+/**
+ * Describes casino game behavior for the room processing subsystem.
+ */
 public class CasinoGame extends RoomGame {
     public final List<CasinoBets> bets = Lists.newArrayList();
     public final List<String> winners = Lists.newArrayList();
@@ -33,16 +36,27 @@ public class CasinoGame extends RoomGame {
     private boolean allowBets = true;
     private int betCount = 0;
 
+    /**
+     * Creates a casino game instance for the room processing subsystem.
+     *
+     * @param room Room participating in the operation.
+     */
     public CasinoGame(Room room) {
         super(room, GameType.CASINO);
     }
 
+    /**
+     * Enumerates result response values used by the room processing subsystem.
+     */
     public enum ResultResponse{
         BET_VALID,
         BET_SAME_VALUE,
         BET_HAS_COLOR
     }
 
+    /**
+     * Executes tick for this room processing contract.
+     */
     @Override
     public void tick() {
         if (this.timer == 55) {
@@ -77,6 +91,9 @@ public class CasinoGame extends RoomGame {
     }
 
 
+    /**
+     * Handles the game starts callback for this room processing contract.
+     */
     @Override
     public void onGameStarts() {
         this.bets.clear();
@@ -98,6 +115,13 @@ public class CasinoGame extends RoomGame {
         this.winners.add(name);
     }
 
+    /**
+     * Indicates whether valid bet applies to this room processing contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param bet Bet supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public ResultResponse isValidBet(int playerId, int bet){
         boolean hasBlack = false;
         boolean hasRed = false;
@@ -121,6 +145,9 @@ public class CasinoGame extends RoomGame {
         return ResultResponse.BET_VALID;
     }
 
+    /**
+     * Handles the game ends callback for this room processing contract.
+     */
     @Override
     public void onGameEnds() {
         int result = this.getResult();
@@ -224,6 +251,13 @@ public class CasinoGame extends RoomGame {
         }
     }
 
+    /**
+     * Adds player bet to this room processing contract.
+     *
+     * @param p P supplied by the caller.
+     * @param bet Bet supplied by the caller.
+     * @param amount Amount supplied by the caller.
+     */
     public void addPlayerBet(Player p, int bet, int amount){
         String betText = bet == 37 ? "Rojo" : bet == 38 ? "Negro" : bet + "";
 
@@ -245,14 +279,29 @@ public class CasinoGame extends RoomGame {
 
     }
 
+    /**
+     * Returns the bets for this room processing contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<CasinoBets> getBets() {
         return bets;
     }
 
+    /**
+     * Executes bets allowed for this room processing contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean betsAllowed() {
         return this.allowBets;
     }
 
+    /**
+     * Executes game timer for this room processing contract.
+     *
+     * @return Result produced by the operation.
+     */
     public int gameTimer(){
         return this.timer;
     }

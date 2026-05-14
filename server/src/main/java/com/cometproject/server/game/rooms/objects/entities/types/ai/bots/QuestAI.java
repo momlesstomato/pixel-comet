@@ -9,11 +9,25 @@ import com.cometproject.server.game.rooms.objects.entities.types.ai.AbstractBotA
 import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.permissions.FloodFilterMessageComposer;
 
+/**
+ * Describes quest ai behavior for the room subsystem.
+ */
 public class QuestAI extends AbstractBotAI {
+    /**
+     * Creates a quest ai instance for the room subsystem.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     public QuestAI(RoomEntity entity) {
         super(entity);
     }
 
+    /**
+     * Handles the player enter callback for this room contract.
+     *
+     * @param playerEntity Player entity supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onPlayerEnter(PlayerEntity playerEntity){
         if(playerEntity != null){
@@ -23,6 +37,13 @@ public class QuestAI extends AbstractBotAI {
         }
         return false;
     }
+    /**
+     * Handles the talk callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param message Message supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onTalk(PlayerEntity entity, String message) {
         String triggerMessage = message.replaceAll("\\s", "");
@@ -192,6 +213,9 @@ public class QuestAI extends AbstractBotAI {
                         RoomManager.getInstance().getEmotions().getEmotion(":)"), 2));
     }
 
+    /**
+     * Describes quests behavior for the room subsystem.
+     */
     public static class Quests {
         private final String trigger;
         private final int questId;
@@ -201,10 +225,20 @@ public class QuestAI extends AbstractBotAI {
             this.questId = questId;
         }
 
+        /**
+         * Returns the trigger for this room contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public String getTrigger() {
             return trigger;
         }
 
+        /**
+         * Returns the quest id for this room contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public int getQuestId() {
             return questId;
         }

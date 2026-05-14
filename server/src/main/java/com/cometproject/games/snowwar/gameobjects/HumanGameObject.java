@@ -8,6 +8,9 @@ import com.cometproject.server.utilities.RandomUtil;
 
 import java.util.List;
 
+/**
+ * Describes human game object behavior for the Snow War game subsystem.
+ */
 public class HumanGameObject extends GameItemObject {
     public static final int _302 = 534;
     public static final int MAX_HEALTH = 5;
@@ -51,6 +54,12 @@ public class HumanGameObject extends GameItemObject {
     private int pickUpLimiter;
     public boolean stageLoaded;
 
+    /**
+     * Creates a human game object instance for the Snow War game subsystem.
+     *
+     * @param room Room participating in the operation.
+     * @param teamId Team id supplied by the caller.
+     */
     public HumanGameObject(SnowWarRoom room, int teamId) {
         super(19);
         SpawnPoint spawn;
@@ -79,23 +88,42 @@ public class HumanGameObject extends GameItemObject {
         }
     }
 
+    /**
+     * Executes clean data for this Snow War game contract.
+     */
     public void cleanData() {
         this.snowWarPlayer.setRoom(null);
         this.snowWarPlayer.setHumanObject(null);
     }
 
+    /**
+     * Updates the cur location for this Snow War game contract.
+     *
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     */
     public void setCurLocation(int x, int y) {
         this.currentSnowWar.checksum += (x * 3) - (getVariable(2) * 3);
         this.currentSnowWar.checksum += (y * 4) - (getVariable(3) * 4);
         this.currentLocation.setXY(x, y);
     }
 
+    /**
+     * Updates the cur location for this Snow War game contract.
+     *
+     * @param val Val supplied by the caller.
+     */
     public void setCurLocation(PlayerTile val) {
         this.currentSnowWar.checksum += (val.x() * 3) - (getVariable(2) * 3);
         this.currentSnowWar.checksum += (val.y() * 4) - (getVariable(3) * 4);
         this.currentLocation.setXYZ(val);
     }
 
+    /**
+     * Updates the current tile for this Snow War game contract.
+     *
+     * @param val Val supplied by the caller.
+     */
     public void setCurrentTile(Tile val) {
         this.currentSnowWar.checksum += (val._4gH[0] * 5) - (getVariable(4) * 5);
         this.currentSnowWar.checksum += (val._4gH[1] * 6) - (getVariable(5) * 6);
@@ -106,11 +134,21 @@ public class HumanGameObject extends GameItemObject {
         this.currentTile = val;
     }
 
+    /**
+     * Updates the task time for this Snow War game contract.
+     *
+     * @param val Val supplied by the caller.
+     */
     public void setTaskTime(int val) {
         this.currentSnowWar.checksum += (val * 11) - (getVariable(10) * 11);
         this.taskTime = val;
     }
 
+    /**
+     * Updates the next tile for this Snow War game contract.
+     *
+     * @param val Val supplied by the caller.
+     */
     public void setNextTile(Tile val) {
         if (this.nextTile != null) {
             if (val == null) {
@@ -127,48 +165,95 @@ public class HumanGameObject extends GameItemObject {
         this.nextTile = val;
     }
 
+    /**
+     * Updates the rot for this Snow War game contract.
+     *
+     * @param val Val supplied by the caller.
+     */
     public void setRot(Direction8 val) {
         this.currentSnowWar.checksum += val.getRot() * 7 - getVariable(6) * 7;
         this.humanDir = val;
     }
 
+    /**
+     * Updates the health for this Snow War game contract.
+     *
+     * @param val Val supplied by the caller.
+     */
     public void setHealth(int val) {
         this.currentSnowWar.checksum += val * 8 - getVariable(7) * 8;
         this.health = val;
     }
 
+    /**
+     * Updates the snow balls for this Snow War game contract.
+     *
+     * @param val Val supplied by the caller.
+     */
     public void setSnowBalls(int val) {
         this.currentSnowWar.checksum += val * 9 - getVariable(8) * 9;
         this.snowBalls = val;
     }
 
+    /**
+     * Updates the current status for this Snow War game contract.
+     *
+     * @param val Val supplied by the caller.
+     */
     public void setCurrentStatus(int val) {
         this.currentSnowWar.checksum += val * 12 - getVariable(11) * 12;
         this.currentStatus = val;
     }
 
+    /**
+     * Updates the move target for this Snow War game contract.
+     *
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     */
     public void setMoveTarget(int x, int y) {
         this.currentSnowWar.checksum += x * 15 - getVariable(14) * 15;
         this.currentSnowWar.checksum += y * 16 - getVariable(15) * 16;
         this.moveTarget.setXY(x, y);
     }
 
+    /**
+     * Updates the move target for this Snow War game contract.
+     *
+     * @param val Val supplied by the caller.
+     */
     public void setMoveTarget(PlayerTile val) {
         this.currentSnowWar.checksum += val.x() * 15 - getVariable(14) * 15;
         this.currentSnowWar.checksum += val.y() * 16 - getVariable(15) * 16;
         this.moveTarget.setXYZ(val);
     }
 
+    /**
+     * Updates the score for this Snow War game contract.
+     *
+     * @param val Val supplied by the caller.
+     */
     public void setScore(int val) {
         this.currentSnowWar.checksum += val * 17 - getVariable(16) * 17;
         this.score = val;
     }
 
+    /**
+     * Updates the team for this Snow War game contract.
+     *
+     * @param val Val supplied by the caller.
+     */
     public void setTeam(int val) {
         this.currentSnowWar.checksum += val * 18 - getVariable(17) * 18;
         this.team = val;
     }
 
+    /**
+     * Returns the variable for this Snow War game contract.
+     *
+     * @param var Var supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public int getVariable(int var) {
         if (var == 0) {
             return 5;
@@ -232,18 +317,36 @@ public class HumanGameObject extends GameItemObject {
         return 0;
     }
 
+    /**
+     * Executes bounding data for this Snow War game contract.
+     *
+     * @return Result produced by the operation.
+     */
     public int[] boundingData() {
         return boundingData;
     }
 
+    /**
+     * Executes location3 d for this Snow War game contract.
+     *
+     * @return Result produced by the operation.
+     */
     public PlayerTile location3D() {
         return this.currentLocation;
     }
 
+    /**
+     * Executes direction360 for this Snow War game contract.
+     *
+     * @return Result produced by the operation.
+     */
     public Direction360 direction360() {
         return null;
     }
 
+    /**
+     * Executes do current task for this Snow War game contract.
+     */
     public void doCurrentTask() {
         if (this.currentStatus == 2) {
             setHealth(5);
@@ -257,6 +360,11 @@ public class HumanGameObject extends GameItemObject {
         setCurrentStatus(0);
     }
 
+    /**
+     * Executes subturn for this Snow War game contract.
+     *
+     * @param unused Unused supplied by the caller.
+     */
     public void subturn(SynchronizedGameStage unused) {
         if (this.taskTime > 0) {
             if (this.taskTime == 1) {
@@ -318,6 +426,13 @@ public class HumanGameObject extends GameItemObject {
         }
     }
 
+    /**
+     * Indicates whether this Snow War game contract can walk to.
+     *
+     * @param walkX Walk x supplied by the caller.
+     * @param walkY Walk y supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean canWalkTo(int walkX, int walkY) {
         if (!canWalk() || this.currentTile == null) {
             return false;
@@ -377,6 +492,9 @@ public class HumanGameObject extends GameItemObject {
         }
     }
 
+    /**
+     * Executes clean tiles for this Snow War game contract.
+     */
     public void cleanTiles() {
         if (this.currentTile != null && this.currentTile._05Z() == this) {
             this.currentTile._40T();
@@ -387,6 +505,9 @@ public class HumanGameObject extends GameItemObject {
         }
     }
 
+    /**
+     * Handles the remove callback for this Snow War game contract.
+     */
     public void onRemove() {
         cleanTiles();
         if (this.snowWarPlayer != null) {
@@ -443,6 +564,12 @@ public class HumanGameObject extends GameItemObject {
         }
     }
 
+    /**
+     * Updates the move for this Snow War game contract.
+     *
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     */
     public void setMove(int x, int y) {
         if (this.currentStatus == 1) {
             setCurrentStatus(0);
@@ -453,6 +580,12 @@ public class HumanGameObject extends GameItemObject {
         }
     }
 
+    /**
+     * Executes decrement health for this Snow War game contract.
+     *
+     * @param attacker Attacker supplied by the caller.
+     * @param rot Rot supplied by the caller.
+     */
     public void decrementHealth(HumanGameObject attacker, int rot) {
         if (this.team == attacker.team) {
             return;
@@ -467,6 +600,11 @@ public class HumanGameObject extends GameItemObject {
         }
     }
 
+    /**
+     * Executes give score per hit for this Snow War game contract.
+     *
+     * @param _arg2 Arg2 supplied by the caller.
+     */
     public void giveScorePerHit(HumanGameObject _arg2) {
         if (this.team != _arg2.team) {
             this.hits++;
@@ -474,6 +612,11 @@ public class HumanGameObject extends GameItemObject {
         }
     }
 
+    /**
+     * Executes give score per kill for this Snow War game contract.
+     *
+     * @param _arg2 Arg2 supplied by the caller.
+     */
     public void giveScorePerKill(HumanGameObject _arg2) {
         if (this.team != _arg2.team) {
             this.kills++;
@@ -481,11 +624,21 @@ public class HumanGameObject extends GameItemObject {
         }
     }
 
+    /**
+     * Executes give score for this Snow War game contract.
+     *
+     * @param _arg2 Arg2 supplied by the caller.
+     */
     public void giveScore(int _arg2) {
         setScore(this.score + _arg2);
         this.currentSnowWar.teamScore[this.team - 1] = this.currentSnowWar.teamScore[this.team - 1] + _arg2;
     }
 
+    /**
+     * Executes do kill for this Snow War game contract.
+     *
+     * @param _arg1 Arg1 supplied by the caller.
+     */
     public void doKill(int _arg1) {
         setCurrentStatus(2);
         setTaskTime(100);
@@ -493,6 +646,9 @@ public class HumanGameObject extends GameItemObject {
         stopWalk();
     }
 
+    /**
+     * Executes stop walk for this Snow War game contract.
+     */
     public void stopWalk() {
         if (this.nextTile == null) {
             setMoveTarget(this.currentTile.location());
@@ -505,14 +661,29 @@ public class HumanGameObject extends GameItemObject {
         }
     }
 
+    /**
+     * Indicates whether this Snow War game contract can throw snow ball.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean canThrowSnowBall() {
         return (this.snowBalls > 0 && this.fireRateLimiter < 1 && (this.currentStatus == 0 || this.currentStatus == 3));
     }
 
+    /**
+     * Executes increase fire limiter for this Snow War game contract.
+     */
     public void increaseFireLimiter() {
         this.fireRateLimiter = 5;
     }
 
+    /**
+     * Executes vs for this Snow War game contract.
+     *
+     * @param victimX Victim x supplied by the caller.
+     * @param victimY Victim y supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean _vs(int victimX, int victimY) {
         if (this.snowBalls < 1) {
             return false;
@@ -526,14 +697,27 @@ public class HumanGameObject extends GameItemObject {
         return true;
     }
 
+    /**
+     * Indicates whether this Snow War game contract can walk.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean canWalk() {
         return (this.currentStatus == 0 || this.currentStatus == 3);
     }
 
+    /**
+     * Indicates whether this Snow War game contract can pick snow balls.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean canPickSnowBalls() {
         return ((this.currentStatus == 0 || this.currentStatus == 3) && this.snowBalls < 5);
     }
 
+    /**
+     * Executes make snow ball for this Snow War game contract.
+     */
     public void makeSnowBall() {
         if (canPickSnowBalls()) {
             setCurrentStatus(1);
@@ -542,14 +726,30 @@ public class HumanGameObject extends GameItemObject {
         }
     }
 
+    /**
+     * Executes available snow ball slots for this Snow War game contract.
+     *
+     * @return Result produced by the operation.
+     */
     public int availableSnowBallSlots() {
         return 5 - this.snowBalls;
     }
 
+    /**
+     * Adds snow balls to this Snow War game contract.
+     *
+     * @param val Val supplied by the caller.
+     */
     public void addSnowBalls(int val) {
         setSnowBalls(this.snowBalls + val);
     }
 
+    /**
+     * Executes test snow ball collision for this Snow War game contract.
+     *
+     * @param snowBall Snow ball supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean testSnowBallCollision(SnowBallGameObject snowBall) {
         if (this.currentStatus == 2 || this.currentStatus == 3 || snowBall.getAttacker() == this) {
             return false;
@@ -557,12 +757,22 @@ public class HumanGameObject extends GameItemObject {
         return super.testSnowBallCollision(snowBall);
     }
 
+    /**
+     * Handles the snow ball hit callback for this Snow War game contract.
+     *
+     * @param snowBall Snow ball supplied by the caller.
+     */
     public void onSnowBallHit(SnowBallGameObject snowBall) {
         HumanGameObject attacker = snowBall.getAttacker();
         decrementHealth(attacker, snowBall.direction360()._2Hq());
         attacker.giveScorePerHit(this);
     }
 
+    /**
+     * Executes collision height for this Snow War game contract.
+     *
+     * @return Result produced by the operation.
+     */
     public int collisionHeight() {
         return 5000;
     }

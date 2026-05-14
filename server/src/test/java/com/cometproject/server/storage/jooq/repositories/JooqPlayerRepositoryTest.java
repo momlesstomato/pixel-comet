@@ -27,16 +27,33 @@ final class JooqPlayerRepositoryTest extends IPlayerRepositoryContractTest {
         this.dsl.deleteFrom(DSL.table("players")).execute();
     }
 
+    /**
+     * Executes repository for this jOOQ storage contract.
+     *
+     * @return Result produced by the operation.
+     */
     @Override
     protected IPlayerRepository repository() {
         return this.repository;
     }
 
+    /**
+     * Executes dsl for this jOOQ storage contract.
+     *
+     * @return Result produced by the operation.
+     */
     @Override
     protected DSLContext dsl() {
         return this.dsl;
     }
 
+    /**
+     * Executes insert test player for this jOOQ storage contract.
+     *
+     * @param id Id supplied by the caller.
+     * @param username Username supplied by the caller.
+     * @param authTicket Auth ticket supplied by the caller.
+     */
     @Override
     protected void insertTestPlayer(final int id, final String username, final String authTicket) {
         this.dsl.insertInto(DSL.table("players"))

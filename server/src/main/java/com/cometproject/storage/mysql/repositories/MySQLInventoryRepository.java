@@ -13,15 +13,30 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * Persists and loads my SQL inventory data for the MySQL storage subsystem.
+ */
 public class MySQLInventoryRepository extends MySQLRepository implements IInventoryRepository {
     private final IPlayerItemFactory playerItemFactory;
 
+    /**
+     * Creates a my SQL inventory repository instance for the MySQL storage subsystem.
+     *
+     * @param playerItemFactory Player item factory supplied by the caller.
+     * @param connectionProvider Connection provider supplied by the caller.
+     */
     public MySQLInventoryRepository(IPlayerItemFactory playerItemFactory, MySQLConnectionProvider connectionProvider) {
         super(connectionProvider);
 
         this.playerItemFactory = playerItemFactory;
     }
 
+    /**
+     * Returns the inventory by player id for this MySQL storage contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param itemConsumer Item consumer supplied by the caller.
+     */
     @Override
     public void getInventoryByPlayerId(int playerId, Consumer<List<PlayerItem>> itemConsumer) {
         final List<PlayerItem> items = Lists.newArrayList();

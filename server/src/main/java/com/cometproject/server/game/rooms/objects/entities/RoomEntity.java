@@ -31,6 +31,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Describes room entity behavior for the room subsystem.
+ */
 public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity {
     public int updatePhase = 0;
     public boolean needsForcedUpdate = false;
@@ -95,6 +98,15 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
 
     private boolean warping;
 
+    /**
+     * Creates a room entity instance for the room subsystem.
+     *
+     * @param identifier Identifier supplied by the caller.
+     * @param startPosition Start position supplied by the caller.
+     * @param startBodyRotation Start body rotation supplied by the caller.
+     * @param startHeadRotation Start head rotation supplied by the caller.
+     * @param roomInstance Room instance supplied by the caller.
+     */
     public RoomEntity(int identifier, Position startPosition, int startBodyRotation, int startHeadRotation, Room roomInstance) {
         super(identifier, startPosition, roomInstance);
 
@@ -133,10 +145,20 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         this.joinTime = System.currentTimeMillis();
     }
 
+    /**
+     * Returns the entity type for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RoomEntityType getEntityType() {
         return this.entityType;
     }
 
+    /**
+     * Returns the walking goal for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Position getWalkingGoal() {
         if (this.walkingGoal == null) {
@@ -146,19 +168,42 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         }
     }
 
+    /**
+     * Updates the walking goal for this room contract.
+     *
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     */
     @Override
     public void setWalkingGoal(int x, int y) {
         this.walkingGoal = new Position(x, y, 0.0);
     }
 
+    /**
+     * Executes move to for this room contract.
+     *
+     * @param position Position supplied by the caller.
+     */
     public void moveTo(Position position) {
         this.moveTo(position.getX(), position.getY());
     }
 
+    /**
+     * Executes slide player for this room contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param user User supplied by the caller.
+     */
     public void slidePlayer(Position client, Position user) {
         this.getRoom().getEntities().broadcastMessage(new SlideObjectBundleMessageComposer(user, client, 0, this.getId(), 007));
     }
 
+    /**
+     * Executes move to for this room contract.
+     *
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     */
     @Override
     public void moveTo(int x, int y) {
         RoomTile tile = this.getRoom().getMapping().getTile(x, y);
@@ -295,6 +340,12 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         }
     }
 
+    /**
+     * Executes sit for this room contract.
+     *
+     * @param height Height supplied by the caller.
+     * @param rotation Rotation supplied by the caller.
+     */
     public void sit(double height, int rotation) {
         this.removeStatus(RoomEntityStatus.LAY);
 
@@ -318,6 +369,13 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         return rotation;
     }
 
+    /**
+     * Executes look to for this room contract.
+     *
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     * @param body Body supplied by the caller.
+     */
     public void lookTo(int x, int y, boolean body) {
         if (x == this.getPosition().getX() && y == this.getPosition().getY())
             return;
@@ -342,64 +400,128 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         }
     }
 
+    /**
+     * Executes look to for this room contract.
+     *
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     */
     public void lookTo(int x, int y) {
         lookTo(x, y, true);
     }
 
+    /**
+     * Returns the position to set for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Position getPositionToSet() {
         return this.positionToSet;
     }
 
+    /**
+     * Updates and set position for this room contract.
+     *
+     * @param pos Pos supplied by the caller.
+     */
     @Override
     public void updateAndSetPosition(Position pos) {
         this.positionToSet = pos;
     }
 
+    /**
+     * Executes mark position is set for this room contract.
+     */
     @Override
     public void markPositionIsSet() {
         this.positionToSet = null;
     }
 
+    /**
+     * Indicates whether this room contract has position to set.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasPositionToSet() {
         return (this.positionToSet != null);
     }
 
+    /**
+     * Returns the body rotation for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getBodyRotation() {
         return this.bodyRotation;
     }
 
+    /**
+     * Updates the body rotation for this room contract.
+     *
+     * @param rotation Rotation supplied by the caller.
+     */
     @Override
     public void setBodyRotation(int rotation) {
         this.bodyRotation = rotation;
     }
 
+    /**
+     * Returns the head rotation for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getHeadRotation() {
         return this.headRotation;
     }
 
+    /**
+     * Updates the head rotation for this room contract.
+     *
+     * @param rotation Rotation supplied by the caller.
+     */
     @Override
     public void setHeadRotation(int rotation) {
         this.headRotation = rotation;
     }
 
+    /**
+     * Returns the processing path for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public List<Square> getProcessingPath() {
         return this.processingPath;
     }
 
+    /**
+     * Updates the processing path for this room contract.
+     *
+     * @param path Path supplied by the caller.
+     */
     @Override
     public void setProcessingPath(List<Square> path) {
         this.processingPath = path;
     }
 
+    /**
+     * Returns the walking path for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public List<Square> getWalkingPath() {
         return this.walkingPath;
     }
 
+    /**
+     * Updates the walking path for this room contract.
+     *
+     * @param path Path supplied by the caller.
+     */
     @Override
     public void setWalkingPath(List<Square> path) {
         if (this.walkingPath != null) {
@@ -409,26 +531,52 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         this.walkingPath = path;
     }
 
+    /**
+     * Indicates whether walking applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isWalking() {
         return (this.processingPath != null) && (this.processingPath.size() > 0);
     }
 
+    /**
+     * Returns the future square for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Square getFutureSquare() {
         return this.futureSquare;
     }
 
+    /**
+     * Updates the future square for this room contract.
+     *
+     * @param square Square supplied by the caller.
+     */
     @Override
     public void setFutureSquare(Square square) {
         this.futureSquare = square;
     }
 
+    /**
+     * Returns the statuses for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Map<RoomEntityStatus, String> getStatuses() {
         return this.statuses;
     }
 
+    /**
+     * Adds status to this room contract.
+     *
+     * @param key Key supplied by the caller.
+     * @param value Value supplied by the caller.
+     */
     @Override
     public void addStatus(RoomEntityStatus key, String value) {
         if (this.statuses.containsKey(key)) {
@@ -438,6 +586,11 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         }
     }
 
+    /**
+     * Removes status from this room contract.
+     *
+     * @param status Status supplied by the caller.
+     */
     @Override
     public void removeStatus(RoomEntityStatus status) {
         if (!this.statuses.containsKey(status)) {
@@ -447,53 +600,110 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         this.statuses.remove(status);
     }
 
+    /**
+     * Indicates whether this room contract has status.
+     *
+     * @param key Key supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean hasStatus(RoomEntityStatus key) {
         return this.statuses.containsKey(key);
     }
 
+    /**
+     * Executes mark needs update for this room contract.
+     */
     @Override
     public void markNeedsUpdate() {
         this.needsUpdate = true;
     }
 
+    /**
+     * Updates the send update message for this room contract.
+     *
+     * @param sendUpdateMessage Send update message supplied by the caller.
+     */
     public void setSendUpdateMessage(boolean sendUpdateMessage) {
         this.sendUpdateMessage = sendUpdateMessage;
     }
 
+    /**
+     * Executes mark needs update for this room contract.
+     *
+     * @param sendMessage Send message supplied by the caller.
+     */
     public void markNeedsUpdate(boolean sendMessage) {
         this.needsUpdate = true;
         this.sendUpdateMessage = sendMessage;
     }
 
+    /**
+     * Executes mark update complete for this room contract.
+     */
     public void markUpdateComplete() {
         this.needsUpdate = false;
     }
 
+    /**
+     * Executes needs update for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean needsUpdate() {
         return this.needsUpdate;
     }
 
+    /**
+     * Indicates whether moonwalking applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isMoonwalking() {
         return this.isMoonwalking;
     }
 
+    /**
+     * Indicates whether forced idle applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isForcedIdle() { return this.isForcedIdle; }
 
+    /**
+     * Updates the is moonwalking for this room contract.
+     *
+     * @param isMoonwalking Is moonwalking supplied by the caller.
+     */
     public void setIsMoonwalking(boolean isMoonwalking) {
         this.isMoonwalking = isMoonwalking;
     }
 
+    /**
+     * Returns the idle time for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getIdleTime() {
         return this.idleTime;
     }
 
+    /**
+     * Indicates whether idle applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isIdle() {
         return this.idleTime >= 600;
     }
 
+    /**
+     * Indicates whether idle and increment applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isIdleAndIncrement() {
         this.idleTime++;
@@ -521,21 +731,37 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         return false;
     }
 
+    /**
+     * Executes reset idle time for this room contract.
+     */
     @Override
     public void resetIdleTime() {
         this.idleTime = 0;
     }
 
+    /**
+     * Updates the idle for this room contract.
+     */
     @Override
     public void setIdle() {
         this.idleTime = 600;
     }
 
+    /**
+     * Updates the idle status for this room contract.
+     *
+     * @param value Value supplied by the caller.
+     */
     @Override
     public void setIdleStatus(boolean value) {
         this.isForcedIdle = value;
     }
 
+    /**
+     * Executes hand item needs remove for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean handItemNeedsRemove() {
         if (this.handItemTimer == -999)
             return false;
@@ -545,6 +771,9 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         return this.handItemTimer <= 0;
     }
 
+    /**
+     * Executes un idle for this room contract.
+     */
     public void unIdle() {
         final boolean sendUpdate = this.isIdle;
         this.isIdle = false;
@@ -569,20 +798,36 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
 
     }
 
+    /**
+     * Executes reset afk timer for this room contract.
+     */
     public void resetAfkTimer() {
         this.afkTime = 0;
     }
 
+    /**
+     * Returns the sign time for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getSignTime() {
         return this.signTime;
     }
 
+    /**
+     * Executes mark displaying sign for this room contract.
+     */
     @Override
     public void markDisplayingSign() {
         this.signTime = 6;
     }
 
+    /**
+     * Indicates whether displaying sign applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isDisplayingSign() {
         this.signTime--;
@@ -598,31 +843,62 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         }
     }
 
+    /**
+     * Returns the dance id for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getDanceId() {
         return this.danceId;
     }
 
+    /**
+     * Updates the dance id for this room contract.
+     *
+     * @param danceId Dance id supplied by the caller.
+     */
     @Override
     public void setDanceId(int danceId) {
         this.danceId = danceId;
     }
 
+    /**
+     * Returns the current effect for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public PlayerEffect getCurrentEffect() {
         return this.effect;
     }
 
+    /**
+     * Returns the hand item for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getHandItem() {
         return this.handItem;
     }
 
+    /**
+     * Executes carry item for this room contract.
+     *
+     * @param id Id supplied by the caller.
+     */
     @Override
     public void carryItem(int id) {
         this.carryItem(id, 240);
     }
 
+    /**
+     * Executes carry item for this room contract.
+     *
+     * @param id Id supplied by the caller.
+     * @param timer Timer supplied by the caller.
+     */
     public void carryItem(int id, int timer) {
         this.handItem = id;
         this.handItemTimer = timer;
@@ -630,6 +906,12 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         this.getRoom().getEntities().broadcastMessage(new HandItemMessageComposer(this.getId(), handItem));
     }
 
+    /**
+     * Executes carry item for this room contract.
+     *
+     * @param id Id supplied by the caller.
+     * @param timer Timer supplied by the caller.
+     */
     @Override
     public void carryItem(int id, boolean timer) {
         if (timer) {
@@ -643,16 +925,31 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         this.getRoom().getEntities().broadcastMessage(new HandItemMessageComposer(this.getId(), handItem));
     }
 
+    /**
+     * Returns the hand item timer for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getHandItemTimer() {
         return this.handItemTimer;
     }
 
+    /**
+     * Updates the hand item timer for this room contract.
+     *
+     * @param time Time supplied by the caller.
+     */
     @Override
     public void setHandItemTimer(int time) {
         this.handItemTimer = time;
     }
 
+    /**
+     * Executes apply effect for this room contract.
+     *
+     * @param effect Effect supplied by the caller.
+     */
     @Override
     public void applyEffect(PlayerEffect effect) {
         if(this instanceof PetEntity)
@@ -678,34 +975,87 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         this.effect = effect;
     }
 
+    /**
+     * Executes apply team effect for this room contract.
+     *
+     * @param effect Effect supplied by the caller.
+     */
     public void applyTeamEffect(PlayerEffect effect) {
         this.teamEffect = effect;
 
         this.applyEffect(effect);
     }
 
+    /**
+     * Indicates whether overriden applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isOverriden() {
         return this.overriden;
     }
 
+    /**
+     * Updates the overriden for this room contract.
+     *
+     * @param overriden Overriden supplied by the caller.
+     */
     public void setOverriden(boolean overriden) {
         this.overriden = overriden;
     }
 
+    /**
+     * Executes join room for this room contract.
+     *
+     * @param room Room participating in the operation.
+     * @param password Password supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public abstract boolean joinRoom(Room room, String password);
 
+    /**
+     * Executes finalize join room for this room contract.
+     */
     protected abstract void finalizeJoinRoom();
 
+    /**
+     * Executes leave room for this room contract.
+     *
+     * @param isOffline Is offline supplied by the caller.
+     * @param isKick Is kick supplied by the caller.
+     * @param toHotelView To hotel view supplied by the caller.
+     */
     public abstract void leaveRoom(boolean isOffline, boolean isKick, boolean toHotelView);
 
+    /**
+     * Handles the chat callback for this room contract.
+     *
+     * @param message Message supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public abstract boolean onChat(String message);
 
+    /**
+     * Handles the room dispose callback for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public abstract boolean onRoomDispose();
 
+    /**
+     * Indicates whether visible applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isVisible() {
         return isVisible;
     }
 
+    /**
+     * Updates visibility for this room contract.
+     *
+     * @param isVisible Is visible supplied by the caller.
+     */
     public void updateVisibility(boolean isVisible) {
         if (isVisible && !this.isVisible) {
             this.getRoom().getEntities().broadcastMessage(new AvatarsMessageComposer(this));
@@ -716,41 +1066,82 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         this.isVisible = isVisible;
     }
 
+    /**
+     * Executes refresh for this room contract.
+     */
     public void refresh() {
         this.updateVisibility(false);
         this.updateVisibility(true);
         this.markNeedsUpdate();
     }
 
+    /**
+     * Indicates whether this room contract can cel walk.
+     */
     public void cancelWalk() {
         this.setWalkCancelled(true);
         this.markNeedsUpdate();
     }
 
+    /**
+     * Indicates whether head rotating applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isHeadRotating() {
         return isHeadRotating;
     }
 
+    /**
+     * Updates the head rotating for this room contract.
+     *
+     * @param value Value supplied by the caller.
+     */
     public void setHeadRotating(boolean value) {
         this.isHeadRotating = value;
     }
 
+    /**
+     * Indicates whether body rotating applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isBodyRotating() {
         return isBodyRotating;
     }
 
+    /**
+     * Updates the body rotating for this room contract.
+     *
+     * @param value Value supplied by the caller.
+     */
     public void setBodyRotating(boolean value) {
         this.isBodyRotating = value;
     }
 
+    /**
+     * Executes teleport to item for this room contract.
+     *
+     * @param itemFloor Item floor supplied by the caller.
+     */
     public void teleportToItem(RoomItemFloor itemFloor) {
         this.teleportToObject(itemFloor);
     }
 
+    /**
+     * Executes teleport to entity for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     public void teleportToEntity(RoomEntity entity) {
         this.teleportToObject(entity);
     }
 
+    /**
+     * Executes teleport to object for this room contract.
+     *
+     * @param roomObject Room object supplied by the caller.
+     */
     public void teleportToObject(RoomObject roomObject) {
         this.applyEffect(new PlayerEffect(4, 5));
 
@@ -760,6 +1151,12 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         this.warp(roomObject.getPosition());
     }
 
+    /**
+     * Executes warp for this room contract.
+     *
+     * @param position Position supplied by the caller.
+     * @param cancelNextUpdate Cancel next update supplied by the caller.
+     */
     public void warp(Position position, boolean cancelNextUpdate) {
         this.setAttribute("tpencours", true);
 
@@ -780,6 +1177,11 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         }
     }
 
+    /**
+     * Executes warp for this room contract.
+     *
+     * @param position Position supplied by the caller.
+     */
     @Override
     public void warp(Position position) {
         //if (this.needsForcedUpdate) return;
@@ -788,12 +1190,22 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         this.warp(position, true);
     }
 
+    /**
+     * Executes warp immediately for this room contract.
+     *
+     * @param position Position supplied by the caller.
+     */
     @Override
     public void warpImmediately(Position position) {
         this.setPosition(position);
         this.getRoom().getEntities().broadcastMessage(new AvatarUpdateMessageComposer(this));
     }
 
+    /**
+     * Executes needs update cancel for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean needsUpdateCancel() {
         if (this.cancelNextUpdate) {
             this.cancelNextUpdate = false;
@@ -803,34 +1215,72 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         }
     }
 
+    /**
+     * Indicates whether this room contract can cel next update.
+     */
     public void cancelNextUpdate() {
         this.cancelNextUpdate = true;
     }
 
+    /**
+     * Indicates whether doorbell answered applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isDoorbellAnswered() {
         return this.doorbellAnswered;
     }
 
+    /**
+     * Updates the doorbell answered for this room contract.
+     *
+     * @param b B supplied by the caller.
+     */
     public void setDoorbellAnswered(boolean b) {
         this.doorbellAnswered = b;
     }
 
+    /**
+     * Returns the last effect for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public PlayerEffect getLastEffect() {
         return lastEffect;
     }
 
+    /**
+     * Updates the last effect for this room contract.
+     *
+     * @param lastEffect Last effect supplied by the caller.
+     */
     public void setLastEffect(PlayerEffect lastEffect) {
         this.lastEffect = lastEffect;
     }
 
+    /**
+     * Indicates whether walk cancelled applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isWalkCancelled() {
         return walkCancelled;
     }
 
+    /**
+     * Updates the walk cancelled for this room contract.
+     *
+     * @param walkCancelled Walk cancelled supplied by the caller.
+     */
     public void setWalkCancelled(boolean walkCancelled) {
         this.walkCancelled = walkCancelled;
     }
 
+    /**
+     * Returns the mounted entity for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RoomEntity getMountedEntity() {
         if (this.mountedEntity == null) return null;
 
@@ -841,31 +1291,65 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         return mountedEntity;
     }
 
+    /**
+     * Updates the mounted entity for this room contract.
+     *
+     * @param mountedEntity Mounted entity supplied by the caller.
+     */
     public void setMountedEntity(RoomEntity mountedEntity) {
         this.mountedEntity = mountedEntity;
     }
 
+    /**
+     * Indicates whether this room contract has mount.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasMount() {
         return hasMount;
     }
 
+    /**
+     * Updates the has mount for this room contract.
+     *
+     * @param hasMount Has mount supplied by the caller.
+     */
     public void setHasMount(boolean hasMount) {
         this.hasMount = hasMount;
     }
 
+    /**
+     * Executes kick for this room contract.
+     */
     @Override
     public void kick() {
         this.leaveRoom(false, true, true);
     }
 
+    /**
+     * Indicates whether this room contract can walk.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean canWalk() {
         return canWalk;
     }
 
+    /**
+     * Updates the can walk for this room contract.
+     *
+     * @param canWalk Can walk supplied by the caller.
+     */
     public void setCanWalk(boolean canWalk) {
         this.canWalk = canWalk;
     }
 
+    /**
+     * Executes equals for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean equals(Object entity) {
         if (entity instanceof RoomEntity) {
@@ -875,104 +1359,225 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         return false;
     }
 
+    /**
+     * Indicates whether room muted applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isRoomMuted() {
         return isRoomMuted;
     }
 
+    /**
+     * Updates the room muted for this room contract.
+     *
+     * @param isRoomMuted Is room muted supplied by the caller.
+     */
     public void setRoomMuted(boolean isRoomMuted) {
         this.isRoomMuted = isRoomMuted;
     }
 
+    /**
+     * Returns the join time for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public long getJoinTime() {
         return joinTime;
     }
 
+    /**
+     * Returns the private chat item id for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public long getPrivateChatItemId() {
         return privateChatItemId;
     }
 
+    /**
+     * Indicates whether one gate applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isOneGate() {
         return isOneGate;
     }
 
+    /**
+     * Updates the is one gate for this room contract.
+     *
+     * @param v V supplied by the caller.
+     */
     public void setIsOneGate(boolean v){
         this.isOneGate = v;
     }
 
+    /**
+     * Updates the private chat item id for this room contract.
+     *
+     * @param privateChatItemId Private chat item id supplied by the caller.
+     */
     public void setPrivateChatItemId(long privateChatItemId) {
         this.privateChatItemId = privateChatItemId;
     }
 
+    /**
+     * Returns the ai for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public BotAI getAI() {
         return null;
     }
 
+    /**
+     * Returns the following entities for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Set<RoomEntity> getFollowingEntities() {
         return followingEntities;
     }
 
+    /**
+     * Returns the pending walk for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Position getPendingWalk() {
         return pendingWalk;
     }
 
+    /**
+     * Updates the pending walk for this room contract.
+     *
+     * @param pendingWalk Pending walk supplied by the caller.
+     */
     public void setPendingWalk(Position pendingWalk) {
         this.pendingWalk = pendingWalk;
     }
 
+    /**
+     * Executes toggle fast walk for this room contract.
+     */
     public void toggleFastWalk() {
         this.fastWalkEnabled = !this.fastWalkEnabled;
     }
 
+    /**
+     * Indicates whether fast walk enabled applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isFastWalkEnabled() {
         return this.fastWalkEnabled;
     }
 
+    /**
+     * Updates the fast walk enabled for this room contract.
+     *
+     * @param fastWalkEnabled Fast walk enabled supplied by the caller.
+     */
     public void setFastWalkEnabled(boolean fastWalkEnabled) {
         this.fastWalkEnabled = fastWalkEnabled;
     }
 
+    /**
+     * Indicates whether warped applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isWarped() {
         return isWarped;
     }
 
+    /**
+     * Updates the warped for this room contract.
+     *
+     * @param warped Warped supplied by the caller.
+     */
     public void setWarped(boolean warped) {
         isWarped = warped;
     }
 
+    /**
+     * Returns the previous steps for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getPreviousSteps() {
         return previousSteps;
     }
 
+    /**
+     * Executes increment previous steps for this room contract.
+     */
     public void incrementPreviousSteps() {
         this.previousSteps++;
     }
 
+    /**
+     * Executes send update message for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean sendUpdateMessage() {
         return sendUpdateMessage;
     }
 
+    /**
+     * Indicates whether warping applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isWarping() {
         return warping;
     }
 
+    /**
+     * Updates the warping for this room contract.
+     *
+     * @param warping Warping supplied by the caller.
+     */
     public void setWarping(boolean warping) {
         this.warping = warping;
     }
 
+    /**
+     * Returns the warped tile for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RoomTile getWarpedTile() {
         return warpedTile;
     }
 
+    /**
+     * Updates the warped tile for this room contract.
+     *
+     * @param warpedTile Warped tile supplied by the caller.
+     */
     public void setWarpedTile(RoomTile warpedTile) {
         this.warpedTile = warpedTile;
     }
 
+    /**
+     * Removes from tile from this room contract.
+     *
+     * @param tile Tile supplied by the caller.
+     */
     public void removeFromTile(RoomTile tile) {
         tile.getEntities().remove(this);
         this.tiles.remove(tile);
     }
 
+    /**
+     * Adds to tile to this room contract.
+     *
+     * @param tile Tile supplied by the caller.
+     */
     public void addToTile(RoomTile tile) {
         if(this.tiles.size() != 0) {
             for(RoomTile oldTile : this.tiles) {
@@ -986,35 +1591,78 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         this.tiles.add(tile);
     }
 
+    /**
+     * Returns the tiles for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Set<RoomTile> getTiles() {
         return tiles;
     }
 
+    /**
+     * Updates the status type for this room contract.
+     *
+     * @param statusType Status type supplied by the caller.
+     */
     public void setStatusType(int statusType) {
         this.statusType = statusType;
     }
 
+    /**
+     * Returns the status type for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getStatusType() {
         return statusType;
     }
 
+    /**
+     * Returns the dice count for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getDiceCount() {
         return diceCount;
     }
 
+    /**
+     * Adds dice count to this room contract.
+     *
+     * @param diceCount Dice count supplied by the caller.
+     */
     public void addDiceCount(int diceCount) {
         this.diceCount += diceCount;
     }
 
+    /**
+     * Executes reset dice count for this room contract.
+     */
     public void resetDiceCount() {
         this.diceCount = 0;
     }
 
+    /**
+     * Indicates whether transformed applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isTransformed() { return isTransformed;}
 
+    /**
+     * Updates the transformed for this room contract.
+     *
+     * @param transformed Transformed supplied by the caller.
+     */
     public void setTransformed(boolean transformed) {
         isTransformed = transformed;
     }
 
+    /**
+     * Returns the tag user for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public ArrayList<Object> getTagUser() {return this.addTagUser;}
 }

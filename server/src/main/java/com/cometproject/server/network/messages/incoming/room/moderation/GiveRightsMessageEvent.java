@@ -13,7 +13,16 @@ import com.cometproject.server.protocol.messages.MessageEvent;
 import com.cometproject.server.storage.queries.player.PlayerDao;
 
 
+/**
+ * Represents the give rights message event published by the network message subsystem.
+ */
 public class GiveRightsMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void handle(Session client, MessageEvent msg) {
         int playerId = msg.readInt();
 

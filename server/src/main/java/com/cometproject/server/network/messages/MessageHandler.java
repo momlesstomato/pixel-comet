@@ -130,7 +130,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 
+/**
+ * Describes message handler behavior for the network message subsystem.
+ */
 public final class MessageHandler {
+    /**
+     * Describes message handler behavior for the network message subsystem.
+     */
     public static Logger LOGGER = LoggerFactory.getLogger(MessageHandler.class);
 
     private final Map<Short, Event> messages = Maps.newConcurrentMap();
@@ -139,6 +145,9 @@ public final class MessageHandler {
     private final ExecutorService eventExecutor;
     private final boolean asyncEventExecution;
 
+    /**
+     * Creates a message handler instance for the network message subsystem.
+     */
     public MessageHandler() {
         this.asyncEventExecution = Boolean.parseBoolean((String) Configuration.currentConfig().getOrDefault("comet.network.alternativePacketHandling.enabled", "false"));
 //        this.eventExecutor = asyncEventExecution ? Executors.newFixedThreadPool(Integer.parseInt((String) Configuration.currentConfig().getOrDefault("comet.network.alternativePacketHandling.threads", "8"))) : null;
@@ -163,6 +172,9 @@ public final class MessageHandler {
         this.load();
     }
 
+    /**
+     * Executes load for this network message contract.
+     */
     public void load() {
         this.registerHandshake();
         this.registerModTool();
@@ -225,6 +237,9 @@ public final class MessageHandler {
         this.getMessages().put(Events.EventLogMessageEvent, new EventLogMessageEvent());
     }
 
+    /**
+     * Executes register crafting for this network message contract.
+     */
     public void registerCrafting() {
         this.getMessages().put(Events.GetCraftingRecipesAvailableMessageEvent, new GetCraftingRecipesAvailableMessageEvent());
         this.getMessages().put(Events.CraftSecretMessageEvent, new CraftSecretMessageEvent());
@@ -234,6 +249,9 @@ public final class MessageHandler {
     }
 
 
+    /**
+     * Executes register handshake for this network message contract.
+     */
     public void registerHandshake() {
         this.getMessages().put(Events.GetClientVersionMessageEvent, new CheckReleaseMessageEvent());
         this.getMessages().put(Events.InitCryptoMessageEvent, new InitCryptoMessageEvent());
@@ -243,6 +261,9 @@ public final class MessageHandler {
         this.getMessages().put(Events.ConfirmUsernameMessageEvent, new ConfirmUsernameMessageEvent());
     }
 
+    /**
+     * Executes register mod tool for this network message contract.
+     */
     public void registerModTool() {
         this.getMessages().put(Events.GetModeratorUserInfoMessageEvent, new ModToolUserInfoMessageEvent());
         this.getMessages().put(Events.GetModeratorUserChatlogMessageEvent, new ModToolUserChatlogMessageEvent());
@@ -262,6 +283,9 @@ public final class MessageHandler {
         this.getMessages().put(Events.ModerationMuteMessageEvent, new ModerationMuteUserMessageEvent());
     }
 
+    /**
+     * Executes register help tool for this network message contract.
+     */
     public void registerHelpTool() {
         this.getMessages().put(Events.OpenHelpToolMessageEvent, new InitHelpToolMessageEvent());
         this.getMessages().put(Events.SubmitNewTicketMessageEvent, new HelpTicketMessageEvent());
@@ -275,6 +299,9 @@ public final class MessageHandler {
         this.getMessages().put(Events.GuideCancelHelpRequestMessageEvent, new GuideCancelHelpRequestMessageEvent());
     }
 
+    /**
+     * Executes register messenger for this network message contract.
+     */
     public void registerMessenger() {
         this.getMessages().put(Events.MessengerInitMessageEvent, new InitializeFriendListMessageEvent());
         this.getMessages().put(Events.SendMsgMessageEvent, new PrivateChatMessageEvent());
@@ -287,6 +314,9 @@ public final class MessageHandler {
         this.getMessages().put(Events.DeclineBuddyMessageEvent, new DeclineFriendshipMessageEvent());
     }
 
+    /**
+     * Executes register navigator for this network message contract.
+     */
     public void registerNavigator() {
         this.getMessages().put(Events.GetUserFlatCatsMessageEvent, new LoadCategoriesMessageEvent());
         this.getMessages().put(Events.InitializeNavigatorMessageEvent, new InitializeNewNavigatorMessageEvent());
@@ -305,6 +335,9 @@ public final class MessageHandler {
         this.getMessages().put(Events.NavigatorSaveViewModeMessageEvent, new NavigatorSaveViewModeMessageEvent());
     }
 
+    /**
+     * Executes register user for this network message contract.
+     */
     public void registerUser() {
         this.getMessages().put(Events.GetExtendedProfileMessageEvent, new GetProfileMessageEvent());
         this.getMessages().put(Events.GetForumUserProfileMessageEvent, new GetProfileByUsernameMessageEvent());
@@ -344,6 +377,9 @@ public final class MessageHandler {
         this.getMessages().put(Events.ClickPlayerMessageEvent, new ClickPlayerMessageEvent());
     }
 
+    /**
+     * Executes register bots for this network message contract.
+     */
     public void registerBots() {
         this.getMessages().put(Events.GetBotInventoryMessageEvent, new BotInventoryMessageEvent());
         this.getMessages().put(Events.PlaceBotMessageEvent, new PlaceBotMessageEvent());
@@ -352,6 +388,9 @@ public final class MessageHandler {
         this.getMessages().put(Events.SaveBotSettingsMessageEvent, new BotConfigMessageEvent());
     }
 
+    /**
+     * Executes register pets for this network message contract.
+     */
     public void registerPets() {
         this.getMessages().put(Events.GetPetInventoryMessageEvent, new PetInventoryMessageEvent());
         this.getMessages().put(Events.PlacePetMessageEvent, new PlacePetMessageEvent());
@@ -369,6 +408,9 @@ public final class MessageHandler {
         this.getMessages().put(Events.MonsterPlantSetBreedableMessageEvent, new MonsterPlantSetBreedableMessageEvent());
     }
 
+    /**
+     * Executes register room for this network message contract.
+     */
     public void registerRoom() {
         this.getMessages().put(Events.OpenFlatConnectionMessageEvent, new InitializeRoomMessageEvent());
         this.getMessages().put(Events.SpectateRoomMessageEvent, new SpectateRoomMessageEvent());
@@ -406,6 +448,9 @@ public final class MessageHandler {
         this.getMessages().put(Events.AnswerConfirmableAlertMessageEvent, new AnswerConfirmableAlertMessageEvent());
     }
 
+    /**
+     * Executes register room trade for this network message contract.
+     */
     public void registerRoomTrade() {
         this.getMessages().put(Events.InitTradeMessageEvent, new BeginTradeMessageEvent());
         this.getMessages().put(Events.TradingOfferItemMessageEvent, new SendOfferMessageEvent());
@@ -418,6 +463,9 @@ public final class MessageHandler {
         this.getMessages().put(Events.TradingCancelConfirmMessageEvent, new CancelConfirmTradeMessageEvent());
     }
 
+    /**
+     * Executes register room moderation for this network message contract.
+     */
     public void registerRoomModeration() {
         this.getMessages().put(Events.KickUserMessageEvent, new KickUserMessageEvent());
         this.getMessages().put(Events.BanUserMessageEvent, new BanUserMessageEvent());
@@ -432,11 +480,17 @@ public final class MessageHandler {
         this.getMessages().put(Events.ModifyRoomFilterListMessageEvent, new EditWordFilterMessageEvent());
     }
 
+    /**
+     * Executes register room access for this network message contract.
+     */
     public void registerRoomAccess() {
         this.getMessages().put(Events.LetUserInMessageEvent, new AnswerDoorbellMessageEvent());
         this.getMessages().put(Events.GoToFlatMessageEvent, new LoadRoomByDoorBellMessageEvent());
     }
 
+    /**
+     * Executes register items for this network message contract.
+     */
     public void registerItems() {
         this.getMessages().put(Events.PlaceObjectMessageEvent, new PlaceItemMessageEvent());
         this.getMessages().put(Events.MoveObjectMessageEvent, new MoveFloorItemMessageEvent());
@@ -478,12 +532,18 @@ public final class MessageHandler {
         this.getMessages().put(Events.VerifyEmailMessageEvent, new VerifyEmailMessageEvent());
     }
 
+    /**
+     * Executes register promotions for this network message contract.
+     */
     public void registerPromotions() {
         this.getMessages().put(Events.PurchaseRoomPromotionMessageEvent, new PromoteRoomMessageEvent());
         this.getMessages().put(Events.EditRoomPromotionMessageEvent, new PromotionUpdateMessageEvent());
     }
 
     //
+    /**
+     * Executes register catalog for this network message contract.
+     */
     public void registerCatalog() {
         this.getMessages().put(Events.GetCatalogIndexMessageEvent, new GetCataIndexMessageEvent());
         this.getMessages().put(Events.GetCatalogPageMessageEvent, new GetCataPageMessageEvent());
@@ -505,6 +565,9 @@ public final class MessageHandler {
         this.getMessages().put(Events.GetHCCenterInformationEvent, new GetClubPresentMessageEvent());
     }
 
+    /**
+     * Executes register landing for this network message contract.
+     */
     public void registerLanding() {
         this.getMessages().put(Events.GetPromoArticlesMessageEvent, new RefreshPromoArticlesMessageEvent());
         this.getMessages().put(Events.RefreshCampaignMessageEvent, new LandingLoadWidgetMessageEvent());
@@ -515,6 +578,9 @@ public final class MessageHandler {
         this.getMessages().put(Events.BuyLotteryMessageEvent, new BuyLotteryMessageEvent());
     }
 
+    /**
+     * Executes register groups for this network message contract.
+     */
     public void registerGroups() {
         this.getMessages().put(Events.GetGroupInfoMessageEvent, new GroupInformationMessageEvent());
         this.getMessages().put(Events.GetGroupMembersMessageEvent, new GroupMembersMessageEvent());
@@ -538,6 +604,9 @@ public final class MessageHandler {
     }
 
     //
+    /**
+     * Executes register group forums for this network message contract.
+     */
     public void registerGroupForums() {
         this.getMessages().put(Events.GetForumStatsMessageEvent, new ForumDataMessageEvent());
         this.getMessages().put(Events.UpdateForumSettingsMessageEvent, new SaveForumSettingsMessageEvent());
@@ -550,6 +619,9 @@ public final class MessageHandler {
         this.getMessages().put(Events.DeleteGroupReplyMessageEvent, new HideGroupForumPostMessageEvent());
     }
 
+    /**
+     * Executes register quests for this network message contract.
+     */
     public void registerQuests() {
         this.getMessages().put(Events.GetQuestListMessageEvent, new OpenQuestsMessageEvent());
         this.getMessages().put(Events.GetQuestListMessageEvent2, new OpenQuestsMessageEvent());
@@ -559,6 +631,9 @@ public final class MessageHandler {
     }
 
 
+    /**
+     * Executes register music for this network message contract.
+     */
     public void registerMusic() {
         this.getMessages().put(Events.SongInventoryMessageEvent, new SongInventoryMessageEvent());
         this.getMessages().put(Events.SongIdMessageEvent, new SongIdMessageEvent());
@@ -568,12 +643,18 @@ public final class MessageHandler {
         this.getMessages().put(Events.PlaylistMessageEvent, new PlaylistMessageEvent());
     }
 
+    /**
+     * Executes register polls for this network message contract.
+     */
     public void registerPolls() {
         this.getMessages().put(Events.GetPollMessageEvent, new GetPollMessageEvent());
         this.getMessages().put(Events.SubmitPollAnswerMessageEvent, new SubmitPollAnswerMessageEvent());
         this.getMessages().put(Events.GetInfobusPollsResultsMessageEvent, new GetInfobusPollsResultsMessageEvent());
     }
 
+    /**
+     * Executes register achievements for this network message contract.
+     */
     public void registerAchievements() {
         this.getMessages().put(Events.GetAchievementsMessageEvent, new AchievementsListMessageEvent());
     }
@@ -586,12 +667,21 @@ public final class MessageHandler {
         this.getMessages().put(Events.SharePhotoMessageEvent, new SharePhotoMessageEvent());
     }
 
+    /**
+     * Executes register guide tool for this network message contract.
+     */
     public void registerGuideTool() {
         this.getMessages().put(Events.RequestGuideToolMessageEvent, new OpenGuideToolMessageEvent());
         this.getMessages().put(Events.RequestGuideAssistanceMessageEvent, new RequestGuideAssistanceMessageEvent());
         this.getMessages().put(Events.GuideHandleHelpRequestMessageEvent, new GuideHandleHelpRequestMessageEvent());
     }
 
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param message Message supplied by the caller.
+     * @param client Client supplied by the caller.
+     */
     public void handle(MessageEvent message, Session client) {
         final Short header = message.getId();
 
@@ -644,6 +734,11 @@ public final class MessageHandler {
         }
     }
 
+    /**
+     * Returns the messages for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<Short, Event> getMessages() {
         return this.messages;
     }

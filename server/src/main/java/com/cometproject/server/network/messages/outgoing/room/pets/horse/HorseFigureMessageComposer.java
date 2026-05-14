@@ -5,19 +5,37 @@ import com.cometproject.server.game.rooms.objects.entities.types.PetEntity;
 import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
+/**
+ * Serializes the horse figure message for the Pixel Protocol client.
+ */
 public class HorseFigureMessageComposer extends MessageComposer {
 
     private final PetEntity petEntity;
 
+    /**
+     * Creates a horse figure message composer instance for the network message subsystem.
+     *
+     * @param petEntity Pet entity supplied by the caller.
+     */
     public HorseFigureMessageComposer(final PetEntity petEntity) {
         this.petEntity = petEntity;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.PetHorseFigureInformationMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(this.petEntity.getId());

@@ -10,6 +10,9 @@ import com.google.gson.JsonObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Carries pet monster plant data data for the pet subsystem.
+ */
 public class PetMonsterPlantData extends PetData {
 
     private final int bodyRarity;
@@ -37,6 +40,12 @@ public class PetMonsterPlantData extends PetData {
     private int plantType;
     private int growthStage;
 
+    /**
+     * Creates a pet monster plant data instance for the pet subsystem.
+     *
+     * @param set Set supplied by the caller.
+     * @throws SQLException When the operation cannot complete.
+     */
     public PetMonsterPlantData(ResultSet set) throws SQLException {
         super(set);
         JsonObject object = new Gson().fromJson(this.getExtradata(), JsonObject.class);
@@ -62,6 +71,22 @@ public class PetMonsterPlantData extends PetData {
 
     }
 
+    /**
+     * Creates a pet monster plant data instance for the pet subsystem.
+     *
+     * @param seedRarity Seed rarity supplied by the caller.
+     * @param bodyRarity Body rarity supplied by the caller.
+     * @param colorRarity Color rarity supplied by the caller.
+     * @param userId User id supplied by the caller.
+     * @param type Type supplied by the caller.
+     * @param hue Hue supplied by the caller.
+     * @param nose Nose supplied by the caller.
+     * @param noseColor Nose color supplied by the caller.
+     * @param mouth Mouth supplied by the caller.
+     * @param mouthColor Mouth color supplied by the caller.
+     * @param eyes Eyes supplied by the caller.
+     * @param eyesColor Eyes color supplied by the caller.
+     */
     public PetMonsterPlantData(int seedRarity, int bodyRarity, int colorRarity, int userId, int type, int hue, int nose, int noseColor, int mouth, int mouthColor, int eyes, int eyesColor) {
         super(16, 0, "", "", userId);
         this.seedRarity = seedRarity;
@@ -85,6 +110,11 @@ public class PetMonsterPlantData extends PetData {
         this.setExtradata(this.toJson());
     }
 
+    /**
+     * Returns the name for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getName() {
         String name = " " + PetManager.getInstance().getMonsterPlantColors().get(this.colorRarity).getName();
@@ -93,11 +123,21 @@ public class PetMonsterPlantData extends PetData {
         return name;
     }
 
+    /**
+     * Returns the rarity for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getRarity() {
         int max = this.bodyRarity + this.colorRarity;
         return (isDead() ? 0 : (!isFullyGrown() ? Math.min(this.growthStage, max) : max));
     }
 
+    /**
+     * Returns the look for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getLook() {
         return "16 0 FFFFFF " +
                 "10 " +
@@ -108,34 +148,74 @@ public class PetMonsterPlantData extends PetData {
                 "4 " + this.eyes + " " + this.eyesColor + " " + "2";
     }
 
+    /**
+     * Returns the eyes color for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getEyesColor() {
         return eyesColor;
     }
 
+    /**
+     * Returns the eyes for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getEyes() {
         return eyes;
     }
 
+    /**
+     * Returns the nose for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getNose() {
         return nose;
     }
 
+    /**
+     * Returns the nose color for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getNoseColor() {
         return noseColor;
     }
 
+    /**
+     * Returns the plant color for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getPlantColor() {
         return this.hue;
     }
 
+    /**
+     * Returns the mouth color for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getMouthColor() {
         return mouthColor;
     }
 
+    /**
+     * Returns the mouth for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getMouth() {
         return mouth;
     }
 
+    /**
+     * Returns the real growth stage for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getRealGrowthStage() {
         int stage = (7 - (this.remainingGrowTime() / (this.getGrowTime() / 7))) - 1;
         if (stage <= 0) {
@@ -148,22 +228,47 @@ public class PetMonsterPlantData extends PetData {
         return stage;
     }
 
+    /**
+     * Returns the last diamonds for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getLastDiamonds() {
         return lastDiamonds;
     }
 
+    /**
+     * Updates the last diamonds for this pet contract.
+     *
+     * @param lastDiamonds Last diamonds supplied by the caller.
+     */
     public void setLastDiamonds(int lastDiamonds) {
         this.lastDiamonds = lastDiamonds;
     }
 
+    /**
+     * Returns the growth stage for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getGrowthStage() {
         return this.growthStage;
     }
 
+    /**
+     * Returns the plant name for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getPlantName() {
         return this.getName();
     }
 
+    /**
+     * Executes remaining grow time for this pet contract.
+     *
+     * @return Result produced by the operation.
+     */
     public int remainingGrowTime() {
         if (this.growthStage == 7 || this.isDead()) {
             return 0;
@@ -171,14 +276,29 @@ public class PetMonsterPlantData extends PetData {
         return (int) ((this.getBirthday() + this.getGrowTime()) - Comet.getTime());
     }
 
+    /**
+     * Indicates whether fully grown applies to this pet contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isFullyGrown() {
         return this.growthStage == 7 && !this.isDead();
     }
 
+    /**
+     * Returns the grow time for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getGrowTime() {
         return this.body.getGrowthTime();
     }
 
+    /**
+     * Executes to JSON for this pet contract.
+     *
+     * @return Result produced by the operation.
+     */
     public String toJson() {
         JsonObject object = new JsonObject();
         object.addProperty("t", this.plantType);
@@ -201,33 +321,68 @@ public class PetMonsterPlantData extends PetData {
         return object.toString();
     }
 
+    /**
+     * Executes diamonds stocked for this pet contract.
+     *
+     * @return Result produced by the operation.
+     */
     public int diamondsStocked() {
         if (this.getRarity() >= 20) {
         }
         return 0;
     }
 
+    /**
+     * Indicates whether dead applies to this pet contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isDead() {
         return (this.getLastFood() <= 0);
     }
 
+    /**
+     * Executes as dead for this pet contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean asDead() {
         return this.isDead;
     }
 
 
+    /**
+     * Updates the dead for this pet contract.
+     *
+     * @param dead Dead supplied by the caller.
+     */
     public void setDead(boolean dead) {
         isDead = dead;
     }
 
+    /**
+     * Returns the seed rarity for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getSeedRarity() {
         return this.seedRarity;
     }
 
+    /**
+     * Indicates whether this pet contract can breed.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean canBreed() {
         return !hasBreed() && isFullyGrown() && !isDead();
     }
 
+    /**
+     * Returns the last food for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getLastFood() {
         int time = (lastFood + this.body.getLifeTime()) - ((int) Comet.getTime());
         if (time < 0) {
@@ -236,31 +391,64 @@ public class PetMonsterPlantData extends PetData {
         return time;
     }
 
+    /**
+     * Returns the body for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public PetMonsterPlant getBody() {
         return this.body;
     }
 
+    /**
+     * Executes save for this pet contract.
+     */
     public void save() {
         this.setExtradata(this.toJson());
         super.savePlantsData();
     }
 
+    /**
+     * Updates the growth stage for this pet contract.
+     *
+     * @param growthStage Growth stage supplied by the caller.
+     */
     public void setGrowthStage(int growthStage) {
         this.growthStage = growthStage;
     }
 
+    /**
+     * Indicates whether this pet contract has breed.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasBreed() {
         return this.hasBreed;
     }
 
+    /**
+     * Updates the has breed for this pet contract.
+     *
+     * @param hasBreed Has breed supplied by the caller.
+     */
     public void setHasBreed(boolean hasBreed) {
         this.hasBreed = hasBreed;
     }
 
+    /**
+     * Indicates whether active applies to this pet contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isActive() {
         return isActive && !this.isDead();
     }
 
+    /**
+     * Updates the is active for this pet contract.
+     *
+     * @param isActive Is active supplied by the caller.
+     */
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
     }

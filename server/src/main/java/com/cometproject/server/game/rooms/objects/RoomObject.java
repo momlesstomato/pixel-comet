@@ -15,19 +15,22 @@ import java.util.Collections;
 import java.util.List;
 
 
+/**
+ * Describes room object behavior for the room subsystem.
+ */
 public abstract class RoomObject implements IRoomObject, Positionable {
     /**
-     * The room where this object resides
+     * The room where this object resides.
      */
     private Room room;
 
     /**
-     * The position on the grid this object resides
+     * The position on the grid this object resides.
      */
     private Position position;
 
     /**
-     * Create the room object instance
+     * Create the room object instance.
      *
      * @param position The position in the room where this object is
      * @param room     The room where this object is
@@ -38,7 +41,7 @@ public abstract class RoomObject implements IRoomObject, Positionable {
     }
 
     /**
-     * Gets the tile instance from the room mapping
+     * Gets the tile instance from the room mapping.
      *
      * @return the tile instance from the room mapping
      */
@@ -49,7 +52,7 @@ public abstract class RoomObject implements IRoomObject, Positionable {
     }
 
     /**
-     * Checks whether or not the object is at the door tile
+     * Checks whether or not the object is at the door tile.
      *
      * @return Is the object on the door tile?
      */
@@ -58,7 +61,7 @@ public abstract class RoomObject implements IRoomObject, Positionable {
     }
 
     /**
-     * Gets the closest player entity
+     * Gets the closest player entity.
      *
      * @return The closest player entity | null if one couldn't be found
      */
@@ -84,7 +87,7 @@ public abstract class RoomObject implements IRoomObject, Positionable {
     }
 
     /**
-     * Gets the closest player entity
+     * Gets the closest player entity.
      *
      * @return The closest player entity | null if one couldn't be found
      */
@@ -107,7 +110,7 @@ public abstract class RoomObject implements IRoomObject, Positionable {
 
 
     /**
-     * Gets the closest bot entity
+     * Gets the closest bot entity.
      *
      * @param type The type of bot we want to find
      * @return Closest bot entity |
@@ -144,7 +147,7 @@ public abstract class RoomObject implements IRoomObject, Positionable {
     }
 
     /**
-     * Gets the closest bot entity
+     * Gets the closest bot entity.
      *
      * @return The closest bot entity
      */
@@ -153,7 +156,7 @@ public abstract class RoomObject implements IRoomObject, Positionable {
     }
 
     /**
-     * Get the room where this object is
+     * Get the room where this object is.
      *
      * @return The room instance
      */
@@ -162,7 +165,7 @@ public abstract class RoomObject implements IRoomObject, Positionable {
     }
 
     /**
-     * Get the position in which this object is on the grid
+     * Get the position in which this object is on the grid.
      *
      * @return The position instance
      */
@@ -171,7 +174,7 @@ public abstract class RoomObject implements IRoomObject, Positionable {
     }
 
     /**
-     * Set the position to a new position
+     * Set the position to a new position.
      *
      * @param newPosition The position to replace the instance one with
      */

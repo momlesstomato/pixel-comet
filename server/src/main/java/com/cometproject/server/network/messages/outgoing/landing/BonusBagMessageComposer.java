@@ -4,6 +4,9 @@ import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
+/**
+ * Serializes the bonus bag message for the Pixel Protocol client.
+ */
 public class BonusBagMessageComposer extends MessageComposer {
 
     private final int xp;
@@ -12,6 +15,13 @@ public class BonusBagMessageComposer extends MessageComposer {
     private final int spriteId;
     private int flush;
 
+    /**
+     * Creates a bonus bag message composer instance for the network message subsystem.
+     *
+     * @param config Config supplied by the caller.
+     * @param xp Xp supplied by the caller.
+     * @param level Level supplied by the caller.
+     */
     public BonusBagMessageComposer(String config, int xp, int level) {
         String[] c = config.split(",");
         this.reward = c[0];
@@ -21,11 +31,21 @@ public class BonusBagMessageComposer extends MessageComposer {
     }
 
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.BonusBagMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         int coefficient = 1500 * this.level;

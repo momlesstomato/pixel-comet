@@ -51,6 +51,9 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Describes player behavior for the player subsystem.
+ */
 public class Player implements IPlayer {
 
     private final PermissionComponent permissions;
@@ -161,6 +164,13 @@ public class Player implements IPlayer {
 
     private final List<PlayerMention> mentions = new ArrayList<PlayerMention>();
 
+    /**
+     * Creates a player instance for the player subsystem.
+     *
+     * @param data Data supplied by the caller.
+     * @param isFallback Is fallback supplied by the caller.
+     * @throws SQLException When the operation cannot complete.
+     */
     public Player(ResultSet data, boolean isFallback) throws SQLException {
         this.id = data.getInt("playerId");
 
@@ -211,6 +221,9 @@ public class Player implements IPlayer {
                 this.data.applyCurrencyBalance(currencyCode, balance));
     }
 
+    /**
+     * Releases resources owned by this player component.
+     */
     @Override
     public void dispose() {
         this.setOnline(false);
@@ -288,35 +301,68 @@ public class Player implements IPlayer {
         this.isDisposed = true;
     }
 
+    /**
+     * Executes send balance for this player contract.
+     */
     @Override
     public void sendBalance() {
         session.send(composeCurrenciesBalance());
         session.send(composeCreditBalance());
     }
 
+    /**
+     * Indicates whether disposed applies to this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isDisposed() {
         return isDisposed;
     }
 
+    /**
+     * Executes flush pets for this player contract.
+     */
     public void flushPets() {
         this.pets.clearPets();
     }
 
+    /**
+     * Executes send notif for this player contract.
+     *
+     * @param title Title supplied by the caller.
+     * @param message Message supplied by the caller.
+     */
     @Override
     public void sendNotif(String title, String message) {
         session.send(new AdvancedAlertMessageComposer(title, message));
     }
 
+    /**
+     * Executes send bubble for this player contract.
+     *
+     * @param image Image supplied by the caller.
+     * @param message Message supplied by the caller.
+     */
     @Override
     public void sendBubble(String image, String message) {
         session.send(new NotificationMessageComposer(image, message));
     }
 
+    /**
+     * Executes send motd for this player contract.
+     *
+     * @param message Message supplied by the caller.
+     */
     @Override
     public void sendMotd(String message) {
         session.send(new MotdNotificationMessageComposer(message));
     }
 
+    /**
+     * Executes compose credit balance for this player contract.
+     *
+     * @return Result produced by the operation.
+     */
     @Override
     public MessageComposer composeCreditBalance() {
         if (CometSettings.playerInfiniteBalance) {
@@ -331,6 +377,11 @@ public class Player implements IPlayer {
         return new SendCreditsMessageComposer(Integer.toString(session.getPlayer().getData().getCredits()));
     }
 
+    /**
+     * Executes compose currencies balance for this player contract.
+     *
+     * @return Result produced by the operation.
+     */
     @Override
     public MessageComposer composeCurrenciesBalance() {
         final ICurrencyService currencyService = this.currencyService();
@@ -349,6 +400,12 @@ public class Player implements IPlayer {
         }
     }
 
+    /**
+     * Loads room for this player contract.
+     *
+     * @param id Id supplied by the caller.
+     * @param password Password supplied by the caller.
+     */
     @Override
     public void loadRoom(int id, String password) {
         if (!this.usernameConfirmed) {
@@ -424,6 +481,9 @@ public class Player implements IPlayer {
 
     }
 
+    /**
+     * Executes poof for this player contract.
+     */
     @Override
     public void poof() {
         if (this.getEntity() != null && this.getEntity().getRoom() != null && this.getEntity().getRoom().getEntities() != null) {
@@ -433,6 +493,11 @@ public class Player implements IPlayer {
         }
     }
 
+    /**
+     * Executes ignore player for this player contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     */
     @Override
     public void ignorePlayer(int playerId) {
         if (this.ignoredPlayers == null) {
@@ -442,20 +507,42 @@ public class Player implements IPlayer {
         this.ignoredPlayers.add(playerId);
     }
 
+    /**
+     * Executes unignore player for this player contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     */
     @Override
     public void unignorePlayer(int playerId) {
         this.ignoredPlayers.remove((Integer) playerId);
     }
 
+    /**
+     * Executes ignores for this player contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean ignores(int playerId) {
         return this.ignoredPlayers != null && this.ignoredPlayers.contains(playerId);
     }
 
+    /**
+     * Returns the group whispers for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<String> getGroupWhispers(){
         return this.groupWhispers;
     }
 
+    /**
+     * Handles group whisper for this player contract.
+     *
+     * @param username Username supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean handleGroupWhisper(String username) {
         if (this.groupWhispers == null) {
             this.groupWhispers = new ArrayList<>();
@@ -470,6 +557,12 @@ public class Player implements IPlayer {
         }
     }
 
+    /**
+     * Returns the player by group chat for this player contract.
+     *
+     * @param username Username supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public Player getPlayerByGroupChat(String username){
         if(this.groupWhispers.contains(username)){
             Session session = NetworkManager.getInstance().getSessions().getByPlayerUsername(username);
@@ -485,23 +578,49 @@ public class Player implements IPlayer {
     }
 
 
+    /**
+     * Indicates whether group whisper valid applies to this player contract.
+     *
+     * @param username Username supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isGroupWhisperValid(String username) {
         return this.groupWhispers != null && this.groupWhispers.contains(username);
     }
 
+    /**
+     * Returns the shadow status for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getShadowStatus() {
         return shadowStatus;
     }
 
+    /**
+     * Updates the shadow for this player contract.
+     *
+     * @param status Status supplied by the caller.
+     */
     public void setShadow(int status) {
         this.shadowStatus = status;
     }
 
+    /**
+     * Returns the rooms for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public List<Integer> getRooms() {
         return rooms;
     }
 
+    /**
+     * Updates the rooms for this player contract.
+     *
+     * @param rooms Rooms supplied by the caller.
+     */
     @Override
     public void setRooms(List<Integer> rooms) {
         this.rooms = rooms;
@@ -509,6 +628,13 @@ public class Player implements IPlayer {
         flush();
     }
 
+    /**
+     * Executes anti spam for this player contract.
+     *
+     * @param name Name supplied by the caller.
+     * @param expire Expire supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean antiSpam(String name, double expire) {
 
@@ -526,182 +652,367 @@ public class Player implements IPlayer {
         return false;
     }
 
+    /**
+     * Returns the rooms with rights for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public List<Integer> getRoomsWithRights() {
         return roomsWithRights;
     }
 
     //    @Override
+    /**
+     * Returns the entity for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public PlayerEntity getEntity() {
         return this.entity;
     }
 
     //    @Override
+    /**
+     * Updates the entity for this player contract.
+     *
+     * @param avatar Avatar supplied by the caller.
+     */
     public void setEntity(PlayerEntity avatar) {
         this.entity = avatar;
 
         flush();
     }
 
+    /**
+     * Returns the session for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Session getSession() {
         return this.session;
     }
 
+    /**
+     * Updates the session for this player contract.
+     *
+     * @param client Client supplied by the caller.
+     */
     @Override
     public void setSession(ISession client) {
         this.session = ((Session) client);
     }
 
+    /**
+     * Returns the data for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public PlayerData getData() {
         return this.data;
     }
 
+    /**
+     * Updates the data for this player contract.
+     *
+     * @param playerData Player data supplied by the caller.
+     */
     public void setData(PlayerData playerData) {
         this.data = playerData;
     }
 
+    /**
+     * Returns the stats for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public PlayerStatistics getStats() {
         return this.stats;
     }
 
+    /**
+     * Returns the permissions for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public PermissionComponent getPermissions() {
         return this.permissions;
     }
 
     //    @Override
+    /**
+     * Returns the messenger for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public MessengerComponent getMessenger() {
         return this.messenger;
     }
 
+    /**
+     * Returns the rentable for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public RentableComponent getRentable() { return this.rentable; }
 
     //    @Override
+    /**
+     * Returns the inventory for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public PlayerInventory getInventory() {
         return this.inventory;
     }
 
+    /**
+     * Returns the subscription for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public SubscriptionComponent getSubscription() {
         return this.subscription;
     }
 
+    /**
+     * Returns the relationships for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public RelationshipComponent getRelationships() {
         return this.relationships;
     }
 
     //    @Override
+    /**
+     * Returns the bots for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public InventoryBotComponent getBots() {
         return this.bots;
     }
 
     //    @Override
+    /**
+     * Returns the pets for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public PetComponent getPets() {
         return this.pets;
     }
 
     //    @Override
+    /**
+     * Returns the quests for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public QuestComponent getQuests() {
         return quests;
     }
 
+    /**
+     * Returns the achievements for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public AchievementComponent getAchievements() {
         return achievements;
     }
 
+    /**
+     * Returns the settings for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public PlayerSettings getSettings() {
         return this.settings;
     }
 
+    /**
+     * Returns the mistery for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public MisteryComponent getMistery() {
         return this.mistery;
     }
 
+    /**
+     * Returns the id for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getId() {
         return this.id;
     }
 
+    /**
+     * Indicates whether teleporting applies to this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isTeleporting() {
         return this.teleportId != 0;
     }
 
+    /**
+     * Returns the teleport id for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public long getTeleportId() {
         return this.teleportId;
     }
 
+    /**
+     * Updates the teleport id for this player contract.
+     *
+     * @param teleportId Teleport id supplied by the caller.
+     */
     @Override
     public void setTeleportId(long teleportId) {
         this.teleportId = teleportId;
     }
 
+    /**
+     * Returns the room last message time for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public long getRoomLastMessageTime() {
         return roomLastMessageTime;
     }
 
+    /**
+     * Updates the room last message time for this player contract.
+     *
+     * @param roomLastMessageTime Room last message time supplied by the caller.
+     */
     @Override
     public void setRoomLastMessageTime(long roomLastMessageTime) {
         this.roomLastMessageTime = roomLastMessageTime;
     }
 
+    /**
+     * Returns the room flood time for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public double getRoomFloodTime() {
         return roomFloodTime;
     }
 
+    /**
+     * Updates the room flood time for this player contract.
+     *
+     * @param roomFloodTime Room flood time supplied by the caller.
+     */
     @Override
     public void setRoomFloodTime(double roomFloodTime) {
         this.roomFloodTime = roomFloodTime;
     }
 
+    /**
+     * Returns the room flood flag for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getRoomFloodFlag() {
         return roomFloodFlag;
     }
 
+    /**
+     * Updates the room flood flag for this player contract.
+     *
+     * @param roomFloodFlag Room flood flag supplied by the caller.
+     */
     @Override
     public void setRoomFloodFlag(int roomFloodFlag) {
         this.roomFloodFlag = roomFloodFlag;
     }
 
+    /**
+     * Returns the last message for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getLastMessage() {
         return lastMessage;
     }
 
+    /**
+     * Updates the last message for this player contract.
+     *
+     * @param lastMessage Last message supplied by the caller.
+     */
     @Override
     public void setLastMessage(String lastMessage) {
         this.lastMessage = lastMessage;
     }
 
+    /**
+     * Returns the groups for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Set<Integer> getGroups() {
         return groups == null ? Sets.newHashSet() : groups;
     }
 
+    /**
+     * Returns the notif cooldown for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getNotifCooldown() {
         return this.notifCooldown;
     }
 
+    /**
+     * Updates the notif cooldown for this player contract.
+     *
+     * @param notifCooldown Notif cooldown supplied by the caller.
+     */
     @Override
     public void setNotifCooldown(int notifCooldown) {
         this.notifCooldown = notifCooldown;
     }
 
+    /**
+     * Returns the last room id for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getLastRoomId() {
         return lastRoomId;
     }
 
+    /**
+     * Updates the last room id for this player contract.
+     *
+     * @param lastRoomId Last room id supplied by the caller.
+     */
     @Override
     public void setLastRoomId(int lastRoomId) {
         this.lastRoomId = lastRoomId;
@@ -709,351 +1020,763 @@ public class Player implements IPlayer {
         flush();
     }
 
+    /**
+     * Returns the last gift for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getLastGift() {
         return lastGift;
     }
 
+    /**
+     * Updates the last gift for this player contract.
+     *
+     * @param lastGift Last gift supplied by the caller.
+     */
     @Override
     public void setLastGift(int lastGift) {
         this.lastGift = lastGift;
     }
 
+    /**
+     * Returns the messenger last message time for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public long getMessengerLastMessageTime() {
         return messengerLastMessageTime;
     }
 
+    /**
+     * Updates the messenger last message time for this player contract.
+     *
+     * @param messengerLastMessageTime Messenger last message time supplied by the caller.
+     */
     @Override
     public void setMessengerLastMessageTime(long messengerLastMessageTime) {
         this.messengerLastMessageTime = messengerLastMessageTime;
     }
 
+    /**
+     * Returns the messenger flood time for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public double getMessengerFloodTime() {
         return messengerFloodTime;
     }
 
+    /**
+     * Updates the messenger flood time for this player contract.
+     *
+     * @param messengerFloodTime Messenger flood time supplied by the caller.
+     */
     @Override
     public void setMessengerFloodTime(double messengerFloodTime) {
         this.messengerFloodTime = messengerFloodTime;
     }
 
+    /**
+     * Returns the messenger flood flag for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getMessengerFloodFlag() {
         return messengerFloodFlag;
     }
 
+    /**
+     * Updates the messenger flood flag for this player contract.
+     *
+     * @param messengerFloodFlag Messenger flood flag supplied by the caller.
+     */
     @Override
     public void setMessengerFloodFlag(int messengerFloodFlag) {
         this.messengerFloodFlag = messengerFloodFlag;
     }
 
+    /**
+     * Indicates whether deleting group applies to this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isDeletingGroup() {
         return isDeletingGroup;
     }
 
+    /**
+     * Updates the deleting group for this player contract.
+     *
+     * @param isDeletingGroup Is deleting group supplied by the caller.
+     */
     @Override
     public void setDeletingGroup(boolean isDeletingGroup) {
         this.isDeletingGroup = isDeletingGroup;
     }
 
+    /**
+     * Returns the deleting group attempt for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public long getDeletingGroupAttempt() {
         return deletingGroupAttempt;
     }
 
+    /**
+     * Updates the deleting group attempt for this player contract.
+     *
+     * @param deletingGroupAttempt Deleting group attempt supplied by the caller.
+     */
     @Override
     public void setDeletingGroupAttempt(long deletingGroupAttempt) {
         this.deletingGroupAttempt = deletingGroupAttempt;
     }
 
+    /**
+     * Executes bypass room auth for this player contract.
+     *
+     * @param bypassRoomAuth Bypass room auth supplied by the caller.
+     */
     @Override
     public void bypassRoomAuth(final boolean bypassRoomAuth) {
         this.bypassRoomAuth = bypassRoomAuth;
     }
 
+    /**
+     * Indicates whether bypassing room auth applies to this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isBypassingRoomAuth() {
         return bypassRoomAuth;
     }
 
+    /**
+     * Returns the last figure update for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getLastFigureUpdate() {
         return lastFigureUpdate;
     }
 
+    /**
+     * Returns the last cfh for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getLastCFH() {
         return lastCFH;
     }
 
+    /**
+     * Updates the last cfh for this player contract.
+     *
+     * @param lastCFH Last cfh supplied by the caller.
+     */
     @Override
     public void setLastCFH(int lastCFH) {
         this.lastCFH = lastCFH;
     }
 
+    /**
+     * Updates the last figure update for this player contract.
+     *
+     * @param lastFigureUpdate Last figure update supplied by the caller.
+     */
     @Override
     public void setLastFigureUpdate(int lastFigureUpdate) {
         this.lastFigureUpdate = lastFigureUpdate;
     }
 
+    /**
+     * Updates the last heal income for this player contract.
+     *
+     * @param lastHealIncome Last heal income supplied by the caller.
+     */
     public void setLastHealIncome(int lastHealIncome) {
         this.lastHealIncome = lastHealIncome;
     }
 
+    /**
+     * Returns the last heal income for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getLastHealIncome() {
         return lastHealIncome;
     }
 
+    /**
+     * Returns the teleport room id for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getTeleportRoomId() {
         return teleportRoomId;
     }
 
+    /**
+     * Updates the teleport room id for this player contract.
+     *
+     * @param teleportRoomId Teleport room id supplied by the caller.
+     */
     public void setTeleportRoomId(int teleportRoomId) {
         this.teleportRoomId = teleportRoomId;
     }
 
+    /**
+     * Returns the last reward for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public long getLastReward() {
         return lastReward;
     }
 
+    /**
+     * Updates the last reward for this player contract.
+     *
+     * @param lastReward Last reward supplied by the caller.
+     */
     @Override
     public void setLastReward(long lastReward) {
         this.lastReward = lastReward;
     }
 
+    /**
+     * Returns the last diamond reward for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public long getLastDiamondReward() {
         return lastDiamondReward;
     }
 
+    /**
+     * Updates the last diamond reward for this player contract.
+     *
+     * @param lastDiamondReward Last diamond reward supplied by the caller.
+     */
     @Override
     public void setLastDiamondReward(long lastDiamondReward) {
         this.lastDiamondReward = lastDiamondReward;
     }
 
+    /**
+     * Returns the last salary reward for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public long getLastSalaryReward() {
         return lastSalaryReward;
     }
 
+    /**
+     * Updates the last salary reward for this player contract.
+     *
+     * @param lastSalaryReward Last salary reward supplied by the caller.
+     */
     @Override
     public void setLastSalaryReward(long lastSalaryReward) {
         this.lastSalaryReward = lastSalaryReward;
     }
 
+    /**
+     * Returns the last forum post for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getLastForumPost() {
         return lastForumPost;
     }
 
+    /**
+     * Updates the last forum post for this player contract.
+     *
+     * @param lastForumPost Last forum post supplied by the caller.
+     */
     public void setLastForumPost(int lastForumPost) {
         this.lastForumPost = lastForumPost;
     }
 
+    /**
+     * Indicates whether this player contract has queued.
+     *
+     * @param id Id supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasQueued(int id) {
         return roomQueueId == id;
 
     }
 
+    /**
+     * Updates the room queue id for this player contract.
+     *
+     * @param id Id supplied by the caller.
+     */
     public void setRoomQueueId(int id) {
         this.roomQueueId = id;
     }
 
+    /**
+     * Updates the survival room id for this player contract.
+     *
+     * @param survivalRoomId Survival room id supplied by the caller.
+     */
     public void setSurvivalRoomId(int survivalRoomId) {
         this.survivalRoomId = survivalRoomId;
     }
 
+    /**
+     * Returns the survival room id for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getSurvivalRoomId() {
         return survivalRoomId;
     }
 
+    /**
+     * Updates the queue data for this player contract.
+     *
+     * @param q Q supplied by the caller.
+     */
     public void setQueueData(QueueData q) {
         this.queueData = q;
     }
 
+    /**
+     * Returns the queue data for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public QueueData getQueueData(){
         return this.queueData;
     }
 
+    /**
+     * Indicates whether spectating applies to this player contract.
+     *
+     * @param id Id supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isSpectating(int id) {
         return this.spectatorRoomId == id;
 
     }
 
+    /**
+     * Updates the spectator room id for this player contract.
+     *
+     * @param id Id supplied by the caller.
+     */
     public void setSpectatorRoomId(int id) {
         this.spectatorRoomId = id;
     }
 
+    /**
+     * Returns the last room created for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getLastRoomCreated() {
         return lastRoomCreated;
     }
 
+    /**
+     * Updates the last room created for this player contract.
+     *
+     * @param lastRoomCreated Last room created supplied by the caller.
+     */
     public void setLastRoomCreated(int lastRoomCreated) {
         this.lastRoomCreated = lastRoomCreated;
     }
 
+    /**
+     * Returns the last room request for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public long getLastRoomRequest() {
         return lastRoomRequest;
     }
 
+    /**
+     * Updates the last room request for this player contract.
+     *
+     * @param lastRoomRequest Last room request supplied by the caller.
+     */
     public void setLastRoomRequest(long lastRoomRequest) {
         this.lastRoomRequest = lastRoomRequest;
     }
 
+    /**
+     * Returns the last badge update for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public long getLastBadgeUpdate() {
         return lastBadgeUpdate;
     }
 
+    /**
+     * Updates the last badge update for this player contract.
+     *
+     * @param lastBadgeUpdate Last badge update supplied by the caller.
+     */
     public void setLastBadgeUpdate(long lastBadgeUpdate) {
         this.lastBadgeUpdate = lastBadgeUpdate;
     }
 
+    /**
+     * Indicates whether this player contract has job.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasJob() { return this.hasJob; }
 
+    /**
+     * Updates the has job for this player contract.
+     *
+     * @param value Value supplied by the caller.
+     */
     public void setHasJob(boolean value) {
         this.hasJob = value;
     }
 
+    /**
+     * Indicates whether invisible applies to this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isInvisible() {
         return invisible;
     }
 
+    /**
+     * Updates the invisible for this player contract.
+     *
+     * @param invisible Invisible supplied by the caller.
+     */
     public void setInvisible(boolean invisible) {
         this.invisible = invisible;
 
         flush();
     }
 
+    /**
+     * Returns the last trade player for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getLastTradePlayer() {
         return lastTradePlayer;
     }
 
+    /**
+     * Updates the last trade player for this player contract.
+     *
+     * @param lastTradePlayer Last trade player supplied by the caller.
+     */
     public void setLastTradePlayer(int lastTradePlayer) {
         this.lastTradePlayer = lastTradePlayer;
     }
 
+    /**
+     * Returns the last trade time for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public long getLastTradeTime() {
         return lastTradeTime;
     }
 
+    /**
+     * Updates the last trade time for this player contract.
+     *
+     * @param lastTradeTime Last trade time supplied by the caller.
+     */
     public void setLastTradeTime(long lastTradeTime) {
         this.lastTradeTime = lastTradeTime;
     }
 
+    /**
+     * Returns the last trade flag for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getLastTradeFlag() {
         return lastTradeFlag;
     }
 
+    /**
+     * Updates the last trade flag for this player contract.
+     *
+     * @param lastTradeFlag Last trade flag supplied by the caller.
+     */
     public void setLastTradeFlag(int lastTradeFlag) {
         this.lastTradeFlag = lastTradeFlag;
     }
 
+    /**
+     * Returns the last trade flood for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public long getLastTradeFlood() {
         return lastTradeFlood;
     }
 
+    /**
+     * Updates the last trade flood for this player contract.
+     *
+     * @param lastTradeFlood Last trade flood supplied by the caller.
+     */
     public void setLastTradeFlood(long lastTradeFlood) {
         this.lastTradeFlood = lastTradeFlood;
     }
 
+    /**
+     * Returns the last photo taken for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public long getLastPhotoTaken() {
         return lastPhotoTaken;
     }
 
+    /**
+     * Returns the last post it placed for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public long getLastPostItPlaced() {
         return lastPostItPlaced;
     }
 
+    /**
+     * Updates the last post it placed for this player contract.
+     *
+     * @param lastPostItPlaced Last post it placed supplied by the caller.
+     */
     public void setLastPostItPlaced(long lastPostItPlaced) {
         this.lastPostItPlaced = lastPostItPlaced;
     }
 
+    /**
+     * Returns the last duel suggestion for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public long getLastDuelSuggestion(){ return lastDuelSuggestion; }
+    /**
+     * Returns the last duel for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public long getLastDuel(){ return lastDuel; }
 
+    /**
+     * Returns the last product added for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public long getLastProductAdded() {
         return this.lastProductAdded;
     }
 
+    /**
+     * Updates the last product added for this player contract.
+     *
+     * @param lastProductAdded Last product added supplied by the caller.
+     */
     public void setLastProductAdded(long lastProductAdded) {
         this.lastProductAdded = lastProductAdded;
     }
 
+    /**
+     * Updates the last duel for this player contract.
+     *
+     * @param lastDuel Last duel supplied by the caller.
+     */
     public void setLastDuel(long lastDuel) {
         this.lastDuel = lastDuel;
     }
 
+    /**
+     * Updates the last duel suggestion for this player contract.
+     *
+     * @param lastDuelSuggestion Last duel suggestion supplied by the caller.
+     */
     public void setLastDuelSuggestion(long lastDuelSuggestion) {
         this.lastDuelSuggestion = lastDuelSuggestion;
     }
 
+    /**
+     * Updates the last photo taken for this player contract.
+     *
+     * @param lastPhotoTaken Last photo taken supplied by the caller.
+     */
     public void setLastPhotoTaken(long lastPhotoTaken) {
         this.lastPhotoTaken = lastPhotoTaken;
     }
 
+    /**
+     * Returns the last voucher redeem attempt for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getLastVoucherRedeemAttempt() {
         return lastVoucherRedeemAttempt;
     }
 
+    /**
+     * Updates the last voucher redeem attempt for this player contract.
+     *
+     * @param lastVoucherRedeem Last voucher redeem supplied by the caller.
+     */
     public void setLastVoucherRedeemAttempt(int lastVoucherRedeem) {
         this.lastVoucherRedeemAttempt = lastVoucherRedeem;
     }
 
+    /**
+     * Returns the voucher redeem attempts for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getVoucherRedeemAttempts() {
         return voucherRedeemAttempts;
     }
 
+    /**
+     * Updates the voucher redeem attempts for this player contract.
+     *
+     * @param voucherRedeemAttempts Voucher redeem attempts supplied by the caller.
+     */
     public void setVoucherRedeemAttempts(int voucherRedeemAttempts) {
         this.voucherRedeemAttempts = voucherRedeemAttempts;
     }
 
+    /**
+     * Returns the group creation type for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getGroupCreationType() {
         return this.groupCreationType;
     }
 
+    /**
+     * Updates the group creation type for this player contract.
+     *
+     * @param groupCreationType Group creation type supplied by the caller.
+     */
     public void setGroupCreationType(int groupCreationType) {
         this.groupCreationType = groupCreationType;
     }
 
+    /**
+     * Indicates whether username confirmed applies to this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isUsernameConfirmed() {
         return usernameConfirmed;
     }
 
+    /**
+     * Updates the username confirmed for this player contract.
+     *
+     * @param usernameConfirmed Username confirmed supplied by the caller.
+     */
     public void setUsernameConfirmed(boolean usernameConfirmed) {
         this.usernameConfirmed = usernameConfirmed;
     }
 
+    /**
+     * Returns the event log categories for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Set<String> getEventLogCategories() {
         return eventLogCategories;
     }
 
+    /**
+     * Returns the chat message colour for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public ChatMessageColour getChatMessageColour() {
         return chatMessageColour;
     }
 
+    /**
+     * Updates the chat message colour for this player contract.
+     *
+     * @param chatMessageColour Chat message colour supplied by the caller.
+     */
     public void setChatMessageColour(ChatMessageColour chatMessageColour) {
         this.chatMessageColour = chatMessageColour;
     }
 
+    /**
+     * Returns the helper session for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public HelperSession getHelperSession() {
         return helperSession;
     }
 
+    /**
+     * Updates the helper session for this player contract.
+     *
+     * @param helperSession Helper session supplied by the caller.
+     */
     public void setHelperSession(HelperSession helperSession) {
         this.helperSession = helperSession;
     }
 
+    /**
+     * Returns the help request for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public HelpRequest getHelpRequest() {
         return helpRequest;
     }
 
+    /**
+     * Updates the help request for this player contract.
+     *
+     * @param helpRequest Help request supplied by the caller.
+     */
     public void setHelpRequest(HelpRequest helpRequest) {
         this.helpRequest = helpRequest;
     }
 
+    /**
+     * Returns the recent purchases for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Set<Integer> getRecentPurchases() {
         if (this.recentPurchases == null) {
             this.recentPurchases = new ConcurrentHashSet<>();
@@ -1065,88 +1788,196 @@ public class Player implements IPlayer {
     }
 
 
+    /**
+     * Returns the logs client staff for this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean getLogsClientStaff() { return this.logsClient;}
 
+    /**
+     * Updates the logs client staff for this player contract.
+     *
+     * @param logsClient Logs client supplied by the caller.
+     */
     @Override
     public void setLogsClientStaff(boolean logsClient) { this.logsClient = logsClient; }
 
+    /**
+     * Returns the navigator for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public NavigatorComponent getNavigator() {
         return navigator;
     }
 
+    /**
+     * Executes pets muted for this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean petsMuted() {
         return petsMuted;
     }
 
+    /**
+     * Updates the pets muted for this player contract.
+     *
+     * @param petsMuted Pets muted supplied by the caller.
+     */
     public void setPetsMuted(boolean petsMuted) {
         this.petsMuted = petsMuted;
     }
 
+    /**
+     * Executes bots muted for this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean botsMuted() {
         return botsMuted;
     }
 
+    /**
+     * Updates the bots muted for this player contract.
+     *
+     * @param botsMuted Bots muted supplied by the caller.
+     */
     public void setBotsMuted(boolean botsMuted) {
         this.botsMuted = botsMuted;
     }
 
+    /**
+     * Returns the wardrobe for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public WardrobeComponent getWardrobe() {
         return wardrobe;
     }
 
+    /**
+     * Returns the last photo for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getLastPhoto() {
         return lastPhoto;
     }
 
+    /**
+     * Returns the last purchased photo for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getLastPurchasedPhoto() {
         return lastPurchasedPhoto;
     }
 
+    /**
+     * Updates the last purchased photo for this player contract.
+     *
+     * @param photo Photo supplied by the caller.
+     */
     public void setLastPurchasedPhoto(String photo){
         this.lastPurchasedPhoto = photo;
     }
 
+    /**
+     * Updates the last photo for this player contract.
+     *
+     * @param lastPhoto Last photo supplied by the caller.
+     */
     public void setLastPhoto(String lastPhoto) {
         this.lastPhoto = lastPhoto;
     }
 
+    /**
+     * Returns the item placement height for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public double getItemPlacementHeight() {
         return itemPlacementHeight;
     }
 
+    /**
+     * Returns the item placement rotation for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getItemPlacementRotation() {
         return itemPlacementRotation;
     }
 
+    /**
+     * Returns the item placement state for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getItemPlacementState() {
         return itemPlacementState;
     }
 
+    /**
+     * Updates the item placement height for this player contract.
+     *
+     * @param itemPlacementHeight Item placement height supplied by the caller.
+     */
     public void setItemPlacementHeight(double itemPlacementHeight) {
         this.itemPlacementHeight = itemPlacementHeight;
     }
 
+    /**
+     * Updates the item placement rotation for this player contract.
+     *
+     * @param itemPlacementRotation Item placement rotation supplied by the caller.
+     */
     public void setItemPlacementRotation(int itemPlacementRotation) {
         this.itemPlacementRotation = itemPlacementRotation;
     }
 
+    /**
+     * Updates the item placement state for this player contract.
+     *
+     * @param itemPlacementState Item placement state supplied by the caller.
+     */
     public void setItemPlacementState(int itemPlacementState) {
         this.itemPlacementState = itemPlacementState;
     }
 
+    /**
+     * Updates the is developing for this player contract.
+     *
+     * @param status Status supplied by the caller.
+     */
     public void setIsDeveloping(boolean status) {
         this.isDeveloping = status;
     }
 
+    /**
+     * Indicates whether developing applies to this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isDeveloping() {
         return isDeveloping;
     }
 
+    /**
+     * Updates the is building for this player contract.
+     *
+     * @param status Status supplied by the caller.
+     */
     public void setIsBuilding(boolean status) {
         this.isBuilding = status;
     }
 
+    /**
+     * Executes reset building for this player contract.
+     */
     public void resetBuilding(){
         this.itemPlacementHeight = -1;
         this.itemPlacementRotation = -1;
@@ -1155,53 +1986,122 @@ public class Player implements IPlayer {
 
 
 
+    /**
+     * Returns the is building for this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean getIsBuilding(){ return isBuilding;}
 
+    /**
+     * Returns the last crafting machine for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public CraftingMachine getLastCraftingMachine() {
         return this.lastCraftingMachine;
     }
 
+    /**
+     * Updates the last crafting machine for this player contract.
+     *
+     * @param machine Machine supplied by the caller.
+     */
     public void setLastCraftingMachine(CraftingMachine machine) {
         this.lastCraftingMachine = machine;
     }
 
+    /**
+     * Returns the listening players for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Set<Integer> getListeningPlayers() {
         return listeningPlayers;
     }
 
+    /**
+     * Updates the listening players for this player contract.
+     *
+     * @param listeningPlayers Listening players supplied by the caller.
+     */
     public void setListeningPlayers(Set<Integer> listeningPlayers) {
         this.listeningPlayers = listeningPlayers;
     }
 
+    /**
+     * Executes flush for this player contract.
+     */
     public void flush() {
         /*setChanged();
         notifyObservers();*/
     }
 
+    /**
+     * Indicates whether online applies to this player contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isOnline() {
         return this.online;
     }
 
+    /**
+     * Updates the online for this player contract.
+     *
+     * @param online Online supplied by the caller.
+     */
     public void setOnline(boolean online) {
         this.online = online;
     }
 
+    /**
+     * Returns the rps rival for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getRPSRival() { return RPSRival; }
 
+    /**
+     * Updates the rp samount for this player contract.
+     *
+     * @param RPSamount Rp samount supplied by the caller.
+     */
     public void setRPSamount(int RPSamount) { this.RPSamount = RPSamount; }
 
+    /**
+     * Returns the rp samount for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getRPSamount() { return RPSamount; }
 
+    /**
+     * Updates the rp sselection for this player contract.
+     *
+     * @param RPSselection Rp sselection supplied by the caller.
+     */
     public void setRPSselection(int RPSselection) { this.RPSselection = RPSselection; }
 
+    /**
+     * Returns the rp sselection for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getRPSselection() { return RPSselection; }
 
+    /**
+     * Executes reset rps for this player contract.
+     */
     public void resetRPS(){
         this.RPSamount = 0;
         this.RPSselection = 0;
         this.RPSRival = "";
     }
 
+    /**
+     * Returns the calendar gifts for this player contract.
+     */
     public void getCalendarGifts(){
         int total = LandingManager.getInstance().getTotalDays();
         this.calendarGifts = new boolean[total];
@@ -1212,32 +2112,72 @@ public class Player implements IPlayer {
         this.calendarGifts = LandingDao.calendarDays(this.id,total);
     }
 
+    /**
+     * Returns the gifts for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public boolean[] getGifts(){
         return this.calendarGifts;
     }
 
+    /**
+     * Updates the rp srequest for this player contract.
+     *
+     * @param RPSrequest Rp srequest supplied by the caller.
+     */
     public void setRPSrequest(String RPSrequest) {
         this.RPSrequest = RPSrequest;
     }
 
+    /**
+     * Returns the rp srequest for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getRPSrequest() {
         return RPSrequest;
     }
 
+    /**
+     * Updates the rps rival for this player contract.
+     *
+     * @param RPSRival Rps rival supplied by the caller.
+     */
     public void setRPSRival(String RPSRival) { this.RPSRival = RPSRival; }
 
+    /**
+     * Returns the mentions for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<PlayerMention> getMentions() {
         return this.mentions;
     }
 
+    /**
+     * Adds mention to this player contract.
+     *
+     * @param mention Mention supplied by the caller.
+     */
     public void addMention(PlayerMention mention) {
         this.mentions.add(mention);
     }
 
+    /**
+     * Returns the bubble id for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getBubbleId() {
         return this.bubbleId;
     }
 
+    /**
+     * Updates the bubble id for this player contract.
+     *
+     * @param bubbleId Bubble id supplied by the caller.
+     */
     public void setBubbleId(int bubbleId) {
         this.bubbleId = bubbleId;
     }

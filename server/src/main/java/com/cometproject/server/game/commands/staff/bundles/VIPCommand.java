@@ -9,7 +9,16 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.storage.api.data.currency.CurrencyUseCases;
 import com.cometproject.storage.api.services.ICurrencyService;
 
+/**
+ * Describes VIP command behavior for the Comet subsystem.
+ */
 public class VIPCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         if (params.length != 1) return;
@@ -28,16 +37,31 @@ public class VIPCommand extends ChatCommand {
 
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "vipbundle_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return Locale.getOrDefault("command.parameter.username", "%username%");
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.getOrDefault("command.vipbundle.description", "Da un pack de VIP al usuario seleccionado.");

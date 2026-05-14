@@ -24,6 +24,9 @@ import com.google.common.collect.Sets;
 
 import java.util.*;
 
+/**
+ * Coordinates group behavior for the group subsystem.
+ */
 public class GroupService implements IGroupService {
 
     private final Cache<Integer, IGroup> groupCache;
@@ -37,6 +40,16 @@ public class GroupService implements IGroupService {
 
     private final GroupFactory groupFactory;
 
+    /**
+     * Creates a group service instance for the group subsystem.
+     *
+     * @param groupCache Group cache supplied by the caller.
+     * @param groupDataCache Group data cache supplied by the caller.
+     * @param groupItemService Group item service supplied by the caller.
+     * @param groupRepository Group repository supplied by the caller.
+     * @param groupMemberRepository Group member repository supplied by the caller.
+     * @param groupForumRepository Group forum repository supplied by the caller.
+     */
     public GroupService(Cache<Integer, IGroup> groupCache, Cache<Integer, IGroupData> groupDataCache,
                         IGroupItemService groupItemService, IGroupRepository groupRepository,
                         IGroupMemberRepository groupMemberRepository, IGroupForumRepository groupForumRepository) {
@@ -50,6 +63,12 @@ public class GroupService implements IGroupService {
         this.groupFactory = new GroupFactory(this);
     }
 
+    /**
+     * Returns the data for this group contract.
+     *
+     * @param groupId Group id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public IGroupData getData(final int groupId) {
         if(groupId == 0) {
@@ -71,6 +90,12 @@ public class GroupService implements IGroupService {
         return data.get();
     }
 
+    /**
+     * Returns the group for this group contract.
+     *
+     * @param groupId Group id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public IGroup getGroup(final int groupId) {
         if (groupId == 0) {
@@ -113,18 +138,33 @@ public class GroupService implements IGroupService {
         return build(groupMemberData.get(), requestsData.get(), groupData);
     }
 
+    /**
+     * Persists group data for this group contract.
+     *
+     * @param groupData Group data supplied by the caller.
+     */
     @Override
     public void saveGroupData(IGroupData groupData) {
         // Queue to save?
         this.groupRepository.saveGroupData(groupData);
     }
 
+    /**
+     * Creates forum settings for this group contract.
+     *
+     * @param forumComponent Forum component supplied by the caller.
+     */
     @Override
     public void createForumSettings(IForumComponent forumComponent) {
         // Queue to save?
         this.groupRepository.createForumSettings(forumComponent);
     }
 
+    /**
+     * Adds forum to this group contract.
+     *
+     * @param group Group supplied by the caller.
+     */
     @Override
     public void addForum(IGroup group) {
         group.getData().setHasForum(true);
@@ -140,6 +180,13 @@ public class GroupService implements IGroupService {
         this.createForumSettings(forumComponent);
     }
 
+    /**
+     * Creates group for this group contract.
+     *
+     * @param groupData Group data supplied by the caller.
+     * @param ownerId Owner id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public IGroup createGroup(IGroupData groupData, int ownerId) {
         final List<IGroupMember> groupMembers = Lists.newArrayList();
@@ -151,6 +198,12 @@ public class GroupService implements IGroupService {
         return this.build(groupMembers, requests, groupData);
     }
 
+    /**
+     * Adds group member to this group contract.
+     *
+     * @param group Group supplied by the caller.
+     * @param groupMember Group member supplied by the caller.
+     */
     @Override
     public void addGroupMember(IGroup group, IGroupMember groupMember) {
         if (groupMember.getMembershipId() == 0) {
@@ -168,6 +221,12 @@ public class GroupService implements IGroupService {
         group.getMembers().getAll().put(groupMember.getPlayerId(), groupMember);
     }
 
+    /**
+     * Removes group member from this group contract.
+     *
+     * @param group Group supplied by the caller.
+     * @param groupMember Group member supplied by the caller.
+     */
     @Override
     public void removeGroupMember(IGroup group, IGroupMember groupMember) {
         this.groupMemberRepository.delete(groupMember.getMembershipId());
@@ -179,6 +238,12 @@ public class GroupService implements IGroupService {
         group.getMembers().getAll().remove(groupMember.getPlayerId());
     }
 
+    /**
+     * Creates request for this group contract.
+     *
+     * @param group Group supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     */
     @Override
     public void createRequest(IGroup group, int playerId) {
         if (group.getMembers().hasMembership(playerId) ||
@@ -190,6 +255,12 @@ public class GroupService implements IGroupService {
         group.getMembers().getMembershipRequests().add(playerId);
     }
 
+    /**
+     * Removes request from this group contract.
+     *
+     * @param group Group supplied by the caller.
+     * @param playerId Player identifier used by the operation.
+     */
     @Override
     public void removeRequest(IGroup group, int playerId) {
         if (!group.getMembers().getMembershipRequests().contains(playerId)) {
@@ -200,6 +271,11 @@ public class GroupService implements IGroupService {
         group.getMembers().getMembershipRequests().remove(playerId);
     }
 
+    /**
+     * Executes clear requests for this group contract.
+     *
+     * @param group Group supplied by the caller.
+     */
     @Override
     public void clearRequests(IGroup group) {
         this.groupMemberRepository.clearRequests(group.getId());
@@ -207,6 +283,11 @@ public class GroupService implements IGroupService {
         group.getMembers().getMembershipRequests().clear();
     }
 
+    /**
+     * Persists forum settings for this group contract.
+     *
+     * @param forumSettings Forum settings supplied by the caller.
+     */
     @Override
     public void saveForumSettings(IForumSettings forumSettings) {
         this.groupForumRepository.saveSettings(forumSettings);
@@ -265,16 +346,31 @@ public class GroupService implements IGroupService {
         return group;
     }
 
+    /**
+     * Returns the item service for this group contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public IGroupItemService getItemService() {
         return this.groupItemService;
     }
 
+    /**
+     * Updates the item service for this group contract.
+     *
+     * @param itemService Item service supplied by the caller.
+     */
     @Override
     public void setItemService(IGroupItemService itemService) {
         this.groupItemService = itemService;
     }
 
+    /**
+     * Removes group from this group contract.
+     *
+     * @param id Id supplied by the caller.
+     */
     @Override
     public void removeGroup(int id) {
         final IGroup group = this.getGroup(id);

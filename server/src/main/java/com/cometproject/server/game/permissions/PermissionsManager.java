@@ -16,6 +16,9 @@ import com.cometproject.server.game.players.types.Player;
 import com.cometproject.server.storage.queries.permissions.PermissionsDao;
 
 
+/**
+ * Manages permissions runtime state for the permission subsystem.
+ */
 public class PermissionsManager implements Startable {
     private static final Logger LOGGER = LoggerFactory.getLogger(PermissionsManager.class.getName());
     private Map<Integer, Perk> perks;
@@ -25,14 +28,25 @@ public class PermissionsManager implements Startable {
     private Map<Integer, EffectPermission> overrideEffects;
     private Map<Integer, Integer> chatBubbles;
 
+    /**
+     * Creates a permissions manager instance for the permission subsystem.
+     */
     public PermissionsManager() {
 
     }
 
+    /**
+     * Returns the instance for this permission contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static PermissionsManager getInstance() {
         return CometBootstrap.resolve(PermissionsManager.class);
     }
 
+    /**
+     * Starts this permission component.
+     */
     @Override
     public void start() {
         this.perks = new ConcurrentHashMap<>();
@@ -51,6 +65,9 @@ public class PermissionsManager implements Startable {
         LOGGER.info("PermissionsManager initialized");
     }
 
+    /**
+     * Loads perks for this permission contract.
+     */
     public void loadPerks() {
         try {
             if (this.getPerks().size() != 0) {
@@ -67,6 +84,9 @@ public class PermissionsManager implements Startable {
         LOGGER.info("Loaded " + this.getPerks().size() + " perks");
     }
 
+    /**
+     * Loads permissions for this permission contract.
+     */
     public void loadPermissions() {
         try {
             if (this.getPermissions().size() != 0) {
@@ -83,6 +103,9 @@ public class PermissionsManager implements Startable {
     }
 
 
+    /**
+     * Loads effects for this permission contract.
+     */
     public void loadEffects() {
         try {
             if (this.getEffects().size() != 0) {
@@ -99,6 +122,9 @@ public class PermissionsManager implements Startable {
         LOGGER.info("Loaded " + this.getEffects().size() + " effect permissions");
     }
 
+    /**
+     * Loads effects override for this permission contract.
+     */
     public void loadEffectsOverride() {
         try {
             if (this.getEffectsOverride().size() != 0) {
@@ -115,6 +141,9 @@ public class PermissionsManager implements Startable {
         LOGGER.info("Loaded " + this.getEffects().size() + " override effect permissions");
     }
 
+    /**
+     * Loads chat bubbles for this permission contract.
+     */
     public void loadChatBubbles() {
         if (this.chatBubbles.size() != 0) {
             this.chatBubbles.clear();
@@ -126,6 +155,12 @@ public class PermissionsManager implements Startable {
     }
 
 
+    /**
+     * Returns the rank for this permission contract.
+     *
+     * @param playerRankId Player rank id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public Rank getRank(final int playerRankId) {
         final Rank rank = this.permissions.get(playerRankId);
 
@@ -137,42 +172,101 @@ public class PermissionsManager implements Startable {
         return rank;
     }
 
+    /**
+     * Returns the permissions for this permission contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<Integer, Rank> getPermissions() {
         return this.permissions;
     }
 
+    /**
+     * Returns the override commands for this permission contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<String, OverrideCommandPermission> getOverrideCommands() {
         return this.overridecommands;
     }
 
+    /**
+     * Returns the perks for this permission contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<Integer, Perk> getPerks() {
         return perks;
     }
 
+    /**
+     * Returns the effects for this permission contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<Integer, Integer> getEffects() {
         return effects;
     }
 
+    /**
+     * Returns the effects override for this permission contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<Integer, EffectPermission> getEffectsOverride() {
         return overrideEffects;
     }
 
+    /**
+     * Returns the chat bubbles for this permission contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<Integer, Integer> getChatBubbles() {
         return this.chatBubbles;
     }
 
+    /**
+     * Executes rank exists for this permission contract.
+     *
+     * @param rankId Rank id supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean rankExists(int rankId) {
         return this.permissions.containsKey(rankId);
     }
 
+    /**
+     * Indicates whether this permission contract has permission.
+     *
+     * @param player Player participating in the operation.
+     * @param permission Permission supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasPermission(Player player, String permission) {
         return this.hasPermission(player, permission, false);
     }
 
+    /**
+     * Indicates whether this permission contract has permission.
+     *
+     * @param player Player participating in the operation.
+     * @param permission Permission supplied by the caller.
+     * @param withRoomRights With room rights supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasPermission(Player player, String permission, boolean withRoomRights) {
         return this.hasPermission(player.getPermissions().getRank(), permission, withRoomRights);
     }
 
+    /**
+     * Indicates whether this permission contract has permission.
+     *
+     * @param rank Rank supplied by the caller.
+     * @param permission Permission supplied by the caller.
+     * @param withRoomRights With room rights supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasPermission(Rank rank, String permission, boolean withRoomRights) {
         return rank.hasPermission(permission, withRoomRights);
     }

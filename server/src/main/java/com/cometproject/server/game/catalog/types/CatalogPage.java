@@ -17,6 +17,9 @@ import java.sql.SQLException;
 import java.util.*;
 
 
+/**
+ * Describes catalog page behavior for the catalog subsystem.
+ */
 public class CatalogPage implements ICatalogPage {
     private static final Type listType = new TypeToken<List<String>>() {
     }.getType();
@@ -42,6 +45,13 @@ public class CatalogPage implements ICatalogPage {
     private List<ICatalogPage> children = Lists.newArrayList();
     private boolean sorted = false;
 
+    /**
+     * Creates a catalog page instance for the catalog subsystem.
+     *
+     * @param data Data supplied by the caller.
+     * @param items Items supplied by the caller.
+     * @throws SQLException When the operation cannot complete.
+     */
     public CatalogPage(ResultSet data, Map<Integer, ICatalogItem> items) throws SQLException {
 
         this.id = data.getInt("id");
@@ -110,6 +120,11 @@ public class CatalogPage implements ICatalogPage {
         }
     }
 
+    /**
+     * Returns the children for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public List<ICatalogPage> getChildren() {
         if (!sorted) {
             this.children.sort(Comparator.comparing(ICatalogPage::getCaption));
@@ -119,6 +134,11 @@ public class CatalogPage implements ICatalogPage {
         return this.children;
     }
 
+    /**
+     * Returns the offer size for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getOfferSize() {
         int size = 0;
@@ -136,75 +156,150 @@ public class CatalogPage implements ICatalogPage {
         return size;
     }
 
+    /**
+     * Returns the id for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getId() {
         return id;
     }
 
+    /**
+     * Returns the caption for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getCaption() {
         return caption;
     }
 
+    /**
+     * Returns the icon for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getIcon() {
         return icon;
     }
 
+    /**
+     * Returns the min rank for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getMinRank() {
         return minRank;
     }
 
+    /**
+     * Returns the template for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getTemplate() {
         return template;
     }
 
+    /**
+     * Returns the parent id for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getParentId() {
         return parentId;
     }
 
+    /**
+     * Indicates whether enabled applies to this catalog contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isEnabled() {
         return enabled;
     }
 
+    /**
+     * Returns the items for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Map<Integer, ICatalogItem> getItems() {
         return items;
     }
 
+    /**
+     * Returns the images for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public List<String> getImages() {
         return images;
     }
 
+    /**
+     * Returns the texts for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public List<String> getTexts() {
         return texts;
     }
 
+    /**
+     * Returns the link name for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getLinkName() {
         return linkName;
     }
 
+    /**
+     * Returns the extra data for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getExtraData() {
         return extraData;
     }
 
+    /**
+     * Returns the type for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public CatalogPageType getType() {
         return type;
     }
 
+    /**
+     * Returns the order for this catalog contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getOrder() {
         return order;
     }
 
+    /**
+     * Updates the order for this catalog contract.
+     *
+     * @param order Order supplied by the caller.
+     */
     public void setOrder(int order) {
         this.order = order;
     }

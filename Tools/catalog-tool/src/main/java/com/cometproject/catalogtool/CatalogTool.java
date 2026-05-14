@@ -7,9 +7,17 @@ import com.cometproject.server.storage.StorageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Describes catalog tool behavior for the tooling subsystem.
+ */
 public class CatalogTool {
     private static Logger LOGGER = LoggerFactory.getLogger(CatalogTool.class.getName());
 
+    /**
+     * Executes main for this tooling contract.
+     *
+     * @param args Args supplied by the caller.
+     */
     public static void main(String[] args) {
         if(args.length != 2) {
             LOGGER.warn("Invalid arguments, expecting pageId and furniline");

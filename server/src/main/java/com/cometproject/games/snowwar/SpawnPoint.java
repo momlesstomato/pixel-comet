@@ -1,10 +1,19 @@
 /*    */ package com.cometproject.games.snowwar;
 /*    */ 
+/**
+ * Describes spawn point behavior for the Snow War game subsystem.
+ */
 /*    */ public class SpawnPoint
 /*    */ {
 /*    */   public int x;
 /*    */   public int y;
 /*    */   
+/**
+ * Creates a spawn point instance for the Snow War game subsystem.
+ *
+ * @param i I supplied by the caller.
+ * @param j J supplied by the caller.
+ */
 /*    */   public SpawnPoint(int i, int j) {
 /*  9 */     this.x = i;
 /* 10 */     this.y = j;

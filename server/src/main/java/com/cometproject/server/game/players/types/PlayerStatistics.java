@@ -10,6 +10,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
+/**
+ * Describes player statistics behavior for the player subsystem.
+ */
 public class PlayerStatistics implements IPlayerStatistics {
     private int playerId;
 
@@ -31,6 +34,14 @@ public class PlayerStatistics implements IPlayerStatistics {
     private int bans;
     private long tradeLock;
 
+    /**
+     * Creates a player statistics instance for the player subsystem.
+     *
+     * @param data Data supplied by the caller.
+     * @param isLogin Is login supplied by the caller.
+     * @param player Player participating in the operation.
+     * @throws SQLException When the operation cannot complete.
+     */
     public PlayerStatistics(ResultSet data, boolean isLogin, Player player) throws SQLException {
         if (isLogin) {
             this.playerId = data.getInt("playerId");
@@ -65,6 +76,11 @@ public class PlayerStatistics implements IPlayerStatistics {
         this.player = player;
     }
 
+    /**
+     * Creates a player statistics instance for the player subsystem.
+     *
+     * @param userId User id supplied by the caller.
+     */
     public PlayerStatistics(int userId) {
         this.playerId = userId;
         this.experiencePoints = 0;
@@ -82,156 +98,323 @@ public class PlayerStatistics implements IPlayerStatistics {
         this.player = null;
     }
 
+    /**
+     * Executes save for this player contract.
+     */
     public void save() {
         PlayerDao.updatePlayerStatistics(this);
     }
 
+    /**
+     * Persists fireworks for this player contract.
+     */
     public void saveFireworks(){
         PlayerDao.updateFireworks(this.fireworks, this.playerId);
     }
 
+    /**
+     * Executes increment experience points for this player contract.
+     *
+     * @param amount Amount supplied by the caller.
+     */
     public void incrementExperiencePoints(int amount) {
         this.experiencePoints += amount;
         this.save();
     }
 
+    /**
+     * Returns the experience points for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getExperiencePoints() {
         return this.experiencePoints;
     }
 
 
+    /**
+     * Returns the level for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getLevel() {
         return this.level;
     }
 
+    /**
+     * Returns the fireworks for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getFireworks(){
         return this.fireworks;
     }
 
+    /**
+     * Executes increment fireworks for this player contract.
+     *
+     * @param amount Amount supplied by the caller.
+     */
     public void incrementFireworks(int amount) {
         this.fireworks += amount;
     }
 
+    /**
+     * Executes decrement fireworks for this player contract.
+     *
+     * @param amount Amount supplied by the caller.
+     */
     public void decrementFireworks(int amount) {
         this.fireworks -= amount;
     }
 
+    /**
+     * Executes increment level for this player contract.
+     */
     public void incrementLevel() {
         this.level++;
         this.save();
     }
 
+    /**
+     * Executes increment cautions for this player contract.
+     *
+     * @param amount Amount supplied by the caller.
+     */
     public void incrementCautions(int amount) {
         this.cautions += amount;
         this.save();
     }
 
+    /**
+     * Executes increment respect points for this player contract.
+     *
+     * @param amount Amount supplied by the caller.
+     */
     public void incrementRespectPoints(int amount) {
         this.respectPoints += amount;
         this.save();
     }
 
+    /**
+     * Executes decrement daily respects for this player contract.
+     *
+     * @param amount Amount supplied by the caller.
+     */
     public void decrementDailyRespects(int amount) {
         this.dailyRespects -= amount;
         this.save();
     }
 
+    /**
+     * Executes decrement daily rolls for this player contract.
+     *
+     * @param amount Amount supplied by the caller.
+     */
     public void decrementDailyRolls(int amount) {
         this.dailyRolls -= amount;
         PlayerDao.updateDailyRolls(this.dailyRolls, this.getPlayerId());
     }
 
+    /**
+     * Executes increment bans for this player contract.
+     *
+     * @param amount Amount supplied by the caller.
+     */
     public void incrementBans(int amount) {
         this.bans += amount;
     }
 
+    /**
+     * Executes increment abusive help tickets for this player contract.
+     *
+     * @param amount Amount supplied by the caller.
+     */
     public void incrementAbusiveHelpTickets(int amount) {
         this.abusiveHelpTickets += amount;
     }
 
+    /**
+     * Returns the player id for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getPlayerId() {
         return this.playerId;
     }
 
+    /**
+     * Returns the daily respects for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getDailyRespects() {
         return this.dailyRespects;
     }
 
+    /**
+     * Returns the daily rolls for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getDailyRolls() {
         return this.dailyRolls;
     }
 
+    /**
+     * Updates the daily respects for this player contract.
+     *
+     * @param points Points supplied by the caller.
+     */
     @Override
     public void setDailyRespects(int points) {
         this.dailyRespects = points;
     }
 
+    /**
+     * Updates the daily rolls for this player contract.
+     *
+     * @param amount Amount supplied by the caller.
+     */
     @Override
     public void setDailyRolls(int amount) {
         this.dailyRolls = amount;
     }
 
 
+    /**
+     * Returns the respect points for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getRespectPoints() {
         return this.respectPoints;
     }
 
+    /**
+     * Returns the friend count for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getFriendCount() {
         return MessengerDao.getFriendCount(this.playerId);
     }
 
+    /**
+     * Returns the help tickets for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getHelpTickets() {
         return helpTickets;
     }
 
+    /**
+     * Updates the help tickets for this player contract.
+     *
+     * @param helpTickets Help tickets supplied by the caller.
+     */
     public void setHelpTickets(int helpTickets) {
         this.helpTickets = helpTickets;
     }
 
+   /**
+    * Executes level pass for this player contract.
+    *
+    * @return True when the condition is satisfied; otherwise false.
+    */
    @Override
    public boolean levelPass(){
         return this.level >= 2;
    }
 
+    /**
+     * Returns the abusive help tickets for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getAbusiveHelpTickets() {
         return abusiveHelpTickets;
     }
 
+    /**
+     * Updates the abusive help tickets for this player contract.
+     *
+     * @param abusiveHelpTickets Abusive help tickets supplied by the caller.
+     */
     public void setAbusiveHelpTickets(int abusiveHelpTickets) {
         this.abusiveHelpTickets = abusiveHelpTickets;
     }
 
+    /**
+     * Returns the cautions for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getCautions() {
         return cautions;
     }
 
+    /**
+     * Updates the cautions for this player contract.
+     *
+     * @param cautions Cautions supplied by the caller.
+     */
     public void setCautions(int cautions) {
         this.cautions = cautions;
     }
 
+    /**
+     * Returns the bans for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getBans() {
         return bans;
     }
 
+    /**
+     * Updates the bans for this player contract.
+     *
+     * @param bans Bans supplied by the caller.
+     */
     public void setBans(int bans) {
         this.bans = bans;
     }
 
+    /**
+     * Adds ban to this player contract.
+     */
     public void addBan() {
         this.bans = this.bans++;
     }
 
+    /**
+     * Returns the scratches for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getScratches() {
         return scratches;
     }
 
+    /**
+     * Updates the scratches for this player contract.
+     *
+     * @param scratches Scratches supplied by the caller.
+     */
     @Override
     public void setScratches(int scratches) {
         this.scratches = scratches;
     }
 
+    /**
+     * Executes to JSON for this player contract.
+     *
+     * @return Result produced by the operation.
+     */
     public JsonElement toJson() {
         final JsonObject coreObject = new JsonObject();
         coreObject.addProperty("achievementPoints", experiencePoints);
@@ -249,14 +432,29 @@ public class PlayerStatistics implements IPlayerStatistics {
         return coreObject;
     }
 
+    /**
+     * Returns the player for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * Returns the trade lock for this player contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public long getTradeLock() {
         return tradeLock;
     }
 
+    /**
+     * Updates the trade lock for this player contract.
+     *
+     * @param tradeLock Trade lock supplied by the caller.
+     */
     public void setTradeLock(long tradeLock) {
         this.tradeLock = tradeLock;
     }

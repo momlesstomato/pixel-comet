@@ -17,7 +17,16 @@ import com.cometproject.server.protocol.messages.MessageEvent;
 import org.apache.commons.lang3.StringUtils;
 
 
+/**
+ * Represents the change motto message event published by the network message subsystem.
+ */
 public class ChangeMottoMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void handle(Session client, MessageEvent msg) {
         String motto = msg.readString();
 

@@ -9,8 +9,17 @@ import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.storage.api.StorageContext;
 
+/**
+ * Describes assign group role command behavior for the Comet subsystem.
+ */
 public class AssignGroupRoleCommand extends ChatCommand {
 
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         if (params.length < 2) {
@@ -47,12 +56,27 @@ public class AssignGroupRoleCommand extends ChatCommand {
         }
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() { return "grouprole_command"; }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() { return "%username% %role%"; }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() { return Locale.get("command.grouprole.description"); }
 }

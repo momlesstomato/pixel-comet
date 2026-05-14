@@ -5,6 +5,9 @@ import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
+/**
+ * Serializes the achievement unlocked message for the Pixel Protocol client.
+ */
 public class AchievementUnlockedMessageComposer extends MessageComposer {
     private final String achievementCategory;
     private final String achievementName;
@@ -13,6 +16,15 @@ public class AchievementUnlockedMessageComposer extends MessageComposer {
     private final int currentAchievementId;
     private final IAchievement newAchievement;
 
+    /**
+     * Creates a achievement unlocked message composer instance for the network message subsystem.
+     *
+     * @param achievementCategory Achievement category supplied by the caller.
+     * @param achievementName Achievement name supplied by the caller.
+     * @param currentAchievementId Current achievement id supplied by the caller.
+     * @param newAchievement New achievement supplied by the caller.
+     * @param hasFinished Has finished supplied by the caller.
+     */
     public AchievementUnlockedMessageComposer(final String achievementCategory, String achievementName, int currentAchievementId, IAchievement newAchievement, boolean hasFinished) {
         this.achievementCategory = achievementCategory;
         this.achievementName = achievementName;
@@ -21,11 +33,21 @@ public class AchievementUnlockedMessageComposer extends MessageComposer {
         this.hasFinished = hasFinished;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.AchievementUnlockedMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(currentAchievementId);

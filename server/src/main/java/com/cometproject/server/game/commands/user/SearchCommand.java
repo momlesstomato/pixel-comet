@@ -6,7 +6,16 @@ import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMess
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.queries.items.ItemDao;
 
+/**
+ * Describes search command behavior for the Comet subsystem.
+ */
 public class SearchCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         if(params.length == 0){
@@ -35,14 +44,29 @@ public class SearchCommand extends ChatCommand {
         }
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "cmd_search";
     }
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return Locale.getOrDefault(null, "");
     }
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.search.description");

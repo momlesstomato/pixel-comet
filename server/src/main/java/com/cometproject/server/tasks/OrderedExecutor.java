@@ -67,6 +67,11 @@ public class OrderedExecutor<K> {
             this.queue = new LinkedList<Runnable>();
         }
 
+        /**
+         * Executes add for this task scheduling contract.
+         *
+         * @param runnable Runnable supplied by the caller.
+         */
         public void add(Runnable runnable) {
             boolean runTask;
             lock.lock();
@@ -82,6 +87,9 @@ public class OrderedExecutor<K> {
             }
         }
 
+        /**
+         * Runs this task scheduling task.
+         */
         @Override
         public void run() {
             // Pick a task to run.

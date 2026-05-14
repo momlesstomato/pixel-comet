@@ -1,5 +1,8 @@
 package com.cometproject.server.game.rooms.objects.items.types.floor.wired.actions.types;
 
+/**
+ * Enumerates reward error values used by the room subsystem.
+ */
 public enum RewardError {
     NONE(-1),
     OUT_OF_STOCK(0),
@@ -16,6 +19,11 @@ public enum RewardError {
         this.type = type;
     }
 
+    /**
+     * Returns the integer for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getInteger() {
         return this.type;
     }

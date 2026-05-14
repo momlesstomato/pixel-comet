@@ -10,7 +10,17 @@ import com.cometproject.server.tasks.CometThreadManager;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Describes switch tv command behavior for the pet subsystem.
+ */
 public class SwitchTVCommand extends PetCommand {
+    /**
+     * Executes execute for this pet contract.
+     *
+     * @param executor Executor supplied by the caller.
+     * @param entity Entity supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean execute(PlayerEntity executor, PetEntity entity) {
         // find an item.
@@ -45,11 +55,21 @@ public class SwitchTVCommand extends PetCommand {
         return true;
     }
 
+    /**
+     * Returns the required level for this pet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getRequiredLevel() {
         return 0;
     }
 
+    /**
+     * Executes requires owner for this pet contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean requiresOwner() {
         return true;

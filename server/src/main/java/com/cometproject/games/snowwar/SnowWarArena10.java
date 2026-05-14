@@ -17,9 +17,15 @@ import java.util.Map;
 /*     */
 /*     */
 
+/**
+ * Describes snow war arena10 behavior for the Snow War game subsystem.
+ */
 /*     */ public class SnowWarArena10
         /*     */   extends SnowWarArenaBase
         /*     */ {
+    /**
+     * Creates a snow war arena10 instance for the Snow War game subsystem.
+     */
     /*     */   public SnowWarArena10() {
         /*  72 */     GamefuseObject Item = new GamefuseObject();
         /*  73 */     Item.baseItem = BaseItem.snst_tree1_d;
@@ -816,6 +822,12 @@ import java.util.Map;
         /*     */   }
     /*     */
     /*     */
+    /**
+     * Executes game objects for this Snow War game contract.
+     *
+     * @param gameObjects Game objects supplied by the caller.
+     * @param room Room supplied by the caller.
+     */
     /*     */   public void gameObjects(Map<Integer, GameItemObject> gameObjects, SnowWarRoom room) {
         /* 868 */     gameObjects.put(0, new TreeGameObject(29, 23, 0, 1, 0, 3, 0, room.map, room));
         /* 869 */     gameObjects.put(1, new TreeGameObject(11, 16, 2, 1, 1, 3, 0, room.map, room));

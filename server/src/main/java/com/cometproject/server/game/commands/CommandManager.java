@@ -49,6 +49,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
+/**
+ * Manages command runtime state for the Comet subsystem.
+ */
 public class CommandManager implements Startable {
     private static final Logger LOGGER = LoggerFactory.getLogger(CommandManager.class);
 
@@ -57,6 +60,13 @@ public class CommandManager implements Startable {
     private final ExecutorService executorService = Executors.newFixedThreadPool(2);
 
     private static final Comparator<ChatCommand> ALPHABETICAL_ORDER = new Comparator<ChatCommand>() {
+        /**
+         * Executes compare for this Comet contract.
+         *
+         * @param c1 C1 supplied by the caller.
+         * @param c2 C2 supplied by the caller.
+         * @return Result produced by the operation.
+         */
         public int compare(ChatCommand c1, ChatCommand c2) {
             int res = String.CASE_INSENSITIVE_ORDER.compare(c1.getPermission(), c2.getPermission());
             return (res != 0) ? res : Integer.parseInt(String.valueOf(c1.getPermission().compareTo(c2.getPermission())));
@@ -64,16 +74,24 @@ public class CommandManager implements Startable {
     };
 
     /**
-     * Initialize the commands map and load all commands
+     * Initialize the commands map and load all commands.
      */
     public CommandManager() {
 
     }
 
+    /**
+     * Returns the instance for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static CommandManager getInstance() {
         return CometBootstrap.resolve(CommandManager.class);
     }
 
+    /**
+     * Starts this Comet component.
+     */
     @Override
     public void start() {
         this.commands = new HashMap<>();
@@ -85,6 +103,9 @@ public class CommandManager implements Startable {
         LOGGER.info("CommandManager initialized");
     }
 
+    /**
+     * Executes reload all commands for this Comet contract.
+     */
     public void reloadAllCommands() {
         this.commands.clear();
 
@@ -105,7 +126,7 @@ public class CommandManager implements Startable {
     }
 
     /**
-     * Loads all user commands
+     * Loads all user commands.
      */
     private void loadUserCommands() {
         this.addCommand(Locale.get("command.commands.name"), new CommandsCommand());
@@ -204,7 +225,7 @@ public class CommandManager implements Startable {
     }
 
     /**
-     * Loads all staff commands
+     * Loads all staff commands.
      */
     private void loadStaffCommands() {
         this.addCommand("setroomtag", new SetRoomTagCommand());
@@ -294,7 +315,7 @@ public class CommandManager implements Startable {
     }
 
     /**
-     * Checks whether the request is a valid command alias
+     * Checks whether the request is a valid command alias.
      *
      * @param message The requested command alias
      * @return The result of the check
@@ -330,7 +351,7 @@ public class CommandManager implements Startable {
     }
 
     /**
-     * Attempts to execute the given command
+     * Attempts to execute the given command.
      *
      * @param message The alias of the command and the parameters
      * @param client  The player who is attempting to execute the command
@@ -388,7 +409,7 @@ public class CommandManager implements Startable {
     }
 
     /**
-     * Gets the parameters from the command that was executed (removing the first record of this array)
+     * Gets the parameters from the command that was executed (removing the first record of this array).
      *
      * @param splitStr The executed command, split by " "
      * @return The parameters for the command
@@ -429,14 +450,30 @@ public class CommandManager implements Startable {
         }
     }
 
+    /**
+     * Returns the notifications for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public NotificationManager getNotifications() {
         return notifications;
     }
 
+    /**
+     * Returns the chat commands for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<String, ChatCommand> getChatCommands() {
         return this.commands;
     }
 
+    /**
+     * Returns the commands for rank for this Comet contract.
+     *
+     * @param rankId Rank id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public List<ChatCommand> getCommandsForRank(int rankId) {
         List<ChatCommand> allowedCommands = new ArrayList<>();
         if (PermissionsManager.getInstance().rankExists(rankId)) {

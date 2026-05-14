@@ -54,6 +54,9 @@ import com.cometproject.storage.api.repositories.IPlayerRepository;
 import com.cometproject.server.tasks.CometTask;
 import com.cometproject.server.tasks.CometThreadManager;
 
+/**
+ * Describes player login request behavior for the player subsystem.
+ */
 public class PlayerLoginRequest implements CometTask {
 
     private final Session client;
@@ -80,6 +83,9 @@ public class PlayerLoginRequest implements CometTask {
         this.playerRepository = playerRepository;
     }
 
+    /**
+     * Runs this player task.
+     */
     @Override
     public void run() {
         if (this.client == null) {
@@ -278,6 +284,9 @@ public class PlayerLoginRequest implements CometTask {
 
             try{
                 new Timer().schedule(new TimerTask() {
+                    /**
+                     * Runs this player task.
+                     */
                     @Override
                     public void run() {
                         if(client.getPlayer().getEntity() == null){

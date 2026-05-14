@@ -10,6 +10,9 @@ import com.cometproject.games.snowwar.gameobjects.HumanGameObject;
 import com.cometproject.games.snowwar.gameobjects.SnowBallGameObject;
 import com.cometproject.server.game.players.types.Player;
 
+/**
+ * Carries snow war player data data for the Snow War game subsystem.
+ */
 public class SnowWarPlayerData extends GamePlayerData {
 public Player player;
 public SnowWarRoom currentSnowWar;
@@ -17,6 +20,11 @@ public HumanGameObject humanObject;
 public int snowLevel;
 public int PointsNeed;
 
+    /**
+     * Creates a snow war player data instance for the Snow War game subsystem.
+     *
+     * @param playerData Player data supplied by the caller.
+     */
     public SnowWarPlayerData(Player playerData) {
         this.player = playerData;
         this.snowLevel = 1;
@@ -25,6 +33,11 @@ public int PointsNeed;
         this.PointsNeed = 100;
     }
 
+    /**
+     * Updates the human object for this Snow War game contract.
+     *
+     * @param humanGameObject Human game object supplied by the caller.
+     */
     public void setHumanObject(HumanGameObject humanGameObject) {
         if (humanGameObject == null) {
             this.humanObject.snowWarPlayer = null;
@@ -43,10 +56,18 @@ public int PointsNeed;
         }
     }
 
+    /**
+     * Updates the room for this Snow War game contract.
+     *
+     * @param room Room participating in the operation.
+     */
     public void setRoom(SnowWarRoom room) {
         this.currentSnowWar = room;
     }
 
+    /**
+     * Executes user left for this Snow War game contract.
+     */
     public void userLeft() {
         if (this.humanObject != null && this.currentSnowWar != null) {
             SnowPlayerQueue.playerExit(this.currentSnowWar, this.humanObject);
@@ -55,6 +76,9 @@ public int PointsNeed;
 
     }
 
+    /**
+     * Executes make snow ball for this Snow War game contract.
+     */
     public void makeSnowBall() {
         synchronized (this.currentSnowWar.gameEvents) {
             this.currentSnowWar.gameEvents.add(new MakeSnowBall(this.humanObject));
@@ -63,12 +87,24 @@ public int PointsNeed;
 
     }
 
+    /**
+     * Executes player move for this Snow War game contract.
+     *
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     */
     public void playerMove(int x, int y) {
         synchronized (this.currentSnowWar.gameEvents) {
             this.currentSnowWar.gameEvents.add(new UserMove(this.humanObject, x, y));
         }
     }
 
+    /**
+     * Executes throw snowball flood for this Snow War game contract.
+     *
+     * @param destX Dest x supplied by the caller.
+     * @param destY Dest y supplied by the caller.
+     */
     public void throwSnowballFlood(int destX, int destY) {
         SnowBallGameObject ball = new SnowBallGameObject(this.currentSnowWar);
         ball.objectId = this.currentSnowWar.objectIdCounter++;
@@ -99,6 +135,12 @@ public int PointsNeed;
 
     }
 
+    /**
+     * Executes throw snowball at human for this Snow War game contract.
+     *
+     * @param victim Victim supplied by the caller.
+     * @param type Type supplied by the caller.
+     */
     public void throwSnowballAtHuman(int victim, int type) {
         if (!this.humanObject.canThrowSnowBall()) {
             return;
@@ -120,6 +162,13 @@ public int PointsNeed;
         }
     }
 
+    /**
+     * Executes throw snowball at position for this Snow War game contract.
+     *
+     * @param destX Dest x supplied by the caller.
+     * @param destY Dest y supplied by the caller.
+     * @param type Type supplied by the caller.
+     */
     public void throwSnowballAtPosition(int destX, int destY, int type) {
         if (!this.humanObject.canThrowSnowBall()) {
             return;

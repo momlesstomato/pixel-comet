@@ -16,13 +16,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Creates group instances for the group subsystem.
+ */
 public class GroupFactory {
     private final IGroupService groupService;
 
+    /**
+     * Creates a group factory instance for the group subsystem.
+     *
+     * @param groupService Group service supplied by the caller.
+     */
     public GroupFactory(IGroupService groupService) {
         this.groupService = groupService;
     }
 
+    /**
+     * Creates group instance for this group contract.
+     *
+     * @param groupData Group data supplied by the caller.
+     * @param groupMembers Group members supplied by the caller.
+     * @param membershipRequests Membership requests supplied by the caller.
+     * @param administrators Administrators supplied by the caller.
+     * @param forumSettings Forum settings supplied by the caller.
+     * @param pinnedThreads Pinned threads supplied by the caller.
+     * @param forumThreads Forum threads supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public IGroup createGroupInstance(IGroupData groupData, Map<Integer, IGroupMember> groupMembers,
                                       Set<Integer> membershipRequests, Set<Integer> administrators,
                                       IForumSettings forumSettings, List<Integer> pinnedThreads,

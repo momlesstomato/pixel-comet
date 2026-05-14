@@ -9,7 +9,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Set;
 
+/**
+ * Describes room filter dao behavior for the storage subsystem.
+ */
 public class RoomFilterDao {
+    /**
+     * Returns the filter for room for this storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static Set<String> getFilterForRoom(int roomId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -39,6 +48,12 @@ public class RoomFilterDao {
         return data;
     }
 
+    /**
+     * Persists word for this storage contract.
+     *
+     * @param word Word supplied by the caller.
+     * @param roomId Room identifier used by the operation.
+     */
     public static void saveWord(String word, int roomId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -60,6 +75,12 @@ public class RoomFilterDao {
         }
     }
 
+    /**
+     * Removes word from this storage contract.
+     *
+     * @param word Word supplied by the caller.
+     * @param roomId Room identifier used by the operation.
+     */
     public static void removeWord(String word, int roomId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

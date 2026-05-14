@@ -5,9 +5,19 @@
 /*    */ import com.cometproject.server.network.sessions.Session;
 /*    */ import com.cometproject.server.protocol.messages.MessageEvent;
 /*    */ 
+/**
+ * Describes request full status update parser behavior for the Snow War game subsystem.
+ */
 /*    */ public class RequestFullStatusUpdateParser
 /*    */   implements Event
 /*    */ {
+/**
+ * Executes handle for this network message contract.
+ *
+ * @param client Client supplied by the caller.
+ * @param msg Composer buffer that receives serialized protocol fields.
+ * @throws Exception When the operation cannot complete.
+ */
 /*    */   public void handle(Session client, MessageEvent msg) throws Exception {
 /* 12 */     SnowWarRoom room = client.snowWarPlayerData.currentSnowWar;
 /* 13 */     if (room == null) {

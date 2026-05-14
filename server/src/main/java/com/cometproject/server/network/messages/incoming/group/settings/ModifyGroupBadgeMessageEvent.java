@@ -19,7 +19,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Represents the modify group badge message event published by the network message subsystem.
+ */
 public class ModifyGroupBadgeMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @throws Exception When the operation cannot complete.
+     */
     @Override
     public void handle(Session client, MessageEvent msg) throws Exception {
         if(client.getPlayer().antiSpam(getClass().getName(), 0.5))

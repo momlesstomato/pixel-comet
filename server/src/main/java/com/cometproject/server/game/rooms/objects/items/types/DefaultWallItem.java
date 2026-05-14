@@ -9,11 +9,28 @@ import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMess
 import com.cometproject.server.storage.queries.items.ItemDao;
 
 
+/**
+ * Describes default wall item behavior for the room subsystem.
+ */
 public final class DefaultWallItem extends RoomItemWall {
+    /**
+     * Creates a default wall item instance for the room subsystem.
+     *
+     * @param roomItemData Room item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public DefaultWallItem(RoomItemData roomItemData, Room room) {
         super(roomItemData, room);
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (!isWiredTrigger) {

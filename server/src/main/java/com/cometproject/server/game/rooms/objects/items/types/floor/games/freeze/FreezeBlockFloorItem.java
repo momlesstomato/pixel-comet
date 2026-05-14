@@ -11,15 +11,29 @@ import com.cometproject.server.game.rooms.types.components.games.freeze.FreezeGa
 import com.cometproject.server.game.rooms.types.components.games.freeze.types.FreezePlayer;
 import com.cometproject.server.game.rooms.types.components.games.freeze.types.FreezePowerUp;
 
+/**
+ * Describes freeze block floor item behavior for the room subsystem.
+ */
 public class FreezeBlockFloorItem extends RoomItemFloor {
 
     private boolean destroyed = false;
     private FreezePowerUp powerUp;
 
+    /**
+     * Creates a freeze block floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public FreezeBlockFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Handles the entity step on callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOn(RoomEntity entity) {
         // if has power up, apply power up.
@@ -61,6 +75,9 @@ public class FreezeBlockFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Executes reset for this room contract.
+     */
     public void reset() {
         this.destroyed = false;
         this.powerUp = null;
@@ -71,6 +88,9 @@ public class FreezeBlockFloorItem extends RoomItemFloor {
         this.getTile().reload();
     }
 
+    /**
+     * Executes explode for this room contract.
+     */
     public void explode() {
         if (this.destroyed) {
             return;
@@ -95,6 +115,11 @@ public class FreezeBlockFloorItem extends RoomItemFloor {
         this.sendUpdate();
     }
 
+    /**
+     * Indicates whether destroyed applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isDestroyed() {
         return destroyed;
     }

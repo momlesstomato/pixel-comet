@@ -8,13 +8,30 @@ import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.game.rooms.types.components.games.GameType;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Describes abstract game timer floor item behavior for the room subsystem.
+ */
 public abstract class AbstractGameTimerFloorItem extends RoomItemFloor {
     public String lastTime;
 
+    /**
+     * Creates a abstract game timer floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public AbstractGameTimerFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTriggered Is wired triggered supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTriggered) {
         if (!isWiredTriggered) {
@@ -88,6 +105,9 @@ public abstract class AbstractGameTimerFloorItem extends RoomItemFloor {
         return true;
     }
 
+    /**
+     * Handles the pickup callback for this room contract.
+     */
     @Override
     public void onPickup() {
         if (this.getRoom().getGame().getInstance() != null) {
@@ -96,14 +116,29 @@ public abstract class AbstractGameTimerFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Returns the data object for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDataObject() {
         return this.lastTime != null && !this.lastTime.isEmpty() ? this.lastTime : this.getItemData().getData();
     }
 
+    /**
+     * Updates the last time for this room contract.
+     *
+     * @param lastTime Last time supplied by the caller.
+     */
     public void setLastTime(String lastTime) {
         this.lastTime = lastTime;
     }
 
+    /**
+     * Returns the game type for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public abstract GameType getGameType();
 }

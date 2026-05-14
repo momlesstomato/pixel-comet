@@ -11,22 +11,46 @@ import com.cometproject.server.game.rooms.types.components.games.GameTeam;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Describes wired custom teleport green behavior for the room subsystem.
+ */
 public class WiredCustomTeleportGreen extends WiredActionItem {
 
+    /**
+     * Creates a wired custom teleport green instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public WiredCustomTeleportGreen(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Executes requires player for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean requiresPlayer() {
         return false;
     }
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 8;
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(WiredItemEvent event) {
         if (this.getWiredData().getSelectedIds().size() == 0) return;

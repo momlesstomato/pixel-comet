@@ -2,6 +2,9 @@ package com.cometproject.games.snowwar.gameobjects;
 
 import com.cometproject.games.snowwar.*;
 
+/**
+ * Describes snow ball game object behavior for the Snow War game subsystem.
+ */
 public class SnowBallGameObject extends GameItemObject {
     private static int _4s = 0;
     private static int _09I = 1;
@@ -24,6 +27,11 @@ public class SnowBallGameObject extends GameItemObject {
     private HumanGameObject ballOwner;
     private int paraOffs;
 
+    /**
+     * Creates a snow ball game object instance for the Snow War game subsystem.
+     *
+     * @param room Room participating in the operation.
+     */
     public SnowBallGameObject(final SnowWarRoom room){
         super(11);
         currentSnowWar = room;
@@ -52,6 +60,16 @@ public class SnowBallGameObject extends GameItemObject {
         ballOwner = val;
     }
 
+    /**
+     * Executes initialize for this Snow War game contract.
+     *
+     * @param x X supplied by the caller.
+     * @param y Y supplied by the caller.
+     * @param type Type supplied by the caller.
+     * @param destX Dest x supplied by the caller.
+     * @param destY Dest y supplied by the caller.
+     * @param owner Owner supplied by the caller.
+     */
     public void initialize(int x, int y, int type, int destX, int destY, HumanGameObject owner) {
         currentLocation.setXYZ(x, y, _2t9);
 
@@ -108,6 +126,12 @@ public class SnowBallGameObject extends GameItemObject {
         }
     }
 
+    /**
+     * Returns the variable for this Snow War game contract.
+     *
+     * @param val Val supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getVariable(int val){
         if(val == 0) {
@@ -145,21 +169,41 @@ public class SnowBallGameObject extends GameItemObject {
         //}
     }
 
+    /**
+     * Executes direction360 for this Snow War game contract.
+     *
+     * @return Result produced by the operation.
+     */
     @Override
     public Direction360 direction360(){
         return (direction);
     }
 
+    /**
+     * Executes bounding data for this Snow War game contract.
+     *
+     * @return Result produced by the operation.
+     */
     @Override
     public int[] boundingData(){
         return (boundingData);
     }
 
+    /**
+     * Executes location3 d for this Snow War game contract.
+     *
+     * @return Result produced by the operation.
+     */
     @Override
     public PlayerTile location3D(){
         return (currentLocation);
     }
 
+    /**
+     * Executes subturn for this Snow War game contract.
+     *
+     * @param _arg1 Arg1 supplied by the caller.
+     */
     @Override
     public void subturn(SynchronizedGameStage _arg1){
         final SnowWarRoom local1 = ((SnowWarRoom)_arg1);
@@ -240,16 +284,29 @@ public class SnowBallGameObject extends GameItemObject {
         setCurLocation(local2, local3, local5);
     }
 
+    /**
+     * Executes to string for this Snow War game contract.
+     *
+     * @return Result produced by the operation.
+     */
     @Override
     public String toString(){
         return (((((((((((((" location=(" + currentLocation.x()) + ",") + currentLocation.y()) + ",") + currentLocation.z()) + ")") + " dir=") + direction) + " paraOffs=") + paraOffs) + " ttl=") + ttl));
     }
 
+    /**
+     * Returns the attacker for this Snow War game contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public HumanGameObject getAttacker(){
         return (ballOwner);
     }
 
 
+    /**
+     * Handles the remove callback for this Snow War game contract.
+     */
     @Override
     public void onRemove() {
         // this is in disponse (client-side)

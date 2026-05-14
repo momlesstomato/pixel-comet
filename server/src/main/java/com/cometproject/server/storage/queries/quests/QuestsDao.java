@@ -11,7 +11,15 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Describes quests dao behavior for the storage subsystem.
+ */
 public class QuestsDao {
+    /**
+     * Returns the all quests for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<String, IQuest> getAllQuests() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

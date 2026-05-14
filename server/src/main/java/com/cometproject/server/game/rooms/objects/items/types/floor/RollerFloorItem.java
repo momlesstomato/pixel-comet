@@ -19,6 +19,9 @@ import com.cometproject.server.utilities.collections.ConcurrentHashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Describes roller floor item behavior for the room subsystem.
+ */
 public class RollerFloorItem
         extends AdvancedFloorItem<RollerFloorItemEvent> {
     private boolean hasRollScheduled = false;
@@ -26,29 +29,51 @@ public class RollerFloorItem
     private final Set<Integer> entitiesOnRoller = new ConcurrentHashSet<Integer>();
     private final RollerFloorItemEvent event = new RollerFloorItemEvent(this.getTickCount());
 
+    /**
+     * Creates a roller floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public RollerFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
         this.queueEvent(this.event);
     }
 
+    /**
+     * Handles the load callback for this room contract.
+     */
     @Override
     public void onLoad() {
         this.event.setTotalTicks(this.getTickCount());
         this.queueEvent(this.event);
     }
 
+    /**
+     * Handles the placed callback for this room contract.
+     */
     @Override
     public void onPlaced() {
         this.event.setTotalTicks(this.getTickCount());
         this.queueEvent(this.event);
     }
 
+    /**
+     * Handles the entity step on callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOn(RoomEntity entity) {
         this.entitiesOnRoller.add(entity.getId());
         this.event.setTotalTicks(this.getTickCount());
     }
 
+    /**
+     * Handles the entity step off callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOff(RoomEntity entity) {
         if (!this.entitiesOnRoller.contains(entity.getId())) {
@@ -57,11 +82,21 @@ public class RollerFloorItem
         this.entitiesOnRoller.remove(entity.getId());
     }
 
+    /**
+     * Handles the item added to stack callback for this room contract.
+     *
+     * @param floorItem Floor item supplied by the caller.
+     */
     @Override
     public void onItemAddedToStack(RoomItemFloor floorItem) {
         this.event.setTotalTicks(this.getTickCount());
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(RollerFloorItemEvent event) {
         this.handleItems();

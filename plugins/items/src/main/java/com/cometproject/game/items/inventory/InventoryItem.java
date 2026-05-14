@@ -8,16 +8,31 @@ import com.cometproject.api.game.players.data.components.inventory.PlayerItem;
 import com.cometproject.api.game.players.data.components.inventory.PlayerItemSnapshot;
 import com.cometproject.api.networking.messages.IComposer;
 
+/**
+ * Describes inventory item behavior for the item subsystem.
+ */
 public class InventoryItem implements PlayerItem {
 
     private final InventoryItemData itemData;
     private final FurnitureDefinition furnitureDefinition;
 
+    /**
+     * Creates a inventory item instance for the item subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param furnitureDefinition Furniture definition supplied by the caller.
+     */
     public InventoryItem(InventoryItemData itemData, FurnitureDefinition furnitureDefinition) {
         this.itemData = itemData;
         this.furnitureDefinition = furnitureDefinition;
     }
 
+    /**
+     * Executes compose data for this item contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     protected boolean composeData(IComposer msg) {
         msg.writeInt(1);
 
@@ -32,6 +47,11 @@ public class InventoryItem implements PlayerItem {
         return false;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void compose(IComposer msg) {
         msg.writeInt(this.getVirtualId());
         msg.writeString(this.getDefinition().getType());
@@ -59,6 +79,11 @@ public class InventoryItem implements PlayerItem {
         msg.writeInt(this.getExtraInt());
     }
 
+    /**
+     * Creates snapshot for this item contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public PlayerItemSnapshot createSnapshot() {
         return null;
@@ -80,39 +105,79 @@ public class InventoryItem implements PlayerItem {
         return this.furnitureDefinition.canMarket();
     }
 
+    /**
+     * Returns the extra int for this item contract.
+     *
+     * @return Value exposed by the contract.
+     */
     protected int getExtraInt() {
         return 0;
     }
 
+    /**
+     * Returns the sprite id for this item contract.
+     *
+     * @return Value exposed by the contract.
+     */
     protected int getSpriteId() {
         return this.furnitureDefinition.getSpriteId();
     }
 
+    /**
+     * Returns the id for this item contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public long getId() {
         return this.itemData.getId();
     }
 
+    /**
+     * Returns the definition for this item contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public FurnitureDefinition getDefinition() {
         return this.furnitureDefinition;
     }
 
+    /**
+     * Returns the base id for this item contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getBaseId() {
         return this.itemData.getBaseId();
     }
 
+    /**
+     * Returns the extra data for this item contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getExtraData() {
         return this.itemData.getExtraData();
     }
 
+    /**
+     * Returns the limited edition item for this item contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public LimitedEditionItem getLimitedEditionItem() {
         return this.itemData.getLimitedEditionItem();
     }
 
+    /**
+     * Returns the virtual id for this item contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getVirtualId() {
         return GameContext.getCurrent().getFurnitureService().getItemVirtualId(this.itemData.getId());

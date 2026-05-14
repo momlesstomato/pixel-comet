@@ -36,6 +36,9 @@ import com.cometproject.server.storage.queries.player.PlayerDao;
 import io.netty.channel.ChannelHandlerContext;
 
 
+/**
+ * Describes session behavior for the network session subsystem.
+ */
 public class Session implements ISession {
     public static int CLIENT_VERSION = 0;
     private final Connection connection;
@@ -56,6 +59,12 @@ public class Session implements ISession {
     private boolean handshakeFinished;
     private long lastPing = Comet.getTime();
 
+    /**
+     * Creates a session instance for the network session subsystem.
+     *
+     * @param connection Connection supplied by the caller.
+     * @param networkId Network id supplied by the caller.
+     */
     public Session(final Connection connection, final int networkId) {
         this.connection = connection;
         this.networkId = networkId;
@@ -63,10 +72,16 @@ public class Session implements ISession {
         this.connection.setState(ConnectionState.AUTHENTICATING);
     }
 
+    /**
+     * Executes initialise for this network session contract.
+     */
     public void initialise() {
         this.eventHandler = new SessionEventHandler(this);
     }
 
+    /**
+     * Handles the disconnect callback for this network session contract.
+     */
     public void onDisconnect() {
         if (this.disconnectCalled) {
             return;
@@ -126,12 +141,20 @@ public class Session implements ISession {
         });
     }
 
+    /**
+     * Executes disconnect for this network session contract.
+     */
     public void disconnect() {
         this.onDisconnect();
 
         this.connection.close(ConnectionCloseCode.NORMAL);
     }
 
+    /**
+     * Returns the IP address for this network session contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getIpAddress() {
         String ipAddress = "0.0.0.0";
 
@@ -146,23 +169,52 @@ public class Session implements ISession {
         return ipAddress;
     }
 
+    /**
+     * Executes disconnect for this network session contract.
+     *
+     * @param reason Reason supplied by the caller.
+     */
     public void disconnect(String reason) {
         this.send(new LogoutMessageComposer(reason));
         this.disconnect();
     }
 
+    /**
+     * Handles message event for this network session contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void handleMessageEvent(MessageEvent msg) {
         this.eventHandler.handle(msg);
     }
 
+    /**
+     * Executes send queue for this network session contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @return Result produced by the operation.
+     */
     public Session sendQueue(final IMessageComposer msg) {
         return this.send(msg, true);
     }
 
+    /**
+     * Executes send for this network session contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @return Result produced by the operation.
+     */
     public Session send(IMessageComposer msg) {
         return this.send(msg, false);
     }
 
+    /**
+     * Executes send for this network session contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @param queue Queue supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public Session send(IMessageComposer msg, boolean queue) {
         if (msg == null) {
             return this;
@@ -186,18 +238,36 @@ public class Session implements ISession {
         return this;
     }
 
+    /**
+     * Executes flush for this network session contract.
+     */
     public void flush() {
         this.connection.flush();
     }
 
+    /**
+     * Returns the logger for this network session contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Logger getLogger() {
         return this.LOGGER;
     }
 
+    /**
+     * Returns the player for this network session contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Player getPlayer() {
         return this.player;
     }
 
+    /**
+     * Updates the player for this network session contract.
+     *
+     * @param player Player participating in the operation.
+     */
     public void setPlayer(Player player) {
         if (player == null || player.getData() == null) {
             this.player = null;
@@ -226,11 +296,21 @@ public class Session implements ISession {
         }
     }
 
+    /**
+     * Returns the connection for this network session contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Connection getConnection() {
         return this.connection;
     }
 
+    /**
+     * Returns the channel for this network session contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public ChannelHandlerContext getChannel() {
         if (this.connection instanceof NettyTcpConnection) {
             return ((NettyTcpConnection) this.connection).getContext();
@@ -239,46 +319,101 @@ public class Session implements ISession {
         return null;
     }
 
+    /**
+     * Returns the unique id for this network session contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public String getUniqueId() {
         return uniqueId;
     }
 
+    /**
+     * Updates the unique id for this network session contract.
+     *
+     * @param uniqueId Unique id supplied by the caller.
+     */
     public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
     }
 
+    /**
+     * Returns the session id for this network session contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public UUID getSessionId() {
         return uuid;
     }
 
+    /**
+     * Returns the network id for this network session contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getNetworkId() {
         return this.networkId;
     }
 
+    /**
+     * Returns the encryption for this network session contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public HabboEncryption getEncryption() {
         return this.encryption;
     }
 
+    /**
+     * Indicates whether handshake finished applies to this network session contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isHandshakeFinished() {
         return handshakeFinished;
     }
 
+    /**
+     * Updates the handshake finished for this network session contract.
+     *
+     * @param handshakeFinished Handshake finished supplied by the caller.
+     */
     public void setHandshakeFinished(boolean handshakeFinished) {
         this.handshakeFinished = handshakeFinished;
     }
 
+    /**
+     * Returns the last ping for this network session contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public long getLastPing() {
         return lastPing;
     }
 
+    /**
+     * Updates the last ping for this network session contract.
+     *
+     * @param lastPing Last ping supplied by the caller.
+     */
     public void setLastPing(long lastPing) {
         this.lastPing = lastPing;
     }
 
+    /**
+     * Returns the WebSocket channel for this network session contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public WebSocketClientConnection getWsChannel() {
         return wsChannel;
     }
 
+    /**
+     * Updates the WebSocket channel for this network session contract.
+     *
+     * @param wsChannel Websocket channel supplied by the caller.
+     */
     public void setWsChannel(WebSocketClientConnection wsChannel) {
         this.wsChannel = wsChannel;
     }

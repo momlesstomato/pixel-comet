@@ -6,10 +6,20 @@ import com.cometproject.game.rooms.models.RoomModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Creates room model instances for the room subsystem.
+ */
 public class RoomModelFactory implements IRoomModelFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RoomModelFactory.class);
 
+    /**
+     * Creates model for this room contract.
+     *
+     * @param roomModelData Room model data supplied by the caller.
+     * @return Value exposed by the contract.
+     * @throws InvalidModelException When the operation cannot complete.
+     */
     @Override
     public IRoomModel createModel(RoomModelData roomModelData) throws InvalidModelException {
         String[] axes = roomModelData.getHeightmap().split("\r");

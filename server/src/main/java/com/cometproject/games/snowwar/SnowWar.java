@@ -2,6 +2,9 @@ package com.cometproject.games.snowwar;
 
 import java.util.Random;
 
+/**
+ * Describes snow war behavior for the Snow War game subsystem.
+ */
 public class SnowWar {
     public static SnowWarArenaBase[] ArenaTypes = {
             new SnowWarArena8(),
@@ -10,6 +13,11 @@ public class SnowWar {
             new SnowWarArena10()
     };
 
+    /**
+     * Returns the random arena for this Snow War game contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static SnowWarArenaBase getRandomArena(){
         Random rand = new Random();
         int result = rand.nextInt(4);

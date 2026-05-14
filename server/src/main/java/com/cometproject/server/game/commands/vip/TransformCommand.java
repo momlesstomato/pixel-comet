@@ -13,7 +13,17 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.queries.items.ItemDao;
 
 
+/**
+ * Describes transform command behavior for the Comet subsystem.
+ */
 public class TransformCommand extends ChatCommand {
+    /**
+     * Executes compose transformation for this Comet contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @param transformationData Transformation data supplied by the caller.
+     * @param entity Entity supplied by the caller.
+     */
     public static void composeTransformation(IComposer msg, String[] transformationData, PlayerEntity entity) {
         // TODO: create global composer for entity types maybe
         msg.writeInt(entity.getPlayerId());
@@ -41,6 +51,12 @@ public class TransformCommand extends ChatCommand {
         msg.writeString("");
     }
 
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
 
@@ -81,21 +97,41 @@ public class TransformCommand extends ChatCommand {
         isExecuted(client);
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "transform_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "%petname%";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.transform.description");
     }
 
+    /**
+     * Indicates whether this Comet contract can disable.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean canDisable() {
         return true;

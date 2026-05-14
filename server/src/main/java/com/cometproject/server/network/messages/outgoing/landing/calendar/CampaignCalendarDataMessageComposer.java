@@ -5,6 +5,9 @@ import com.cometproject.server.game.landing.LandingManager;
 import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
+/**
+ * Serializes the campaign calendar data message for the Pixel Protocol client.
+ */
 public class CampaignCalendarDataMessageComposer extends MessageComposer {
 
     private boolean openBox[];
@@ -13,6 +16,11 @@ public class CampaignCalendarDataMessageComposer extends MessageComposer {
     private int unlockDay;
     private int openSize;
 
+    /**
+     * Creates a campaign calendar data message composer instance for the network message subsystem.
+     *
+     * @param o O supplied by the caller.
+     */
     public CampaignCalendarDataMessageComposer(boolean[] o) {
         this.openBox = o;
         this.unlockDay = LandingManager.getInstance().getUnlockDays();
@@ -20,11 +28,21 @@ public class CampaignCalendarDataMessageComposer extends MessageComposer {
     }
 
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.CampaignCalendarDataMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeString("xmas14");

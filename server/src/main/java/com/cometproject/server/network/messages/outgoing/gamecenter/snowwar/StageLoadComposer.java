@@ -12,15 +12,28 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 /*    */ 
 /*    */ 
 /*    */ 
+/**
+ * Describes stage load composer packets for the Snow War protocol layer.
+ */
 /*    */ public class StageLoadComposer
 /*    */   extends MessageComposer
 /*    */ {
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
 /*    */   public void compose(IComposer msg) {
 /* 17 */     msg.writeInt(0);
 /*    */   }
 /*    */ 
 /*    */       @Override
+/**
+ * Returns the id for this network message contract.
+ *
+ * @return Value exposed by the contract.
+ */
 /*    */   public short getId() {
 /* 22 */     return Composers.SnowStageLoadComposer;
 /*    */   }

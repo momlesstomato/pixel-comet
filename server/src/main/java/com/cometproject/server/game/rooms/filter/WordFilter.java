@@ -9,13 +9,22 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 
+/**
+ * Describes word filter behavior for the room subsystem.
+ */
 public class WordFilter {
     private Map<String, String> wordfilter;
 
+    /**
+     * Creates a word filter instance for the room subsystem.
+     */
     public WordFilter() {
         this.loadFilter();
     }
 
+    /**
+     * Loads filter for this room contract.
+     */
     public void loadFilter() {
         if (this.wordfilter != null) {
             this.wordfilter.clear();
@@ -26,6 +35,12 @@ public class WordFilter {
         LoggerFactory.getLogger(WordFilter.class.getName()).info("Loaded " + wordfilter.size() + " filtered words");
     }
 
+    /**
+     * Executes filter for this room contract.
+     *
+     * @param message Message supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public FilterResult filter(String message) {
         String filteredMessage = message;
 
@@ -45,6 +60,9 @@ public class WordFilter {
         return new FilterResult(filteredMessage, !message.equals(filteredMessage));
     }
 
+    /**
+     * Executes save for this room contract.
+     */
     public void save() {
         FilterDao.save(this.wordfilter);
     }

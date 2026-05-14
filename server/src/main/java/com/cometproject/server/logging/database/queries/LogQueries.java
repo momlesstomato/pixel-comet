@@ -15,7 +15,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Describes log queries behavior for the logging subsystem.
+ */
 public class LogQueries {
+    /**
+     * Executes put entry for this logging contract.
+     *
+     * @param entry Entry supplied by the caller.
+     */
     public static void putEntry(AbstractLogEntry entry) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -40,6 +48,13 @@ public class LogQueries {
         }
     }
 
+    /**
+     * Executes put recommendation for this logging contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param guideId Guide id supplied by the caller.
+     * @param timestamp Timestamp supplied by the caller.
+     */
     public static void putRecommendation(int playerId, int guideId, int timestamp) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -62,6 +77,11 @@ public class LogQueries {
         }
     }
 
+    /**
+     * Executes put entry batch for this logging contract.
+     *
+     * @param entries Entries supplied by the caller.
+     */
     public static void putEntryBatch(List<AbstractLogEntry> entries) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -91,6 +111,14 @@ public class LogQueries {
         }
     }
 
+    /**
+     * Executes put room visit for this logging contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param roomId Room identifier used by the operation.
+     * @param entryTime Entry time supplied by the caller.
+     * @return Result produced by the operation.
+     */
     public static RoomVisitLogEntry putRoomVisit(int playerId, int roomId, int entryTime) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -123,6 +151,11 @@ public class LogQueries {
         return null;
     }
 
+    /**
+     * Updates room entry for this logging contract.
+     *
+     * @param entry Entry supplied by the caller.
+     */
     public static void updateRoomEntry(RoomVisitLogEntry entry) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -144,6 +177,9 @@ public class LogQueries {
         }
     }
 
+    /**
+     * Updates room entries for this logging contract.
+     */
     public static void updateRoomEntries() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -164,6 +200,15 @@ public class LogQueries {
         }
     }
 
+    /**
+     * Returns the chatlogs by criteria for this logging contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param roomId Room identifier used by the operation.
+     * @param entryTime Entry time supplied by the caller.
+     * @param exitTime Exit time supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static List<RoomChatLogEntry> getChatlogsByCriteria(int playerId, int roomId, int entryTime, int exitTime) {
         final int limit = 150;
 
@@ -199,6 +244,14 @@ public class LogQueries {
         return chatlogs;
     }
 
+    /**
+     * Returns the chatlogs for room for this logging contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @param startTimestamp Start timestamp supplied by the caller.
+     * @param endTimestamp End timestamp supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static List<RoomChatLogEntry> getChatlogsForRoom(int roomId, int startTimestamp, int endTimestamp) {
         final int limit = 50;
 
@@ -233,6 +286,12 @@ public class LogQueries {
         return chatlogs;
     }
 
+    /**
+     * Returns the chatlogs for room for this logging contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     * @return Value exposed by the contract.
+     */
     public static List<RoomChatLogEntry> getChatlogsForRoom(int roomId) {
         final int limit = 150;
 
@@ -265,6 +324,11 @@ public class LogQueries {
         return chatlogs;
     }
 
+    /**
+     * Returns the open events for this logging contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static List<CommandLogEntry> getOpenEvents() {
         final int limit = 50;
 
@@ -296,6 +360,13 @@ public class LogQueries {
         return openE;
     }
 
+    /**
+     * Returns the last room visits for this logging contract.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param count Count supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static List<RoomVisitLogEntry> getLastRoomVisits(int playerId, int count) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

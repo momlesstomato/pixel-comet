@@ -12,7 +12,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
+/**
+ * Describes crafting dao behavior for the storage subsystem.
+ */
 public class CraftingDao {
+    /**
+     * Loads recipes for this storage contract.
+     *
+     * @param machine Machine supplied by the caller.
+     */
     public static void loadRecipes(CraftingMachine machine) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -27,6 +35,11 @@ public class CraftingDao {
             while (resultSet.next()) {
                 AchievementType achievement = AchievementType.getTypeByName(resultSet.getString("achievement"));
 
+                /**
+                 * Executes if for this storage contract.
+                 *
+                 * @param achievement Achievement supplied by the caller.
+                 */
                 if(resultSet.getString("mode").equals("public"))
                     machine.getPublicRecipes().add(new CraftingRecipe(resultSet.getInt("id"), resultSet.getString("items"), resultSet.getString("result"), resultSet.getInt("result_limit"), resultSet.getInt("result_crafted"), resultSet.getString("badge"), achievement));
                 if(resultSet.getString("mode").equals("secret"))
@@ -41,6 +54,11 @@ public class CraftingDao {
         }
     }
 
+    /**
+     * Loads allowed items for this storage contract.
+     *
+     * @param machine Machine supplied by the caller.
+     */
     public static void loadAllowedItems(CraftingMachine machine) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -68,6 +86,11 @@ public class CraftingDao {
         }
     }
 
+    /**
+     * Updates limited recipe for this storage contract.
+     *
+     * @param recipe Recipe supplied by the caller.
+     */
     public static void updateLimitedRecipe(CraftingRecipe recipe) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -87,6 +110,9 @@ public class CraftingDao {
         }
     }
 
+    /**
+     * Updates limited egg for this storage contract.
+     */
     public static void updateLimitedEgg() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

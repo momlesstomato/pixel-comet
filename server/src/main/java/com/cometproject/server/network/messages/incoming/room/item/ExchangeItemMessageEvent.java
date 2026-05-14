@@ -12,7 +12,16 @@ import com.cometproject.storage.api.data.currency.CurrencyUseCases;
 import com.cometproject.storage.api.services.ICurrencyService;
 
 
+/**
+ * Represents the exchange item message event published by the network message subsystem.
+ */
 public class ExchangeItemMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void handle(Session client, MessageEvent msg) {
         int virtualId = msg.readInt();

@@ -15,6 +15,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+/**
+ * Owns membership behavior inside the group subsystem.
+ */
 public class MembershipComponent implements IMembershipComponent {
 
     private final int groupId;
@@ -25,6 +28,15 @@ public class MembershipComponent implements IMembershipComponent {
     private final Set<Integer> membershipRequests;
     private final Set<Integer> administrators;
 
+    /**
+     * Creates a membership component instance for the group subsystem.
+     *
+     * @param groupId Group id supplied by the caller.
+     * @param groupService Group service supplied by the caller.
+     * @param groupMembers Group members supplied by the caller.
+     * @param membershipRequests Membership requests supplied by the caller.
+     * @param administrators Administrators supplied by the caller.
+     */
     public MembershipComponent(final int groupId, IGroupService groupService, Map<Integer, IGroupMember> groupMembers,
                                Set<Integer> membershipRequests, Set<Integer> administrators) {
         this.groupId = groupId;
@@ -35,6 +47,9 @@ public class MembershipComponent implements IMembershipComponent {
         this.administrators = administrators;
     }
 
+    /**
+     * Releases resources owned by this group component.
+     */
     @Override
     public void dispose() {
         this.groupMembers.clear();
@@ -42,36 +57,75 @@ public class MembershipComponent implements IMembershipComponent {
         this.administrators.clear();
     }
 
+    /**
+     * Executes broadcast message for this group contract.
+     *
+     * @param sessionService Session service supplied by the caller.
+     * @param messageComposer Message composer supplied by the caller.
+     * @param sender Sender supplied by the caller.
+     */
     @Override
     public void broadcastMessage(ISessionService sessionService, IMessageComposer messageComposer, int sender) {
         // Not implemented yet, might be revisited when module api for messenger is fleshed out, this won't be needed
     }
 
+    /**
+     * Indicates whether this group contract has membership.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean hasMembership(int playerId) {
         return this.groupMembers.containsKey(playerId);
     }
 
+    /**
+     * Indicates whether this group contract has admin perm.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean hasAdminPerm(int playerId) {
         return this.administrators.contains(playerId);
     }
 
+    /**
+     * Returns the all for this group contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Map<Integer, IGroupMember> getAll() {
         return this.groupMembers;
     }
 
+    /**
+     * Returns the members as list for this group contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public List<IGroupMember> getMembersAsList() {
         return new ArrayList<>(this.groupMembers.values());
     }
 
+    /**
+     * Returns the administrators for this group contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Set<Integer> getAdministrators() {
         return this.administrators;
     }
 
+    /**
+     * Returns the membership requests for this group contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public Set<Integer> getMembershipRequests() {
         return this.membershipRequests;
@@ -105,16 +159,31 @@ public class MembershipComponent implements IMembershipComponent {
         return playerAvatars;
     }
 
+    /**
+     * Returns the member avatars for this group contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public List<PlayerAvatar> getMemberAvatars() {
         return this.getMembers(0);
     }
 
+    /**
+     * Returns the admin avatars for this group contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public List<PlayerAvatar> getAdminAvatars() {
         return this.getMembers(1);
     }
 
+    /**
+     * Returns the request avatars for this group contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public List<PlayerAvatar> getRequestAvatars() {
         return this.getMembers(2);

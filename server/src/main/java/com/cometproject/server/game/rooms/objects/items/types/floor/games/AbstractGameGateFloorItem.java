@@ -10,21 +10,41 @@ import com.cometproject.server.game.rooms.types.components.games.GameTeam;
 import com.cometproject.server.game.rooms.types.components.games.GameType;
 
 
+/**
+ * Describes abstract game gate floor item behavior for the room subsystem.
+ */
 public abstract class AbstractGameGateFloorItem extends DefaultFloorItem {
+    /**
+     * Creates a abstract game gate floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public AbstractGameGateFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Handles the load callback for this room contract.
+     */
     @Override
     public void onLoad() {
         this.getRoom().getGame().getGates().get(this.getTeam()).add(this);
     }
 
+    /**
+     * Handles the unload callback for this room contract.
+     */
     @Override
     public void onUnload() {
         this.getRoom().getGame().getGates().get(this.getTeam()).remove(this);
     }
 
+    /**
+     * Handles the entity step on callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOn(RoomEntity entity) {
         if (!(entity instanceof PlayerEntity)) return;
@@ -62,6 +82,11 @@ public abstract class AbstractGameGateFloorItem extends DefaultFloorItem {
         this.updateTeamCount();
     }
 
+    /**
+     * Handles the entity leave room callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityLeaveRoom(RoomEntity entity) {
         if (entity instanceof PlayerEntity) {
@@ -79,6 +104,12 @@ public abstract class AbstractGameGateFloorItem extends DefaultFloorItem {
         this.sendUpdate();
     }
 
+    /**
+     * Indicates whether movement cancelled applies to this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isMovementCancelled(RoomEntity entity) {
         if (!(entity instanceof PlayerEntity)) {
@@ -94,7 +125,17 @@ public abstract class AbstractGameGateFloorItem extends DefaultFloorItem {
         return false;
     }
 
+    /**
+     * Executes game type for this room contract.
+     *
+     * @return Result produced by the operation.
+     */
     public abstract GameType gameType();
 
+    /**
+     * Returns the team for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public abstract GameTeam getTeam();
 }

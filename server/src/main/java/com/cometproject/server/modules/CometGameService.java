@@ -9,15 +9,18 @@ import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.tasks.CometThreadManager;
 import com.google.inject.Injector;
 
+/**
+ * Coordinates comet game behavior for the module subsystem.
+ */
 public class CometGameService implements IGameService {
     /**
-     * The main system-wide event handler
+     * The main system-wide event handler.
      */
     private final EventHandler eventHandler;
     private final ModuleManager moduleManager;
 
     /**
-     * Default constructor
+     * Default constructor.
      */
     CometGameService(final EventHandler eventHandler, final ModuleManager moduleManager) {
         this.eventHandler = eventHandler;
@@ -25,7 +28,7 @@ public class CometGameService implements IGameService {
     }
 
     /**
-     * Get the main event handler
+     * Get the main event handler.
      *
      * @return EventHandler instance
      */
@@ -34,15 +37,31 @@ public class CometGameService implements IGameService {
         return this.eventHandler;
     }
 
+    /**
+     * Returns the executor service for this module contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public ScheduledExecutorService getExecutorService() {
         return CometThreadManager.getInstance().getCoreExecutor();
     }
 
+    /**
+     * Returns the session manager for this module contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public ISessionManager getSessionManager() {
         return NetworkManager.getInstance().getSessions();
     }
 
+    /**
+     * Returns the plugin injector for this module contract.
+     *
+     * @param moduleName Module name supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     @Override
     public Injector getPluginInjector(final String moduleName) {
         return this.moduleManager.getPluginInjector(moduleName);

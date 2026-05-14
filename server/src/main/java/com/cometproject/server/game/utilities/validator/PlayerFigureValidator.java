@@ -26,6 +26,12 @@ public class PlayerFigureValidator {
     private static List<Integer> listexeptionsetmap;
     private static List<Integer> listexeptioncolors;
 
+    /**
+     * Executes check filter char for this Comet contract.
+     *
+     * @param data Data supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public static boolean CheckFilterChar(String data) {
         char[] letters = data.toLowerCase().toCharArray();
         String allowedCharacters = "abcdefghijklmnopqrstuvwxyz1234567890-.";
@@ -38,6 +44,9 @@ public class PlayerFigureValidator {
         return false;
     }
 
+    /**
+     * Loads figure data for this Comet contract.
+     */
     public static void loadFigureData() {
         try {
             final File figureDataFile = new File("config/figuredata.xml");
@@ -159,6 +168,11 @@ public class PlayerFigureValidator {
         }
     }
 
+    /**
+     * Updates the mapexeption for this Comet contract.
+     *
+     * @return Result produced by the operation.
+     */
     public static List<Integer> setmapexeption() {
         List<Integer> data = new ArrayList<Integer>();
         data.add(99999);
@@ -315,6 +329,13 @@ public class PlayerFigureValidator {
         return data;
     }
 
+    /**
+     * Indicates whether valid figure code applies to this Comet contract.
+     *
+     * @param figureCode Figure code supplied by the caller.
+     * @param genderCode Gender code supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public static boolean isValidFigureCode(final String figureCode, final String genderCode) {
         if (!CometSettings.playerFigureValidation) {
             return true;

@@ -21,14 +21,25 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Describes banzai game behavior for the room processing subsystem.
+ */
 public class BanzaiGame extends RoomGame {
     private int startBanzaiTileCount = 0;
     private int banzaiTileCount = 0;
 
+    /**
+     * Creates a banzai game instance for the room processing subsystem.
+     *
+     * @param room Room participating in the operation.
+     */
     public BanzaiGame(Room room) {
         super(room, GameType.BANZAI);
     }
 
+    /**
+     * Executes tick for this room processing contract.
+     */
     @Override
     public void tick() {
         if (this.startBanzaiTileCount != 0 && this.banzaiTileCount == 0) {
@@ -58,6 +69,9 @@ public class BanzaiGame extends RoomGame {
 
     }
 
+    /**
+     * Handles the game starts callback for this room processing contract.
+     */
     @Override
     public void onGameStarts() {
         WiredTriggerGameStarts.executeTriggers(this.room);
@@ -74,6 +88,9 @@ public class BanzaiGame extends RoomGame {
         this.updateScoreboard(null);
     }
 
+    /**
+     * Handles the game ends callback for this room processing contract.
+     */
     @Override
     public void onGameEnds() {
         GameTeam winningTeam = this.winningTeam();
@@ -120,11 +137,22 @@ public class BanzaiGame extends RoomGame {
         WiredTriggerGameEnds.executeTriggers(this.room);
     }
 
+    /**
+     * Executes increase score for this room processing contract.
+     *
+     * @param team Team supplied by the caller.
+     * @param amount Amount supplied by the caller.
+     */
     public void increaseScore(GameTeam team, int amount) {
         this.getGameComponent().increaseScore(team, amount);
         this.updateScoreboard(team);
     }
 
+    /**
+     * Updates scoreboard for this room processing contract.
+     *
+     * @param team Team supplied by the caller.
+     */
     public void updateScoreboard(GameTeam team) {
         for (RoomItemFloor scoreboard : this.getGameComponent().getRoom().getItems().getByInteraction("%_score")) {
             if (team == null || scoreboard.getDefinition().getInteraction().toUpperCase().startsWith(team.name())) {
@@ -134,20 +162,37 @@ public class BanzaiGame extends RoomGame {
         }
     }
 
+    /**
+     * Adds tile to this room processing contract.
+     */
     public void addTile() {
         this.banzaiTileCount += 1;
         this.startBanzaiTileCount += 1;
     }
 
+    /**
+     * Removes tile from this room processing contract.
+     */
     public void removeTile() {
         this.banzaiTileCount -= 1;
         this.startBanzaiTileCount -= 1;
     }
 
+    /**
+     * Returns the score for this room processing contract.
+     *
+     * @param team Team supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public int getScore(GameTeam team) {
         return this.getGameComponent().getScore(team);
     }
 
+    /**
+     * Executes winning team for this room processing contract.
+     *
+     * @return Result produced by the operation.
+     */
     public GameTeam winningTeam() {
         Map.Entry<GameTeam, Integer> winningTeam = null;
 
@@ -160,6 +205,9 @@ public class BanzaiGame extends RoomGame {
         return winningTeam != null ? winningTeam.getKey() : GameTeam.NONE;
     }
 
+    /**
+     * Executes decrease tile count for this room processing contract.
+     */
     public void decreaseTileCount() {
         this.banzaiTileCount--;
     }

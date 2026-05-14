@@ -14,25 +14,49 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Serializes the relationships message for the Pixel Protocol client.
+ */
 public class RelationshipsMessageComposer extends MessageComposer {
     private final int playerId;
     private final Map<Integer, RelationshipLevel> relationships;
 
+    /**
+     * Creates a relationships message composer instance for the network message subsystem.
+     *
+     * @param playerId Player identifier used by the operation.
+     * @param relationships Relationships supplied by the caller.
+     */
     public RelationshipsMessageComposer(final int playerId, final Map<Integer, RelationshipLevel> relationships) {
         this.playerId = playerId;
         this.relationships = relationships;
     }
 
+    /**
+     * Creates a relationships message composer instance for the network message subsystem.
+     *
+     * @param playerId Player identifier used by the operation.
+     */
     public RelationshipsMessageComposer(final int playerId) {
         this.playerId = playerId;
         this.relationships = null;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.GetRelationshipsMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(playerId);

@@ -6,11 +6,20 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;
 
 
+/**
+ * Represents the initialize room message event published by the network message subsystem.
+ */
 public class InitializeRoomMessageEvent implements Event {
     // Temporary hacky shizzle for room loading, will keep using for now, I will remove if any issues
     public static final LoadHeightmapMessageEvent heightmapMessageEvent = new LoadHeightmapMessageEvent();
 //    public static final AddUserToRoomMessageEvent addUserToRoomMessageEvent = new AddUserToRoomMessageEvent();
 
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void handle(Session client, MessageEvent msg) {
         int id = msg.readInt();
         String password = msg.readString();

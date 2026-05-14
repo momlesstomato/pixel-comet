@@ -20,7 +20,16 @@ import com.cometproject.server.storage.queries.rooms.RoomDao;
 import java.util.Map;
 
 
+/**
+ * Represents the change name message event published by the network message subsystem.
+ */
 public class ChangeNameMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void handle(Session client, MessageEvent msg) {
         String newName = msg.readString();
         String oldName = client.getPlayer().getData().getUsername();

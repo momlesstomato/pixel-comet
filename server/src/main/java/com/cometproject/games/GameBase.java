@@ -1,5 +1,8 @@
 package com.cometproject.games;
 
+/**
+ * Describes game base behavior for the Comet subsystem.
+ */
 public class GameBase {
     public boolean isEnabled;
     public final int gameId;
@@ -8,6 +11,15 @@ public class GameBase {
     public final String textColor;
     public final String imagesPath;
 
+    /**
+     * Creates a game base instance for the Comet subsystem.
+     *
+     * @param id Id supplied by the caller.
+     * @param code Code supplied by the caller.
+     * @param bgcolor Bgcolor supplied by the caller.
+     * @param textcolor Textcolor supplied by the caller.
+     * @param imagespath Imagespath supplied by the caller.
+     */
     public GameBase(int id, String code, String bgcolor, String textcolor, String imagespath) {
         this.gameId = id;
         this.gameName = code;

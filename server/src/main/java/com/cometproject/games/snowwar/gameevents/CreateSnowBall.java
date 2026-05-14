@@ -9,6 +9,9 @@ import com.cometproject.games.snowwar.gameobjects.SnowBallGameObject;
 /*    */
 
 /*    */
+/**
+ * Describes create snow ball behavior for the Snow War game subsystem.
+ */
 /*    */ public class CreateSnowBall
 /*    */   extends Event {
 /*    */   public SnowBallGameObject ball;
@@ -17,6 +20,15 @@ import com.cometproject.games.snowwar.gameobjects.SnowBallGameObject;
 /*    */   public int y;
 /*    */   public int type;
 /*    */   
+/**
+ * Creates a create snow ball instance for the Snow War game subsystem.
+ *
+ * @param ball Ball supplied by the caller.
+ * @param player Player supplied by the caller.
+ * @param x X supplied by the caller.
+ * @param y Y supplied by the caller.
+ * @param type Type supplied by the caller.
+ */
 /*    */   public CreateSnowBall(SnowBallGameObject ball, HumanGameObject player, int x, int y, int type) {
 /* 16 */     this.EventType = 8;
 /* 17 */     this.ball = ball;
@@ -27,6 +39,9 @@ import com.cometproject.games.snowwar.gameobjects.SnowBallGameObject;
 /*    */   }
 /*    */ 
 /*    */   
+/**
+ * Executes apply for this Snow War game contract.
+ */
 /*    */   public void apply() {
 /* 26 */     this.ball.initialize(this.player.location3D().x(), this.player.location3D().y(), this.type, this.x, this.y, this.player);
 /* 27 */     this.ball.GenerateCHECKSUM(this.player.currentSnowWar, 1);

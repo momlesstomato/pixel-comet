@@ -15,8 +15,18 @@ import com.cometproject.server.storage.queries.groups.GroupForumThreadDao;
 
 import static com.cometproject.server.protocol.headers.Events.DeleteGroupReplyMessageEvent;
 
+/**
+ * Represents the hide group forum post message event published by the network message subsystem.
+ */
 public class HideGroupForumPostMessageEvent implements Event {
 
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @throws Exception When the operation cannot complete.
+     */
     @Override
     public void handle(Session client, MessageEvent msg) throws Exception {
         int groupId = msg.readInt();

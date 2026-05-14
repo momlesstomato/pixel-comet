@@ -12,6 +12,9 @@ import java.util.Collections;
 import java.util.List;
 
 
+/**
+ * Serializes the navigator flat list message for the Pixel Protocol client.
+ */
 public class NavigatorFlatListMessageComposer extends MessageComposer {
     private final int mode;
     private final String query;
@@ -19,6 +22,15 @@ public class NavigatorFlatListMessageComposer extends MessageComposer {
     private final boolean limit;
     private final boolean order;
 
+    /**
+     * Creates a navigator flat list message composer instance for the network message subsystem.
+     *
+     * @param mode Mode supplied by the caller.
+     * @param query Query supplied by the caller.
+     * @param activeRooms Active rooms supplied by the caller.
+     * @param limit Limit supplied by the caller.
+     * @param order Order supplied by the caller.
+     */
     public NavigatorFlatListMessageComposer(final int mode, final String query, final Collection<IRoomData> activeRooms, final boolean limit, final boolean order) {
         this.mode = mode;
         this.query = query;
@@ -27,15 +39,32 @@ public class NavigatorFlatListMessageComposer extends MessageComposer {
         this.order = order;
     }
 
+    /**
+     * Creates a navigator flat list message composer instance for the network message subsystem.
+     *
+     * @param mode Mode supplied by the caller.
+     * @param query Query supplied by the caller.
+     * @param activeRooms Active rooms supplied by the caller.
+     */
     public NavigatorFlatListMessageComposer(int mode, String query, Collection<IRoomData> activeRooms) {
         this(mode, query, activeRooms, true, true);
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return 0;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(mode);
@@ -75,6 +104,9 @@ public class NavigatorFlatListMessageComposer extends MessageComposer {
         topRooms.clear();
     }
 
+    /**
+     * Releases resources owned by this network message component.
+     */
     @Override
     public void dispose() {
         this.activeRooms.clear();

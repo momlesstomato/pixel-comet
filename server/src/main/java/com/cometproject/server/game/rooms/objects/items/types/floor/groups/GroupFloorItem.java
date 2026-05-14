@@ -14,9 +14,18 @@ import com.cometproject.server.network.messages.outgoing.room.avatar.AvatarUpdat
 import org.apache.commons.lang3.StringUtils;
 
 
+/**
+ * Describes group floor item behavior for the room subsystem.
+ */
 public class GroupFloorItem extends RoomItemFloor {
     private int groupId;
 
+    /**
+     * Creates a group floor item instance for the room subsystem.
+     *
+     * @param roomItemData Room item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public GroupFloorItem(RoomItemData roomItemData, Room room) {
         super(roomItemData, room);
 
@@ -28,6 +37,11 @@ public class GroupFloorItem extends RoomItemFloor {
             this.groupId = Integer.parseInt(data);
     }
 
+    /**
+     * Executes compose item data for this room contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void composeItemData(IComposer msg) {
         final IGroupData groupData = GameContext.getCurrent().getGroupService().getData(this.groupId);
@@ -51,6 +65,14 @@ public class GroupFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTrigger) {
         if (!isWiredTrigger) {
@@ -70,6 +92,12 @@ public class GroupFloorItem extends RoomItemFloor {
     }
 
 
+    /**
+     * Handles the entity step on callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param instantUpdate Instant update supplied by the caller.
+     */
     public void onEntityStepOn(RoomEntity entity, boolean instantUpdate) {
         if (!this.getDefinition().canSit()) return;
 
@@ -85,16 +113,31 @@ public class GroupFloorItem extends RoomItemFloor {
             entity.markNeedsUpdate();
     }
 
+    /**
+     * Returns the data object for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDataObject() {
         return this.groupId + "";
     }
 
+    /**
+     * Handles the entity step on callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOn(RoomEntity entity) {
         this.onEntityStepOn(entity, false);
     }
 
+    /**
+     * Handles the entity step off callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOff(RoomEntity entity) {
         if (entity.hasStatus(RoomEntityStatus.SIT)) {
@@ -104,10 +147,20 @@ public class GroupFloorItem extends RoomItemFloor {
         entity.markNeedsUpdate();
     }
 
+    /**
+     * Returns the sit height for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public double getSitHeight() {
         return this.getDefinition().getHeight();
     }
 
+    /**
+     * Returns the group id for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getGroupId() {
         return groupId;
     }

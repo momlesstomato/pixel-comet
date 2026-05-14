@@ -10,9 +10,12 @@ import com.cometproject.server.game.rooms.objects.items.types.floor.wired.events
 import com.cometproject.server.game.rooms.types.Room;
 
 
+/**
+ * Describes wired action bot move behavior for the room subsystem.
+ */
 public class WiredActionBotMove extends WiredActionItem {
     /**
-     * The default constructor
+     * The default constructor.
      *
      * @param id       The ID of the item
      * @param itemId   The ID of the item definition
@@ -28,6 +31,11 @@ public class WiredActionBotMove extends WiredActionItem {
         super(itemData, room);
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(WiredItemEvent event) {
         if (this.getWiredData() == null || this.getWiredData().getSelectedIds() == null || this.getWiredData().getSelectedIds().isEmpty()) {
@@ -60,11 +68,21 @@ public class WiredActionBotMove extends WiredActionItem {
     }
 
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 22;
     }
 
+    /**
+     * Executes requires player for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean requiresPlayer() {
         return true;

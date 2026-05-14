@@ -14,7 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Represents the remove all rights message event published by the network message subsystem.
+ */
 public class RemoveAllRightsMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public void handle(Session client, MessageEvent msg) {
         Room room = client.getPlayer().getEntity().getRoom();
 

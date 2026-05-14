@@ -8,7 +8,16 @@ import com.cometproject.server.network.sessions.Session;
 import static com.cometproject.api.game.rooms.entities.RoomEntityStatus.LAY;
 import static com.cometproject.api.game.rooms.entities.RoomEntityStatus.SIT;
 
+/**
+ * Describes sit command behavior for the Comet subsystem.
+ */
 public class SitCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         PlayerEntity playerEntity = client.getPlayer().getEntity();
@@ -26,16 +35,31 @@ public class SitCommand extends ChatCommand {
         }
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "sit_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.sit.description");

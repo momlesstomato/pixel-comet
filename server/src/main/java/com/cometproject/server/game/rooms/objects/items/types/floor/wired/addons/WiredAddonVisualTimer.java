@@ -10,14 +10,31 @@ import com.cometproject.server.game.rooms.objects.items.types.floor.wired.trigge
 import com.cometproject.server.game.rooms.types.Room;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Describes wired addon visual timer behavior for the room subsystem.
+ */
 public class WiredAddonVisualTimer extends RoomItemFloor {
 
     private boolean isStarted = false;
 
+    /**
+     * Creates a wired addon visual timer instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public WiredAddonVisualTimer(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param requestData Request data supplied by the caller.
+     * @param isWiredTriggered Is wired triggered supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int requestData, boolean isWiredTriggered) {
         if (!isWiredTriggered) {
@@ -89,6 +106,9 @@ public class WiredAddonVisualTimer extends RoomItemFloor {
         return true;
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
         if (!this.isStarted) {

@@ -7,12 +7,18 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayDeque;
 
 
+/**
+ * Describes player login queue behavior for the player subsystem.
+ */
 public class PlayerLoginQueue implements CometTask {
     private final int MAX_QUEUE_SIZE = 1000;
     private final ArrayDeque<PlayerLoginQueueEntry> queue = new ArrayDeque<>();
 
     private Logger LOGGER = LoggerFactory.getLogger(PlayerLoginQueue.class.getName());
 
+    /**
+     * Runs this player task.
+     */
     @Override
     public void run() {
         if (this.queue.isEmpty()) {
@@ -73,6 +79,12 @@ public class PlayerLoginQueue implements CometTask {
 //        client.send(new RoomCategoriesMessageComposer(NavigatorManager.getInstance().getCategories(), client.getPlayer().getData().getRank()));
     }
 
+    /**
+     * Executes queue for this player contract.
+     *
+     * @param entry Entry supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean queue(PlayerLoginQueueEntry entry) {
         if (this.queue.size() >= MAX_QUEUE_SIZE) {
             LOGGER.warn("PlayerLoginQueue size reached max size of " + MAX_QUEUE_SIZE);

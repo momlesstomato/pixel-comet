@@ -7,7 +7,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Describes web chat dao behavior for the storage subsystem.
+ */
 public class WebChatDao {
+    /**
+     * Finds player id by auth ticket for this storage contract.
+     *
+     * @param authTicket Auth ticket supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int findPlayerIdByAuthTicket(String authTicket) {
         if (authTicket == null || authTicket.isEmpty()) {
             return 0;

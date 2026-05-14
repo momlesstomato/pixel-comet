@@ -12,8 +12,17 @@ import com.cometproject.server.network.sessions.Session;
 import java.text.NumberFormat;
 
 
+/**
+ * Describes about command behavior for the Comet subsystem.
+ */
 public class AboutCommand extends ChatCommand {
 
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param message Message supplied by the caller.
+     */
     @Override
     public void execute(Session client, String message[]) {
         StringBuilder about = new StringBuilder();
@@ -48,16 +57,31 @@ public class AboutCommand extends ChatCommand {
         client.send(new MotdNotificationMessageComposer(about.toString()));
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "about_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.about.description");

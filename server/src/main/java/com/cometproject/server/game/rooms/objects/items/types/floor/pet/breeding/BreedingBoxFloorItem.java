@@ -22,6 +22,9 @@ import com.cometproject.server.utilities.RandomUtil;
 
 import java.util.Set;
 
+/**
+ * Describes breeding box floor item behavior for the room subsystem.
+ */
 public abstract class BreedingBoxFloorItem extends DefaultFloorItem {
 
     private PetEntity mother;
@@ -29,10 +32,22 @@ public abstract class BreedingBoxFloorItem extends DefaultFloorItem {
     private Player breeder;
     private String petName;
 
+    /**
+     * Creates a breeding box floor item instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public BreedingBoxFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Executes begin for this room contract.
+     *
+     * @param breeder Breeder supplied by the caller.
+     * @param name Name supplied by the caller.
+     */
     public void begin(Player breeder, final String name) {
         // perform necessary checks.
         if (this.mother == null || this.father == null) {
@@ -51,6 +66,9 @@ public abstract class BreedingBoxFloorItem extends DefaultFloorItem {
         this.setTicks(RoomItemFactory.getProcessTime(2.5));
     }
 
+    /**
+     * Handles the tick complete callback for this room contract.
+     */
     @Override
     public void onTickComplete() {
         final int randomInt = RandomUtil.getRandomInt(1, 100);
@@ -93,6 +111,12 @@ public abstract class BreedingBoxFloorItem extends DefaultFloorItem {
         this.getRoom().getItems().removeItem(this, null, false, true);
     }
 
+    /**
+     * Indicates whether movement cancelled applies to this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isMovementCancelled(RoomEntity entity) {
         if (!(entity instanceof PetEntity)) {
@@ -108,6 +132,11 @@ public abstract class BreedingBoxFloorItem extends DefaultFloorItem {
         return true;
     }
 
+    /**
+     * Handles the entity step on callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOn(final RoomEntity entity) {
         // begin breeding if there's 2 of the same type of pet.
@@ -130,6 +159,11 @@ public abstract class BreedingBoxFloorItem extends DefaultFloorItem {
         }
     }
 
+    /**
+     * Handles the entity step off callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     */
     @Override
     public void onEntityStepOff(final RoomEntity entity) {
         if (entity == this.mother) {
@@ -139,7 +173,17 @@ public abstract class BreedingBoxFloorItem extends DefaultFloorItem {
         }
     }
 
+    /**
+     * Returns the baby type for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     protected abstract int getBabyType();
 
+    /**
+     * Returns the pet type for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     protected abstract int getPetType();
 }

@@ -15,12 +15,26 @@ import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
 
 
+/**
+ * Describes wired action handle ores behavior for the room subsystem.
+ */
 public class WiredActionHandleOres extends WiredActionItem {
 
+    /**
+     * Creates a wired action handle ores instance for the room subsystem.
+     *
+     * @param itemData Item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public WiredActionHandleOres(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
+    /**
+     * Handles the event complete callback for this room contract.
+     *
+     * @param event Event supplied by the caller.
+     */
     @Override
     public void onEventComplete(WiredItemEvent event) {
         if (this.getWiredData() == null || this.getWiredData().getSelectedIds() == null || this.getWiredData().getSelectedIds().isEmpty()) {
@@ -55,11 +69,21 @@ public class WiredActionHandleOres extends WiredActionItem {
     }
 
 
+    /**
+     * Returns the interface for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getInterface() {
         return 0;
     }
 
+    /**
+     * Executes requires player for this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean requiresPlayer() {
         return false;

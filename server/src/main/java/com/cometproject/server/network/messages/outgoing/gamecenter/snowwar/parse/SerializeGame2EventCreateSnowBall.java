@@ -7,8 +7,17 @@
 /*    */ 
 /*    */ 
 /*    */ 
+/**
+ * Describes serialize game2 event create snow ball behavior for the Snow War game subsystem.
+ */
 /*    */ public class SerializeGame2EventCreateSnowBall
 /*    */ {
+/**
+ * Executes parse for this network message contract.
+ *
+ * @param msg Composer buffer that receives serialized protocol fields.
+ * @param evt Evt supplied by the caller.
+ */
 /*    */   public static void parse(IComposer msg, CreateSnowBall evt) {
 /* 13 */     msg.writeInt(evt.ball.objectId);
 /* 14 */     msg.writeInt(evt.player.objectId);
@@ -17,6 +26,12 @@
 /* 17 */     msg.writeInt(evt.type);
 /*    */   }
 /*    */   
+/**
+ * Executes parse for this Snow War game contract.
+ *
+ * @param ClientMessage Client message supplied by the caller.
+ * @param evt Evt supplied by the caller.
+ */
 /*    */   public static void parse(MessageWriter ClientMessage, CreateSnowBall evt) {
 /* 21 */     ComposerShit.add(evt.ball.objectId, ClientMessage);
 /* 22 */     ComposerShit.add(evt.player.objectId, ClientMessage);

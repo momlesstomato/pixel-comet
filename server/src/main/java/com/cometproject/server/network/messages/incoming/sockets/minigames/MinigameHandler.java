@@ -13,7 +13,16 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.utilities.RandomUtil;
 import com.google.gson.JsonObject;
 
+/**
+ * Describes minigame handler behavior for the network message subsystem.
+ */
 public class MinigameHandler {
+    /**
+     * Creates a minigame handler instance for the network message subsystem.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     public MinigameHandler(Session client, JsonObject msg) {
         if (client.getPlayer().getEntity() == null || client.getPlayer().getEntity().getRoom() == null)
             return;

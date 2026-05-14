@@ -9,19 +9,37 @@ import com.cometproject.server.protocol.messages.MessageComposer;
 
 import java.util.Map;
 
+/**
+ * Serializes the poll message for the Pixel Protocol client.
+ */
 public class PollMessageComposer extends MessageComposer {
 
     private final Poll poll;
 
+    /**
+     * Creates a poll message composer instance for the network message subsystem.
+     *
+     * @param poll Poll supplied by the caller.
+     */
     public PollMessageComposer(final Poll poll) {
         this.poll = poll;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.PollMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         msg.writeInt(this.poll.getPollId());

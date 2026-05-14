@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 
+/**
+ * Describes netty networking server behavior for the networking subsystem.
+ */
 public class NettyNetworkingServer implements INetworkingServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyNetworkingServer.class.getName());
 
@@ -16,12 +19,22 @@ public class NettyNetworkingServer implements INetworkingServer {
     private final INetSessionFactory sessionFactory;
     private final ServerBootstrap serverBootstrap;
 
+    /**
+     * Creates a netty networking server instance for the networking subsystem.
+     *
+     * @param serverConfig Server config supplied by the caller.
+     * @param sessionFactory Session factory supplied by the caller.
+     * @param serverBootstrap Server bootstrap supplied by the caller.
+     */
     public NettyNetworkingServer(NetworkingServerConfig serverConfig, INetSessionFactory sessionFactory, ServerBootstrap serverBootstrap) {
         this.serverConfig = serverConfig;
         this.sessionFactory = sessionFactory;
         this.serverBootstrap = serverBootstrap;
     }
 
+    /**
+     * Starts this networking component.
+     */
     @Override
     public void start() {
         for (short port : this.serverConfig.getPorts()) {
@@ -39,11 +52,21 @@ public class NettyNetworkingServer implements INetworkingServer {
         }
     }
 
+    /**
+     * Returns the server config for this networking contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public NetworkingServerConfig getServerConfig() {
         return serverConfig;
     }
 
+    /**
+     * Returns the session factory for this networking contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public INetSessionFactory getSessionFactory() {
         return this.sessionFactory;

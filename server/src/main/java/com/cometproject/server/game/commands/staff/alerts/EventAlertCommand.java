@@ -14,8 +14,17 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.network.websockets.WebSocketSessionManager;
 import com.cometproject.server.network.websockets.packets.outgoing.alerts.EventAlertWebPacket;
 
+/**
+ * Describes event alert command behavior for the Comet subsystem.
+ */
 public class EventAlertCommand extends ChatCommand {
 
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         if (params.length == 0) {
@@ -46,16 +55,31 @@ public class EventAlertCommand extends ChatCommand {
             }
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "eventalert_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return "";
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.eventalert.description");

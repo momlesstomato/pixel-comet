@@ -17,7 +17,17 @@ import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
 import com.google.common.collect.Sets;
 
+/**
+ * Represents the purchase photo message event published by the network message subsystem.
+ */
 public class PurchasePhotoMessageEvent implements Event {
+    /**
+     * Executes handle for this network message contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param msg Composer buffer that receives serialized protocol fields.
+     * @throws Exception When the operation cannot complete.
+     */
     @Override
     public void handle(Session client, MessageEvent msg) throws Exception {
         final String code = client.getPlayer().getLastPhoto();

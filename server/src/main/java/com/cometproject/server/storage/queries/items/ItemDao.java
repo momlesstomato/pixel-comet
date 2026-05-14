@@ -16,7 +16,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * Describes item dao behavior for the storage subsystem.
+ */
 public class ItemDao {
+    /**
+     * Returns the definitions for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, FurnitureDefinition> getDefinitions() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -50,6 +58,12 @@ public class ItemDao {
         return data;
     }
 
+    /**
+     * Returns the sprite by name for this storage contract.
+     *
+     * @param itemName Item name supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getSpriteByName(String itemName) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -77,6 +91,12 @@ public class ItemDao {
         return 0;
     }
 
+    /**
+     * Returns the item by name for this storage contract.
+     *
+     * @param itemName Item name supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getItemByName(String itemName) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -104,6 +124,12 @@ public class ItemDao {
         return 0;
     }
 
+    /**
+     * Returns the rentable data for this storage contract.
+     *
+     * @param userId User id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getRentableData(int userId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -131,6 +157,11 @@ public class ItemDao {
         return 0;
     }
 
+    /**
+     * Deletes item for this storage contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     */
     public static void deleteItem(long itemId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -150,6 +181,12 @@ public class ItemDao {
         }
     }
 
+    /**
+     * Returns the renter by space for this storage contract.
+     *
+     * @param space Space supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getRenterBySpace(int space) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -177,6 +214,11 @@ public class ItemDao {
         return 0;
     }
 
+    /**
+     * Returns the crackable rewards for this storage contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static Map<Integer, CrackableReward> getCrackableRewards() {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -209,6 +251,12 @@ public class ItemDao {
         return data;
     }
 
+    /**
+     * Updates owner item for this storage contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @param ownerId Owner id supplied by the caller.
+     */
     public static void updateOwnerItem(long itemId, int ownerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -226,6 +274,11 @@ public class ItemDao {
         }
     }
 
+    /**
+     * Updates room sell status for this storage contract.
+     *
+     * @param roomId Room identifier used by the operation.
+     */
     public static void updateRoomSellStatus(int roomId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -243,6 +296,12 @@ public class ItemDao {
         }
     }
 
+    /**
+     * Returns the furni id by name for this storage contract.
+     *
+     * @param furniName Furni name supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getFurniIdByName(String furniName){
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -264,6 +323,12 @@ public class ItemDao {
         return 0;
     }
 
+    /**
+     * Returns the furni id by item for this storage contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getFurniIdByItem(long itemId){
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -285,6 +350,12 @@ public class ItemDao {
         return 0;
     }
 
+    /**
+     * Returns the catalog id by item for this storage contract.
+     *
+     * @param itemId Item id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static int getCatalogIdByItem(int itemId){
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
@@ -306,6 +377,12 @@ public class ItemDao {
         return 0;
     }
 
+    /**
+     * Returns the catalog name by catalog id for this storage contract.
+     *
+     * @param catalogId Catalog id supplied by the caller.
+     * @return Value exposed by the contract.
+     */
     public static String getCatalogNameByCatalogId(int catalogId){
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;

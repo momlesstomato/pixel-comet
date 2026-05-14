@@ -11,7 +11,16 @@ import com.google.common.collect.Lists;
 import java.util.List;
 
 
+/**
+ * Describes mass badge command behavior for the Comet subsystem.
+ */
 public class MassBadgeCommand extends ChatCommand {
+    /**
+     * Executes execute for this Comet contract.
+     *
+     * @param client Client supplied by the caller.
+     * @param params Params supplied by the caller.
+     */
     @Override
     public void execute(Session client, String[] params) {
         if (params.length < 1)
@@ -33,21 +42,41 @@ public class MassBadgeCommand extends ChatCommand {
         playersToInsertBadge.clear();
     }
 
+    /**
+     * Returns the permission for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getPermission() {
         return "massbadge_command";
     }
 
+    /**
+     * Returns the parameter for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getParameter() {
         return Locale.getOrDefault("command.parameter.badge", "%badge%");
     }
 
+    /**
+     * Returns the description for this Comet contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getDescription() {
         return Locale.get("command.massbadge.description");
     }
 
+    /**
+     * Indicates whether async applies to this Comet contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean isAsync() {
         return true;

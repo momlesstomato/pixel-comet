@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.List;
 
 /**
- * Class used to execute Discord Webhooks with low effort
+ * Class used to execute Discord Webhooks with low effort.
  */
 public class DiscordClient {
 
@@ -22,7 +22,7 @@ public class DiscordClient {
     private List<EmbedObject> embeds = new ArrayList<>();
 
     /**
-     * Constructs a new DiscordWebhook instance
+     * Constructs a new DiscordWebhook instance.
      *
      * @param url The webhook URL obtained in Discord
      */
@@ -30,26 +30,56 @@ public class DiscordClient {
         this.url = url;
     }
 
+    /**
+     * Updates the content for this HTTP API contract.
+     *
+     * @param content Content supplied by the caller.
+     */
     public void setContent(String content) {
         this.content = content;
     }
 
+    /**
+     * Updates the username for this HTTP API contract.
+     *
+     * @param username Username supplied by the caller.
+     */
     public void setUsername(String username) {
         this.username = username;
     }
 
+    /**
+     * Updates the avatar URL for this HTTP API contract.
+     *
+     * @param avatarUrl Avatar url supplied by the caller.
+     */
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
     }
 
+    /**
+     * Updates the tts for this HTTP API contract.
+     *
+     * @param tts Tts supplied by the caller.
+     */
     public void setTts(boolean tts) {
         this.tts = tts;
     }
 
+    /**
+     * Adds embed to this HTTP API contract.
+     *
+     * @param embed Embed supplied by the caller.
+     */
     public void addEmbed(EmbedObject embed) {
         this.embeds.add(embed);
     }
 
+    /**
+     * Executes execute for this HTTP API contract.
+     *
+     * @throws IOException When the operation cannot complete.
+     */
     public void execute() throws IOException {
         if (this.content == null && this.embeds.isEmpty()) {
             throw new IllegalArgumentException("Set content or add at least one EmbedObject");
@@ -152,6 +182,9 @@ public class DiscordClient {
         connection.disconnect();
     }
 
+    /**
+     * Describes embed object behavior for the HTTP API subsystem.
+     */
     public static class EmbedObject {
         private String title;
         private String description;
@@ -164,82 +197,186 @@ public class DiscordClient {
         private Author author;
         private List<Field> fields = new ArrayList<>();
 
+        /**
+         * Returns the title for this HTTP API contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public String getTitle() {
             return title;
         }
 
+        /**
+         * Returns the description for this HTTP API contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public String getDescription() {
             return description;
         }
 
+        /**
+         * Returns the URL for this HTTP API contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public String getUrl() {
             return url;
         }
 
+        /**
+         * Returns the color for this HTTP API contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public Color getColor() {
             return color;
         }
 
+        /**
+         * Returns the footer for this HTTP API contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public Footer getFooter() {
             return footer;
         }
 
+        /**
+         * Returns the thumbnail for this HTTP API contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public Thumbnail getThumbnail() {
             return thumbnail;
         }
 
+        /**
+         * Returns the image for this HTTP API contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public Image getImage() {
             return image;
         }
 
+        /**
+         * Returns the author for this HTTP API contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public Author getAuthor() {
             return author;
         }
 
+        /**
+         * Returns the fields for this HTTP API contract.
+         *
+         * @return Value exposed by the contract.
+         */
         public List<Field> getFields() {
             return fields;
         }
 
+        /**
+         * Updates the title for this HTTP API contract.
+         *
+         * @param title Title supplied by the caller.
+         * @return Result produced by the operation.
+         */
         public EmbedObject setTitle(String title) {
             this.title = title;
             return this;
         }
 
+        /**
+         * Updates the description for this HTTP API contract.
+         *
+         * @param description Description supplied by the caller.
+         * @return Result produced by the operation.
+         */
         public EmbedObject setDescription(String description) {
             this.description = description;
             return this;
         }
 
+        /**
+         * Updates the URL for this HTTP API contract.
+         *
+         * @param url Url supplied by the caller.
+         * @return Result produced by the operation.
+         */
         public EmbedObject setUrl(String url) {
             this.url = url;
             return this;
         }
 
+        /**
+         * Updates the color for this HTTP API contract.
+         *
+         * @param color Color supplied by the caller.
+         * @return Result produced by the operation.
+         */
         public EmbedObject setColor(Color color) {
             this.color = color;
             return this;
         }
 
+        /**
+         * Updates the footer for this HTTP API contract.
+         *
+         * @param text Text supplied by the caller.
+         * @param icon Icon supplied by the caller.
+         * @return Result produced by the operation.
+         */
         public EmbedObject setFooter(String text, String icon) {
             this.footer = new Footer(text, icon);
             return this;
         }
 
+        /**
+         * Updates the thumbnail for this HTTP API contract.
+         *
+         * @param url Url supplied by the caller.
+         * @return Result produced by the operation.
+         */
         public EmbedObject setThumbnail(String url) {
             this.thumbnail = new Thumbnail(url);
             return this;
         }
 
+        /**
+         * Updates the image for this HTTP API contract.
+         *
+         * @param url Url supplied by the caller.
+         * @return Result produced by the operation.
+         */
         public EmbedObject setImage(String url) {
             this.image = new Image(url);
             return this;
         }
 
+        /**
+         * Updates the author for this HTTP API contract.
+         *
+         * @param name Name supplied by the caller.
+         * @param url Url supplied by the caller.
+         * @param icon Icon supplied by the caller.
+         * @return Result produced by the operation.
+         */
         public EmbedObject setAuthor(String name, String url, String icon) {
             this.author = new Author(name, url, icon);
             return this;
         }
 
+        /**
+         * Adds field to this HTTP API contract.
+         *
+         * @param name Name supplied by the caller.
+         * @param value Value supplied by the caller.
+         * @param inline Inline supplied by the caller.
+         * @return Result produced by the mutation.
+         */
         public EmbedObject addField(String name, String value, boolean inline) {
             this.fields.add(new Field(name, value, inline));
             return this;
@@ -346,6 +483,11 @@ public class DiscordClient {
             }
         }
 
+        /**
+         * Executes to string for this HTTP API contract.
+         *
+         * @return Result produced by the operation.
+         */
         @Override
         public String toString() {
             StringBuilder builder = new StringBuilder();

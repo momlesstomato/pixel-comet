@@ -23,6 +23,9 @@ import com.cometproject.server.network.transports.NettyTcpTransport;
 import io.netty.util.ResourceLeakDetector;
 
 
+/**
+ * Manages network runtime state for the networking subsystem.
+ */
 public class NetworkManager implements Startable {
     public static boolean IDLE_TIMER_ENABLED = Boolean.parseBoolean(Configuration.currentConfig().get("comet.network.idleTimer.enabled", "true"));
     public static int IDLE_TIMER_READER_TIME = Integer.parseInt(Configuration.currentConfig().get("comet.network.idleTimer.readerIdleTime", "60"));
@@ -36,14 +39,25 @@ public class NetworkManager implements Startable {
     private ConnectionRegistry connectionRegistry;
     private TransportManager transportManager;
 
+    /**
+     * Creates a network manager instance for the networking subsystem.
+     */
     public NetworkManager() {
 
     }
 
+    /**
+     * Returns the instance for this networking contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public static NetworkManager getInstance() {
         return CometBootstrap.resolve(NetworkManager.class);
     }
 
+    /**
+     * Starts this networking component.
+     */
     @Override
     public void start() {
         this.start(Configuration.currentConfig().get("comet.network.host"), Configuration.currentConfig().get("comet.network.port"));
@@ -74,6 +88,9 @@ public class NetworkManager implements Startable {
         this.transportManager.start();
     }
 
+    /**
+     * Stops this networking component.
+     */
     @Override
     public void stop() {
         if (this.transportManager != null) {
@@ -85,22 +102,47 @@ public class NetworkManager implements Startable {
         }
     }
 
+    /**
+     * Returns the sessions for this networking contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public SessionManager getSessions() {
         return this.sessions;
     }
 
+    /**
+     * Returns the messages for this networking contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public MessageHandler getMessages() {
         return this.messageHandler;
     }
 
+    /**
+     * Returns the connection registry for this networking contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public ConnectionRegistry getConnectionRegistry() {
         return this.connectionRegistry;
     }
 
+    /**
+     * Returns the monitor client for this networking contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public MonitorClient getMonitorClient() {
         return monitorClient;
     }
 
+    /**
+     * Returns the server port for this networking contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public int getServerPort() {
         return serverPort;
     }

@@ -7,9 +7,18 @@ import com.cometproject.server.game.rooms.types.components.games.GameTeam;
 import com.cometproject.server.game.rooms.types.components.games.GameType;
 
 
+/**
+ * Describes banzai gate floor item behavior for the room subsystem.
+ */
 public class BanzaiGateFloorItem extends AbstractGameGateFloorItem {
     private GameTeam gameTeam;
 
+    /**
+     * Creates a banzai gate floor item instance for the room subsystem.
+     *
+     * @param roomItemData Room item data supplied by the caller.
+     * @param room Room participating in the operation.
+     */
     public BanzaiGateFloorItem(RoomItemData roomItemData, Room room) {
         super(roomItemData, room);
 
@@ -29,11 +38,21 @@ public class BanzaiGateFloorItem extends AbstractGameGateFloorItem {
         }
     }
 
+    /**
+     * Executes game type for this room contract.
+     *
+     * @return Result produced by the operation.
+     */
     @Override
     public GameType gameType() {
         return GameType.BANZAI;
     }
 
+    /**
+     * Returns the team for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public GameTeam getTeam() {
         return gameTeam;

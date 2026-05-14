@@ -7,26 +7,49 @@ import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
 
+/**
+ * Serializes the pet information message for the Pixel Protocol client.
+ */
 public class PetInformationMessageComposer extends MessageComposer {
 
     private final PetEntity petEntity;
     private final PlayerEntity player;
 
+    /**
+     * Creates a pet information message composer instance for the network message subsystem.
+     *
+     * @param petEntity Pet entity supplied by the caller.
+     */
     public PetInformationMessageComposer(final PetEntity petEntity) {
         this.petEntity = petEntity;
         this.player = null;
     }
 
+    /**
+     * Creates a pet information message composer instance for the network message subsystem.
+     *
+     * @param playerEntity Player entity supplied by the caller.
+     */
     public PetInformationMessageComposer(final PlayerEntity playerEntity) {
         this.petEntity = null;
         this.player = playerEntity;
     }
 
+    /**
+     * Returns the id for this network message contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public short getId() {
         return Composers.PetInformationMessageComposer;
     }
 
+    /**
+     * Writes this message body using the Pixel Protocol field order.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void compose(IComposer msg) {
         if (this.petEntity != null && this.petEntity.getData() != null) {

@@ -10,6 +10,9 @@ import com.cometproject.api.game.players.data.components.permissions.PlayerRank;
 import com.cometproject.server.game.permissions.Permission;
 import com.cometproject.server.game.permissions.PermissionSetting;
 
+/**
+ * Describes rank behavior for the permission subsystem.
+ */
 public class Rank implements PlayerRank {
     private final int id;
     private String name;
@@ -45,6 +48,12 @@ public class Rank implements PlayerRank {
     private final Map<String, Permission> permissions;
     private final Map<String, String> variables;
 
+    /**
+     * Creates a rank instance for the permission subsystem.
+     *
+     * @param set Set supplied by the caller.
+     * @throws SQLException When the operation cannot complete.
+     */
     public Rank(ResultSet set) throws SQLException {
         this.permissions = new HashMap<>();
         this.variables = new HashMap<>();
@@ -53,6 +62,12 @@ public class Rank implements PlayerRank {
         this.load(set);
     }
 
+    /**
+     * Executes load for this permission contract.
+     *
+     * @param set Set supplied by the caller.
+     * @throws SQLException When the operation cannot complete.
+     */
     public void load(ResultSet set) throws SQLException {
         ResultSetMetaData meta = set.getMetaData();
         this.name = set.getString("name");
@@ -91,6 +106,13 @@ public class Rank implements PlayerRank {
         }
     }
 
+    /**
+     * Indicates whether this permission contract has permission.
+     *
+     * @param key Key supplied by the caller.
+     * @param isRoomOwner Is room owner supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean hasPermission(String key, boolean isRoomOwner) {
         if (this.permissions.containsKey(key)) {
             Permission permission = this.permissions.get(key);
@@ -102,129 +124,259 @@ public class Rank implements PlayerRank {
         return false;
     }
 
+    /**
+     * Returns the permissions for this permission contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public Map<String, Permission> getPermissions() {
         return permissions;
     }
 
+    /**
+     * Returns the id for this permission contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public int getId() {
         return this.id;
     }
 
+    /**
+     * Returns the name for this permission contract.
+     *
+     * @return Value exposed by the contract.
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Executes flood bypass for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean floodBypass() {
         return this.floodBypass;
     }
 
+    /**
+     * Executes flood time for this permission contract.
+     *
+     * @return Result produced by the operation.
+     */
     @Override
     public int floodTime() {
         return this.floodTime;
     }
 
+    /**
+     * Executes disconnectable for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean disconnectable() {
         return this.disconnectable;
     }
 
+    /**
+     * Executes bannable for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean bannable() {
         return this.bannable;
     }
 
+    /**
+     * Executes mod tool for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean modTool() {
         return this.modTool;
     }
 
+    /**
+     * Executes alfa tool for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean alfaTool() {
         return this.alfaTool;
     }
 
+    /**
+     * Executes room kickable for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean roomKickable() {
         return this.roomKickable;
     }
 
+    /**
+     * Executes room full control for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean roomFullControl() {
         return this.roomFullControl;
     }
 
+    /**
+     * Executes room mute bypass for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean roomMuteBypass() {
         return this.roomMuteBypass;
     }
 
+    /**
+     * Executes room filter bypass for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean roomFilterBypass() {
         return this.roomFilterBypass;
     }
 
+    /**
+     * Executes room ignorable for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean roomIgnorable() {
         return this.roomIgnorable;
     }
 
+    /**
+     * Executes room enter full for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean roomEnterFull() {
         return roomEnterFull;
     }
 
+    /**
+     * Executes messenger staff chat for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean messengerStaffChat() {
         return this.messengerStaffChat;
     }
 
+    /**
+     * Executes messenger mod chat for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean messengerModChat() {
         return this.messengerModsChat;
     }
 
+    /**
+     * Executes messenger log chat for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean messengerLogChat() {
         return this.messengerLogChat;
     }
 
+    /**
+     * Executes messenger alfa chat for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean messengerAlfaChat() {
         return this.messengerAlfaChat;
     }
 
+    /**
+     * Executes room enter locked for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean roomEnterLocked() {
         return roomEnterLocked;
     }
 
+    /**
+     * Executes room staff pick for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean roomStaffPick() {
         return this.roomStaffPick;
     }
 
+    /**
+     * Executes messenger max friends for this permission contract.
+     *
+     * @return Result produced by the operation.
+     */
     @Override
     public int messengerMaxFriends() {
         return this.messengerMaxFriends;
     }
 
+    /**
+     * Executes about detailed for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean aboutDetailed() {
         return this.aboutDetailed;
     }
 
+    /**
+     * Executes about stats for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean aboutStats() {
         return aboutStats;
     }
 
+    /**
+     * Executes room see whispers for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean roomSeeWhispers() {
         return this.roomSeeWhispers;
     }
 
+    /**
+     * Executes send login notif for this permission contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean sendLoginNotif() {
         return loginNotif;
     }

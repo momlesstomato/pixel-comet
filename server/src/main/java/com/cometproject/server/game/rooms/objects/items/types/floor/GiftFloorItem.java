@@ -12,10 +12,20 @@ import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
 import com.cometproject.server.game.rooms.types.Room;
 
 
+/**
+ * Describes gift floor item behavior for the room subsystem.
+ */
 public class GiftFloorItem extends RoomItemFloor {
     private GiftData giftData;
     private boolean isOpened = false;
 
+    /**
+     * Creates a gift floor item instance for the room subsystem.
+     *
+     * @param roomItemData Room item data supplied by the caller.
+     * @param room Room participating in the operation.
+     * @throws Exception When the operation cannot complete.
+     */
     public GiftFloorItem(RoomItemData roomItemData, Room room) throws Exception {
         super(roomItemData, room);
 
@@ -26,6 +36,11 @@ public class GiftFloorItem extends RoomItemFloor {
         }
     }
 
+    /**
+     * Executes compose item data for this room contract.
+     *
+     * @param msg Composer buffer that receives serialized protocol fields.
+     */
     @Override
     public void composeItemData(IComposer msg) {
         final GiftData giftData = this.getGiftData();
@@ -48,6 +63,14 @@ public class GiftFloorItem extends RoomItemFloor {
         msg.writeString(this.isOpened() ? "1" : "0");
     }
 
+    /**
+     * Handles the interact callback for this room contract.
+     *
+     * @param entity Entity supplied by the caller.
+     * @param state State supplied by the caller.
+     * @param isWiredTrigger Is wired trigger supplied by the caller.
+     * @return True when the condition is satisfied; otherwise false.
+     */
     @Override
     public boolean onInteract(RoomEntity entity, int state, boolean isWiredTrigger) {
         this.isOpened = true;
@@ -60,10 +83,20 @@ public class GiftFloorItem extends RoomItemFloor {
         return true;
     }
 
+    /**
+     * Returns the gift data for this room contract.
+     *
+     * @return Value exposed by the contract.
+     */
     public GiftData getGiftData() {
         return giftData;
     }
 
+    /**
+     * Indicates whether opened applies to this room contract.
+     *
+     * @return True when the condition is satisfied; otherwise false.
+     */
     public boolean isOpened() {
         return isOpened;
     }
