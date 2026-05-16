@@ -1005,10 +1005,14 @@ public class PlayerDao {
 
         try {
             sqlConnection = SqlHelper.getConnection();
-            preparedStatement = SqlHelper.prepare("INSERT INTO permission_command_overrides (`command_id`, `player_id`) VALUES(?, ?)", sqlConnection);
+            preparedStatement = SqlHelper.prepare(
+                    "INSERT IGNORE INTO player_permission_groups (`player_id`, `group_id`, `granted_by`, `reason`) "
+                            + "SELECT ?, `id`, 'catalog', 'Catalog allowance purchase' "
+                            + "FROM permission_groups WHERE `code` = ?",
+                    sqlConnection);
 
-            preparedStatement.setString(1, allowance);
-            preparedStatement.setInt(2, playerId);
+            preparedStatement.setInt(1, playerId);
+            preparedStatement.setString(2, allowance);
 
             preparedStatement.execute();
         } catch (SQLException e) {

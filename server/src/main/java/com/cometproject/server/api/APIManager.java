@@ -16,6 +16,7 @@ import com.cometproject.server.api.routes.SsoTicketRoutes;
 import com.cometproject.server.api.routes.CurrencyRoutes;
 import com.cometproject.server.api.routes.PhotoRoutes;
 import com.cometproject.server.api.routes.PlayerRoutes;
+import com.cometproject.server.api.routes.PermissionRoutes;
 import com.cometproject.server.api.routes.RoomRoutes;
 import com.cometproject.server.api.routes.StatusRoutes;
 import com.cometproject.server.api.routes.SystemRoutes;
@@ -181,6 +182,21 @@ public class APIManager implements Startable {
         app.post("/player/{id}/currencies/{code}/remove", CurrencyRoutes::removeBalance);
         app.put("/player/{id}/currencies/{code}", CurrencyRoutes::setBalance);
         app.get("/player/{id}/currency-movements", CurrencyRoutes::movements);
+
+        app.get("/permissions/groups", PermissionRoutes::listGroups);
+        app.post("/permissions/groups", PermissionRoutes::upsertGroup);
+        app.get("/permissions/groups/{group_code}", PermissionRoutes::getGroup);
+        app.patch("/permissions/groups/{group_code}", PermissionRoutes::upsertGroup);
+        app.delete("/permissions/groups/{group_code}", PermissionRoutes::disableGroup);
+        app.get("/permissions/groups/{group_code}/permissions", PermissionRoutes::listGroupNodes);
+        app.put("/permissions/groups/{group_code}/permissions/{permission_node}", PermissionRoutes::upsertGroupNode);
+        app.delete("/permissions/groups/{group_code}/permissions/{permission_node}", PermissionRoutes::removeGroupNode);
+        app.get("/permissions/users/{player_id}/groups", PermissionRoutes::listPlayerGroups);
+        app.put("/permissions/users/{player_id}/groups/{group_code}", PermissionRoutes::grantPlayerGroup);
+        app.delete("/permissions/users/{player_id}/groups/{group_code}", PermissionRoutes::revokePlayerGroup);
+        app.get("/permissions/users/{player_id}/snapshot", PermissionRoutes::snapshot);
+        app.post("/permissions/check", PermissionRoutes::check);
+        app.post("/permissions/reload", PermissionRoutes::reload);
 
         app.get("/currencies", CurrencyRoutes::listCurrencies);
         app.post("/currencies", CurrencyRoutes::upsertCurrency);

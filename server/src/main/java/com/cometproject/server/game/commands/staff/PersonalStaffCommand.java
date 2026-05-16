@@ -1,16 +1,13 @@
 package com.cometproject.server.game.commands.staff;
 
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.commands.ChatCommand;
+import com.cometproject.server.game.permissions.PermissionNodeCatalog;
 import com.cometproject.server.game.rooms.objects.entities.effects.PlayerEffect;
 import com.cometproject.server.network.sessions.Session;
-import com.cometproject.server.storage.queries.permissions.PermissionsDao;
 import com.cometproject.server.storage.queries.player.PlayerDao;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import com.cometproject.storage.api.services.IPermissionService;
 
 /**
  * Describes personal staff command behavior for the Comet subsystem.
@@ -26,13 +23,15 @@ public class PersonalStaffCommand extends ChatCommand {
     public void execute(Session client, String[] params) {
         if (client == null) return;
 
-        List<Map.Entry<Integer, Integer>> list = new ArrayList<>(PermissionsDao.getEffects().entrySet());
-        list.sort(Collections.reverseOrder(Map.Entry.comparingByValue()));
+        final IPermissionService permissionService = CometBootstrap.resolve(IPermissionService.class);
 
-        for (Map.Entry<Integer, Integer> entry : list) {
+        for (int effectId : PermissionNodeCatalog.personalStaffEffects()) {
+            final String effectNode = PermissionNodeCatalog.effect(effectId);
 
-            if (client.getPlayer().getPermissions().getRank().getId() < entry.getValue())
+            if (!permissionService.isPermissionNodeDefined(effectNode)
+                    || !permissionService.hasPermission(client.getPlayer().getId(), effectNode)) {
                 continue;
+            }
 
             client.getPlayer().getSettings().setPersonalStaff(!client.getPlayer().getSettings().hasPersonalStaff());
 
@@ -40,7 +39,7 @@ public class PersonalStaffCommand extends ChatCommand {
                 return;
 
             if (client.getPlayer().getSettings().hasPersonalStaff()) {
-                client.getPlayer().getEntity().applyEffect(new PlayerEffect(entry.getKey()));
+                client.getPlayer().getEntity().applyEffect(new PlayerEffect(effectId));
             } else
                 client.getPlayer().getEntity().applyEffect(new PlayerEffect(0));
 

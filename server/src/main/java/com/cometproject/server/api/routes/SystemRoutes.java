@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.cometproject.server.api.ApiResponseUtils;
 import com.cometproject.server.boot.Comet;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.boot.utils.ShutdownProcess;
 import com.cometproject.server.composers.catalog.CatalogPublishMessageComposer;
 import com.cometproject.server.config.Locale;
@@ -19,6 +20,7 @@ import com.cometproject.server.game.rooms.RoomManager;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.moderation.ModToolMessageComposer;
 import com.cometproject.server.storage.queries.config.ConfigDao;
+import com.cometproject.storage.api.services.IPermissionService;
 
 import io.javalin.http.Context;
 
@@ -78,6 +80,7 @@ public class SystemRoutes {
                 break;
 
             case "permissions":
+                CometBootstrap.resolve(IPermissionService.class).reload();
                 PermissionsManager.getInstance().loadPermissions();
                 PermissionsManager.getInstance().loadPerks();
                 break;

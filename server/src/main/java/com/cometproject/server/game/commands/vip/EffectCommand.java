@@ -1,13 +1,14 @@
 package com.cometproject.server.game.commands.vip;
 
 import com.cometproject.server.config.Locale;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.commands.ChatCommand;
-import com.cometproject.server.game.permissions.PermissionsManager;
-import com.cometproject.server.game.permissions.types.EffectPermission;
+import com.cometproject.server.game.permissions.PermissionNodeCatalog;
 import com.cometproject.server.game.rooms.objects.entities.effects.PlayerEffect;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.types.components.games.GameTeam;
 import com.cometproject.server.network.sessions.Session;
+import com.cometproject.storage.api.services.IPermissionService;
 
 
 /**
@@ -74,27 +75,11 @@ public class EffectCommand extends ChatCommand {
         try {
             int effectId = Integer.parseInt(params[0]);
             PlayerEntity entity = client.getPlayer().getEntity();
+            final IPermissionService permissionService = CometBootstrap.resolve(IPermissionService.class);
+            final String effectNode = PermissionNodeCatalog.effect(effectId);
 
-            for(EffectPermission effect : PermissionsManager.getInstance().getEffectsOverride().values()) {
-                if (effect.getPlayerId() == client.getPlayer().getId() && effectId == effect.getEffectId() && effect.isEnabled()) {
-                    if (entity.getCurrentEffect() != null) {
-                        if (entity.getGameTeam() != null && entity.getGameTeam() != GameTeam.NONE) {
-                            return;
-                        }
-
-                        if (entity.getCurrentEffect().isItemEffect()) {
-                            return;
-                        }
-
-                    entity.applyEffect(new PlayerEffect(effectId, 0));
-                    return;
-                    }
-                }
-            }
-
-            final Integer minimumRank = PermissionsManager.getInstance().getEffects().get(effectId);
-
-            if (minimumRank != null && client.getPlayer().getData().getRank() < minimumRank) {
+            if (permissionService.isPermissionNodeDefined(effectNode)
+                    && !permissionService.hasPermission(client.getPlayer().getId(), effectNode)) {
                 client.getPlayer().sendBubble("permission", Locale.getOrDefault("not.enough.rank", "No dispones del rango suficiente para usar este efecto."));
                 return;
             }

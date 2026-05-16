@@ -127,6 +127,7 @@ public final class JooqCurrencyRepository extends JooqRepository implements ICur
             DSL.field(DSL.name("player_currency_movements", "reason"), String.class);
     private static final Field<Timestamp> MOVEMENT_CREATED_AT =
             DSL.field(DSL.name("player_currency_movements", "created_at"), Timestamp.class);
+    private static final Field<Long> LAST_INSERT_ID = DSL.field("last_insert_id()", Long.class);
 
     /**
      * Creates the currency repository.
@@ -620,7 +621,7 @@ public final class JooqCurrencyRepository extends JooqRepository implements ICur
             final CurrencyAdjustment adjustment,
             final BalanceChange balanceChange) {
         final CurrencySource source = adjustment.getSource();
-        final Record movementRecord = transaction
+        final int affectedRows = transaction
                 .insertInto(MOVEMENTS)
                 .columns(
                         MOVEMENT_PLAYER_ID,
@@ -646,17 +647,25 @@ public final class JooqCurrencyRepository extends JooqRepository implements ICur
                         source.getSourceType(),
                         emptyToNull(source.getSourceRef()),
                         source.getReason())
-                .returningResult(MOVEMENT_ID, MOVEMENT_CREATED_AT)
-                .fetchOne();
+                .execute();
 
-        if (movementRecord == null) {
+        if (affectedRows != 1) {
             throw new CurrencyAdjustmentException("Currency movement could not be recorded");
         }
 
-        final Timestamp createdAt = movementRecord.get(MOVEMENT_CREATED_AT);
+        final Long movementId = transaction.select(LAST_INSERT_ID).fetchOne(LAST_INSERT_ID);
+        if (movementId == null || movementId == 0L) {
+            throw new CurrencyAdjustmentException("Currency movement id could not be resolved");
+        }
+
+        final Timestamp createdAt = transaction
+                .select(MOVEMENT_CREATED_AT)
+                .from(MOVEMENTS)
+                .where(MOVEMENT_ID.eq(movementId))
+                .fetchOne(MOVEMENT_CREATED_AT);
 
         return new CurrencyMovementResult(
-                movementRecord.get(MOVEMENT_ID),
+                movementId,
                 adjustment.getPlayerId(),
                 adjustment.getCurrencyId(),
                 adjustment.getCurrencyCode(),

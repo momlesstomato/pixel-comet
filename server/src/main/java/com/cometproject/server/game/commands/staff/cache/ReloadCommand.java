@@ -1,6 +1,7 @@
 package com.cometproject.server.game.commands.staff.cache;
 
 import com.cometproject.api.game.GameContext;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.composers.catalog.CatalogPublishMessageComposer;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.achievements.AchievementManager;
@@ -29,6 +30,7 @@ import com.cometproject.server.network.messages.outgoing.room.polls.InitializePo
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.queries.config.ConfigDao;
 import com.cometproject.server.storage.queries.rooms.RoomDao;
+import com.cometproject.storage.api.services.IPermissionService;
 
 import java.util.ArrayList;
 
@@ -116,8 +118,7 @@ public class ReloadCommand extends ChatCommand {
             case "permissions":
                 PermissionsManager.getInstance().loadPermissions();
                 PermissionsManager.getInstance().loadPerks();
-                PermissionsManager.getInstance().loadEffectsOverride();
-                PermissionsManager.getInstance().loadEffects();
+                CometBootstrap.resolve(IPermissionService.class).reload();
 
                 sendNotif(Locale.get("command.reload.permissions"), client);
                 break;

@@ -14,6 +14,7 @@ import com.cometproject.server.game.guides.types.HelpRequest;
 import com.cometproject.server.game.guides.types.HelperSession;
 import com.cometproject.server.game.items.crafting.CraftingMachine;
 import com.cometproject.server.game.landing.LandingManager;
+import com.cometproject.server.game.permissions.PermissionNodeCatalog;
 import com.cometproject.server.game.players.PlayerManager;
 import com.cometproject.server.game.players.components.*;
 import com.cometproject.server.game.players.data.PlayerData;
@@ -39,11 +40,11 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageComposer;
 import com.cometproject.server.storage.queries.catalog.CatalogDao;
 import com.cometproject.server.storage.queries.landing.LandingDao;
-import com.cometproject.server.storage.queries.permissions.PermissionsDao;
 import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.cometproject.server.utilities.collections.ConcurrentHashSet;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.services.ICurrencyService;
+import com.cometproject.storage.api.services.IPermissionService;
 import com.google.common.collect.Sets;
 
 import java.sql.ResultSet;
@@ -462,16 +463,18 @@ public class Player implements IPlayer {
         }
 
         if (getSettings().hasPersonalStaff()) {
-            List<Map.Entry<Integer, Integer>> rankPermList = new ArrayList<>(PermissionsDao.getEffects().entrySet());
-            rankPermList.sort(Collections.reverseOrder(Map.Entry.comparingByValue()));
+            final IPermissionService permissionService = CometBootstrap.resolve(IPermissionService.class);
 
-            for (Map.Entry<Integer, Integer> entry : rankPermList) {
+            for (int effectId : PermissionNodeCatalog.personalStaffEffects()) {
+                final String effectNode = PermissionNodeCatalog.effect(effectId);
 
-                if (this.getPermissions().getRank().getId() < entry.getValue())
+                if (!permissionService.isPermissionNodeDefined(effectNode)
+                        || !permissionService.hasPermission(this.getId(), effectNode)) {
                     continue;
+                }
 
                 if (this.getSettings().hasPersonalStaff()) {
-                    this.getEntity().applyEffect(new PlayerEffect(entry.getKey()));
+                    this.getEntity().applyEffect(new PlayerEffect(effectId));
                 } else
                     this.getEntity().applyEffect(new PlayerEffect(0));
 

@@ -98,7 +98,7 @@ public class SubscriptionComponent extends PlayerComponent implements SubsCompon
      */
     @Override
     public IMessageComposer update(){
-        return new FuserightsMessageComposer(this.hasSub, this.getPlayer().getData().getRank());
+        return new FuserightsMessageComposer(this.hasSub, this.getPlayer().getPermissions().getLegacyRankId());
     }
 
     /**

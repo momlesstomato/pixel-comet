@@ -1,10 +1,14 @@
 package com.cometproject.server.game.players.components;
 
 import com.cometproject.api.game.players.data.components.PlayerPermissions;
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.game.permissions.PermissionsManager;
-import com.cometproject.server.game.permissions.types.OverrideCommandPermission;
 import com.cometproject.server.game.permissions.types.Rank;
 import com.cometproject.server.game.players.types.Player;
+import com.cometproject.storage.api.data.permissions.PermissionContext;
+import com.cometproject.storage.api.services.IPermissionService;
+
+import java.util.Locale;
 
 
 /**
@@ -40,19 +44,39 @@ public class PermissionComponent implements PlayerPermissions {
      */
     @Override
     public boolean hasCommand(String key) {
+        final String permissionNode = this.commandPermissionNode(key);
 
-        if (PermissionsManager.getInstance().getOverrideCommands().containsKey(key)) {
-            OverrideCommandPermission permission = PermissionsManager.getInstance().getOverrideCommands().get(key);
-
-            if(permission == null)
-                return false;
-
-            if (permission.getPlayerId() == this.getPlayer().getData().getId() && permission.isEnabled()) {
-                return true;
-            }
+        if (!permissionNode.isEmpty() && this.permissionService().hasPermission(
+                this.player.getData().getId(),
+                permissionNode,
+                this.roomContext())) {
+            return true;
         }
 
-        return PermissionsManager.getInstance().hasPermission(this.player, key) || this.player.getPermissions().getRank().hasPermission(key, this.player.getEntity().getRoom() != null && (this.player.getEntity().hasRights()));
+        final boolean hasRoomRights = this.player.getEntity() != null
+                && this.player.getEntity().getRoom() != null
+                && this.player.getEntity().hasRights();
+
+        return PermissionsManager.getInstance().hasPermission(this.player, key)
+                || this.player.getPermissions().getRank().hasPermission(key, hasRoomRights);
+    }
+
+    /**
+     * Returns the effective legacy rank id for packets and legacy comparisons.
+     *
+     * @return the effective legacy rank id.
+     */
+    public int getLegacyRankId() {
+        return this.permissionService().legacyRankId(this.player.getData().getId(), this.player.getData().getRank());
+    }
+
+    /**
+     * Returns the highest effective permission group priority.
+     *
+     * @return the highest effective priority.
+     */
+    public int getHighestPriority() {
+        return this.permissionService().highestPriority(this.player.getData().getId(), this.player.getData().getRank());
     }
 
     /**
@@ -71,5 +95,35 @@ public class PermissionComponent implements PlayerPermissions {
     @Override
     public void dispose() {
 
+    }
+
+    private PermissionContext roomContext() {
+        if (this.player.getEntity() == null || this.player.getEntity().getRoom() == null) {
+            return PermissionContext.global();
+        }
+
+        return new PermissionContext(
+                this.player.getEntity().getRoom().getId(),
+                this.player.getEntity().getRoom().getData().getOwnerId() == this.player.getId(),
+                this.player.getEntity().hasRights(),
+                "command",
+                java.util.Map.of());
+    }
+
+    private IPermissionService permissionService() {
+        return CometBootstrap.resolve(IPermissionService.class);
+    }
+
+    private String commandPermissionNode(final String key) {
+        if (key == null || key.isBlank()) {
+            return "";
+        }
+
+        String commandName = key.trim().toLowerCase(Locale.ROOT);
+        if (commandName.endsWith("_command")) {
+            commandName = commandName.substring(0, commandName.length() - "_command".length());
+        }
+
+        return "commands." + commandName;
     }
 }

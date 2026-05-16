@@ -1,7 +1,8 @@
 package com.cometproject.server.network.messages.incoming.room.action;
 
+import com.cometproject.server.boot.CometBootstrap;
 import com.cometproject.server.config.Locale;
-import com.cometproject.server.game.permissions.PermissionsManager;
+import com.cometproject.server.game.permissions.PermissionNodeCatalog;
 import com.cometproject.server.game.players.types.PlayerMention;
 import com.cometproject.server.game.rooms.RoomManager;
 import com.cometproject.server.game.rooms.emojis.Emoji;
@@ -23,6 +24,7 @@ import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessage
 import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;
+import com.cometproject.storage.api.services.IPermissionService;
 
 
 /**
@@ -67,14 +69,8 @@ public class TalkMessageEvent implements Event {
 
         if(client.getPlayer().getBubbleId() > 0) bubble = client.getPlayer().getBubbleId();
         if (bubble != 0) {
-            final Integer bubbleMinRank = PermissionsManager.getInstance().getChatBubbles().get(bubble);
-
-            if (bubbleMinRank == null) {
+            if (!canUseBubble(client, bubble)) {
                 bubble = 0;
-            } else {
-                if (client.getPlayer().getData().getRank() < bubbleMinRank) {
-                    bubble = 0;
-                }
             }
         }
 
@@ -163,6 +159,13 @@ public class TalkMessageEvent implements Event {
 
             playerEntity.postChat(filteredMessage);
         }
+    }
+
+    private static boolean canUseBubble(final Session client, final int bubble) {
+        final IPermissionService permissionService = CometBootstrap.resolve(IPermissionService.class);
+        final String bubbleNode = PermissionNodeCatalog.chatBubble(bubble);
+        return permissionService.isPermissionNodeDefined(bubbleNode)
+                && permissionService.hasPermission(client.getPlayer().getId(), bubbleNode);
     }
 
     /**

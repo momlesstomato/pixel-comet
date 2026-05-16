@@ -1,6 +1,5 @@
 package com.cometproject.server.game.catalog.types;
 
-import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.game.catalog.types.ICatalogBundledItem;
 import com.cometproject.api.game.catalog.types.ICatalogItem;
 import com.cometproject.api.game.furniture.types.FurnitureDefinition;
@@ -248,7 +247,7 @@ public class CatalogItem implements ICatalogItem {
         msg.writeString(this.getDisplayName());
         msg.writeBoolean(false);
 
-        msg.writeInt(CometSettings.betSystemEnabled ? this.getCostCredits() : 0);
+        msg.writeInt(this.getCostCredits());
 
         if (this.getCostDiamonds() > 0) {
             msg.writeInt(this.getCostDiamonds());

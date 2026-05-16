@@ -27,6 +27,8 @@ tags:
     description: Camera and photo management endpoints.
   - name: Currencies
     description: Currency definitions, balances, movements, and role-scoped policies.
+  - name: Permissions
+    description: Permission groups, permission nodes, memberships, checks, and cache reloads.
 components:
   securitySchemes:
     authTokenHeader:
@@ -1305,6 +1307,498 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  # Permissions
+  /permissions/groups:
+    get:
+      tags: [Permissions]
+      summary: List permission groups.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: include_disabled
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Permission groups returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags: [Permissions]
+      summary: Create or update a permission group.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code, display_name]
+              properties:
+                code:
+                  type: string
+                display_name:
+                  type: string
+                priority:
+                  type: integer
+                legacy_rank_id:
+                  type: integer
+                staff:
+                  type: boolean
+                default_group:
+                  type: boolean
+                enabled:
+                  type: boolean
+      responses:
+        '200':
+          description: Permission group persisted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid permission group payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Permission group mutation was cancelled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /permissions/groups/{group_code}:
+    get:
+      tags: [Permissions]
+      summary: Return one permission group.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: group_code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Permission group returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Permission group was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      tags: [Permissions]
+      summary: Update one permission group.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: group_code
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                display_name:
+                  type: string
+                priority:
+                  type: integer
+                legacy_rank_id:
+                  type: integer
+                staff:
+                  type: boolean
+                default_group:
+                  type: boolean
+                enabled:
+                  type: boolean
+      responses:
+        '200':
+          description: Permission group persisted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Permission group mutation was cancelled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags: [Permissions]
+      summary: Disable one permission group.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: group_code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Permission group disabled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /permissions/groups/{group_code}/permissions:
+    get:
+      tags: [Permissions]
+      summary: List permission nodes assigned to a group.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: group_code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Permission nodes returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /permissions/groups/{group_code}/permissions/{permission_node}:
+    put:
+      tags: [Permissions]
+      summary: Add or update a permission node on a group.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: group_code
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: permission_node
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                effect:
+                  type: string
+                  enum: [ALLOW, DENY]
+                context:
+                  type: string
+                expires_at:
+                  type: string
+                  format: date-time
+                  nullable: true
+      responses:
+        '200':
+          description: Permission node persisted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Permission node mutation was cancelled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags: [Permissions]
+      summary: Remove a permission node from a group.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: group_code
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: permission_node
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Permission node removed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /permissions/users/{player_id}/groups:
+    get:
+      tags: [Permissions]
+      summary: List groups assigned to a player.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: player_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: include_expired
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Player permission groups returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid player id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /permissions/users/{player_id}/groups/{group_code}:
+    put:
+      tags: [Permissions]
+      summary: Grant a permission group to a player.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: player_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: group_code
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                granted_by:
+                  type: string
+                reason:
+                  type: string
+                expires_at:
+                  type: string
+                  format: date-time
+                  nullable: true
+      responses:
+        '200':
+          description: Permission group granted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid player id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Permission group grant was cancelled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags: [Permissions]
+      summary: Revoke a permission group from a player.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: player_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: group_code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Permission group revoked.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid player id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /permissions/users/{player_id}/snapshot:
+    get:
+      tags: [Permissions]
+      summary: Return a player's effective permission snapshot.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+        - name: player_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Permission snapshot returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid player id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /permissions/check:
+    post:
+      tags: [Permissions]
+      summary: Check whether a player has a permission node.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [player_id, permission_node]
+              properties:
+                player_id:
+                  type: integer
+                permission_node:
+                  type: string
+      responses:
+        '200':
+          description: Permission check returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '400':
+          description: Invalid permission check request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid auth token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /permissions/reload:
+    post:
+      tags: [Permissions]
+      summary: Reload permission caches.
+      parameters:
+        - $ref: '#/components/parameters/AuthTokenHeader'
+      responses:
+        '200':
+          description: Permission caches reloaded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
         '401':
           description: Missing or invalid auth token.
           content:

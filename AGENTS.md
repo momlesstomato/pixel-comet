@@ -5,6 +5,12 @@ These rules apply to every new class, method, and module — no exceptions.
 
 ---
 
+## Search Tooling
+
+Use `rg` (ripgrep) and `rg --files` whenever possible for codebase searches so investigations stay fast. Fall back to alternatives only when ripgrep is unavailable or unsuitable.
+
+---
+
 ## 1. SOLID Principles
 
 All new code **must** adhere to the SOLID object-oriented design principles:

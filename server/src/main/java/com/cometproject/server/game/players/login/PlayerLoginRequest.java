@@ -174,7 +174,9 @@ public class PlayerLoginRequest implements CometTask {
             client.sendQueue(new UniqueIDMessageComposer(client.getUniqueId()))
                     .sendQueue(new AuthenticationOKMessageComposer())
                     .sendQueue(new UserObjectMessageComposer(client.getPlayer()))
-                    .sendQueue(new FuserightsMessageComposer(client.getPlayer().getSubscription().isValid(), client.getPlayer().getData().getRank()))
+                    .sendQueue(new FuserightsMessageComposer(
+                            client.getPlayer().getSubscription().isValid(),
+                            client.getPlayer().getPermissions().getLegacyRankId()))
                     .sendQueue(new ClubStatusMessageComposer(client.getPlayer().getSubscription())).
                     sendQueue(new FavouriteRoomsMessageComposer(client.getPlayer().getNavigator().getFavouriteRooms())).
                     sendQueue(new AvailabilityStatusMessageComposer()).

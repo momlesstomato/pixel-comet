@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import com.cometproject.api.utilities.Startable;
 import com.cometproject.server.boot.CometBootstrap;
-import com.cometproject.server.game.permissions.types.EffectPermission;
-import com.cometproject.server.game.permissions.types.OverrideCommandPermission;
 import com.cometproject.server.game.permissions.types.Perk;
 import com.cometproject.server.game.permissions.types.Rank;
 import com.cometproject.server.game.players.types.Player;
@@ -23,10 +21,6 @@ public class PermissionsManager implements Startable {
     private static final Logger LOGGER = LoggerFactory.getLogger(PermissionsManager.class.getName());
     private Map<Integer, Perk> perks;
     private Map<Integer, Rank> permissions;
-    private Map<String, OverrideCommandPermission> overridecommands;
-    private Map<Integer, Integer> effects;
-    private Map<Integer, EffectPermission> overrideEffects;
-    private Map<Integer, Integer> chatBubbles;
 
     /**
      * Creates a permissions manager instance for the permission subsystem.
@@ -50,17 +44,10 @@ public class PermissionsManager implements Startable {
     @Override
     public void start() {
         this.perks = new ConcurrentHashMap<>();
-        this.overridecommands = new ConcurrentHashMap<>();
         this.permissions = new ConcurrentHashMap<>();
-        this.effects = new ConcurrentHashMap<>();
-        this.overrideEffects = new ConcurrentHashMap<>();
-        this.chatBubbles = new ConcurrentHashMap<>();
 
         this.loadPerks();
         this.loadPermissions();
-        this.loadEffects();
-        this.loadEffectsOverride();
-        this.loadChatBubbles();
 
         LOGGER.info("PermissionsManager initialized");
     }
@@ -104,58 +91,6 @@ public class PermissionsManager implements Startable {
 
 
     /**
-     * Loads effects for this permission contract.
-     */
-    public void loadEffects() {
-        try {
-            if (this.getEffects().size() != 0) {
-                this.getEffects().clear();
-            }
-
-            this.effects = PermissionsDao.getEffects();
-
-        } catch (Exception e) {
-            LOGGER.error("Error while reloading effect permissions", e);
-            return;
-        }
-
-        LOGGER.info("Loaded " + this.getEffects().size() + " effect permissions");
-    }
-
-    /**
-     * Loads effects override for this permission contract.
-     */
-    public void loadEffectsOverride() {
-        try {
-            if (this.getEffectsOverride().size() != 0) {
-                this.getEffectsOverride().clear();
-            }
-
-            this.overrideEffects = PermissionsDao.getOverrideEffects();
-
-        } catch (Exception e) {
-            LOGGER.error("Error while reloading effect override permissions", e);
-            return;
-        }
-
-        LOGGER.info("Loaded " + this.getEffects().size() + " override effect permissions");
-    }
-
-    /**
-     * Loads chat bubbles for this permission contract.
-     */
-    public void loadChatBubbles() {
-        if (this.chatBubbles.size() != 0) {
-            this.chatBubbles.clear();
-        }
-
-        this.chatBubbles = PermissionsDao.getChatBubbles();
-
-        LOGGER.info("Loaded " + this.getEffects().size() + " chat bubbles");
-    }
-
-
-    /**
      * Returns the rank for this permission contract.
      *
      * @param playerRankId Player rank id supplied by the caller.
@@ -182,48 +117,12 @@ public class PermissionsManager implements Startable {
     }
 
     /**
-     * Returns the override commands for this permission contract.
-     *
-     * @return Value exposed by the contract.
-     */
-    public Map<String, OverrideCommandPermission> getOverrideCommands() {
-        return this.overridecommands;
-    }
-
-    /**
      * Returns the perks for this permission contract.
      *
      * @return Value exposed by the contract.
      */
     public Map<Integer, Perk> getPerks() {
         return perks;
-    }
-
-    /**
-     * Returns the effects for this permission contract.
-     *
-     * @return Value exposed by the contract.
-     */
-    public Map<Integer, Integer> getEffects() {
-        return effects;
-    }
-
-    /**
-     * Returns the effects override for this permission contract.
-     *
-     * @return Value exposed by the contract.
-     */
-    public Map<Integer, EffectPermission> getEffectsOverride() {
-        return overrideEffects;
-    }
-
-    /**
-     * Returns the chat bubbles for this permission contract.
-     *
-     * @return Value exposed by the contract.
-     */
-    public Map<Integer, Integer> getChatBubbles() {
-        return this.chatBubbles;
     }
 
     /**

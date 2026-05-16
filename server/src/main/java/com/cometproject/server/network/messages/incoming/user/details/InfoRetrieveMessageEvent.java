@@ -33,7 +33,7 @@ public class InfoRetrieveMessageEvent implements Event {
         client.sendQueue(client.getPlayer().composeCurrenciesBalance());
         client.sendQueue(new UserObjectMessageComposer(client.getPlayer()));
         client.sendQueue(new BuildersClubMembershipMessageComposer());
-        client.sendQueue(new AllowancesMessageComposer(client.getPlayer().getData().getRank()));
+        client.sendQueue(new AllowancesMessageComposer(client.getPlayer().getPermissions().getLegacyRankId()));
         client.sendQueue(new AchievementPointsMessageComposer(client.getPlayer().getData().getAchievementPoints(), client.getPlayer().getStats().getLevel()));
         client.sendQueue(new MessengerConfigMessageComposer());
         client.sendQueue(new BadgeInventoryMessageComposer(client.getPlayer().getInventory().getBadges()));
